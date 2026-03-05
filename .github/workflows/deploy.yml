@@ -17,4 +17,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/web/site252630/html/
+            git pull origin main
             rm -rf .github  # <--- Questo cancella la cartella su Rosina dopo ogni aggiornamento
