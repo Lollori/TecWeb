@@ -63,13 +63,11 @@ app.use(cors())
 app.enable('trust proxy');
 
 
-app.get('/', async function (req, res) { 
-	let sitename = req.hostname.split('.')[0]
-	res.send(await template.generate('index.html', {
-			host: req.hostname,
-			site: sitename
-	}));
-})
+app.get('/', function (req, res) { 
+    // Usiamo res.sendFile invece di template.generate
+    // così carichiamo l'HTML originale senza passare da Handlebars
+    res.sendFile(global.rootDir + '/editor-marketplace/frontend/index.html');
+});
 
 app.get('/hw', async function(req, res) { 
 	var text = "Hello world as a Node service";
