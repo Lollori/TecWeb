@@ -62,6 +62,16 @@ app.use(cors())
 // https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
 
+const fs = require('fs');
+console.log("--- ISPEZIONE CARTELLE ---");
+console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
+// Se vedi la cartella del marketplace, controlliamo cosa c'è dentro
+try {
+    // Prova a listare la cartella usando il nome che pensi sia giusto
+    console.log("Contenuto Editor-marketplace:", fs.readdirSync('/webapp/Editor-marketplace'));
+} catch(e) {
+    console.log("Errore: Non riesco a leggere /webapp/Editor-marketplace. Forse si chiama diversamente?");
+}
 
 app.get('/', function (req, res) { 
     // Risolviamo il percorso in modo assoluto
