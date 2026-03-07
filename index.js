@@ -63,7 +63,7 @@ app.use(cors())
 app.use('/editor', express.static(global.rootDir + '/editor/client')); 
 */
 
-app.use(express.static(global.rootDir + '/editor/client'));
+app.use(express.static(global.rootDir + '/tpl'));
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
@@ -83,7 +83,7 @@ app.enable('trust proxy');
 
 /* Provamp*/
 app.get('/', function (req, res) { 
-    res.sendFile(global.rootDir + '/editor/client/index.html');
+    res.sendFile(global.rootDir + '/tpl/index.html');
 });
 
 app.get('/hw', async function(req, res) { 
