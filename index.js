@@ -68,7 +68,7 @@ console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
 // Se vedi la cartella del marketplace, controlliamo cosa c'è dentro
 try {
     // Prova a listare la cartella usando il nome che pensi sia giusto
-    console.log("Contenuto Editor-Marketplace:", fs.readdirSync('/webapp/Editor-marketplace'));
+    console.log("Contenuto Editor-Marketplace:", fs.readdirSync('/webapp/Editor-Marketplace'));
 } catch(e) {
     console.log("Errore: Non riesco a leggere /webapp/Editor-Marketplace. Forse si chiama diversamente?");
 }
