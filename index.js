@@ -62,6 +62,7 @@ app.use(cors())
 // https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
 
+//Debug per vedere se viene trovata la cartella del frontend
 const fs = require('fs');
 console.log("--- ISPEZIONE CARTELLE ---");
 console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
