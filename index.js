@@ -64,9 +64,16 @@ app.enable('trust proxy');
 
 
 app.get('/', function (req, res) { 
-    // Usiamo res.sendFile invece di template.generate
-    // così carichiamo l'HTML originale senza passare da Handlebars
-    res.sendFile(global.rootDir + '/Editor-marketplace/Frontend/index.html');
+    // Risolviamo il percorso in modo assoluto
+    const indexPath = path.resolve(__dirname, 'Editor-marketplace', 'Frontend', 'index.html');
+    
+    res.sendFile(indexPath, function (err) {
+        if (err) {
+            console.error("Errore invio file:", err.message);
+            // Se fallisce, stampiamo il percorso provato per capire l'errore
+            res.status(404).send("Il server ha cercato il file qui: " + indexPath);
+        }
+    });
 });
 
 app.get('/hw', async function(req, res) { 
