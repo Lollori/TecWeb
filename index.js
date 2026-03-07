@@ -38,7 +38,7 @@ const template = require(global.rootDir + '/scripts/tpl.js');
 const mymongo = require(global.rootDir + '/scripts/mongo.js');
 const express = require('express');
 const cors = require('cors')
-
+const path = require('path');
 
 
 
