@@ -68,14 +68,14 @@ console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
 // Se vedi la cartella del marketplace, controlliamo cosa c'è dentro
 try {
     // Prova a listare la cartella usando il nome che pensi sia giusto
-    console.log("Contenuto Editor-marketplace:", fs.readdirSync('/webapp/Editor-marketplace'));
+    console.log("Contenuto Editor-Marketplace:", fs.readdirSync('/webapp/Editor-marketplace'));
 } catch(e) {
-    console.log("Errore: Non riesco a leggere /webapp/Editor-marketplace. Forse si chiama diversamente?");
+    console.log("Errore: Non riesco a leggere /webapp/Editor-Marketplace. Forse si chiama diversamente?");
 }
 
 app.get('/', function (req, res) { 
     // Risolviamo il percorso in modo assoluto
-    const indexPath = path.resolve(__dirname, 'Editor-marketplace', 'Frontend', 'index.html');
+    const indexPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'index.html');
     
     res.sendFile(indexPath, function (err) {
         if (err) {
