@@ -66,7 +66,7 @@ app.enable('trust proxy');
 app.get('/', function (req, res) { 
     // Usiamo res.sendFile invece di template.generate
     // così carichiamo l'HTML originale senza passare da Handlebars
-    res.sendFile(global.rootDir + '/editor-marketplace/frontend/index.html');
+    res.sendFile(global.rootDir + '/Editor-marketplace/Frontend/index.html');
 });
 
 app.get('/hw', async function(req, res) { 
