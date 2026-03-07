@@ -51,8 +51,6 @@ const cors = require('cors')
 /* ========================== */
 
 let app= express(); 
-
-/*
 app.use('/js'  , express.static(global.rootDir +'/public/js'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
@@ -60,31 +58,18 @@ app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
 app.use(express.urlencoded({ extended: true })) 
 app.use(cors())
-app.use('/editor', express.static(global.rootDir + '/editor/client')); 
-*/
-
-app.use(express.static(global.rootDir + '/tpl'));
-app.use(express.urlencoded({ extended: true }));
-app.use(cors());
-
 
 // https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
 
 
-/* app.get('/', async function (req, res) { 
+app.get('/', async function (req, res) { 
 	let sitename = req.hostname.split('.')[0]
 	res.send(await template.generate('index.html', {
 			host: req.hostname,
 			site: sitename
 	}));
 })
-*/
-
-/* Provamp*/
-app.get('/', function (req, res) { 
-    res.sendFile(global.rootDir + '/tpl/index.html');
-});
 
 app.get('/hw', async function(req, res) { 
 	var text = "Hello world as a Node service";
