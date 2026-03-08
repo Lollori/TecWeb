@@ -20,6 +20,7 @@ app.use('/api/items', itemsRouter);
 app.use('/api/visite', visiteRouter);
 app.use('/api/musei', museiRouter);
 app.use('/api/utenti', utentiRouter);
+app.use('/Artaroundeditor', express.static(path.join(__dirname, 'Artaroundeditor')));
 
 // ROTTA DI TEST
 app.get('/', (req, res) => res.send('ArtAround Editor API attiva ✅'));

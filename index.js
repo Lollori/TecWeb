@@ -40,6 +40,17 @@ const express = require('express');
 const cors = require('cors')
 const path = require('path');
 
+/* Inizio modifiche prova mp */
+const itemsRouter = require('./Artaroundeditor/server/routes/items');
+const visiteRouter = require('./Artaroundeditor/server/routes/visite');
+
+
+app.use('/api/items', itemsRouter);
+app.use('/api/visite', visiteRouter);
+
+
+app.use(express.static(path.join(__dirname, 'Artaroundeditor/client')));
+/* Fine modifiche prova mp */
 
 
 
@@ -74,6 +85,7 @@ try {
     console.log("Errore: Non riesco a leggere /webapp/Editor-Marketplace. Forse si chiama diversamente?");
 }
 
+/*
 app.get('/', function (req, res) { 
     // Risolviamo il percorso in modo assoluto
     const indexPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'index.html');
@@ -83,6 +95,23 @@ app.get('/', function (req, res) {
             console.error("Errore invio file:", err.message);
             // Se fallisce, stampiamo il percorso provato per capire l'errore
             res.status(404).send("Il server ha cercato il file qui: " + indexPath);
+        }
+    });
+});
+
+*/
+
+
+/* Provamp artaround */
+app.get('/', function (req, res) { 
+    // Cambiamo il percorso puntando alla cartella dell'editor di Maria Paola
+    const indexPath = path.resolve(__dirname, 'Artaroundeditor', 'client', 'index.html');
+    
+    res.sendFile(indexPath, function (err) {
+        if (err) {
+            console.error("Errore invio file Artaround:", err.message);
+            // Questo ti aiuterà a capire se il percorso è scritto male
+            res.status(404).send("Il server non trova l'editor. Percorso provato: " + indexPath);
         }
     });
 });
