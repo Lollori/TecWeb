@@ -51,7 +51,7 @@ const path = require('path');
 /* ========================== */
 
 let app= express(); 
-app.use('/js', express.static('Editor-Marketplace/Frontend/js'));
+app.use('/scripts', express.static(global.rootDir +'Editor-Marketplace/Frontend/scripts'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/docs', express.static(global.rootDir +'/public/html'));
@@ -61,25 +61,6 @@ app.use(cors())
 
 // https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
-
-const fs = require('fs');
-const percorsoJS = path.join(__dirname, 'Editor-Marketplace', 'Frontend', 'js', 'item.js');
-
-console.log("--- TEST DI ACCESSO ---");
-console.log("Sto cercando il file in:", percorsoJS);
-
-if (fs.existsSync(percorsoJS)) {
-    console.log("✅ IL FILE ESISTE! Il problema è l'ordine delle rotte in Express.");
-} else {
-    console.log("❌ IL FILE NON ESISTE a quel percorso. Controlla maiuscole o livelli di cartelle.");
-    // Vediamo cosa vede Node in quella cartella
-    try {
-        const cartellaPadre = path.join(__dirname, 'Editor-Marketplace');
-        console.log("Contenuto di Editor-Marketplace:", fs.readdirSync(cartellaPadre));
-    } catch(e) {
-        console.log("Errore critico: non trovo nemmeno la cartella Editor-Marketplace");
-    }
-}
 
 //Debug per vedere se viene trovata la cartella del frontend
 const fs = require('fs');
