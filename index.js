@@ -55,6 +55,8 @@ app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
+const scriptsPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'scripts');
+app.use('/scripts', express.static(scriptsPath));
 app.use(express.urlencoded({ extended: true })) 
 app.use(cors())
 
