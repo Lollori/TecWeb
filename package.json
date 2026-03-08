@@ -1,22 +1,10 @@
 {
-  "name": "tecweb-artaround",
-  "version": "1.0.0",
-  "description": "Progetto integrato ArtAround",
-  "main": "index.js",
-  "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js"
-  },
-  "type": "commonjs",
   "dependencies": {
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "express": "^4.18.0",
     "handlebars": "^4.7.7",
     "mongodb": "^4.5.0",
-    "mongoose": "^7.1.0"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.14"
+    "mongoose": "^7.1.0",
+    "npm": "^9.6.6"
   }
 }
