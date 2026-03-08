@@ -63,7 +63,7 @@ app.use(cors())
 app.enable('trust proxy');
 
 const fs = require('fs');
-const percorsoJS = path.join(__dirname, 'Editor-Marketplace', 'Frontend', 'js', 'menu.js');
+const percorsoJS = path.join(__dirname, 'Editor-Marketplace', 'Frontend', 'js', 'item.js');
 
 console.log("--- TEST DI ACCESSO ---");
 console.log("Sto cercando il file in:", percorsoJS);
