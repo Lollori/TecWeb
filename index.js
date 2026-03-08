@@ -51,6 +51,10 @@ const path = require('path');
 /* ========================== */
 
 let app= express(); 
+app.get('/debug-js', (req, res) => {
+    res.set('Content-Type', 'application/javascript');
+    res.send('console.log("Il server risponde ma non trova il file fisico!");');
+});
 app.use('/scripts', express.static(global.rootDir +'/Editor-Marketplace/Frontend/scripts'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
