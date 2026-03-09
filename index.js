@@ -1,4 +1,6 @@
-﻿/*
+﻿// DOVREBBE FUNZIONARE GODO COME UN RICCIO
+
+/*
 File: index.js
 Author: Fabio Vitali
 Version: 1.0 
