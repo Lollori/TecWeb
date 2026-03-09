@@ -64,7 +64,7 @@ app.enable('trust proxy');
 
 app.use('/public', express.static(publicPath));
 
-
+app.use(express.static(editorPath));
 
 // ==========================
 
