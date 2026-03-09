@@ -51,6 +51,7 @@ const path = require('path');
 /* ========================== */
 
 let app= express(); 
+app.use(express.static("public")); /* provamp */
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/docs', express.static(global.rootDir +'/public/html'));
