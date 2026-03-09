@@ -48,7 +48,7 @@ app.get('/', function (req, res) {
 });
 
 // Rotta specifica per OPERE.HTML
-app.get('/opere', function (req, res) { 
+app.get('/', function (req, res) { 
     const opereFile = path.join(editorPath, 'opere.html');
     console.log("Tentativo di invio: " + opereFile);
     
