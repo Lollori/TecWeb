@@ -29,6 +29,7 @@ Copyright (c) 2024 by Fabio Vitali
 /*                            */
 /* ========================== */
 
+/*
 global.rootDir = __dirname ;
 global.startDate = null; 
 
@@ -40,6 +41,24 @@ const express = require('express');
 const cors = require('cors')
 const path = require('path');
 
+const publicPath = path.resolve(__dirname, 'public'); 
+*/
+const express = require('express');
+const cors = require('cors')
+const path = require('path');
+const globalRootDir = __dirname;
+
+const template = require(path.join(globalRootDir, 'scripts', 'tpl.js'));
+const mymongo = require(path.join(globalRootDir, 'scripts', 'mongo.js'));
+
+
+
+
+
+// Se 'public' è nella stessa cartella di 'index.js':
+const publicPath = path.join(__dirname, 'public');
+
+
 
 
 
@@ -50,82 +69,90 @@ const path = require('path');
 /*                            */
 /* ========================== */
 
-let app= express(); 
-app.use(express.static("public")); /* provamp */
-app.use('/css' , express.static(global.rootDir +'/public/css'));
-app.use('/data', express.static(global.rootDir +'/public/data'));
-app.use('/docs', express.static(global.rootDir +'/public/html'));
-app.use('/img' , express.static(global.rootDir +'/public/media'));
-const scriptsPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'scripts');
-app.use('/scripts', express.static(scriptsPath));
-app.use(express.urlencoded({ extended: true })) 
-app.use(cors())
+/* ========================== */
+/* EXPRESS CONFIG & ROUTES   */
+/* ========================== */
 
-// https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
+let app = express();
+
+// 1. GESTIONE FILE STATICI (Tutto sotto /public)
+// Questo risolve l'errore MIME perché mappa l'URL /public alla cartella fisica 'public'
+app.use('/public', express.static(publicPath));
+
+// Middleware per leggere i dati inviati dai form (POST) e abilitare CORS
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// Configurazione per HTTPS dietro proxy (Server Unibo)
 app.enable('trust proxy');
 
-//Debug per vedere se viene trovata la cartella del frontend
+// 2. DEBUG PERCORSI (Vedi i log all'avvio)
 const fs = require('fs');
 console.log("--- ISPEZIONE CARTELLE ---");
-console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
-// Se vedi la cartella del marketplace, controlliamo cosa c'è dentro
 try {
-    // Prova a listare la cartella usando il nome che pensi sia giusto
-    console.log("Contenuto Editor-Marketplace:", fs.readdirSync('/webapp/Editor-Marketplace'));
+    const files = fs.readdirSync(__dirname);
+    console.log("File presenti nella Root (__dirname):", files);
+    if (fs.existsSync(publicPath)) {
+        console.log("Contenuto cartella PUBLIC:", fs.readdirSync(publicPath));
+    } else {
+        console.warn("ATTENZIONE: La cartella 'public' non è stata trovata in:", publicPath);
+    }
 } catch(e) {
-    console.log("Errore: Non riesco a leggere /webapp/Editor-Marketplace. Forse si chiama diversamente?");
+    console.log("Errore durante l'ispezione delle cartelle:", e.message);
 }
 
+// 3. ROTTA PRINCIPALE (Punta alla index.html nella root)
 app.get('/', function (req, res) { 
-    // Risolviamo il percorso in modo assoluto
-    const indexPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'index.html');
+    const indexPath = path.join(__dirname, 'index.html');
     
     res.sendFile(indexPath, function (err) {
         if (err) {
-            console.error("Errore invio file:", err.message);
-            // Se fallisce, stampiamo il percorso provato per capire l'errore
-            res.status(404).send("Il server ha cercato il file qui: " + indexPath);
+            console.error("Errore invio index.html:", err.message);
+            res.status(404).send("Il server non ha trovato index.html nella root. Percorso provato: " + indexPath);
         }
     });
 });
 
+// 4. ROTTE DI TEST E INFO
 app.get('/hw', async function(req, res) { 
-	var text = "Hello world as a Node service";
-	res.send(
-`<!doctype html>
-<html>
-	<body>
-		<h1>${text}</h1>
-		<p><a href="javascript:history.back()">Go back</a></p>
-	</body>
-</html>
-			`)
+    var text = "Hello world as a Node service";
+    res.send(`
+        <!doctype html>
+        <html>
+            <body>
+                <h1>${text}</h1>
+                <p><a href="javascript:history.back()">Go back</a></p>
+            </body>
+        </html>
+    `);
 });
 
 app.get('/hwhb', async function(req, res) { 
-	res.send(await template.generate('generic.html', {
-		text: "Hello world as a Handlebar service",
-	}));
+    res.send(await template.generate('generic.html', {
+        text: "Hello world as a Handlebar service",
+    }));
 });
 
 const info = async function(req, res) {
-	let data = {
-		startDate: global.startDate.toLocaleString(), 
-		requestDate: (new Date()).toLocaleString(), 
-		request: {
-			host: req.hostname,
-			method: req.method,
-			path: req.path,
-			protocol: req.protocol
-		}, 
-		query: req.query,
-		body: req.body
-	}
-	res.send( await template.generate('info.html', data));
+    let data = {
+        startDate: global.startDate ? global.startDate.toLocaleString() : "N/D", 
+        requestDate: (new Date()).toLocaleString(), 
+        request: {
+            host: req.hostname,
+            method: req.method,
+            path: req.path,
+            protocol: req.protocol
+        }, 
+        query: req.query,
+        body: req.body
+    }
+    res.send(await template.generate('info.html', data));
 }
 
-app.get('/info', info )
-app.post('/info', info )
+app.get('/info', info);
+app.post('/info', info);
+
+
 
 
 
