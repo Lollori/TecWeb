@@ -1,3 +1,4 @@
+/*
 // Database locale temporaneo (Array semplice)
 let currentItems = JSON.parse(localStorage.getItem('artAroundItems')) || [];
 
@@ -122,3 +123,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadItems();
 });
+*/
