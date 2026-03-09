@@ -56,7 +56,7 @@ app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
-app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace/Frontend'));
+app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
 app.use(express.urlencoded({ extended: true })) 
 app.use(cors())
 
