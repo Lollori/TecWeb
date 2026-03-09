@@ -1,33 +1,47 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>ArtAround - Editor-Marketplace</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="icon" type="image/png" href="/img/MonnaLisaFavicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ArtAround - Editor Menu</title>
+  
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  
+  <link rel="stylesheet" href="/css/style.css" />
 </head>
-<body class="bg-art">
-    <div class="glass-container">
-        <h1>ArtAround - Editor-Marketplace</h1>
-        <div class="menu-grid">
-            <div class="menu-card" onclick="window.location.href='/market'">
-                <div class="icon">🛒</div>
-                <span>Marketplace</span>
-            </div>
-            
-            <div class="menu-card" onclick="alert('Ricerca Opere - React App')">
-                <div class="icon">🖼️</div>
-                <span>Opere</span>
-            </div>
-            <div class="menu-card" onclick="alert('Mappa Musei - React App')">
-                <div class="icon">🏛️</div>
-                <span>Musei</span>
-            </div>
-            <div class="menu-card" onclick="alert('Area Utente')">
-                <div class="icon">👤</div>
-                <span>Profiloooooh</span>
-            </div>
-        </div>
+<body class="admin-layout">
+
+  <header class="app-header">
+    <div class="header-inner">
+      <h1 class="logo">ArtAround <span>Editor</span></h1>
+      <button class="user-icon-btn" type="button" onclick="window.location.href='/'">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
     </div>
+  </header>
+
+  <main class="menu-only">
+    <nav id="menu-grid">
+      <a href="musei.html" class="nav-card">
+        <i class="fa-solid fa-landmark"></i>
+        <span class="label">Musei</span>
+      </a>
+      <a href="visite.html" class="nav-card">
+        <i class="fa-solid fa-map"></i>
+        <span class="label">Visite</span>
+      </a>
+      <a href="opere.html" class="nav-card">
+        <i class="fa-solid fa-palette"></i>
+        <span class="label">Opere</span>
+      </a>
+      <a href="utenti.html" class="nav-card">
+        <i class="fa-solid fa-user-pen"></i>
+        <span class="label">Utenti</span>
+      </a>
+    </nav>
+  </main>
+
+  <script src="menu.js"></script> 
 </body>
 </html>
