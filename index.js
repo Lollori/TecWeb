@@ -133,6 +133,17 @@ app.get('/hwhb', async function(req, res) {
     }));
 });
 
+app.get('/opere.html', function (req, res) { 
+    const operePath = path.join(__dirname, 'opere.html');
+    
+    res.sendFile(operePath, function (err) {
+        if (err) {
+            console.error("Errore invio opere.html:", err.message);
+            res.status(404).send("File opere.html non trovato nella root.");
+        }
+    });
+});
+
 const info = async function(req, res) {
     let data = {
         startDate: global.startDate ? global.startDate.toLocaleString() : "N/D", 
