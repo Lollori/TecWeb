@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+/* document.addEventListener('DOMContentLoaded', () => {
   const navCards = document.querySelectorAll('.nav-card');
   navCards.forEach(link => {
     link.addEventListener('click', () => {
@@ -7,3 +7,4 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+*/
