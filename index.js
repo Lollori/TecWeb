@@ -1,211 +1,134 @@
 ﻿/*
 File: index.js
-Author: Fabio Vitali
-Version: 1.0 
-Last change on: 2 April 2024
-
-
-Copyright (c) 2024 by Fabio Vitali
-
-   Permission to use, copy, modify, and/or distribute this software for any
-   purpose with or without fee is hereby granted, provided that the above
-   copyright notice and this permission notice appear in all copies.
-
-   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
-   WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
-   MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
-   SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
-   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
-   OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
-   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
-
+Author: Fabio Vitali (Modificato per ArtAround Editor)
+Version: 1.1 
 */
 
-
-
-/* ========================== */
-/*                            */
-/*           SETUP            */
-/*                            */
-/* ========================== */
-
-/*
-global.rootDir = __dirname ;
-global.startDate = null; 
-
-
-
-const template = require(global.rootDir + '/scripts/tpl.js');
-const mymongo = require(global.rootDir + '/scripts/mongo.js');
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
-const publicPath = path.resolve(__dirname, 'public'); 
-*/
-const express = require('express');
-const cors = require('cors')
-const path = require('path');
+const app = express();
 const globalRootDir = __dirname;
 
-const template = require(path.join(globalRootDir, 'scripts', 'tpl.js'));
-const mymongo = require(path.join(globalRootDir, 'scripts', 'mongo.js'));
-
-
-
-
-
-// Se 'public' è nella stessa cartella di 'index.js':
-const publicPath = path.join(__dirname, 'public');
-
-
-
-
-
-
 /* ========================== */
-/*                            */
-/*  EXPRESS CONFIG & ROUTES   */
-/*                            */
+/* CONFIG PERCORSI       */
 /* ========================== */
 
+// La cartella dove si trovano i tuoi file HTML (visto che index.js è in TecWeb)
+const editorPath = path.join(globalRootDir, 'Editor-Marketplace'); 
+const publicPath = path.join(globalRootDir, 'public');
+
 /* ========================== */
-/* EXPRESS CONFIG & ROUTES   */
+/* EXPRESS CONFIG          */
 /* ========================== */
 
-let app = express();
-
-// 1. GESTIONE FILE STATICI (Tutto sotto /public)
-// Questo risolve l'errore MIME perché mappa l'URL /public alla cartella fisica 'public'
+// 1. Gestione file statici (CSS, Immagini, JS in /public)
 app.use('/public', express.static(publicPath));
+
+// 2. Permette a Express di trovare i file HTML direttamente dentro Editor-Marketplace
+app.use(express.static(editorPath)); 
 
 // Middleware per leggere i dati inviati dai form (POST) e abilitare CORS
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 app.use(cors());
 
 // Configurazione per HTTPS dietro proxy (Server Unibo)
 app.enable('trust proxy');
 
-// 2. DEBUG PERCORSI (Vedi i log all'avvio)
-const fs = require('fs');
-console.log("--- ISPEZIONE CARTELLE ---");
-try {
-    const files = fs.readdirSync(__dirname);
-    console.log("File presenti nella Root (__dirname):", files);
-    if (fs.existsSync(publicPath)) {
-        console.log("Contenuto cartella PUBLIC:", fs.readdirSync(publicPath));
-    } else {
-        console.warn("ATTENZIONE: La cartella 'public' non è stata trovata in:", publicPath);
-    }
-} catch(e) {
-    console.log("Errore durante l'ispezione delle cartelle:", e.message);
-}
+/* ========================== */
+/* CARICAMENTO MODULI      */
+/* ========================== */
 
-// 3. ROTTA PRINCIPALE (Punta alla index.html nella root)
+const template = require(path.join(globalRootDir, 'scripts', 'tpl.js'));
+const mymongo = require(path.join(globalRootDir, 'scripts', 'mongo.js'));
+
+/* ========================== */
+/* ROTTE            */
+/* ========================== */
+
+// Rotta per la HOME (index.html)
 app.get('/', function (req, res) { 
-    const indexPath = path.join(__dirname, 'index.html');
-    
+    const indexPath = path.join(editorPath, 'index.html');
     res.sendFile(indexPath, function (err) {
         if (err) {
             console.error("Errore invio index.html:", err.message);
-            res.status(404).send("Il server non ha trovato index.html nella root. Percorso provato: " + indexPath);
+            res.status(404).send("Il server non ha trovato index.html in: " + editorPath);
         }
     });
 });
 
-// 4. ROTTE DI TEST E INFO
-app.get('/hw', async function(req, res) { 
-    var text = "Hello world as a Node service";
-    res.send(`
-        <!doctype html>
-        <html>
-            <body>
-                <h1>${text}</h1>
-                <p><a href="javascript:history.back()">Go back</a></p>
-            </body>
-        </html>
-    `);
-});
-
-app.get('/hwhb', async function(req, res) { 
-    res.send(await template.generate('generic.html', {
-        text: "Hello world as a Handlebar service",
-    }));
-});
-
+// Rotta specifica per OPERE.HTML
 app.get('/opere.html', function (req, res) { 
-    const operePath = path.join(__dirname, 'opere.html');
-    
+    const operePath = path.join(editorPath, 'opere.html');
     res.sendFile(operePath, function (err) {
         if (err) {
             console.error("Errore invio opere.html:", err.message);
-            res.status(404).send("File opere.html non trovato nella root.");
+            res.status(404).send("File opere.html non trovato nel percorso: " + operePath);
         }
     });
+});
+
+// Rotta automatica per tutte le altre pagine (musei, visite, utenti, ecc.)
+app.get('/:page.html', function (req, res) {
+    const pagePath = path.join(editorPath, req.params.page + '.html');
+    res.sendFile(pagePath, function (err) {
+        if (err) {
+            res.status(404).send("La pagina " + req.params.page + ".html non esiste in Editor-Marketplace.");
+        }
+    });
+});
+
+// Rotte di Test e Info
+app.get('/hw', async function(req, res) { 
+    res.send("<h1>Hello world as a Node service</h1><p><a href='javascript:history.back()'>Go back</a></p>");
 });
 
 const info = async function(req, res) {
     let data = {
         startDate: global.startDate ? global.startDate.toLocaleString() : "N/D", 
         requestDate: (new Date()).toLocaleString(), 
-        request: {
-            host: req.hostname,
-            method: req.method,
-            path: req.path,
-            protocol: req.protocol
-        }, 
+        request: { host: req.hostname, method: req.method, path: req.path }, 
         query: req.query,
         body: req.body
     }
     res.send(await template.generate('info.html', data));
 }
-
 app.get('/info', info);
 app.post('/info', info);
 
-
-
-
-
-
-
 /* ========================== */
-/*                            */
-/*           MONGODB          */
-/*       using mongoose       */
+/* MONGODB          */
 /* ========================== */
 
-/* Replace these info with the ones you were given when activating mongoDB */ 
 const mongoCredentials = {
-	user: "site252630",
-	pwd: "Tei2xiip",
-	site: "mongo_site252630"
+    user: "site252630",
+    pwd: "Tei2xiip",
+    site: "mongo_site252630"
 }  
-/* end */
 
 app.get('/db/create', async function (req, res) {
-	res.send(await mymongo.create(mongoCredentials))
+    res.send(await mymongo.create(mongoCredentials))
 });
+
 app.get('/db/search', async function (req, res) {
-	res.send(await mymongo.search(req.query, mongoCredentials))
+    res.send(await mymongo.search(req.query, mongoCredentials))
 });
 
-
-
-
-
-
-
 /* ========================== */
-/*                            */
-/*    ACTIVATE NODE SERVER    */
-/*                            */
+/* ACTIVATE NODE SERVER    */
 /* ========================== */
 
-app.listen(8000, function() { 
-	global.startDate = new Date() ; 
-	console.log(`App listening on port 8000 started ${global.startDate.toLocaleString()}` )
-})
-
-
-/*       END OF SCRIPT        */
+const PORT = 8000;
+app.listen(PORT, function() { 
+    global.startDate = new Date(); 
+    console.log(`\n=========================================`);
+    console.log(`SERVER ARTAROUND ATTIVO`);
+    console.log(`URL: http://localhost:${PORT}`);
+    console.log(`Cartella HTML: ${editorPath}`);
+    console.log(`Cartella Public: ${publicPath}`);
+    console.log(`Avviato il: ${global.startDate.toLocaleString()}`);
+    console.log(`=========================================\n`);
+});
