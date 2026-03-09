@@ -62,49 +62,11 @@ app.use(cors())
 // https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
 
-//Debug per vedere se viene trovata la cartella del frontend
-const fs = require('fs');
-console.log("--- ISPEZIONE CARTELLE ---");
-console.log("Cosa c'è in /webapp?:", fs.readdirSync('/webapp'));
-// Se vedi la cartella del marketplace, controlliamo cosa c'è dentro
-try {
-    // Prova a listare la cartella usando il nome che pensi sia giusto
-    console.log("Contenuto Editor-Marketplace:", fs.readdirSync('/webapp/Editor-Marketplace'));
-} catch(e) {
-    console.log("Errore: Non riesco a leggere /webapp/Editor-Marketplace. Forse si chiama diversamente?");
-}
 
-app.get('/', function (req, res) { 
-    // Risolviamo il percorso in modo assoluto
-    const indexPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend', 'index.html');
-    
-    res.sendFile(indexPath, function (err) {
-        if (err) {
-            console.error("Errore invio file:", err.message);
-            // Se fallisce, stampiamo il percorso provato per capire l'errore
-            res.status(404).send("Il server ha cercato il file qui: " + indexPath);
-        }
-    });
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-app.get('/hw', async function(req, res) { 
-	var text = "Hello world as a Node service";
-	res.send(
-`<!doctype html>
-<html>
-	<body>
-		<h1>${text}</h1>
-		<p><a href="javascript:history.back()">Go back</a></p>
-	</body>
-</html>
-			`)
-});
-
-app.get('/hwhb', async function(req, res) { 
-	res.send(await template.generate('generic.html', {
-		text: "Hello world as a Handlebar service",
-	}));
-});
 
 const info = async function(req, res) {
 	let data = {
