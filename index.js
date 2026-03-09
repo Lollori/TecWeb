@@ -1,160 +1,158 @@
-﻿const express = require('express');
+﻿/*
+File: index.js
+Author: Fabio Vitali
+Version: 1.0 
+Last change on: 2 April 2024
 
-const cors = require('cors');
 
+Copyright (c) 2024 by Fabio Vitali
+
+   Permission to use, copy, modify, and/or distribute this software for any
+   purpose with or without fee is hereby granted, provided that the above
+   copyright notice and this permission notice appear in all copies.
+
+   THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+   WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+   MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY
+   SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+   WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION
+   OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN
+   CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+*/
+
+
+
+/* ========================== */
+/*                            */
+/*           SETUP            */
+/*                            */
+/* ========================== */
+
+/*
+global.rootDir = __dirname ;
+global.startDate = null; 
+
+
+
+const template = require(global.rootDir + '/scripts/tpl.js');
+const mymongo = require(global.rootDir + '/scripts/mongo.js');
+const express = require('express');
+const cors = require('cors')
 const path = require('path');
 
-const fs = require('fs');
-
-
-
-const app = express();
-
+const publicPath = path.resolve(__dirname, 'public'); 
+*/
+const express = require('express');
+const cors = require('cors')
+const path = require('path');
 const globalRootDir = __dirname;
 
-
-
-// ==========================
-
-// CONFIG PERCORSI
-
-// ==========================
-
-
-
-const editorPath = path.resolve(globalRootDir, 'Editor-Marketplace', 'Frontend');
-
-const publicPath = path.resolve(globalRootDir, 'public');
-
-
-
-// Debug percorsi all'avvio
-
-console.log('globalRootDir:', globalRootDir);
-
-console.log('editorPath:', editorPath);
-
-console.log('Frontend esiste:', fs.existsSync(editorPath));
-
-console.log('opere.html esiste:', fs.existsSync(path.join(editorPath, 'opere.html')));
-
-console.log('publicPath:', publicPath, 'esiste:', fs.existsSync(publicPath));
-
-
-
-// ==========================
-
-// EXPRESS CONFIG
-
-// ==========================
-
-
-
-app.use(express.urlencoded({ extended: true }));
-
-app.use(express.json());
-
-app.use(cors());
-
-app.enable('trust proxy');
-
-
-
-// 1. File statici /public (prima)
-
-app.use('/public', express.static(publicPath));
-
-app.use(express.static(editorPath));
-
-// ==========================
-
-// CARICAMENTO MODULI
-
-// ==========================
-
-
-
 const template = require(path.join(globalRootDir, 'scripts', 'tpl.js'));
-
 const mymongo = require(path.join(globalRootDir, 'scripts', 'mongo.js'));
 
 
 
-// ==========================
-
-// ROTTE HTML (prima di static)
-
-// ==========================
 
 
+// Se 'public' è nella stessa cartella di 'index.js':
+const publicPath = path.join(__dirname, 'public');
 
-// Home
 
-app.get('/', function (req, res) {
 
-    const indexPath = path.join(editorPath, 'index.html');
 
-    if (fs.existsSync(indexPath)) {
 
-        res.sendFile(indexPath);
 
+/* ========================== */
+/*                            */
+/*  EXPRESS CONFIG & ROUTES   */
+/*                            */
+/* ========================== */
+
+/* ========================== */
+/* EXPRESS CONFIG & ROUTES   */
+/* ========================== */
+
+let app = express();
+
+// 1. GESTIONE FILE STATICI (Tutto sotto /public)
+// Questo risolve l'errore MIME perché mappa l'URL /public alla cartella fisica 'public'
+app.use('/public', express.static(publicPath));
+
+// Middleware per leggere i dati inviati dai form (POST) e abilitare CORS
+app.use(express.urlencoded({ extended: true }));
+app.use(cors());
+
+// Configurazione per HTTPS dietro proxy (Server Unibo)
+app.enable('trust proxy');
+
+// 2. DEBUG PERCORSI (Vedi i log all'avvio)
+const fs = require('fs');
+console.log("--- ISPEZIONE CARTELLE ---");
+try {
+    const files = fs.readdirSync(__dirname);
+    console.log("File presenti nella Root (__dirname):", files);
+    if (fs.existsSync(publicPath)) {
+        console.log("Contenuto cartella PUBLIC:", fs.readdirSync(publicPath));
     } else {
-
-        res.status(404).send('index.html non trovato: ' + indexPath);
-
+        console.warn("ATTENZIONE: La cartella 'public' non è stata trovata in:", publicPath);
     }
+} catch(e) {
+    console.log("Errore durante l'ispezione delle cartelle:", e.message);
+}
 
-});
-
-
-
-// Opere.html specifica
-
-app.get('/opere.html', function (req, res) {
-
-    const operePath = path.join(editorPath, 'opere.html');
-
-    console.log('Richiesta opere.html:', operePath);
-
-    console.log('File esiste:', fs.existsSync(operePath));
-
+// 3. ROTTA PRINCIPALE (Punta alla index.html nella root)
+app.get('/', function (req, res) { 
+    const indexPath = path.join(__dirname, 'index.html');
     
-
-    if (fs.existsSync(operePath)) {
-
-        res.sendFile(operePath);
-
-    } else {
-
-        res.status(404).send('SONO IO IL SERVER: opere.html non c’è in ' + operePath);
-
-    }
-
+    res.sendFile(indexPath, function (err) {
+        if (err) {
+            console.error("Errore invio index.html:", err.message);
+            res.status(404).send("Il server non ha trovato index.html nella root. Percorso provato: " + indexPath);
+        }
+    });
 });
 
-
-
-// Altre pagine .html
-
-app.get('/:page.html', function (req, res) {
-
-    const pagePath = path.join(editorPath, req.params.page + '.html');
-
-    console.log('Richiesta pagina:', pagePath);
-
-    
-
-    if (fs.existsSync(pagePath)) {
-
-        res.sendFile(pagePath);
-
-    } else {
-
-        res.status(404).send('Pagina ' + req.params.page + '.html non trovata: ' + pagePath);
-
-    }
-
+// 4. ROTTE DI TEST E INFO
+app.get('/hw', async function(req, res) { 
+    var text = "Hello world as a Node service";
+    res.send(`
+        <!doctype html>
+        <html>
+            <body>
+                <h1>${text}</h1>
+                <p><a href="javascript:history.back()">Go back</a></p>
+            </body>
+        </html>
+    `);
 });
+
+app.get('/hwhb', async function(req, res) { 
+    res.send(await template.generate('generic.html', {
+        text: "Hello world as a Handlebar service",
+    }));
+});
+
+const info = async function(req, res) {
+    let data = {
+        startDate: global.startDate ? global.startDate.toLocaleString() : "N/D", 
+        requestDate: (new Date()).toLocaleString(), 
+        request: {
+            host: req.hostname,
+            method: req.method,
+            path: req.path,
+            protocol: req.protocol
+        }, 
+        query: req.query,
+        body: req.body
+    }
+    res.send(await template.generate('info.html', data));
+}
+
+app.get('/info', info);
+app.post('/info', info);
+
+
 
 
 

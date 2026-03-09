@@ -11,9 +11,8 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <link rel="stylesheet" href="/public/css/styles.css">
-    <link rel="stylesheet" href="/public/css/opere.css">
-
+    <link rel="stylesheet" href="../../public/css/styles.css">
+    <link rel="stylesheet" href="css/opere.css">
 </head>
 <body class="admin-layout">
 
@@ -94,30 +93,16 @@
     <!-- <script src="/public/scripts/item.js"></script> -->
     <!--<script src="/public/scripts/menu.js"></script> -->
  <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // Selettore corretto: .mini-card invece di .nav-card
-    const navCards = document.querySelectorAll('.mini-card');
-    
-    // Logica per gestire il click (utile se usassi AJAX, 
-    // ma con i link normali serve a poco se la pagina si ricarica)
-    navCards.forEach(link => {
-      link.addEventListener('click', (e) => {
-        // Rimuoviamo active da tutti
-        navCards.forEach(l => l.classList.remove('active'));
-        // Aggiungiamo active a quello cliccato
-        link.classList.add('active');
+    document.addEventListener('DOMContentLoaded', () => {
+      const navCards = document.querySelectorAll('.nav-card');
+      navCards.forEach(link => {
+        link.addEventListener('click', () => {
+          navCards.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+        });
       });
     });
-
-    // EXTRA: Evidenzia automaticamente il link in base all'URL corrente
-    const currentPath = window.location.pathname.split("/").pop();
-    navCards.forEach(link => {
-      if (link.getAttribute('href') === currentPath) {
-        link.classList.add('active');
-      }
-    });
-  });
-</script>
+  </script>
 
   <script>
 // Database locale temporaneo (Array semplice)
