@@ -120,4 +120,3 @@ app.listen(PORT, function() {
     console.log(`Percorso Frontend: ${editorPath}`);
     console.log('=========================================\n');
 });
-
