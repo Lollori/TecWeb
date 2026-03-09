@@ -126,7 +126,7 @@ app.get('/opere.html', function (req, res) {
 
     } else {
 
-        res.status(404).send('opere.html non trovato: ' + operePath);
+        res.status(404).send('SONO IO IL SERVER: opere.html non c’è in ' + operePath);
 
     }
 
