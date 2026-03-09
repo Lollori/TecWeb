@@ -1,4 +1,6 @@
-﻿const express = require('express');
+﻿/*
+
+const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs');
@@ -119,4 +121,23 @@ app.listen(PORT, function() {
     console.log(`Opere: http://localhost:${PORT}/opere.html`);
     console.log(`Percorso Frontend: ${editorPath}`);
     console.log('=========================================\n');
+});
+*/
+const express = require('express');
+const path = require('path');
+const fs = require('fs');
+
+const app = express();
+const editorPath = path.resolve(__dirname, 'Editor-Marketplace', 'Frontend');
+const publicPath = path.resolve(__dirname, 'public');  // ← AGGIUNGI
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// ← AGGIUNGI PRIMA DI STATIC
+app.use('/public', express.static(publicPath));  
+app.use(express.static(editorPath));
+
+app.listen(8000, () => {
+    console.log('✅ SERVER ATTIVO http://localhost:8000/opere.html');
 });
