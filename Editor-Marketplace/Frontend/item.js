@@ -1,4 +1,3 @@
-alert("JS CARICATO CON SUCCESSO!");
 // Database locale sincronizzato col browser
 let currentItems = [];
 let editingId = null;
@@ -72,7 +71,7 @@ function renderItems(data = currentItems) {
 
 async function saveToServer(itemData) {
     // Usiamo sempre POST per semplicità, il server gestirà l'aggiornamento
-    const url = '/api/opere'; 
+    const url = 'http://localhost:8000/api/opere'; 
 
     try {
         const response = await fetch(url, {
