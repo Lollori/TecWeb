@@ -1,3 +1,4 @@
+alert("JS CARICATO CON SUCCESSO!");
 // Database locale sincronizzato col browser
 let currentItems = [];
 let editingId = null;
