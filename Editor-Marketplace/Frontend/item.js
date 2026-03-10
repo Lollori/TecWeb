@@ -1,6 +1,18 @@
 // Database locale sincronizzato col browser
-let currentItems = JSON.parse(localStorage.getItem('artAroundItems')) || [];
+let currentItems = [];
 let editingId = null;
+
+async function fetchItemsFromServer() {
+    try {
+        const response = await fetch('/api/opere'); // Assicurati che il backend abbia questa rotta
+        if (!response.ok) throw new Error('Errore nel recupero dati');
+        
+        currentItems = await response.json();
+        loadItems(); // Filtra e renderizza
+    } catch (error) {
+        console.error("Errore di sincronizzazione:", error);
+    }
+}
 
 // Funzione principale di caricamento
 function loadItems() {
@@ -57,6 +69,41 @@ function renderItems(data = currentItems) {
     });
 }
 
+async function saveToServer(itemData) {
+    const method = editingId ? 'PUT' : 'POST';
+    const url = editingId ? `/api/opere/${editingId}` : '/api/opere';
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(itemData)
+        });
+
+        if (response.ok) {
+            await fetchItemsFromServer(); // Ricarica la lista aggiornata dal server
+            closeModal();
+        } else {
+            alert("Errore nel salvataggio sul server.");
+        }
+    } catch (error) {
+        console.error("Errore:", error);
+    }
+}
+
+async function deleteItem(id) {
+    if (confirm('Vuoi davvero eliminare questa opera?')) {
+        try {
+            const response = await fetch(`/api/opere/${id}`, { method: 'DELETE' });
+            if (response.ok) {
+                fetchItemsFromServer();
+            }
+        } catch (error) {
+            console.error("Errore cancellazione:", error);
+        }
+    }
+}
+
 // Gestione Modale
 function openModal(id = null) {
     editingId = id;
@@ -83,18 +130,6 @@ function closeModal() {
     editingId = null;
 }
 
-// Salvataggio e Persistenza
-function saveAndRefresh() {
-    localStorage.setItem('artAroundItems', JSON.stringify(currentItems));
-    loadItems();
-}
-
-function deleteItem(id) {
-    if (confirm('Vuoi davvero eliminare questa opera?')) {
-        currentItems = currentItems.filter(i => i.id !== id);
-        saveAndRefresh();
-    }
-}
 
 function editItem(id) {
     openModal(id);
@@ -116,17 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
             testo: document.getElementById('testo').value
         };
 
-        if (editingId) {
-            const index = currentItems.findIndex(i => i.id === editingId);
-            currentItems[index] = data;
-        } else {
-            currentItems.push(data);
-        }
 
-        saveAndRefresh();
-        closeModal();
+        saveToServer(data);
     });
 
     document.getElementById('searchText')?.addEventListener('input', loadItems);
-    loadItems();
+    fetchItemsFromServer();
 });
