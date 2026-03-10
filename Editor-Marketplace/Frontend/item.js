@@ -70,21 +70,22 @@ function renderItems(data = currentItems) {
 }
 
 async function saveToServer(itemData) {
-    const method = editingId ? 'PUT' : 'POST';
-    const url = editingId ? `/api/opere/${editingId}` : '/api/opere';
+    // Usiamo sempre POST per semplicità, il server gestirà l'aggiornamento
+    const url = '/api/opere'; 
 
     try {
         const response = await fetch(url, {
-            method: method,
+            method: 'POST', // MongoDB farà l'aggiornamento se l'ID esiste già
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(itemData)
         });
 
         if (response.ok) {
-            await fetchItemsFromServer(); // Ricarica la lista aggiornata dal server
+            await fetchItemsFromServer(); 
             closeModal();
         } else {
-            alert("Errore nel salvataggio sul server.");
+            const errData = await response.json();
+            alert("Errore: " + (errData.message || "riprova più tardi"));
         }
     } catch (error) {
         console.error("Errore:", error);
