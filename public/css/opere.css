@@ -124,6 +124,17 @@ body.admin-layout {
   font-family: inherit;
 }
 
+.search-box-glass input:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.search-box-glass:focus-within {
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1);
+    background: rgba(255, 255, 255, 0.8); /* Opzionale: lo rende un po' più opaco quando scrivi */
+}
+
 .btn-primary-glass {
   padding: 12px 25px;
   background: #2d5a3d;

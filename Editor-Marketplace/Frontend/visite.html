@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Visite - ArtAround</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&family=Playpen+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/opere.css">
+    <link rel="stylesheet" href="/css/visite.css">
+
+</head>
+
+<body class="admin-layout">
+
+    <nav class="top-nav-cards">
+        <div class="nav-inner-glass">
+            <a href="/" class="mini-card"><i class="fa-solid fa-house"></i><span>Home</span></a>
+            <a href="menu.html" class="mini-card"><i class="fa-solid fa-table-columns"></i><span>Menu</span></a>
+            <a href="musei.html" class="mini-card"><i class="fa-solid fa-landmark"></i><span>Musei</span></a>
+            <a href="opere.html" class="mini-card"><i class="fa-solid fa-palette"></i><span>Opere</span></a>
+            <a href="visite.html" class="mini-card active"><i class="fa-solid fa-map"></i><span>Visite</span></a>
+            <a href="utenti.html" class="mini-card"><i class="fa-solid fa-user-pen"></i><span>Utenti</span></a>
+        </div>
+    </nav>
+
+    <main class="main-viewport">
+        <header class="content-header">
+            <div class="header-text">
+                <h1>Gestione delle visite</h1>
+                <p>Cerca, modifica o crea un nuovo percorso</p>
+            </div>
+            
+            <div class="header-toolbar">
+                <div class="search-box-glass">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchVisite" placeholder="Cerca visita...">
+                </div>
+                <button onclick="openModal()" class="btn-primary-glass">
+                    <i class="fa-solid fa-plus"></i> Nuova Visita
+                </button>
+            </div>
+        </header>
+
+        <div id="visiteContainer" class="items-grid">
+
+        </div>
+        
+    </main>
+
+    <div id="visitaModal" class="modal-overlay" style="display:none;">
+        <div class="modal-glass-card">
+            <div class="modal-glass-header">
+                <div class="brand">Dettagli <span>Visita</span></div>
+                <button class="modal-close-btn" onclick="closeModal()" style="border:none; background:none; cursor:pointer; font-size:1.5rem; color:#4a7c5f;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <div class="modal-content">
+                <form id="visitaForm">
+                    <div class="form-grid">
+                        <label>Nome della Visita *
+                            <input type="text" id="nomeVisita" placeholder="Es: Capolavori del Rinascimento" required>
+                        </label>
+                        <label>Nome Mnemonico
+                            <input type="text" id="nomeMnemonico" placeholder="Es: Fenice rossa">
+                        </label>
+                        <label class="full-width">Indicazioni Logistiche *
+                            <textarea id="logistica" rows="3" placeholder="Es. L'entrata del museo è da via Garibaldi 2..." required></textarea>
+                        </label>
+                        
+                        <label class="full-width">Sequenza Opere
+                            <div id="lista-opere" style="border: 1px dashed rgba(74, 124, 95, 0.4); padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+                                </div>
+                            <button type="button" class="btn-cancel" onclick="aggiungiOpera()"><i class="fa-solid fa-plus"></i> Aggiungi Opera</button>
+                        </label>
+
+                        <label class="full-width">Quiz Finale (Estensione 18-27)
+                            <input type="text" id="quizDomanda" placeholder="Domanda del quiz...">
+                        </label>
+                    </div>
+                    
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal()">Annulla</button>
+                        <button type="submit" class="btn-submit">Salva Visita</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="visite.js"></script>
+</body>
+</html>
