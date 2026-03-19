@@ -28,7 +28,7 @@ const mongoose = require("mongoose");
 const fs = require("fs").promises;
 const template = require(global.rootDir + "/scripts/tpl.js");
 
-/*const capitalSchema = new mongoose.Schema({
+const capitalSchema = new mongoose.Schema({
 	country: {
 		type: String,
 		required: true
@@ -38,16 +38,8 @@ const template = require(global.rootDir + "/scripts/tpl.js");
 		required: false
 	}
 });
-*/
-const operaSchema = new mongoose.Schema({
-    id: String,
-    operaId: String,
-    museo: String,
-    lunghezza: String,
-    linguaggio: String,
-    testo: String
-});
-const Opera = mongoose.model("Opera", operaSchema);
+
+const Capital = mongoose.model("Capital", capitalSchema);
 
 
 mongoose.set('strictQuery', false);
@@ -147,33 +139,7 @@ exports.search = async (q, credentials) => {
 };
 
 
-exports.save = async (data, credentials) => {
-    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-    try {
-        await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
-        
-        // Se l'id esiste già lo aggiorna, altrimenti ne crea uno nuovo (upsert)
-        await Opera.findOneAndUpdate({ id: data.id }, data, { upsert: true });
-        
-        await mongoose.connection.close();
-        return { status: "success" };
-    } catch (e) {
-        console.error(e);
-        return { status: "error", message: e.message };
-    }
-};
 
-exports.searchOpere = async (credentials) => {
-    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-    try {
-        await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
-        const result = await Opera.find({});
-        await mongoose.connection.close();
-        return result;
-    } catch (e) {
-        return [];
-    }
-};
 
 
 

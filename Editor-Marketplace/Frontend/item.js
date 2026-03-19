@@ -2,32 +2,37 @@
 let currentItems = [];
 let editingId = null;
 
-async function fetchItemsFromServer() {
-    try {
-        const response = await fetch('/api/opere'); // Assicurati che il backend abbia questa rotta
-        if (!response.ok) throw new Error('Errore nel recupero dati');
-        
-        currentItems = await response.json();
-        loadItems(); // Filtra e renderizza
-    } catch (error) {
-        console.error("Errore di sincronizzazione:", error);
+// Sostituisce fetchItemsFromServer: Carica i dati dal localStorage
+function loadFromLocalStorage() {
+    const savedData = localStorage.getItem('opere_marketplace');
+    if (savedData) {
+        currentItems = JSON.parse(savedData);
+    } else {
+        currentItems = []; // Se è vuoto, inizializza array vuoto
     }
+    loadItems(); // Filtra e renderizza
 }
 
-// Funzione principale di caricamento
+// Salva lo stato attuale di currentItems nel localStorage
+function syncToLocalStorage() {
+    localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
+    loadItems(); // Aggiorna la vista
+}
+
+// Funzione principale di caricamento (rimane quasi uguale)
 function loadItems() {
     const searchFiltro = document.getElementById('searchText')?.value.toLowerCase() || '';
 
     const filtered = currentItems.filter(item => {
-        return item.operaId.toLowerCase().includes(searchFiltro) || 
-               item.testo.toLowerCase().includes(searchFiltro) ||
-               item.museo.toLowerCase().includes(searchFiltro);
+        return (item.operaId?.toLowerCase().includes(searchFiltro) || 
+               item.testo?.toLowerCase().includes(searchFiltro) ||
+               item.museo?.toLowerCase().includes(searchFiltro));
     });
 
     renderItems(filtered);
 }
 
-// Iniezione delle card nell'HTML
+// Iniezione delle card (rimane uguale)
 function renderItems(data = currentItems) {
     const container = document.getElementById('itemsContainer');
     if (!container) return;
@@ -41,12 +46,11 @@ function renderItems(data = currentItems) {
     
     data.forEach(item => {
         const card = document.createElement('div');
-        // Usiamo la classe del tuo CSS
         card.className = 'nav-card'; 
         card.style.width = '100%';
         card.style.height = 'auto';
         card.style.padding = '25px';
-        card.style.display = 'block'; // Sovrascriviamo il flex centrale del menu per le card elenco
+        card.style.display = 'block';
 
         card.innerHTML = `
             <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
@@ -69,43 +73,30 @@ function renderItems(data = currentItems) {
     });
 }
 
-async function saveToServer(itemData) {
-    // Usiamo sempre POST per semplicità, il server gestirà l'aggiornamento
-    const url = 'http://localhost:8000/api/opere'; 
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST', // MongoDB farà l'aggiornamento se l'ID esiste già
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(itemData)
-        });
-
-        if (response.ok) {
-            await fetchItemsFromServer(); 
-            closeModal();
-        } else {
-            const errData = await response.json();
-            alert("Errore: " + (errData.message || "riprova più tardi"));
-        }
-    } catch (error) {
-        console.error("Errore:", error);
+// Sostituisce saveToServer: Gestisce sia inserimento che modifica in locale
+function saveLocal(itemData) {
+    if (editingId) {
+        // Modifica: trova l'indice e sostituisci
+        const index = currentItems.findIndex(i => i.id === editingId);
+        if (index !== -1) currentItems[index] = itemData;
+    } else {
+        // Nuovo inserimento
+        currentItems.push(itemData);
     }
+    
+    syncToLocalStorage();
+    closeModal();
 }
 
-async function deleteItem(id) {
+// Sostituisce la versione async di deleteItem
+function deleteItem(id) {
     if (confirm('Vuoi davvero eliminare questa opera?')) {
-        try {
-            const response = await fetch(`/api/opere/${id}`, { method: 'DELETE' });
-            if (response.ok) {
-                fetchItemsFromServer();
-            }
-        } catch (error) {
-            console.error("Errore cancellazione:", error);
-        }
+        currentItems = currentItems.filter(item => item.id !== id);
+        syncToLocalStorage();
     }
 }
 
-// Gestione Modale
+// Gestione Modale (rimane uguale)
 function openModal(id = null) {
     editingId = id;
     const modal = document.getElementById('itemModal');
@@ -122,6 +113,7 @@ function openModal(id = null) {
         }
     } else {
         form.reset();
+        editingId = null;
     }
     modal.style.display = 'flex';
 }
@@ -130,7 +122,6 @@ function closeModal() {
     document.getElementById('itemModal').style.display = 'none';
     editingId = null;
 }
-
 
 function editItem(id) {
     openModal(id);
@@ -144,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         
         const data = {
-            id: editingId || Date.now().toString(),
+            id: editingId || Date.now().toString(), // Genera ID se nuovo
             operaId: document.getElementById('operaId').value,
             museo: document.getElementById('museo').value,
             lunghezza: document.getElementById('lunghezza').value,
@@ -152,10 +143,11 @@ document.addEventListener('DOMContentLoaded', () => {
             testo: document.getElementById('testo').value
         };
 
-
-        saveToServer(data);
+        saveLocal(data);
     });
 
     document.getElementById('searchText')?.addEventListener('input', loadItems);
-    fetchItemsFromServer();
+    
+    // Inizializza caricando dal LocalStorage
+    loadFromLocalStorage();
 });

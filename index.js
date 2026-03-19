@@ -116,34 +116,6 @@ app.get('/db/search', async function (req, res) {
 	res.send(await mymongo.search(req.query, mongoCredentials))
 });
 
-app.get('/api/opere', async function (req, res) {
-    try {
-        // Usiamo la funzione search che abbiamo modificato in mongo.js
-        // Passiamo un oggetto vuoto per prendere tutto
-        let result = await mymongo.searchOpere(mongoCredentials);
-        res.status(200).json(result);
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
-
-app.post('/api/opere', async function (req, res) {
-    try {
-        let result = await mymongo.save(req.body, mongoCredentials);
-        res.status(200).json(result);
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
-
-app.delete('/api/opere/:id', async function (req, res) {
-    try {
-        let result = await mymongo.remove(req.params.id, mongoCredentials);
-        res.status(200).json(result);
-    } catch (e) {
-        res.status(500).json({ error: e.message });
-    }
-});
 
 
 
