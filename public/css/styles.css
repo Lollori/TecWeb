@@ -275,3 +275,11 @@ footer {
   color: #6b7c72;
   opacity: 0.7;
 }
+
+a.btn-primary,
+a.btn-primary:visited,
+a.btn-primary:hover,
+a.btn-primary:active {
+  color: white !important;
+  text-decoration: none !important;
+}
