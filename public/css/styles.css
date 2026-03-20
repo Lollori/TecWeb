@@ -174,3 +174,89 @@ main {
   display: flex; align-items: center; justify-content: center;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+
+/* Parti aggiunte MP */
+
+/* ── FONT OVERRIDE ── */
+body { font-family: 'Inter', sans-serif; }
+.logo { font-family: 'Playfair Display', serif; }
+.hero-text h1 { font-family: 'Playfair Display', serif; color: #1a5c3a; }
+
+/* ── HERO TEXT ── */
+.hero-text { text-align: center; margin-bottom: 40px; }
+.hero-text p { color: #5a7d66; font-size: 1.05rem; max-width: 400px; margin: 0 auto; }
+.hero-text h1 em { font-style: italic; color: #c9a84c; }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(26,92,58,0.15);
+  padding: 6px 16px; border-radius: 50px;
+  font-size: 0.8rem; font-weight: 500;
+  color: #2d7a52; margin-bottom: 16px;
+}
+
+/* ── HEADER ACTIONS ── */
+.header-actions { display: flex; align-items: center; gap: 10px; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1.5px solid #2d7a52;
+  color: #2d7a52;
+  padding: 7px 18px; border-radius: 50px;
+  font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-ghost:hover { background: #2d7a52; color: white; }
+
+.btn-primary {
+  background: #1a5c3a; color: white;
+  padding: 8px 20px; border-radius: 50px;
+  font-size: 0.85rem; font-weight: 600;
+  cursor: pointer; border: none; text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-primary:hover { background: #2d7a52; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,92,58,0.25); }
+
+/* ── ICON WRAP ── */
+.icon-wrap {
+  width: 60px; height: 60px;
+  background: linear-gradient(135deg, #1a5c3a, #3a7a52);
+  border-radius: 16px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 14px rgba(26,92,61,0.28);
+  transition: transform 0.3s;
+}
+.nav-card:hover .icon-wrap { transform: scale(1.08); }
+.nav-card i { font-size: 1.6rem; color: white; }
+
+/* ── CARD DESC ── */
+.nav-card .card-desc {
+  font-size: 0.78rem; color: #5a7d66;
+  margin-top: 6px; text-align: center;
+  padding: 0 12px; line-height: 1.4;
+  font-weight: 400;
+}
+
+/* ── CARD ARROW ── */
+.card-arrow {
+  position: absolute; bottom: 16px; right: 18px;
+  width: 28px; height: 28px;
+  background: #e8f5ee; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: #2d7a52; font-size: 12px;
+  transition: all 0.2s;
+}
+.nav-card:hover .card-arrow { background: #2d7a52; color: white; transform: translateX(3px); }
+
+/* ── CARD ALTEZZA ── */
+.nav-card { height: 210px; position: relative; }
+
+/* ── FOOTER ── */
+footer {
+  text-align: center; padding: 20px;
+  font-size: 0.75rem; color: #6b7c72; opacity: 0.7;
+}
