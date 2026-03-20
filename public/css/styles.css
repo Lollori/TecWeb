@@ -115,7 +115,7 @@ main {
 /* GRIGLIA E CARD */
 #menu-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, 240px);
   gap: 25px;
   padding: 20px;
 }
@@ -280,6 +280,14 @@ body { font-family: 'Inter', sans-serif; }
   box-shadow: 0 4px 14px rgba(26,92,61,0.28);
   transition: transform 0.3s;
 }
+
+/* AGGIUNGI questo per escludere la freccia dallo stile delle icone */
+.nav-card .icon-wrap i {
+  font-size: 1.6rem;
+  color: white;
+}
+
+
 .nav-card:hover .icon-wrap { transform: scale(1.08); }
 .nav-card i { font-size: 1.6rem; color: white; }
 
@@ -293,15 +301,32 @@ body { font-family: 'Inter', sans-serif; }
 
 /* FRECCIA */
 .card-arrow {
-  position: absolute; bottom: 14px; right: 16px;
-  width: 26px; height: 26px;
-  background: #e8f5ee; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: #2d7a52; font-size: 11px;
+  position: absolute;
+  bottom: 14px;
+  right: 16px;
+  width: 26px;
+  height: 26px;
+  background: #e8f5ee;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2d7a52;
+  font-size: 11px;  /* ← piccola */
   transition: all 0.2s;
 }
+.card-arrow i {
+  font-size: 11px !important;  /* forza la dimensione */
+  color: #2d7a52 !important;   /* forza il colore */
+}
+
 .nav-card:hover .card-arrow {
-  background: #2d7a52; color: white; transform: translateX(3px);
+  background: #2d7a52;
+  transform: translateX(3px);
+}
+
+.nav-card:hover .card-arrow i {
+  color: white !important;
 }
 
 /* MOBILE */
