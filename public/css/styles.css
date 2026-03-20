@@ -74,9 +74,11 @@ body {
 }
 
 /* Riduce la dimensione del logo per mobile */
-@media (max-width: 600px){  
-  .logo {
-    font-size: 1.3rem;
+@media (max-width: 600px) {
+  .nav-card {
+    width: 100%;
+    height: 200px;      /* era 150px, troppo poco con la descrizione */
+    padding-top: 24px;
   }
 }
 
@@ -132,9 +134,10 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  padding-top: 32px;
   width: 240px;
-  height: 180px;
+  height: 230px;        /* era 210px, serve spazio per la desc */
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(5px);
   border-radius: 24px;
@@ -143,6 +146,7 @@ main {
   border: 1px solid rgba(255, 255, 255, 0.6);
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(80, 140, 100, 0.1);
+  position: relative;   /* FONDAMENTALE per la freccia */
 }
 
 .nav-card i { font-size: 3rem; color: #3a7a52; margin-bottom: 15px; }
@@ -177,17 +181,32 @@ main {
 
 /* Parti aggiunte MP */
 
-/* ── FONT OVERRIDE ── */
 body { font-family: 'Inter', sans-serif; }
-.logo { font-family: 'Playfair Display', serif; }
-.hero-text h1 { font-family: 'Playfair Display', serif; color: #1a5c3a; }
 
-/* ── HERO TEXT ── */
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  font-size: 1.6rem;
+  color: #2d5a3d;
+  flex: 1;
+  text-align: center;
+}
+
+/* HERO */
 .hero-text { text-align: center; margin-bottom: 40px; }
-.hero-text p { color: #5a7d66; font-size: 1.05rem; max-width: 400px; margin: 0 auto; }
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  color: #1a5c3a;
+  font-size: 2.5rem;
+}
 .hero-text h1 em { font-style: italic; color: #c9a84c; }
+.hero-text p { color: #5a7d66; font-size: 1.05rem; max-width: 400px; margin: 10px auto 0; }
 
-/* ── BADGE ── */
+@media (max-width: 600px) {
+  .hero-text h1 { font-size: 1.8rem; }
+}
+
+/* BADGE */
 .badge {
   display: inline-flex; align-items: center; gap: 6px;
   background: rgba(255,255,255,0.8);
@@ -197,7 +216,7 @@ body { font-family: 'Inter', sans-serif; }
   color: #2d7a52; margin-bottom: 16px;
 }
 
-/* ── HEADER ACTIONS ── */
+/* HEADER ACTIONS */
 .header-actions { display: flex; align-items: center; gap: 10px; }
 
 .btn-ghost {
@@ -218,44 +237,80 @@ body { font-family: 'Inter', sans-serif; }
   cursor: pointer; border: none; text-decoration: none;
   transition: all 0.2s;
 }
-.btn-primary:hover { background: #2d7a52; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(26,92,58,0.25); }
+.btn-primary:hover {
+  background: #2d7a52;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26,92,58,0.25);
+}
 
-/* ── ICON WRAP ── */
+/* CARD */
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 32px 20px 20px;
+  width: 240px;
+  height: 230px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(5px);
+  border-radius: 24px;
+  text-decoration: none;
+  color: #2d5a3d;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(80, 140, 100, 0.1);
+  position: relative;   /* NECESSARIO per card-arrow */
+}
+
+.nav-card:hover {
+  transform: translateY(-8px);
+  background: white;
+  box-shadow: 0 12px 30px rgba(80, 140, 100, 0.2);
+  border-color: #6aab7e;
+}
+
+/* ICON WRAP */
 .icon-wrap {
   width: 60px; height: 60px;
   background: linear-gradient(135deg, #1a5c3a, #3a7a52);
   border-radius: 16px;
   display: flex; align-items: center; justify-content: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   box-shadow: 0 4px 14px rgba(26,92,61,0.28);
   transition: transform 0.3s;
 }
 .nav-card:hover .icon-wrap { transform: scale(1.08); }
 .nav-card i { font-size: 1.6rem; color: white; }
 
-/* ── CARD DESC ── */
+/* LABEL E DESC */
+.nav-card .label { font-weight: 600; font-size: 1.2rem; }
 .nav-card .card-desc {
   font-size: 0.78rem; color: #5a7d66;
   margin-top: 6px; text-align: center;
-  padding: 0 12px; line-height: 1.4;
-  font-weight: 400;
+  padding: 0 12px; line-height: 1.4; font-weight: 400;
 }
 
-/* ── CARD ARROW ── */
+/* FRECCIA */
 .card-arrow {
-  position: absolute; bottom: 16px; right: 18px;
-  width: 28px; height: 28px;
+  position: absolute; bottom: 14px; right: 16px;
+  width: 26px; height: 26px;
   background: #e8f5ee; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  color: #2d7a52; font-size: 12px;
+  color: #2d7a52; font-size: 11px;
   transition: all 0.2s;
 }
-.nav-card:hover .card-arrow { background: #2d7a52; color: white; transform: translateX(3px); }
+.nav-card:hover .card-arrow {
+  background: #2d7a52; color: white; transform: translateX(3px);
+}
 
-/* ── CARD ALTEZZA ── */
-.nav-card { height: 210px; position: relative; }
+/* MOBILE */
+@media (max-width: 600px) {
+  .nav-card { width: 100%; height: 200px; }
+  .header-actions { display: none; } /* troppo stretto su mobile */
+}
 
-/* ── FOOTER ── */
+/* FOOTER */
 footer {
   text-align: center; padding: 20px;
   font-size: 0.75rem; color: #6b7c72; opacity: 0.7;
