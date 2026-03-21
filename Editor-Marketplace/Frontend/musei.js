@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const fs = require("fs").promises;
-const template = require(global.rootDir + "/scripts/tpl.js");
+const template = require(global.rootDir + "/public/scripts/tpl.js");
 
 // Definizione dello Schema del Museo
 const museoSchema = new mongoose.Schema({
