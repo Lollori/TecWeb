@@ -205,9 +205,7 @@ main {
   padding: 56px 0;
 }
 
-/* Navigator: sfondo trasparente (eredita il body) */
-/* Editor: sfondo verde chiarissimo, distinto dal body e dal menu */
-.features-section--dark {
+.features-section--alt {
   background: #e8f2ea;
 }
 
@@ -220,7 +218,6 @@ main {
   gap: 28px;
 }
 
-/* ── Intestazione sezione ── */
 .features-intro {
   display: flex;
   align-items: center;
@@ -240,12 +237,7 @@ main {
   flex-shrink: 0;
   box-shadow: 0 4px 14px rgba(26,92,61,0.25);
 }
-.feat-section-icon--light {
-  background: linear-gradient(135deg, #1a5c3a, #3a7a52);
-  box-shadow: 0 4px 14px rgba(26,92,61,0.25);
-}
-.feat-section-icon i,
-.feat-section-icon--light i {
+.feat-section-icon i {
   font-size: 1.3rem !important;
   color: white !important;
   margin: 0 !important;
@@ -258,60 +250,129 @@ main {
   color: #1a3a2a;
   line-height: 1.2;
 }
-
 .features-intro-text p {
   font-size: 0.92rem;
   color: #5a7d66;
   margin-top: 4px;
 }
 
-/* ── Griglia editoriale 2x2 ── */
-.features-editorial-grid {
+/* ══════════════════════════════
+   BENTO GRID
+══════════════════════════════ */
+.bento-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2px;
-  border: 1px solid rgba(45,106,79,0.12);
-  border-radius: 20px;
-  overflow: hidden;
+  grid-template-columns: 1fr 340px;
+  gap: 12px;
+  align-items: stretch;
 }
 
-.editorial-item {
-  padding: 24px 22px;
-  background: rgba(255,255,255,0.45);
+.bento-grid--reversed {
+  grid-template-columns: 340px 1fr;
+}
+
+.bento-grid--bottom {
+  grid-template-columns: 1fr 1fr;
+}
+
+.bento-col {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── Card base ── */
+.bento-card {
+  background: rgba(255,255,255,0.5);
   backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,0.8);
+  border-radius: 18px;
+  padding: 24px 22px;
   display: flex;
   flex-direction: column;
   gap: 8px;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.2s;
 }
-.editorial-item:hover { background: rgba(255,255,255,0.75); }
-
-/* Dark variant — ora su sfondo chiaro, stessa resa della light */
-.editorial-item--dark {
-  background: rgba(255,255,255,0.55);
-}
-.editorial-item--dark:hover {
-  background: rgba(255,255,255,0.85);
+.bento-card:hover {
+  background: rgba(255,255,255,0.78);
+  transform: translateY(-2px);
 }
 
-/* Separatori interni */
-.editorial-item:nth-child(1),
-.editorial-item:nth-child(2) {
-  border-bottom: 2px solid rgba(45,106,79,0.08);
+/* ── Varianti colore ── */
+.bento-card--accent {
+  background: #1a3a2a;
+  border-color: #2d6a4f;
 }
-.editorial-item:nth-child(1),
-.editorial-item:nth-child(3) {
-  border-right: 2px solid rgba(45,106,79,0.08);
+.bento-card--accent:hover {
+  background: #1f4a34;
+  transform: translateY(-2px);
 }
-.editorial-item--dark:nth-child(1),
-.editorial-item--dark:nth-child(2) {
-  border-bottom-color: rgba(45,106,79,0.08);
+.bento-card--accent .feature-number { color: #6aab7e; }
+.bento-card--accent h3 { color: #ffffff; }
+.bento-card--accent p { color: #a8c5a0; }
+
+.bento-card--muted {
+  background: rgba(45,106,79,0.08);
+  border-color: rgba(45,106,79,0.15);
 }
-.editorial-item--dark:nth-child(1),
-.editorial-item--dark:nth-child(3) {
-  border-right-color: rgba(45,106,79,0.08);
+.bento-card--muted:hover { background: rgba(45,106,79,0.13); }
+
+.bento-card--dark-accent {
+  background: linear-gradient(135deg, #0f2a1c, #1a3a2a);
+  border-color: #2d6a4f;
+  justify-content: center;
+  gap: 14px;
+}
+.bento-card--dark-accent:hover { transform: translateY(-2px); }
+
+.bento-quote-icon {
+  font-size: 1.4rem !important;
+  color: #4a8a65 !important;
+  margin: 0 !important;
+}
+.bento-quote-text {
+  font-style: italic;
+  font-size: 0.88rem !important;
+  color: #a8c5a0 !important;
+  line-height: 1.7 !important;
 }
 
+/* ── Card immagine ── */
+.bento-card--image {
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  border: none;
+  min-height: 320px;
+}
+
+.bento-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 30%;
+  display: block;
+  transition: transform 0.5s ease;
+}
+.bento-card--image:hover .bento-img {
+  transform: scale(1.04);
+}
+
+.bento-img-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 28px 20px 16px;
+  background: linear-gradient(to top, rgba(10,25,15,0.85) 0%, transparent 100%);
+}
+.bento-img-caption {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.75);
+  line-height: 1.4;
+}
+.bento-img-caption em { font-style: italic; }
+
+/* ── Testi bento ── */
 .feature-number {
   font-size: 0.68rem;
   font-weight: 700;
@@ -319,24 +380,20 @@ main {
   letter-spacing: 0.14em;
   text-transform: uppercase;
 }
-.editorial-item--dark .feature-number { color: #2d6a4f; }
 
-.editorial-item h3 {
+.bento-card h3 {
   font-family: 'Playfair Display', serif;
   font-size: 1.05rem;
   font-weight: 700;
   color: #1a3a2a;
   line-height: 1.3;
 }
-.editorial-item--dark h3 { color: #1a3a2a; }
 
-.editorial-item p {
+.bento-card p {
   font-size: 0.82rem;
   color: #4a6a5a;
   line-height: 1.65;
-  margin-top: 2px;
 }
-.editorial-item--dark p { color: #4a6a5a; }
 
 /* ══════════════════════════════
    SECTION CARDS
@@ -537,14 +594,10 @@ main {
   }
   .hero-left h1 { font-size: 2.6rem; }
   .features-inner { padding: 0 24px; }
-  .features-editorial-grid { grid-template-columns: 1fr; }
-  .editorial-item:nth-child(1),
-  .editorial-item:nth-child(3) { border-right: none; }
-  .editorial-item--dark:nth-child(1),
-  .editorial-item--dark:nth-child(3) { border-right: none; }
-  .editorial-item:nth-child(1),
-  .editorial-item:nth-child(2),
-  .editorial-item:nth-child(3) { border-bottom: 2px solid rgba(45,106,79,0.08); }
+  .bento-grid,
+  .bento-grid--reversed,
+  .bento-grid--bottom { grid-template-columns: 1fr; }
+  .bento-card--image { min-height: 240px; }
   .cards-inner { padding: 0 24px; gap: 36px; }
   .cards-title { font-size: 1.8rem; }
   #menu-grid { grid-template-columns: 1fr; }
@@ -558,11 +611,13 @@ main {
   .hero-left p { font-size: 0.95rem; }
   .hero-quote-card { padding: 36px 28px; }
   .features-section { padding: 40px 0; }
-  .features-inner { padding: 0 20px; gap: 22px; }
+  .features-inner { padding: 0 20px; gap: 20px; }
   .features-intro-text h2 { font-size: 1.6rem; }
-  .editorial-item { padding: 20px 18px; }
+  .bento-card { padding: 20px 18px; }
+  .bento-card--image { min-height: 180px; }
   #cards { padding: 60px 0 70px; }
   .cards-inner { padding: 0 20px; }
+  .cards-title { font-size: 1.5rem; }
 }
 
 
