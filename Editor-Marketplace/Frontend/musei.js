@@ -43,14 +43,12 @@ exports.create = async (credentials) => {
 
 exports.search = async (q, credentials) => {
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbname}?authSource=admin&writeConcern=majority`;
-    
-    // Assicuriamoci che query non sia undefined per evitare errori nel template
-    let data = { query: q.nome || "", result: null };
+    let data = { query: q.nome, result: null };
     
     try {
         await mongoose.connect(mongouri);
         
-        // MODIFICA: Aggiunto .lean() per rendere i dati compatibili con Handlebars
+        // 1. Usiamo .lean() che è molto più veloce e pulito del map del prof
         const musei = await Museo.find({
             $or: [
                 { nome: { $regex: new RegExp(q.nome, "i") } },
@@ -60,12 +58,14 @@ exports.search = async (q, credentials) => {
 
         await mongoose.connection.close();
 
+        // 2. Passiamo i dati così come sono. 
+        // .lean() ha già trasformato l'_id in qualcosa che Handlebars legge.
         data.result = musei;
         
         if (q.ajax) {
             return data;
         } else {
-            // Qui tpl.js prenderà i dati "lean" e sostituirà correttamente {{_id}}
+            // 3. GENERIAMO IL TEMPLATE
             return await template.generate("musei.html", data);
         }
     } catch (e) {
