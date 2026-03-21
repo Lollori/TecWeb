@@ -24,7 +24,7 @@ Copyright (c) 2021 by Fabio Vitali
 const Handlebars = require("handlebars");
 const fs = require('fs').promises ;
 
-const templateDir = global.rootDir + "/tpl/" ;
+const templateDir = global.rootDir + "/Editor-Marketplace/Frontend" ;
 
 exports.generate = async function(template, data) {
 	var doc = await fs.readFile(templateDir + template, 'utf8')
