@@ -2,49 +2,33 @@ const mongoose = require("mongoose");
 const fs = require("fs").promises;
 const template = require(global.rootDir + "/public/scripts/tpl.js");
 
-// Definizione dello Schema del Museo
 const museoSchema = new mongoose.Schema({
     nome: { type: String, required: true },
     citta: { type: String, required: true },
     indirizzo: { type: String },
-    codiceIsil: { type: String, required: true, unique: true }, // Identificatore Universale
+    codiceIsil: { type: String, required: true, unique: true },
     immagineCopertina: { type: String },
     descrizioneBreve: { type: String }
 });
 
 const Museo = mongoose.model("Museo", museoSchema);
 
-// Parametri presi dal tuo template
 let fn = "./public/data/musei.json";
 let dbname = "artaround_db"; 
 
 mongoose.set('strictQuery', false);
 
-// Funzione per inizializzare il DB partendo dal JSON
 exports.create = async (credentials) => {
     let debug = [];
     try {
         const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbname}?authSource=admin&writeConcern=majority`;
+        await mongoose.connect(mongouri);
         
-        await mongoose.connect(mongouri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
-        
-        debug.push(`Connesso a MongoDB per il marketplace ArtAround...`);
-        
-        // Lettura del file JSON
         let doc = await fs.readFile(global.rootDir + fn, 'utf8');
         let data = JSON.parse(doc);
-        debug.push(`Letto file JSON: ${data.length} musei trovati.`);
 
-        // Pulizia collezione (opzionale, utile in fase di test)
-        let cleared = await Museo.deleteMany({});
-        debug.push(`Rimossi ${cleared.deletedCount || 0} record precedenti.`);
-
-        // Inserimento nuovi dati
+        await Museo.deleteMany({});
         let inserted = await Museo.insertMany(data);
-        debug.push(`Inseriti ${inserted.length} musei con successo.`);
 
         await mongoose.connection.close();
         return {
@@ -57,21 +41,22 @@ exports.create = async (credentials) => {
     }
 };
 
-// Funzione per la ricerca (usata dal pannello di scelta multipla)
 exports.search = async (q, credentials) => {
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbname}?authSource=admin&writeConcern=majority`;
-    let data = { query: q.nome, result: null };
+    
+    // Assicuriamoci che query non sia undefined per evitare errori nel template
+    let data = { query: q.nome || "", result: null };
     
     try {
         await mongoose.connect(mongouri);
         
-        // Ricerca per nome o città (case insensitive)
+        // MODIFICA: Aggiunto .lean() per rendere i dati compatibili con Handlebars
         const musei = await Museo.find({
             $or: [
                 { nome: { $regex: new RegExp(q.nome, "i") } },
                 { citta: { $regex: new RegExp(q.nome, "i") } }
             ]
-        });
+        }).lean(); 
 
         await mongoose.connection.close();
 
@@ -80,6 +65,7 @@ exports.search = async (q, credentials) => {
         if (q.ajax) {
             return data;
         } else {
+            // Qui tpl.js prenderà i dati "lean" e sostituirà correttamente {{_id}}
             return await template.generate("musei.html", data);
         }
     } catch (e) {
