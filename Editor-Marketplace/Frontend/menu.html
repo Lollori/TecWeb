@@ -21,44 +21,76 @@
   </header>
 
   <main>
-    <div class="hero-text">
+    <section class="hero-text">
       <div class="badge">Pannello di controllo</div>
       <h1>Gestisci i contenuti</h1>
-      <p>Musei, visite, opere e utenti — tutto in un posto</p>
-    </div>
+      <p>Musei, visite, opere e utenti — tutto in un posto.</p>
+    </section>
 
     <nav id="menu-grid">
+      <!-- Musei -->
       <a href="/Editor-Marketplace/Frontend/musei.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-landmark"></i></div>
-        <span class="label">Musei</span>
-        <span class="card-desc">Gestisci i musei disponibili</span>
+        <div class="nav-card-header">
+          <div class="icon-wrap"><i class="fa-solid fa-landmark"></i></div>
+          <div class="nav-card-title">
+            <span class="label">Musei</span>
+            <span class="card-meta">Struttura</span>
+          </div>
+        </div>
+        <span class="card-desc">
+          Gestisci i musei disponibili, le informazioni pratiche e le impostazioni generali.
+        </span>
         <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
       </a>
 
+      <!-- Visite -->
       <a href="/Editor-Marketplace/Frontend/visite.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-map"></i></div>
-        <span class="label">Visite</span>
-        <span class="card-desc">Crea e organizza percorsi</span>
+        <div class="nav-card-header">
+          <div class="icon-wrap"><i class="fa-solid fa-map"></i></div>
+          <div class="nav-card-title">
+            <span class="label">Visite</span>
+            <span class="card-meta">Percorsi</span>
+          </div>
+        </div>
+        <span class="card-desc">
+          Crea e organizza percorsi guidati, tour tematici e visite speciali.
+        </span>
         <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
       </a>
 
+      <!-- Opere -->
       <a href="/Editor-Marketplace/Frontend/opere.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-palette"></i></div>
-        <span class="label">Opere</span>
-        <span class="card-desc">Aggiungi e modifica le opere</span>
+        <div class="nav-card-header">
+          <div class="icon-wrap"><i class="fa-solid fa-palette"></i></div>
+          <div class="nav-card-title">
+            <span class="label">Opere</span>
+            <span class="card-meta">Collezione</span>
+          </div>
+        </div>
+        <span class="card-desc">
+          Aggiungi, modifica e collega le opere ai musei e alle visite guidate.
+        </span>
         <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
       </a>
 
+      <!-- Utenti -->
       <a href="/Editor-Marketplace/Frontend/users.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-user-pen"></i></div>
-        <span class="label">Utenti</span>
-        <span class="card-desc">Gestisci account e permessi</span>
+        <div class="nav-card-header">
+          <div class="icon-wrap"><i class="fa-solid fa-user-pen"></i></div>
+          <div class="nav-card-title">
+            <span class="label">Utenti</span>
+            <span class="card-meta">Autori & accessi</span>
+          </div>
+        </div>
+        <span class="card-desc">
+          Gestisci account, ruoli e permessi del team editoriale e dei collaboratori.
+        </span>
         <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
       </a>
     </nav>
   </main>
 
-
   <script src="menu.js"></script>
 </body>
 </html>
+

@@ -590,6 +590,217 @@ main {
 .card-cta i { font-size: 0.75rem !important; color: inherit !important; margin: 0 !important; }
 
 /* ══════════════════════════════
+   LAYOUT EDITOR
+══════════════════════════════ */
+body.admin-layout {
+  background: radial-gradient(circle at top, #e4f0e5 0, #cfe3d4 38%, #bdd5c5 100%);
+}
+
+/* Header editor leggermente diverso */
+body.admin-layout .app-header {
+  background: #12261a;
+}
+body.admin-layout .logo span {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin-left: 6px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.08);
+  color: #c8ddce;
+}
+
+.user-icon-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  border: none;
+  background: rgba(255,255,255,0.08);
+  color: #eaf5ee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.user-icon-btn:hover {
+  background: rgba(255,255,255,0.16);
+  transform: translateY(-1px);
+}
+
+/* ── Hero testuale editor ── */
+body.admin-layout main {
+  max-width: 1100px;
+}
+
+.hero-text {
+  margin-top: 96px;
+  margin-bottom: 40px;
+}
+
+.hero-text .badge {
+  background: rgba(18,38,26,0.15);
+  color: #1a3a2a;
+  font-size: 0.75rem;
+}
+
+.hero-text h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.4rem;
+  color: #12261a;
+  margin-top: 14px;
+}
+
+.hero-text p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.95rem;
+  color: #496354;
+  margin-top: 6px;
+}
+
+/* ══════════════════════════════
+   MENU GRID EDITOR
+══════════════════════════════ */
+body.admin-layout #menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px;
+  margin-bottom: 64px;
+}
+
+/* Card base editor (diversa dalle card landing) */
+body.admin-layout .nav-card {
+  background: rgba(255,255,255,0.75);
+  border-radius: 22px;
+  padding: 26px 24px 22px;
+  text-decoration: none;
+  border: 1px solid rgba(26,58,42,0.08);
+  box-shadow: 0 12px 32px rgba(15,35,25,0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s;
+}
+body.admin-layout .nav-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 0 0, rgba(45,106,79,0.08), transparent 55%);
+  opacity: 0;
+  transition: opacity 0.25s;
+}
+body.admin-layout .nav-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 18px 42px rgba(15,35,25,0.25);
+  border-color: rgba(45,106,79,0.45);
+}
+body.admin-layout .nav-card:hover::after { opacity: 1; }
+
+/* Icona + titolo in riga */
+body.admin-layout .nav-card .icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #1a5c3a, #3a7a52);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(26,92,61,0.35);
+  flex-shrink: 0;
+}
+body.admin-layout .nav-card .icon-wrap i {
+  font-size: 1.4rem !important;
+  color: #ffffff !important;
+  margin: 0 !important;
+}
+
+body.admin-layout .nav-card .label {
+  font-family: 'Inter', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #12261a;
+  margin: 0;
+}
+
+body.admin-layout .nav-card .card-desc {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9rem;
+  color: #4c6556;
+  line-height: 1.6;
+}
+
+body.admin-layout .nav-card .card-meta {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: #7b9384;
+}
+
+/* Riga top: icona + titolo + mini badge */
+body.admin-layout .nav-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+}
+
+body.admin-layout .nav-card-title {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Freccia in basso a destra */
+body.admin-layout .card-arrow {
+  align-self: flex-end;
+  margin-top: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid rgba(26,58,42,0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a3a2a;
+  font-size: 0.75rem;
+  transition: background 0.2s, color 0.2s, transform 0.2s, border-color 0.2s;
+}
+body.admin-layout .nav-card:hover .card-arrow {
+  background: #1a3a2a;
+  color: #ffffff;
+  border-color: #1a3a2a;
+  transform: translateX(3px);
+}
+
+/* Responsive editor */
+@media (max-width: 900px) {
+  body.admin-layout main { 
+    padding: 0 24px; 
+  }
+  body.admin-layout #menu-grid { 
+    grid-template-columns: 1fr; 
+  }
+}
+
+@media (max-width: 600px) {
+  body.admin-layout .hero-text { 
+    margin-top: 80px; 
+    margin-bottom: 28px; 
+  }
+}
+
+
+
+
+
+
+
+
+/* ══════════════════════════════
    RESPONSIVE
 ══════════════════════════════ */
 @media (max-width: 900px) {
