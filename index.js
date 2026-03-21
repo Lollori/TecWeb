@@ -71,6 +71,14 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// In index.js
+app.get('/musei', async (req, res) => {
+    // Chiamiamo la funzione search (passando un oggetto vuoto per vederli tutti)
+    const html = await musei.search({ nome: "" }, credentials); 
+    // Spediamo al browser la pagina GIÀ COMPILATA da Handlebars
+    res.send(html); 
+});
+
 // Questo pezzo di codice "crea" la rotta virtuale
 app.get('/editor/museo/:id', async (req, res) => {
     const idDelMuseoScelto = req.params.id; // Qui recuperi l'ID cliccato
