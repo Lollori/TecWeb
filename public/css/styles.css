@@ -89,17 +89,18 @@ main {
 .hero {
   margin-top: 64px;
   width: 100%;
-  padding: 100px 40px 60px;
+  padding: 120px 40px 100px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 70px;
   align-items: center;
+  min-height: calc(100vh - 64px);
 }
 
 .hero-left {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 .badge {
@@ -117,7 +118,7 @@ main {
 
 .hero-left h1 {
   font-family: 'Playfair Display', serif;
-  font-size: 3.8rem;
+  font-size: 4rem;
   line-height: 1.15;
   color: #1a3a2a;
 }
@@ -127,9 +128,9 @@ main {
 }
 
 .hero-left p {
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: #4a6a5a;
-  line-height: 1.7;
+  line-height: 1.8;
   max-width: 440px;
 }
 
@@ -137,98 +138,85 @@ main {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  margin-top: 8px;
+  margin-top: 12px;
 }
 
-/* ── HERO INFO CARD ── */
+/* ── HERO QUOTE CARD ── */
 .hero-right {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-info-card {
+.hero-quote-card {
   width: 100%;
-  background: white;
-  border: 1.5px solid #d0e8d8;
+  background: #2d6a4f;
   border-radius: 28px;
-  padding: 40px 36px;
+  padding: 52px 44px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  box-shadow: 0 8px 36px rgba(26,58,42,0.08);
+  gap: 24px;
+  box-shadow: 0 12px 48px rgba(26,58,42,0.2);
+  position: relative;
+  overflow: hidden;
 }
 
-.info-card-top {
-  display: flex;
-  align-items: center;
-  gap: 14px;
+/* Cerchio decorativo di sfondo */
+.hero-quote-card::before {
+  content: '';
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+  bottom: -80px;
+  right: -80px;
+  pointer-events: none;
+}
+.hero-quote-card::after {
+  content: '';
+  position: absolute;
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.04);
+  top: -40px;
+  left: -40px;
+  pointer-events: none;
 }
 
-.info-icon {
-  width: 48px;
-  height: 48px;
-  background: linear-gradient(135deg, #1a5c3a, #3a7a52);
-  border-radius: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(26,92,61,0.25);
-}
-.info-icon i {
-  font-size: 1.2rem !important;
-  color: white !important;
+.quote-icon {
+  font-size: 2.2rem !important;
+  color: rgba(255,255,255,0.25) !important;
   margin: 0 !important;
 }
 
-.info-tag {
-  font-size: 0.78rem;
-  font-weight: 600;
-  color: #2d6a4f;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.info-title {
+.hero-quote-card blockquote {
   font-family: 'Playfair Display', serif;
-  font-size: 1.6rem;
-  line-height: 1.3;
-  color: #1a3a2a;
+  font-size: 1.45rem;
+  line-height: 1.7;
+  color: #ffffff;
+  font-style: italic;
+  position: relative;
+  z-index: 1;
 }
 
-.info-desc {
-  font-size: 0.9rem;
-  color: #5a7d66;
-  line-height: 1.75;
+.quote-author {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.55);
+  font-weight: 500;
+  letter-spacing: 0.03em;
 }
 
-.info-pills {
+/* ── SECTION CARDS ── */
+#cards {
+  width: 100%;
+  padding: 80px 40px 120px;
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 4px;
-}
-
-.pill {
-  display: inline-flex;
+  flex-direction: column;
   align-items: center;
-  gap: 6px;
-  background: #eaf5ee;
-  color: #2d6a4f;
-  font-size: 0.78rem;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 50px;
-  border: 1px solid #c8e6d0;
-}
-.pill i {
-  font-size: 0.7rem !important;
-  color: #2d6a4f !important;
-  margin: 0 !important;
 }
 
-/* ── SECTION LABEL ── */
 .section-label {
   text-align: center;
   font-size: 0.85rem;
@@ -236,18 +224,10 @@ main {
   color: #4a6a5a;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 /* ── CARDS GRID ── */
-#cards {
-  width: 100%;
-  padding: 20px 40px 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 #menu-grid {
   display: grid;
   grid-template-columns: repeat(2, 380px);
@@ -262,7 +242,6 @@ main {
   border-radius: 24px;
   text-decoration: none;
   transition: all 0.3s ease;
-  position: relative;
 }
 
 /* ── CARD CHIARA (Navigator) ── */
@@ -372,11 +351,12 @@ main {
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
-    padding: 80px 24px 40px;
-    gap: 36px;
+    padding: 90px 24px 60px;
+    gap: 40px;
+    min-height: unset;
   }
   .hero-left h1 { font-size: 2.6rem; }
-  #cards { padding: 20px 24px 60px; }
+  #cards { padding: 60px 24px 80px; }
   #menu-grid {
     grid-template-columns: 1fr;
     width: 100%;
@@ -386,11 +366,12 @@ main {
 
 @media (max-width: 600px) {
   .header-inner { padding: 0 20px; }
-  .hero { padding: 60px 20px 30px; }
+  .hero { padding: 70px 20px 40px; }
   .hero-left h1 { font-size: 2rem; }
   .hero-left p { font-size: 0.95rem; }
-  .hero-info-card { padding: 28px 24px; }
-  #cards { padding: 20px 20px 50px; }
-  .info-title { font-size: 1.3rem; }
+  .hero-quote-card { padding: 36px 28px; }
+  .hero-quote-card blockquote { font-size: 1.2rem; }
+  #cards { padding: 40px 20px 60px; }
 }
+
 
