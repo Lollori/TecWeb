@@ -35,27 +35,18 @@
 
     <h2>Risultati per: "<%= query %>"</h2>
 
-    <div class="grid">
-        <% if (result && result.length > 0) { %>
-            <% result.forEach(function(museo) { %>
-                <div class="card">
-                    <img src="<%= museo.immagineCopertina || 'https://via.placeholder.com/300x180?text=No+Image' %>" alt="<%= museo.nome %>">
-                    
-                    <div class="card-body">
-                        <div class="card-title"><%= museo.nome %></div>
-                        <div class="card-meta">
-                            <span>📍 <%= museo.citta %></span><br>
-                            <span class="badge">ISIL: <%= museo.codiceIsil %></span>
-                        </div>
-                        <p style="font-size: 0.85rem; color: #555;"><%= museo.descrizioneBreve %></p>
-                        
-                        <a href="/editor/museo/<%= museo._id %>" class="btn-select">Gestisci Contenuti</a>
-                    </div>
-                </div>
-            <% }); %>
-        <% } else { %>
-            <p>Nessun museo trovato. Prova a caricare i dati dal file JSON!</p>
-        <% } %>
+   <div class="grid">
+    {{#each result}}
+        <div class="card">
+            <div class="card-body">
+                <div class="card-title">{{nome}}</div>
+                
+                <a href="/editor/museo/{{_id}}" class="btn-select">Gestisci Contenuti</a>
+            </div>
+        </div>
+    {{else}}
+        <p>Nessun museo trovato. Prova a caricare i dati dal file JSON!</p>
+    {{/each}}
     </div>
 </div>
 

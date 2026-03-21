@@ -72,6 +72,7 @@ app.get('/', (req, res) => {
 });
 
 
+
 const info = async function(req, res) {
 	let data = {
 		startDate: global.startDate.toLocaleString(), 
