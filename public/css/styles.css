@@ -129,6 +129,7 @@ main {
 }
 
 .hero-left p {
+  font-family: 'Inter', sans-serif;
   font-size: 1.1rem;
   color: #4a6a5a;
   line-height: 1.8;
@@ -192,6 +193,7 @@ main {
 }
 
 .quote-author {
+  font-family: 'Inter', sans-serif;
   font-size: 0.82rem;
   color: #7a9a8a;
   font-weight: 600;
@@ -251,6 +253,7 @@ main {
   line-height: 1.2;
 }
 .features-intro-text p {
+  font-family: 'Inter', sans-serif;
   font-size: 0.92rem;
   color: #5a7d66;
   margin-top: 4px;
@@ -300,10 +303,30 @@ main {
 }
 .bento-cell--text:hover { background: rgba(255,255,255,0.78); }
 
-/* Testi default per celle chiare */
-.bento-cell--text .feature-number { color: #2d6a4f; }
-.bento-cell--text h3 { color: #1a3a2a; }
-.bento-cell--text p { color: #3a5a48; }
+.bento-cell--text .feature-number {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  color: #2d6a4f;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.bento-cell--text h3 {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a3a2a;
+  line-height: 1.3;
+}
+
+.bento-cell--text p {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: #3a5a48;
+  line-height: 1.6;
+  margin-top: 2px;
+}
 
 /* ── Accent: verde scuro ── */
 .bento-cell--accent {
@@ -312,7 +335,10 @@ main {
 }
 .bento-cell--accent:hover { background: #1f4a34; }
 .bento-cell--accent .feature-number { color: #6aab7e !important; }
-.bento-cell--accent h3 { color: #ffffff !important; }
+.bento-cell--accent h3 {
+  font-family: 'Inter', sans-serif !important;
+  color: #ffffff !important;
+}
 .bento-cell--accent p { color: #d4edd9 !important; }
 
 /* ── Muted: verde chiarissimo ── */
@@ -322,7 +348,10 @@ main {
 }
 .bento-cell--muted:hover { background: rgba(45,106,79,0.15); }
 .bento-cell--muted .feature-number { color: #2d6a4f !important; }
-.bento-cell--muted h3 { color: #1a3a2a !important; }
+.bento-cell--muted h3 {
+  font-family: 'Inter', sans-serif !important;
+  color: #1a3a2a !important;
+}
 .bento-cell--muted p { color: #2d4a38 !important; }
 
 /* ── Dark-warm: verde medio ── */
@@ -332,7 +361,10 @@ main {
 }
 .bento-cell--dark-warm:hover { background: #336645; }
 .bento-cell--dark-warm .feature-number { color: #a8d5b5 !important; }
-.bento-cell--dark-warm h3 { color: #ffffff !important; }
+.bento-cell--dark-warm h3 {
+  font-family: 'Inter', sans-serif !important;
+  color: #ffffff !important;
+}
 .bento-cell--dark-warm p { color: #d4edd9 !important; }
 
 /* ── Celle immagine ── */
@@ -358,6 +390,7 @@ main {
   right: 0;
   padding: 20px 14px 10px;
   background: linear-gradient(to top, rgba(5,15,8,0.88) 0%, transparent 100%);
+  font-family: 'Inter', sans-serif;
   font-size: 0.68rem;
   color: rgba(255,255,255,0.75);
   line-height: 1.4;
@@ -417,6 +450,7 @@ main {
 }
 
 .cards-eyebrow {
+  font-family: 'Inter', sans-serif;
   font-size: 0.72rem;
   font-weight: 700;
   color: #6aab7e;
@@ -433,6 +467,7 @@ main {
 }
 
 .cards-subtitle {
+  font-family: 'Inter', sans-serif;
   font-size: 0.95rem;
   color: #7a9a8a;
   line-height: 1.6;
@@ -462,6 +497,7 @@ main {
 }
 
 .nav-card-badge {
+  font-family: 'Inter', sans-serif;
   font-size: 0.72rem;
   font-weight: 600;
   padding: 4px 12px;
@@ -532,6 +568,7 @@ main {
 }
 
 .nav-card .card-desc {
+  font-family: 'Inter', sans-serif;
   font-size: 0.88rem;
   line-height: 1.75;
   flex: 1;
@@ -544,6 +581,7 @@ main {
   margin-top: 28px;
   padding: 11px 22px;
   border-radius: 50px;
+  font-family: 'Inter', sans-serif;
   font-size: 0.88rem;
   font-weight: 600;
   width: fit-content;
