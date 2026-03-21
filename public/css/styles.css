@@ -139,30 +139,62 @@ main {
   flex-wrap: wrap;
 }
 
+/* ── HERO FEATURES ── */
 .hero-right {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.hero-image-placeholder {
+.hero-features {
   width: 100%;
-  aspect-ratio: 4/3;
-  background: rgba(255,255,255,0.4);
-  border: 2px dashed #a8c5a0;
-  border-radius: 24px;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  background: white;
+  border: 1.5px solid #d0e8d8;
+  border-radius: 18px;
+  padding: 20px 24px;
+  box-shadow: 0 4px 16px rgba(80,140,100,0.07);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.feature-item:hover {
+  transform: translateX(6px);
+  box-shadow: 0 8px 24px rgba(80,140,100,0.13);
+}
+
+.feat-icon {
+  width: 46px;
+  height: 46px;
+  background: linear-gradient(135deg, #1a5c3a, #3a7a52);
+  border-radius: 12px;
+  display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  color: #7aaa7a;
-  font-size: 0.9rem;
-  backdrop-filter: blur(6px);
+  flex-shrink: 0;
 }
-.hero-image-placeholder i {
-  font-size: 2.5rem;
-  opacity: 0.5;
+.feat-icon i {
+  font-size: 1.1rem !important;
+  color: white !important;
+  margin: 0 !important;
+}
+
+.feature-item strong {
+  font-size: 0.95rem;
+  color: #1a3a2a;
+  display: block;
+  margin-bottom: 3px;
+}
+.feature-item p {
+  font-size: 0.78rem;
+  color: #7a9a8a;
+  line-height: 1.4;
 }
 
 /* ── SECTION LABEL ── */
@@ -299,16 +331,13 @@ main {
    RESPONSIVE
 ══════════════════════════════ */
 
-/* ── TABLET (max 900px) ── */
 @media (max-width: 900px) {
   .hero {
     grid-template-columns: 1fr;
     padding: 60px 24px 20px;
-    gap: 0;
+    gap: 32px;
   }
-  .hero-right { display: none; }
   .hero-left h1 { font-size: 2.6rem; }
-
   #menu-grid {
     grid-template-columns: 1fr;
     width: 100%;
@@ -317,11 +346,12 @@ main {
   }
 }
 
-/* ── MOBILE (max 600px) ── */
 @media (max-width: 600px) {
   .header-inner { padding: 0 20px; }
+  .hero { padding: 50px 20px 20px; }
   .hero-left h1 { font-size: 2rem; }
   .hero-left p { font-size: 0.95rem; }
-  .hero { padding: 50px 20px 20px; }
   #menu-grid { padding: 0 20px 50px; }
+  .feature-item { padding: 16px 18px; }
 }
+
