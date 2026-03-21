@@ -71,7 +71,14 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-
+// Questo pezzo di codice "crea" la rotta virtuale
+app.get('/editor/museo/:id', async (req, res) => {
+    const idDelMuseoScelto = req.params.id; // Qui recuperi l'ID cliccato
+    
+    // Ora puoi dire al server: "Vai su Mongo, prendi i dati del museo con questo ID"
+    // E poi generare una nuova pagina (es. editor.html)
+    res.send("Hai scelto il museo con ID: " + idDelMuseoScelto);
+});
 
 const info = async function(req, res) {
 	let data = {
