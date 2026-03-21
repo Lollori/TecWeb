@@ -15,7 +15,7 @@ const museoSchema = new mongoose.Schema({
 const Museo = mongoose.model("Museo", museoSchema);
 
 // Parametri presi dal tuo template
-let fn = "/public/data/musei.json";
+let fn = "./public/data/musei.json";
 let dbname = "artaround_db"; 
 
 mongoose.set('strictQuery', false);
