@@ -43,10 +43,9 @@
     </section>
   </main>
 
-  <!-- FEATURES NAVIGATOR -->
+ <!-- FEATURES NAVIGATOR -->
 <section id="features" class="features-section">
   <div class="features-inner">
-
     <div class="features-intro">
       <div class="feat-section-icon"><i class="fa-solid fa-compass"></i></div>
       <div class="features-intro-text">
@@ -55,61 +54,53 @@
       </div>
     </div>
 
-    <div class="bento-grid">
+    <div class="bento bento--nav">
 
-      <!-- CELLA GRANDE con immagine -->
-      <div class="bento-card bento-card--image bento-card--tall">
+      <!-- Cella testo grande in alto a sx -->
+      <div class="bento-cell bento-cell--text bento-cell--accent" style="grid-area: a;">
+        <span class="feature-number">01</span>
+        <h3>Visita personalizzata</h3>
+        <p>ArtAround costruisce il percorso sui tuoi interessi, livello di conoscenza e tempo. Ogni visita è unica.</p>
+      </div>
+
+      <!-- Immagine stretta e alta — dettaglio mani Michelangelo -->
+      <div class="bento-cell bento-cell--img" style="grid-area: b;">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Creaci%C3%B3n_de_Ad%C3%A1n.jpg/1280px-Creaci%C3%B3n_de_Ad%C3%A1n.jpg"
-          alt="Dettaglio della Creazione di Adamo, Michelangelo"
-          class="bento-img"
+          alt="Dettaglio mani, Creazione di Adamo"
+          style="object-position: 62% 38%;"
         />
-        <div class="bento-img-overlay">
-          <span class="bento-img-caption">Michelangelo, <em>Creazione di Adamo</em> · dettaglio · Cappella Sistina, 1512</span>
-        </div>
+        <div class="bento-img-caption-bar">Michelangelo · <em>Creazione di Adamo</em> · dettaglio · 1512</div>
       </div>
 
-      <!-- COLONNA DESTRA: 3 celle -->
-      <div class="bento-col">
-        <div class="bento-card bento-card--accent">
-          <span class="feature-number">01</span>
-          <h3>Visita personalizzata</h3>
-          <p>ArtAround costruisce il tuo percorso sui tuoi interessi, il tuo livello di conoscenza e il tempo a disposizione. Ogni visita è unica.</p>
-        </div>
-        <div class="bento-card">
-          <span class="feature-number">02</span>
-          <h3>Audioguida integrata</h3>
-          <p>Testo e sintesi vocale con linguaggio calibrato sul tuo profilo — narrativo, medio o specialistico. Adattabile in tempo reale.</p>
-        </div>
-        <div class="bento-card bento-card--muted">
-          <span class="feature-number">03</span>
-          <h3>Comandi vocali</h3>
-          <p>Mani libere, occhi sull'opera. "Prossimo", "Dimmi di più", "Dov'è l'uscita" — tutto senza toccare lo schermo.</p>
-        </div>
+      <!-- Cella testo piccola -->
+      <div class="bento-cell bento-cell--text bento-cell--muted" style="grid-area: c;">
+        <span class="feature-number">02</span>
+        <h3>Audioguida integrata</h3>
+        <p>Sintesi vocale calibrata sul tuo profilo — narrativo, medio o specialistico.</p>
       </div>
 
-    </div>
+      <!-- Cella testo piccola -->
+      <div class="bento-cell bento-cell--text" style="grid-area: d;">
+        <span class="feature-number">03</span>
+        <h3>Comandi vocali</h3>
+        <p>"Prossimo", "Dimmi di più", "Dov'è l'uscita" — mani libere, occhi sull'opera.</p>
+      </div>
 
-    <!-- RIGA SOTTO: feature 04 + piccola card testo -->
-    <div class="bento-grid bento-grid--bottom">
-      <div class="bento-card">
+      <!-- Cella testo piccola -->
+      <div class="bento-cell bento-cell--text bento-cell--dark" style="grid-area: e;">
         <span class="feature-number">04</span>
         <h3>Mappa del museo</h3>
-        <p>Orientati tra le sale con una mappa visiva. Entrate, uscite d'emergenza, toilette, bar e shop sempre indicati.</p>
+        <p>Orientati tra le sale. Toilette, bar, uscite sempre a portata di voce.</p>
       </div>
-      <div class="bento-card bento-card--dark-accent">
-        <i class="fa-solid fa-quote-left bento-quote-icon"></i>
-        <p class="bento-quote-text">"Un percorso diverso per ogni visitatore — non solo contenuti diversi, ma modi diversi di presentare gli stessi contenuti."</p>
-      </div>
-    </div>
 
+    </div>
   </div>
 </section>
 
 <!-- FEATURES EDITOR -->
 <section class="features-section features-section--alt">
   <div class="features-inner">
-
     <div class="features-intro">
       <div class="feat-section-icon"><i class="fa-solid fa-pen-to-square"></i></div>
       <div class="features-intro-text">
@@ -118,43 +109,50 @@
       </div>
     </div>
 
-    <div class="bento-grid bento-grid--reversed">
+    <div class="bento bento--editor">
 
-      <!-- COLONNA SINISTRA: 3 celle -->
-      <div class="bento-col">
-        <div class="bento-card bento-card--accent">
-          <span class="feature-number">01</span>
-          <h3>Gestione musei e opere</h3>
-          <p>Configura il museo, carica le opere, aggiungi testi a più livelli di profondità e metadati strutturati per ogni oggetto.</p>
-        </div>
-        <div class="bento-card">
-          <span class="feature-number">02</span>
-          <h3>Crea visite guidate</h3>
-          <p>Componi sequenze con indicazioni logistiche, contenuti opzionali e livelli differenziati per tipo di visitatore.</p>
-        </div>
-        <div class="bento-card bento-card--muted">
-          <span class="feature-number">03</span>
-          <h3>Marketplace</h3>
-          <p>Sfoglia contenuti di altri editor, adotta visite già pronte o pubblica le tue — gratuitamente o a pagamento.</p>
-        </div>
-      </div>
-
-      <!-- CELLA GRANDE con immagine -->
-      <div class="bento-card bento-card--image bento-card--tall">
+      <!-- Immagine stretta alta — dettaglio Blue Quran -->
+      <div class="bento-cell bento-cell--img" style="grid-area: a;">
         <img
           src="https://upload.wikimedia.org/wikipedia/commons/6/6b/Folio_Blue_Quran_Met_2004.88.jpg"
-          alt="Dettaglio Blue Quran, Met Museum"
-          class="bento-img"
+          alt="Dettaglio calligrafia Blue Quran"
+          style="object-position: 50% 20%;"
         />
-        <div class="bento-img-overlay">
-          <span class="bento-img-caption">Anonimo, <em>Blue Qur'an</em> · dettaglio · Met Museum, IX–X sec.</span>
-        </div>
+        <div class="bento-img-caption-bar">Anonimo · <em>Blue Qur'an</em> · dettaglio calligrafia · IX–X sec.</div>
+      </div>
+
+      <!-- Cella testo grande -->
+      <div class="bento-cell bento-cell--text bento-cell--accent" style="grid-area: b;">
+        <span class="feature-number">01</span>
+        <h3>Gestione musei e opere</h3>
+        <p>Configura il museo, carica opere, aggiungi testi multilivello e metadati strutturati.</p>
+      </div>
+
+      <!-- Cella testo piccola -->
+      <div class="bento-cell bento-cell--text bento-cell--muted" style="grid-area: c;">
+        <span class="feature-number">02</span>
+        <h3>Crea visite guidate</h3>
+        <p>Sequenze con indicazioni logistiche, contenuti opzionali e livelli differenziati.</p>
+      </div>
+
+      <!-- Cella testo piccola -->
+      <div class="bento-cell bento-cell--text" style="grid-area: d;">
+        <span class="feature-number">03</span>
+        <h3>Marketplace</h3>
+        <p>Sfoglia e adotta visite di altri editor, o pubblica le tue — gratis o a pagamento.</p>
+      </div>
+
+      <!-- Cella testo piccola dark -->
+      <div class="bento-cell bento-cell--text bento-cell--dark" style="grid-area: e;">
+        <span class="feature-number">04</span>
+        <h3>Gestione utenti</h3>
+        <p>Permessi flessibili per autori, editori e visitatori del tuo museo.</p>
       </div>
 
     </div>
-
   </div>
 </section>
+
 
 
 
