@@ -1,12 +1,7 @@
-﻿/*
-File: styles.css 
-Author: Fabio Vitali / modificato
-*/
-
-/* ── RESET ── */
+﻿/* ── RESET ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-/* ── FONT & BODY ── */
+/* ── BODY ── */
 body {
   font-family: 'Inter', sans-serif;
   min-height: 100vh;
@@ -16,270 +11,317 @@ body {
   align-items: center;
 }
 
-/* ── HEADER ── */
+/* ── NAVBAR ── */
 .app-header {
   position: fixed;
   top: 0;
   width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 20px 0;
   z-index: 1000;
+  background: #1a3a2a;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.2);
 }
 
 .header-inner {
-  width: 90%;
-  max-width: 960px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 40px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 25px;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.7);
-  box-shadow: 0 6px 20px rgba(80, 140, 100, 0.15);
 }
 
 .logo {
   font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
   font-weight: 700;
-  font-size: 1.6rem;
-  color: #2d5a3d;
-  flex: 1;
-  text-align: center;
-}
-.logo span { font-weight: 400; color: #4a7c5f; }
-
-@media (max-width: 600px) {
-  .logo { font-size: 1.3rem; }
+  color: #ffffff;
 }
 
-/* ── HEADER ACTIONS ── */
-.header-actions { display: flex; align-items: center; gap: 10px; }
-
+/* ── BOTTONI ── */
 .btn-primary {
-  background: #1a5c3a;
-  color: white;
-  padding: 8px 20px;
+  background: #2d6a4f;
+  color: white !important;
+  padding: 10px 24px;
   border-radius: 50px;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  cursor: pointer;
+  text-decoration: none !important;
   border: none;
-  text-decoration: none;
+  cursor: pointer;
   transition: all 0.2s;
   display: inline-block;
 }
 .btn-primary:hover {
-  background: #2d7a52;
+  background: #3a8a65;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(26,92,58,0.25);
+  box-shadow: 0 4px 14px rgba(45,106,79,0.35);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: #1a3a2a;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  border: 2px solid #1a3a2a;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: inline-block;
+}
+.btn-secondary:hover {
+  background: #1a3a2a;
+  color: white;
 }
 
 /* ── MAIN ── */
 main {
-  margin-top: 140px;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-}
-
-@media (max-width: 600px) {
-  main { margin-top: 110px; padding: 0 15px; }
 }
 
 /* ── HERO ── */
-.hero-text {
-  text-align: center;
-  margin-bottom: 40px;
-}
-.hero-text h1 {
-  font-family: 'Playfair Display', serif;
-  color: #1a5c3a;
-  font-size: 2.5rem;
-}
-.hero-text h1 em { font-style: italic; color: #c9a84c; }
-.hero-text p {
-  color: #5a7d66;
-  font-size: 1.05rem;
-  max-width: 400px;
-  margin: 10px auto 0;
-  line-height: 1.6;
+.hero {
+  margin-top: 64px;
+  width: 100%;
+  padding: 80px 40px 40px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
 }
 
-@media (max-width: 600px) {
-  .hero-text h1 { font-size: 1.8rem; }
+.hero-left {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-/* ── BADGE ── */
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(255,255,255,0.8);
-  border: 1px solid rgba(26,92,58,0.15);
-  padding: 6px 16px;
+  background: #1a3a2a;
+  color: #ffffff;
+  padding: 7px 18px;
   border-radius: 50px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  color: #2d7a52;
-  margin-bottom: 16px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  width: fit-content;
 }
 
-/* ── GRIGLIA ── */
-#menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 240px);
-  gap: 25px;
-  padding: 20px;
+.hero-left h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 3.8rem;
+  line-height: 1.15;
+  color: #1a3a2a;
+}
+.hero-left h1 em {
+  font-style: italic;
+  color: #2d6a4f;
 }
 
-@media (max-width: 600px) {
-  #menu-grid {
-    grid-template-columns: 1fr;
-    width: 100%;
-    max-width: 300px;
-    gap: 20px;
-  }
+.hero-left p {
+  font-size: 1.05rem;
+  color: #4a6a5a;
+  line-height: 1.7;
+  max-width: 440px;
 }
 
-/* ── CARD ── */
-.nav-card {
+.hero-cta {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.hero-right {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-image-placeholder {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: rgba(255,255,255,0.4);
+  border: 2px dashed #a8c5a0;
+  border-radius: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 28px 20px 20px;
-  width: 240px;
-  height: 230px;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(5px);
+  justify-content: center;
+  gap: 12px;
+  color: #7aaa7a;
+  font-size: 0.9rem;
+  backdrop-filter: blur(6px);
+}
+.hero-image-placeholder i {
+  font-size: 2.5rem;
+  opacity: 0.5;
+}
+
+/* ── SECTION LABEL ── */
+.section-label {
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #4a6a5a;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+
+/* ── CARDS GRID ── */
+#menu-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 380px);
+  gap: 24px;
+  padding: 0 40px 80px;
+}
+
+/* ── CARD BASE ── */
+.nav-card {
+  display: flex;
+  flex-direction: column;
+  padding: 32px 28px 28px;
   border-radius: 24px;
   text-decoration: none;
-  color: #2d5a3d;
-  border: 1px solid rgba(255, 255, 255, 0.6);
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(80, 140, 100, 0.1);
   position: relative;
 }
 
-.nav-card:hover {
-  transform: translateY(-8px);
+/* ── CARD CHIARA (Navigator) ── */
+.nav-card--light {
   background: white;
-  box-shadow: 0 12px 30px rgba(80, 140, 100, 0.2);
+  border: 1.5px solid #d0e8d8;
+  color: #1a3a2a;
+  box-shadow: 0 4px 20px rgba(80,140,100,0.08);
+}
+.nav-card--light:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(80,140,100,0.18);
   border-color: #6aab7e;
 }
+.nav-card--light .label { color: #1a3a2a; }
+.nav-card--light .card-desc { color: #5a7d66; }
+.nav-card--light .card-cta {
+  color: #1a3a2a;
+  background: #eaf5ee;
+}
+.nav-card--light:hover .card-cta {
+  background: #1a3a2a;
+  color: white;
+}
 
-@media (max-width: 600px) {
-  .nav-card { width: 100%; height: 200px; }
-  .header-actions { display: none; }
+/* ── CARD SCURA (Editor) ── */
+.nav-card--dark {
+  background: #1a3a2a;
+  border: 1.5px solid #2d6a4f;
+  color: white;
+  box-shadow: 0 4px 20px rgba(26,58,42,0.25);
+}
+.nav-card--dark:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(26,58,42,0.4);
+}
+.nav-card--dark .icon-wrap {
+  background: linear-gradient(135deg, #2d6a4f, #3a8a65);
+}
+.nav-card--dark .label { color: #ffffff; }
+.nav-card--dark .card-desc { color: #a8c5a0; }
+.nav-card--dark .card-cta {
+  color: #1a3a2a;
+  background: white;
+}
+.nav-card--dark:hover .card-cta {
+  background: #e8f5ee;
 }
 
 /* ── ICON WRAP ── */
 .icon-wrap {
-  width: 60px;
-  height: 60px;
+  width: 56px;
+  height: 56px;
   background: linear-gradient(135deg, #1a5c3a, #3a7a52);
-  border-radius: 16px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  margin-bottom: 18px;
   box-shadow: 0 4px 14px rgba(26,92,61,0.28);
   transition: transform 0.3s;
   flex-shrink: 0;
 }
-
 .nav-card:hover .icon-wrap { transform: scale(1.08); }
-
-/* SOLO le icone dentro icon-wrap sono bianche e grandi */
 .icon-wrap i {
-  font-size: 1.6rem !important;
+  font-size: 1.5rem !important;
   color: white !important;
   margin: 0 !important;
 }
 
-/* ── LABEL ── */
+/* ── TESTI CARD ── */
 .nav-card .label {
-  font-weight: 600;
-  font-size: 1.2rem;
-  color: #2d5a3d;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-bottom: 8px;
 }
 
-/* ── DESCRIZIONE ── */
 .nav-card .card-desc {
-  font-size: 0.78rem;
-  color: #5a7d66;
-  margin-top: 6px;
-  text-align: center;
-  padding: 0 12px;
-  line-height: 1.4;
-  font-weight: 400;
+  font-size: 0.88rem;
+  line-height: 1.6;
+  flex: 1;
 }
 
-/* ── FRECCIA ── */
-.card-arrow {
-  position: absolute;
-  bottom: 14px;
-  right: 16px;
-  width: 26px;
-  height: 26px;
-  background: #e8f5ee;
-  border-radius: 50%;
-  display: flex;
+/* ── CTA BUTTON IN CARD ── */
+.card-cta {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 10px 20px;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  width: fit-content;
   transition: all 0.2s;
 }
-
-/* Icona freccia: piccola e verde, NON eredita .icon-wrap */
-.card-arrow i {
-  font-size: 11px !important;
-  color: #2d7a52 !important;
-  margin: 0 !important;
-}
-
-.nav-card:hover .card-arrow {
-  background: #2d7a52;
-  transform: translateX(3px);
-}
-
-.nav-card:hover .card-arrow i {
-  color: white !important;
-}
-
-/* ── TASTO LOGOUT ── */
-.user-icon-btn {
-  border: none; background: white; width: 38px; height: 38px;
-  border-radius: 50%; cursor: pointer; color: #2d5a3d;
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  transition: background 0.2s, color 0.2s;
-}
-.user-icon-btn:hover { background: #2d5a3d; color: white; }
-
-.user-icon-btn i {
-  font-size: 1rem !important;
+.card-cta i {
+  font-size: 0.75rem !important;
   color: inherit !important;
   margin: 0 !important;
 }
 
-/* ── FOOTER ── */
-footer {
-  text-align: center;
-  padding: 20px;
-  font-size: 0.75rem;
-  color: #6b7c72;
-  opacity: 0.7;
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+
+/* ── TABLET (max 900px) ── */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    padding: 60px 24px 20px;
+    gap: 0;
+  }
+  .hero-right { display: none; }
+  .hero-left h1 { font-size: 2.6rem; }
+
+  #menu-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: 420px;
+    padding: 0 24px 60px;
+  }
 }
 
-a.btn-primary,
-a.btn-primary:visited,
-a.btn-primary:hover,
-a.btn-primary:active {
-  color: white !important;
-  text-decoration: none !important;
+/* ── MOBILE (max 600px) ── */
+@media (max-width: 600px) {
+  .header-inner { padding: 0 20px; }
+  .hero-left h1 { font-size: 2rem; }
+  .hero-left p { font-size: 0.95rem; }
+  .hero { padding: 50px 20px 20px; }
+  #menu-grid { padding: 0 20px 50px; }
 }

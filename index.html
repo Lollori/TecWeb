@@ -4,43 +4,66 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ArtAround | Benvenuto</title>
-
-  <!-- FONT AGGIORNATO -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="stylesheet" href="/css/styles.css">
 </head>
-<body class="admin-layout">
+<body>
 
+  <!-- NAVBAR -->
   <header class="app-header">
     <div class="header-inner">
-      <div style="width: 38px;"></div>
       <h1 class="logo">ArtAround</h1>
+      <div class="header-actions">
+        <a href="#" class="btn-primary">Login</a>
+      </div>
     </div>
   </header>
 
   <main>
-    <div class="hero-text">
-      <div class="badge">Guida museale personalizzata</div>
-      <h1>Esplora l'arte<br>a modo <em>tuo</em></h1>
-      <p>Visita musei con una guida personalizzata o crea contenuti come editor</p>
-    </div>
 
-    <nav id="menu-grid">
-      <a href="/navigator/index.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-compass"></i></div>
-        <span class="label">Navigator</span>
-        <span class="card-desc">Visita i musei con guida personalizzata</span>
-        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-      </a>
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <div class="badge">✦ Guida museale personalizzata</div>
+        <h1>Esplora l'arte<br>a modo <em>tuo.</em></h1>
+        <p>Visita musei con una guida su misura per te, oppure crea e pubblica contenuti come editor.</p>
+        <div class="hero-cta">
+          <a href="/navigator/index.html" class="btn-primary">Inizia a esplorare</a>
+          <a href="#cards" class="btn-secondary">Scopri di più</a>
+        </div>
+      </div>
+      <div class="hero-right">
+        <div class="hero-image-placeholder">
+          <i class="fa-solid fa-image"></i>
+          <span>Opera in evidenza</span>
+        </div>
+      </div>
+    </section>
 
-      <a href="/Editor-Marketplace/Frontend/menu.html" class="nav-card">
-        <div class="icon-wrap"><i class="fa-solid fa-pen-to-square"></i></div>
-        <span class="label">Editor</span>
-        <span class="card-desc">Crea e gestisci visite, opere e contenuti</span>
-        <div class="card-arrow"><i class="fa-solid fa-arrow-right"></i></div>
-      </a>
-    </nav> 
+
+    <!-- CARDS -->
+    <section id="cards">
+      <p class="section-label">Scegli la tua modalità</p>
+      <nav id="menu-grid">
+
+        <a href="/navigator/index.html" class="nav-card nav-card--light">
+          <div class="icon-wrap"><i class="fa-solid fa-compass"></i></div>
+          <span class="label">Navigator</span>
+          <span class="card-desc">Visita i musei con una guida personalizzata basata sui tuoi gusti e interessi.</span>
+          <div class="card-cta">Inizia come Navigator <i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+
+        <a href="/Editor-Marketplace/Frontend/menu.html" class="nav-card nav-card--dark">
+          <div class="icon-wrap"><i class="fa-solid fa-pen-to-square"></i></div>
+          <span class="label">Editor</span>
+          <span class="card-desc">Crea e gestisci visite, opere e contenuti per i visitatori del tuo museo.</span>
+          <div class="card-cta">Inizia come Editor <i class="fa-solid fa-arrow-right"></i></div>
+        </a>
+
+      </nav>
+    </section>
+
   </main>
 
 </body>
