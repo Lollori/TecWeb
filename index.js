@@ -34,121 +34,88 @@ Copyright (c) 2024 by Fabio Vitali
 global.rootDir = __dirname ;
 global.startDate = null; 
 
-
-
 const template = require(global.rootDir + '/scripts/tpl.js');
+// IMPORTANTE: Qui carichiamo il tuo file dei musei
+const musei = require(global.rootDir + '/public/scripts/musei.js'); 
 const mymongo = require(global.rootDir + '/scripts/mongo.js');
 const express = require('express');
-const cors = require('cors')
+const cors = require('cors');
 const path = require('path');
 
+let app = express(); 
 
-
-
-
-/* ========================== */
-/*                            */
-/*  EXPRESS CONFIG & ROUTES   */
-/*                            */
-/* ========================== */
-
-let app= express(); 
 app.use('/js'  , express.static(global.rootDir +'/public/js'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
 app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
-app.use(express.urlencoded({ extended: true })) 
-app.use(express.json())
-app.use(cors())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+app.use(cors());
 
-// https://stackoverflow.com/questions/40459511/in-express-js-req-protocol-is-not-picking-up-https-for-my-secure-link-it-alwa
 app.enable('trust proxy');
 
+const mongoCredentials = {
+    user: "site252630",
+    pwd: "Tei2xiip",
+    site: "mongo_site252630"
+};
+
+// --- ROTTE PRINCIPALI ---
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// In index.js
+// MODIFICATA: Ora usa 'musei' e 'mongoCredentials' correttamente
 app.get('/musei', async (req, res) => {
-    // Chiamiamo la funzione search (passando un oggetto vuoto per vederli tutti)
-    const html = await musei.search({ nome: "" }, credentials); 
-    // Spediamo al browser la pagina GIÀ COMPILATA da Handlebars
-    res.send(html); 
+    try {
+        // Usiamo la funzione search del tuo file musei.js
+        const html = await musei.search({ nome: "" }, mongoCredentials); 
+        res.send(html); 
+    } catch (e) {
+        res.status(500).send("Errore caricamento musei: " + e.message);
+    }
 });
 
-// Questo pezzo di codice "crea" la rotta virtuale
 app.get('/editor/museo/:id', async (req, res) => {
-    const idDelMuseoScelto = req.params.id; // Qui recuperi l'ID cliccato
-    
-    // Ora puoi dire al server: "Vai su Mongo, prendi i dati del museo con questo ID"
-    // E poi generare una nuova pagina (es. editor.html)
+    const idDelMuseoScelto = req.params.id;
     res.send("Hai scelto il museo con ID: " + idDelMuseoScelto);
 });
 
+// --- ALTRE ROTTE ---
+
 const info = async function(req, res) {
-	let data = {
-		startDate: global.startDate.toLocaleString(), 
-		requestDate: (new Date()).toLocaleString(), 
-		request: {
-			host: req.hostname,
-			method: req.method,
-			path: req.path,
-			protocol: req.protocol
-		}, 
-		query: req.query,
-		body: req.body
-	}
-	res.send( await template.generate('info.html', data));
+    let data = {
+        startDate: global.startDate ? global.startDate.toLocaleString() : "Non avviato", 
+        requestDate: (new Date()).toLocaleString(), 
+        request: {
+            host: req.hostname,
+            method: req.method,
+            path: req.path,
+            protocol: req.protocol
+        }, 
+        query: req.query,
+        body: req.body
+    }
+    res.send( await template.generate('info.html', data));
 }
 
-app.get('/info', info )
-app.post('/info', info )
-
-
-
-
-
-/* ========================== */
-/*                            */
-/*           MONGODB          */
-/*       using mongoose       */
-/* ========================== */
-
-/* Replace these info with the ones you were given when activating mongoDB */ 
-const mongoCredentials = {
-	user: "site252630",
-	pwd: "Tei2xiip",
-	site: "mongo_site252630"
-}  
-/* end */
+app.get('/info', info );
+app.post('/info', info );
 
 app.get('/db/create', async function (req, res) {
-	res.send(await mymongo.create(mongoCredentials))
+    res.send(await mymongo.create(mongoCredentials));
 });
+
 app.get('/db/search', async function (req, res) {
-	res.send(await mymongo.search(req.query, mongoCredentials))
+    res.send(await mymongo.search(req.query, mongoCredentials));
 });
 
-
-
-
-
-
-
-
-/* ========================== */
-/*                            */
-/*    ACTIVATE NODE SERVER    */
-/*                            */
-/* ========================== */
+// --- AVVIO ---
 
 app.listen(8000, function() { 
-	global.startDate = new Date() ; 
-	console.log(`App listening on port 8000 started ${global.startDate.toLocaleString()}` )
-})
-
-
-/*       END OF SCRIPT        */
+    global.startDate = new Date(); 
+    console.log(`App listening on port 8000 started ${global.startDate.toLocaleString()}` );
+});
