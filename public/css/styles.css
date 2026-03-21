@@ -303,7 +303,6 @@ main {
 }
 .bento-cell--text:hover { background: rgba(255,255,255,0.78); }
 
-/* Verde scuro — accent */
 .bento-cell--accent {
   background: #1a3a2a;
   border-color: #2d6a4f;
@@ -311,7 +310,7 @@ main {
 .bento-cell--accent:hover { background: #1f4a34; }
 .bento-cell--accent .feature-number { color: #6aab7e; }
 .bento-cell--accent h3 { color: #ffffff; }
-.bento-cell--accent p { color: #c8e6d0; }
+.bento-cell--accent p { color: #d4edd9; }
 
 /* Verde chiarissimo — muted */
 .bento-cell--muted {
