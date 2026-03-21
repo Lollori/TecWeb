@@ -1,0 +1,18 @@
+[
+  {
+    "nome": "Museo Egizio",
+    "citta": "Torino",
+    "indirizzo": "Via Accademia delle Scienze, 6, 10123 Torino TO",
+    "codiceIsil": "IT-TO0576",
+    "immagineCopertina": "https://esempio.it/img/egizio_cover.jpg",
+    "descrizioneBreve": "Il più antico museo del mondo dedicato interamente alla cultura egizia."
+  },
+  {
+    "nome": "Galleria degli Uffizi",
+    "citta": "Firenze",
+    "indirizzo": "Piazzale degli Uffizi, 6, 50122 Firenze FI",
+    "codiceIsil": "IT-FI0082",
+    "immagineCopertina": "https://esempio.it/img/uffizi_cover.jpg",
+    "descrizioneBreve": "Uno dei più importanti musei italiani e tra i più conosciuti al mondo."
+  }
+]
