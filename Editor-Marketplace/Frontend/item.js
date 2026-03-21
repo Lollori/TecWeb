@@ -1,141 +1,190 @@
-// Database locale sincronizzato col browser
-let currentItems = [];
-let editingId = null;
+document.addEventListener('DOMContentLoaded', () => {
 
-// Sostituisce fetchItemsFromServer: Carica i dati dal localStorage
-function loadFromLocalStorage() {
-    const savedData = localStorage.getItem('opere_marketplace');
-    if (savedData) {
-        currentItems = JSON.parse(savedData);
-    } else {
-        currentItems = []; // Se è vuoto, inizializza array vuoto
-    }
-    loadItems(); // Filtra e renderizza
-}
-
-// Salva lo stato attuale di currentItems nel localStorage
-function syncToLocalStorage() {
-    localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
-    loadItems(); // Aggiorna la vista
-}
-
-// Funzione principale di caricamento (rimane quasi uguale)
-function loadItems() {
-    const searchFiltro = document.getElementById('searchText')?.value.toLowerCase() || '';
-
-    const filtered = currentItems.filter(item => {
-        return (item.operaId?.toLowerCase().includes(searchFiltro) || 
-               item.testo?.toLowerCase().includes(searchFiltro) ||
-               item.museo?.toLowerCase().includes(searchFiltro));
-    });
-
-    renderItems(filtered);
-}
-
-// Iniezione delle card (rimane uguale)
-function renderItems(data = currentItems) {
+    // --- SELEZIONA ELEMENTI ---
+    const searchInput = document.getElementById('searchText');
     const container = document.getElementById('itemsContainer');
-    if (!container) return;
-    
-    container.innerHTML = '';
-    
-    if (data.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
-        return;
-    }
-    
-    data.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'nav-card'; 
-        card.style.width = '100%';
-        card.style.height = 'auto';
-        card.style.padding = '25px';
-        card.style.display = 'block';
-
-        card.innerHTML = `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                <div>
-                    <h3 style="color: #2d5a3d; font-family: 'Playpen Sans';">${item.operaId}</h3>
-                    <small style="color: #6aab7e;">${item.museo}</small>
-                </div>
-                <div class="item-actions" style="display: flex; gap: 10px;">
-                    <button onclick="editItem('${item.id}')" style="border:none; background:none; cursor:pointer; color:#2d5a3d; font-size: 1.1rem;"><i class="fa-solid fa-pen-to-square"></i></button>
-                    <button onclick="deleteItem('${item.id}')" style="border:none; background:none; cursor:pointer; color:#be123c; font-size: 1.1rem;"><i class="fa-solid fa-trash"></i></button>
-                </div>
-            </div>
-            <p style="font-size: 0.9rem; color: #4a7c5f; line-height: 1.5; margin-bottom: 15px;">${item.testo}</p>
-            <div style="display: flex; gap: 8px;">
-                <span style="background: rgba(45, 90, 61, 0.1); color: #2d5a3d; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">${item.linguaggio}</span>
-                <span style="background: rgba(45, 90, 61, 0.1); color: #2d5a3d; padding: 4px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">${item.lunghezza}</span>
-            </div>
-        `;
-        container.appendChild(card);
-    });
-}
-
-// Sostituisce saveToServer: Gestisce sia inserimento che modifica in locale
-function saveLocal(itemData) {
-    if (editingId) {
-        // Modifica: trova l'indice e sostituisci
-        const index = currentItems.findIndex(i => i.id === editingId);
-        if (index !== -1) currentItems[index] = itemData;
-    } else {
-        // Nuovo inserimento
-        currentItems.push(itemData);
-    }
-    
-    syncToLocalStorage();
-    closeModal();
-}
-
-// Sostituisce la versione async di deleteItem
-function deleteItem(id) {
-    if (confirm('Vuoi davvero eliminare questa opera?')) {
-        currentItems = currentItems.filter(item => item.id !== id);
-        syncToLocalStorage();
-    }
-}
-
-// Gestione Modale (rimane uguale)
-function openModal(id = null) {
-    editingId = id;
-    const modal = document.getElementById('itemModal');
     const form = document.getElementById('itemForm');
+    const modal = document.getElementById('itemModal');
     
-    if (id) {
-        const item = currentItems.find(i => i.id === id);
+    // Titolo dentro il modale
+    const brandTitle = modal?.querySelector('.brand');
+
+    // --- STATO APPLICAZIONE ---
+    let currentItems = [];
+    let editingId = null; // null = nuovo, ID = modifica
+
+    // --- GESTIONE DATI (LocalStorage) ---
+    function loadFromLocalStorage() {
+        const savedData = localStorage.getItem('opere_marketplace');
+        currentItems = savedData ? JSON.parse(savedData) : [];
+        renderItems();
+    }
+
+    function syncToLocalStorage() {
+        localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
+        renderItems(); // Aggiorna la vista dopo il salvataggio
+    }
+
+    // --- FUNZIONE DI RENDER (Uniformata a Visite.js + Icone nei Tag) ---
+    function renderItems(dati = currentItems) {
+        if (!container) return;
+        container.innerHTML = ''; 
+
+        if (dati.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata nel marketplace.</p>';
+            return;
+        }
+
+        dati.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.dataset.id = item.id;
+            
+            card.style.display = 'flex';
+            card.style.flexDirection = 'column';
+            card.style.height = '100%'; // Assicura che le card siano alte uguali nella griglia
+            card.style.overflow = 'hidden'; // Evita overflow generale
+
+            // HTML Uniformato: card-actions in alto, h3 per titolo, card-details per info con icone
+            card.innerHTML = `
+                <div class="card-actions">
+                    <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
+                    <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                </div>
+                
+                <h3>${item.operaId}</h3>
+                
+                <div class="card-details" style="flex-grow: 1;">
+                    <p><i class="fa-solid fa-museum"></i> <strong>Museo:</strong> ${item.museo}</p>
+                    
+                    <p class="description-text" style="
+                        display: -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;  
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                        line-height: 1.5;
+                        margin-bottom: 10px;
+                        white-space: normal; /* Sovrascrive eventuali no-wrap globali */
+                    ">
+                        <i class="fa-solid fa-quote-left"></i> 
+                        <strong>Descrizione:</strong> ${item.testo}
+                    </p>
+                </div>
+
+                <div class="card-tags" style="
+                    margin-top: auto; 
+                    padding-top: 15px; 
+                    display: flex; 
+                    gap: 8px; 
+                    flex-wrap: wrap; /* Evita che i tag escano se sono troppi */
+                ">
+                    <span class="tag-bubble" style="
+                        background: rgba(45, 90, 61, 0.1); 
+                        color: #2d5a3d; 
+                        padding: 5px 12px; 
+                        border-radius: 999px; 
+                        font-size: 0.75rem; 
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    ">
+                        <i class="fa-solid fa-brain" style="font-size: 0.8rem; opacity: 0.8;"></i>
+                        ${item.linguaggio}
+                    </span>
+                    
+                    <span class="tag-bubble" style="
+                        background: rgba(45, 90, 61, 0.1); 
+                        color: #2d5a3d; 
+                        padding: 5px 12px; 
+                        border-radius: 999px; 
+                        font-size: 0.75rem; 
+                        font-weight: 600;
+                        display: flex;
+                        align-items: center;
+                        gap: 5px;
+                    ">
+                        <i class="fa-solid fa-hourglass-half" style="font-size: 0.8rem; opacity: 0.8;"></i>
+                        ${item.lunghezza}
+                    </span>
+                </div>
+            `;
+
+            // --- GESTIONE EVENTI SULLA CARD (JS Puro, stile Visite) ---
+
+            // 1. Selezione card (Verdina)
+            card.addEventListener('click', (e) => {
+                // Seleziona solo se non ho cliccato sui bottoni azione
+                if (!e.target.closest('.icon-btn')) {
+                    document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                }
+            });
+
+            // 2. Tasto Modifica (Matita)
+            card.querySelector('.edit-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Non selezionare la card
+                apriModaleItem(item);
+            });
+
+            // 3. Tasto Elimina (Cestino)
+            card.querySelector('.delete-btn').addEventListener('click', (e) => {
+                e.stopPropagation(); // Non selezionare la card
+                if (confirm(`Sei sicuro di voler eliminare l'opera "${item.operaId}" dal marketplace?`)) {
+                    currentItems = currentItems.filter(i => i.id !== item.id);
+                    syncToLocalStorage();
+                }
+            });
+
+            container.appendChild(card);
+        });
+    }
+
+    // --- GESTIONE MODALE (window. per compatibilità HTML onclick) ---
+    window.openModal = function() {
+        apriModaleItem(null); // Nuovo inserimento
+    };
+
+    window.closeModal = function() {
+        chiudiModaleItem();
+    };
+
+    function apriModaleItem(item) {
+        if (!modal) return;
+        modal.style.display = 'flex';
+        
         if (item) {
+            // MODIFICA
+            editingId = item.id;
             document.getElementById('operaId').value = item.operaId;
             document.getElementById('museo').value = item.museo;
             document.getElementById('lunghezza').value = item.lunghezza;
             document.getElementById('linguaggio').value = item.linguaggio;
             document.getElementById('testo').value = item.testo;
+            if (brandTitle) brandTitle.innerHTML = `Modifica <span>Opera</span>`;
+        } else {
+            // NUOVO
+            editingId = null;
+            form.reset();
+            if (brandTitle) brandTitle.innerHTML = `Nuova <span>Opera</span>`;
         }
-    } else {
+    }
+
+    function chiudiModaleItem() {
+        if (!modal) return;
+        modal.style.display = 'none';
         form.reset();
         editingId = null;
     }
-    modal.style.display = 'flex';
-}
 
-function closeModal() {
-    document.getElementById('itemModal').style.display = 'none';
-    editingId = null;
-}
-
-function editItem(id) {
-    openModal(id);
-}
-
-// Avvio al caricamento pagina
-document.addEventListener('DOMContentLoaded', () => {
-    const form = document.getElementById('itemForm');
-    
+    // --- SALVATAGGIO FORM (Crea & Aggiorna) ---
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
-        const data = {
-            id: editingId || Date.now().toString(), // Genera ID se nuovo
+
+        const itemData = {
+            // Se modifico tengo ID, se nuovo ne creo uno basato sul timestamp
+            id: editingId ? editingId : Date.now().toString(),
             operaId: document.getElementById('operaId').value,
             museo: document.getElementById('museo').value,
             lunghezza: document.getElementById('lunghezza').value,
@@ -143,11 +192,32 @@ document.addEventListener('DOMContentLoaded', () => {
             testo: document.getElementById('testo').value
         };
 
-        saveLocal(data);
+        if (editingId) {
+            // Aggiorna nell'array
+            currentItems = currentItems.map(i => i.id === editingId ? itemData : i);
+        } else {
+            // Aggiungi all'array
+            currentItems.push(itemData);
+        }
+
+        syncToLocalStorage(); // Salva e renderizza
+        chiudiModaleItem();
     });
 
-    document.getElementById('searchText')?.addEventListener('input', loadItems);
-    
-    // Inizializza caricando dal LocalStorage
+    // --- RICERCA IN TEMPO REALE ---
+    searchInput?.addEventListener('input', (e) => {
+        const termine = e.target.value.toLowerCase();
+        
+        const filtrati = currentItems.filter(item => 
+            item.operaId.toLowerCase().includes(termine) || 
+            item.museo.toLowerCase().includes(termine) ||
+            item.testo.toLowerCase().includes(termine)
+        );
+        
+        renderItems(filtrati); // Renderizza solo i risultati
+    });
+
+    // --- AVVIO ---
     loadFromLocalStorage();
+
 });

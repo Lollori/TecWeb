@@ -1,6 +1,10 @@
 ﻿/* ── RESET ── */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
+html {
+  scroll-behavior: smooth;
+}
+
 /* ── BODY ── */
 body {
   font-family: 'Inter', sans-serif;
@@ -13,7 +17,7 @@ body {
 
 /* ── NAVBAR ── */
 .app-header {
-  position: fixed;
+  position: relative;
   top: 0;
   width: 100%;
   z-index: 1000;
@@ -36,6 +40,16 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: #ffffff;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
 }
 
 /* ── BOTTONI ── */

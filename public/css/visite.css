@@ -28,7 +28,10 @@
 
 .item-card h3 {
     margin: 0;
-    font-family: 'Fredoka', sans-serif;
+    padding-right:18%;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
     color: #1e293b;
     font-size: 1.3rem;
     border-bottom: 2px solid rgba(74, 124, 95, 0.2); /* Sottolineatura verdina */
@@ -36,9 +39,14 @@
 }
 
 .card-details p {
-    margin: 0.4rem 0;
-    color: #475569;
-    font-size: 0.95rem;
+    display: -webkit-box;
+    -webkit-line-clamp: 4; /* Numero massimo di righe visibili */
+    -webkit-box-orient: vertical;  
+    overflow: hidden;
+    text-overflow: ellipsis;
+    word-break: break-word; /* Spezza le parole se troppo lunghe */
+    margin-bottom: 10px;
+    line-height: 1.5;
 }
 
 .card-details i {
@@ -71,15 +79,9 @@
     right: 10px;
     display: flex;
     gap: 8px;
-    opacity: 0; /* Nascosti di default */
     transition: opacity 0.2s ease;
 }
 
-/* Appaiono quando passi col mouse sulla card o quando la card è selezionata */
-.item-card:hover .card-actions,
-.item-card.selected .card-actions {
-    opacity: 1;
-}
 
 .icon-btn {
     background-color: rgba(255, 255, 255, 0.9);
