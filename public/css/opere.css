@@ -274,9 +274,10 @@ body.admin-layout {
 .chart-container {
     position: relative;
     /* AGGIUNGI QUESTE DUE RIGHE SOTTO */
-    height: 300px; 
-    width: 100%;
-    margin-top: 15px;
+    height: 300px !important ;
+    width: 100% !important;
+    margin-top: 15px !important;
+    display: block !important;
 }
 
 /* =========================================
