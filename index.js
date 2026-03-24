@@ -38,6 +38,7 @@ global.startDate = null;
 
 const template = require(global.rootDir + '/scripts/tpl.js');
 const mymongo = require(global.rootDir + '/scripts/mongo.js');
+const musei = require(global.rootDir + '/scripts/musei.js');
 const express = require('express');
 const cors = require('cors')
 const path = require('path');
@@ -114,6 +115,60 @@ app.get('/db/create', async function (req, res) {
 });
 app.get('/db/search', async function (req, res) {
 	res.send(await mymongo.search(req.query, mongoCredentials))
+});
+
+
+
+
+/* ========================== */
+/*                            */
+/*        API MUSEI           */
+/*                            */
+/* ========================== */
+
+// Seed: carica i musei da musei.json nel database.
+// Da chiamare una volta sola per inizializzare i dati.
+// GET /api/musei/seed
+app.get('/api/musei/seed', async function (_req, res) {
+	const result = await musei.seed(mongoCredentials);
+	res.json(result);
+});
+
+// Legge tutti i musei. Supporta filtri opzionali via query string.
+// GET /api/musei
+// GET /api/musei?citta=Torino
+// GET /api/musei?nome=egizio
+app.get('/api/musei', async function (req, res) {
+	const result = await musei.getAll(mongoCredentials, req.query);
+	res.json(result);
+});
+
+// Legge un singolo museo tramite il suo codice ISIL.
+// GET /api/musei/IT-TO0576
+app.get('/api/musei/:codiceIsil', async function (req, res) {
+	const result = await musei.getOne(mongoCredentials, req.params.codiceIsil);
+	res.json(result);
+});
+
+// Crea un nuovo museo. I dati arrivano nel body JSON.
+// POST /api/musei
+app.post('/api/musei', async function (req, res) {
+	const result = await musei.create(mongoCredentials, req.body);
+	res.json(result);
+});
+
+// Aggiorna un museo esistente tramite codice ISIL.
+// PUT /api/musei/IT-TO0576
+app.put('/api/musei/:codiceIsil', async function (req, res) {
+	const result = await musei.update(mongoCredentials, req.params.codiceIsil, req.body);
+	res.json(result);
+});
+
+// Elimina un museo tramite codice ISIL.
+// DELETE /api/musei/IT-TO0576
+app.delete('/api/musei/:codiceIsil', async function (req, res) {
+	const result = await musei.remove(mongoCredentials, req.params.codiceIsil);
+	res.json(result);
 });
 
 
