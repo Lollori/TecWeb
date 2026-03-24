@@ -160,32 +160,38 @@ document.addEventListener('DOMContentLoaded', () => {
             card.className = 'item-card';
             const isMia = item.autore === currentUserId;
 
-            card.innerHTML = `
-                <div class="card-actions" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                    ${item.prezzo > 0 ? 
-                        `<span class="price-badge">€${item.prezzo}</span>` : 
-                        `<span class="free-badge">Gratuito</span>`
-                    }
-                    <div style="display:flex; gap:8px;">
+        card.innerHTML = `
+            <div class="card-main-header">
+                <div class="title-group">
+                    <h3>${item.operaId}</h3>
+                    <p class="museum-sub"><i class="fa-solid fa-museum"></i> ${item.museo}</p>
+                </div>
+                
+                <div class="action-group">
+                    <div class="badges-row">
+                        ${item.prezzo > 0 ? 
+                            `<span class="price-badge">€${item.prezzo}</span>` : 
+                            `<span class="free-badge">Gratis</span>`
+                        }
+                    </div>
+                    <div class="buttons-row">
                         ${isMia ? `
-                            <button type="button" class="icon-btn edit-btn" onclick="event.stopPropagation(); apriModaleItem(${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" class="icon-btn delete-btn" onclick="event.stopPropagation(); eliminaOpera('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                            <button class="icon-btn edit-btn" onclick="apriModaleItem(...)"><i class="fa-solid fa-pen"></i></button>
+                            <button class="icon-btn delete-btn" onclick="eliminaOpera('${item.id}')"><i class="fa-solid fa-trash"></i></button>
                         ` : ''}
                     </div>
                 </div>
-                <h3>${item.operaId}</h3>
-                <div class="card-details">
-                    <p><i class="fa-solid fa-museum"></i> ${item.museo}</p>
-                    <p class="description-text">${item.testo}</p>
-                </div>
-                <div class="card-tags" style="margin-top:auto; display:flex; justify-content:space-between; align-items:center; padding-top:15px; border-top:1px solid rgba(0,0,0,0.05);">
-                    <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
-                    ${!isMia ? 
-                        `<button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>` : 
-                        `<span style="font-size:0.8rem; font-weight:700; color:#2d5a3d;">${item.adozioni || 0} adozioni</span>`
-                    }
-                </div>
-            `;
+            </div>
+            
+            <div class="card-body">
+                <p class="description-text">${item.testo}</p>
+            </div>
+
+            <div class="card-footer">
+                <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
+                <span class="adozioni-count">${item.adozioni || 0} adozioni</span>
+            </div>
+        `;
             container.appendChild(card);
         });
     }
