@@ -245,10 +245,37 @@ body.admin-layout {
 }
 
 /* =========================================
-   4. DASHBOARD & STATS (SIDEBAR COMPLETA)
+   4. DASHBOARD & STATS (GLASSMORPHISM & BLUR)
    ========================================= */
 
-/* Posizionamento fisso a destra */
+/* Overlay sfuocato per tutto il corpo pagina */
+body::after {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.2);
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s ease;
+}
+
+/* Attivazione sfuocatura quando si tocca una card */
+body:has(.mini-stat-card:hover)::after {
+    opacity: 1;
+    visibility: visible;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+body:has(.mini-stat-card:hover) .items-grid {
+    filter: blur(2px);
+    transition: filter 0.4s ease;
+}
+
+/* Sidebar fissa */
 .stats-sidebar {
     position: fixed;
     right: 25px;
@@ -256,11 +283,11 @@ body.admin-layout {
     display: flex;
     flex-direction: column;
     gap: 15px;
-    z-index: 999;
+    z-index: 1000;
     width: 170px;
 }
 
-/* Card base con animazione */
+/* Card Statistica */
 .mini-stat-card {
     background: white !important;
     padding: 14px;
@@ -277,48 +304,26 @@ body.admin-layout {
 
 .mini-stat-card:hover {
     transform: scale(1.1) translateX(-5px);
-    z-index: 1000;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+    z-index: 1001;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
-/* Layout testi interni */
-.stat-ring-container {
-    width: 42px;
-    height: 42px;
-    flex-shrink: 0;
-}
-
-.stat-texts {
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-texts small {
-    font-size: 0.6rem;
-    color: #999;
-    text-transform: uppercase;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.stat-texts strong {
-    font-size: 1.1rem;
-    color: #2d5a3d;
-    font-weight: 800;
-}
-
-/* --- TOOLTIP (LISTA COMPLETA) --- */
+/* Tooltip ad effetto Vetro Sfuocato */
 .stat-tooltip {
     position: absolute;
-    right: 115%; /* Appare a sinistra */
-    top: 0;
-    width: 240px;
-    max-height: 300px;
-    background: #2d5a3d;
+    right: 120%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 260px;
+    max-height: 320px;
+    background: rgba(45, 90, 61, 0.85) !important; /* Colore brand trasparente */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     color: white;
-    padding: 15px;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    padding: 18px;
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: flex;
     flex-direction: column;
     opacity: 0;
@@ -332,12 +337,11 @@ body.admin-layout {
     visibility: visible;
 }
 
+/* Lista e Scrollbar */
 .stat-tooltip-list {
     overflow-y: auto;
-    padding-right: 5px;
+    padding-right: 8px;
 }
-
-/* Scrollbar Tooltip */
 .stat-tooltip-list::-webkit-scrollbar { width: 4px; }
 .stat-tooltip-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
 
@@ -345,9 +349,9 @@ body.admin-layout {
     font-size: 0.7rem;
     font-weight: 800;
     text-transform: uppercase;
-    border-bottom: 1px solid rgba(255,255,255,0.2);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
     margin-bottom: 10px;
-    padding-bottom: 5px;
+    padding-bottom: 8px;
     display: flex;
     justify-content: space-between;
 }
@@ -355,31 +359,23 @@ body.admin-layout {
 .tooltip-row {
     display: flex;
     justify-content: space-between;
-    font-size: 0.8rem;
-    padding: 6px 0;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    font-size: 0.85rem;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
-/* --- CERCHI SVG --- */
+/* Cerchi SVG */
+.stat-ring-container { width: 42px; height: 42px; flex-shrink: 0; }
+.stat-texts { display: flex; flex-direction: column; }
+.stat-texts small { font-size: 0.6rem; color: #999; text-transform: uppercase; font-weight: 700; }
+.stat-texts strong { font-size: 1.1rem; color: #2d5a3d; font-weight: 800; }
+
 .c-bg { fill: none; stroke: #f0f0f0; stroke-width: 4; }
-.c-fill { 
-    fill: none; 
-    stroke-width: 4; 
-    stroke-linecap: round; 
-    transition: stroke-dashoffset 0.8s ease; 
-}
+.c-fill { fill: none; stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.8s ease; }
 
-/* Mobile Fix */
 @media (max-width: 1200px) {
-    .stats-sidebar {
-        position: relative;
-        flex-direction: row;
-        width: 100%;
-        right: 0; top: 0;
-        margin-bottom: 30px;
-        justify-content: center;
-    }
-    .stat-tooltip { display: none; } /* Nascondiamo i tooltip su mobile per spazio */
+    .stats-sidebar { position: relative; flex-direction: row; width: 100%; right: 0; top: 0; margin-bottom: 30px; justify-content: center; }
+    .stat-tooltip { display: none; }
 }
 
 /* =========================================

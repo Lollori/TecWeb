@@ -31,13 +31,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalAdo = mieOpere.reduce((sum, item) => sum + (item.adozioni || 0), 0);
         const totalRic = mieOpere.reduce((sum, item) => sum + ((item.adozioni || 0) * (item.prezzo || 0)), 0);
 
-        // Funzione per generare la lista COMPLETA delle opere
+        // Funzione per generare la lista completa per il tooltip
         const generateFullList = (isMoney) => {
             return mieOpere.map(op => {
-                const val = isMoney ? `€${((op.adozioni || 0) * (op.prezzo || 0)).toFixed(2)}` : op.adozioni;
+                const val = isMoney 
+                    ? `€${((op.adozioni || 0) * (op.prezzo || 0)).toFixed(2)}` 
+                    : `${op.adozioni || 0}`;
                 return `
                     <div class="tooltip-row">
-                        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${op.operaId}</span>
+                        <span style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${op.operaId}</span>
                         <span style="font-weight: 700;">${val}</span>
                     </div>`;
             }).join('');
@@ -48,16 +50,16 @@ document.addEventListener('DOMContentLoaded', () => {
             const circum = 2 * Math.PI * r;
             const offset = circum - (Math.min(percent, 100) / 100) * circum;
             return `
-                <svg width="40" height="40" viewBox="0 0 40 40">
-                    <circle cx="20" cy="20" r="${r}" fill="none" stroke="#f0f0f0" stroke-width="4"/>
-                    <circle cx="20" cy="20" r="${r}" fill="none" stroke="${color}" 
-                        stroke-width="4" stroke-dasharray="${circum}" 
-                        stroke-dashoffset="${offset}" stroke-linecap="round"
-                        transform="rotate(-90 20 20)" style="transition: stroke-dashoffset 0.6s ease;"/>
+                <svg width="42" height="42" viewBox="0 0 40 40">
+                    <circle class="c-bg" cx="20" cy="20" r="${r}" />
+                    <circle class="c-fill" cx="20" cy="20" r="${r}" 
+                        stroke="${color}" 
+                        stroke-dasharray="${circum}" 
+                        stroke-dashoffset="${offset}" 
+                        transform="rotate(-90 20 20)" />
                 </svg>`;
         };
 
-        // Iniezione HTML con lista completa
         dashboard.innerHTML = `
             <div class="mini-stat-card">
                 <div class="stat-ring-container">${getRingSVG((totalAdo / 100) * 100, '#2d5a3d')}</div>
@@ -66,7 +68,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>${totalAdo}</strong>
                 </div>
                 <div class="stat-tooltip">
-                    <div class="tooltip-header"><span>Opera</span><span>Adozioni</span></div>
+                    <div class="tooltip-header"><span>Titolo Opera</span><span>Adozioni</span></div>
                     <div class="stat-tooltip-list">${generateFullList(false)}</div>
                 </div>
             </div>
@@ -78,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <strong>€${totalRic.toFixed(2)}</strong>
                 </div>
                 <div class="stat-tooltip">
-                    <div class="tooltip-header"><span>Opera</span><span>Guadagno</span></div>
+                    <div class="tooltip-header"><span>Titolo Opera</span><span>Ricavo</span></div>
                     <div class="stat-tooltip-list">${generateFullList(true)}</div>
                 </div>
             </div>
