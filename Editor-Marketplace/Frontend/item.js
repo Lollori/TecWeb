@@ -147,19 +147,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- RENDER CARD ---
     function renderItems(dati) {
-        if (!container) return;
-        container.innerHTML = ''; 
+    if (!container) return;
+    container.innerHTML = ''; 
 
-        if (dati.length === 0) {
-            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
-            return;
-        }
+    if (dati.length === 0) {
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
+        return;
+    }
 
-        dati.forEach(item => {
-            const card = document.createElement('div');
-            card.className = 'item-card';
-            const isMia = item.autore === currentUserId;
+    dati.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        const isMia = item.autore === currentUserId;
 
+        // Creiamo l'HTML con la NUOVA struttura allineata al CSS
         card.innerHTML = `
             <div class="card-main-header">
                 <div class="title-group">
@@ -176,9 +177,11 @@ document.addEventListener('DOMContentLoaded', () => {
                     </div>
                     <div class="buttons-row">
                         ${isMia ? `
-                            <button class="icon-btn edit-btn" onclick="apriModaleItem(...)"><i class="fa-solid fa-pen"></i></button>
-                            <button class="icon-btn delete-btn" onclick="eliminaOpera('${item.id}')"><i class="fa-solid fa-trash"></i></button>
-                        ` : ''}
+                            <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                        ` : `
+                            <button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>
+                        `}
                     </div>
                 </div>
             </div>
@@ -192,9 +195,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 <span class="adozioni-count">${item.adozioni || 0} adozioni</span>
             </div>
         `;
-            container.appendChild(card);
-        });
-    }
+
+        // AGGANCIAMO GLI EVENTI AI BOTTONI (Questo risolve il problema del click)
+        if (isMia) {
+            const btnEdit = card.querySelector('.edit-btn');
+            const btnDelete = card.querySelector('.delete-btn');
+
+            btnEdit.addEventListener('click', (e) => {
+                e.stopPropagation();
+                apriModaleItem(item); // Passiamo l'oggetto item alla funzione globale
+            });
+
+            btnDelete.addEventListener('click', (e) => {
+                e.stopPropagation();
+                eliminaOpera(item.id);
+            });
+        }
+
+        container.appendChild(card);
+    });
+}
 
     // --- GESTIONE MODALE ---
     window.apriModaleItem = function(item) {
