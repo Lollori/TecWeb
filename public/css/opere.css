@@ -318,3 +318,17 @@ input:focus { border-color: #22c55e; box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.1
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/*prova marketplace*/
+.filters-row { display: flex; gap: 1rem; align-items: center; margin-bottom: 1rem; }
+.filter-toggle button { padding: 0.5rem 1rem; border: 1px solid #4a7c5f; background: white; cursor: pointer; }
+.filter-toggle .active { background: #4a7c5f; color: white; }
+.filter-selects select { padding: 0.5rem; border: 1px solid #ddd; }
+.price-badge { background: #ff6b35; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; }
+.free-badge { background: #4a7c5f; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem; }
+.adozioni { font-size: 0.8rem; color: #666; margin-left: auto; }
+.btn-add { background: #4a7c5f; color: white; border: none; padding: 0.3rem 0.8rem; border-radius: 6px; }
+.stats-section { margin-top: 2rem; padding: 1rem; background: #f8f9fa; border-radius: 12px; }
+.stats-table { width: 100%; border-collapse: collapse; }
+.stats-table th, .stats-table td { padding: 0.8rem; text-align: left; border-bottom: 1px solid #eee; }
+.checkbox-row { display: flex; align-items: center; gap: 0.5rem; }
