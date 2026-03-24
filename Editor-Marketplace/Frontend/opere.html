@@ -49,9 +49,13 @@
         <div class="header-toolbar">
             <!-- NUOVI FILTRI MARKETPLACE -->
             <div class="filters-row">
-                <div class="filter-toggle">
-                    <button id="filterMie" class="filter-btn active" onclick="setFilter('mie')">Le mie opere</button>
-                    <button id="filterTutte" class="filter-btn" onclick="setFilter('tutte')">Tutte sul marketplace</button>
+                <div class="filter-toggle-container">
+                    <button id="filterMie" class="filter-btn active" onclick="setFilter('mie')">
+                        <i class="fa-solid fa-user-gear"></i> Le mie opere
+                    </button>
+                    <button id="filterTutte" class="filter-btn" onclick="setFilter('tutte')">
+                        <i class="fa-solid fa-globe"></i> Marketplace
+                    </button>
                 </div>
                 <div class="filter-selects">
                     <select id="filterPrezzo" onchange="applyFilters()">
@@ -66,7 +70,7 @@
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="searchText" placeholder="Cerca opera..." oninput="applyFilters()">
             </div>
-            <button onclick="openModal()" class="btn-primary-glass">
+            <button onclick="apriModaleItem()" class="btn-primary-glass">
                 <i class="fa-solid fa-plus"></i> Nuovo Item
             </button>
         </div>
