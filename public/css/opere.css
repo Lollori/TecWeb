@@ -97,29 +97,30 @@ body.admin-layout {
 /* La Toolbar che contiene tutto */
 .header-toolbar {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 16px;
+    align-items: center; /* Allineamento verticale perfetto */
+    justify-content: center; /* Centra tutto orizzontalmente */
+    gap: 16px; /* Spazio uniforme tra gli elementi */
     margin-top: 30px;
-    flex-wrap: wrap;
+    width: 100%;
+    flex-wrap: wrap; /* Per evitare sovrapposizioni su schermi piccoli */
 }
 
 /* Segmented Control (Le mie opere / Marketplace) */
 .filter-toggle-container {
     display: flex;
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(8px);
     padding: 5px;
     border-radius: 14px;
-    border: 1px solid var(--glass-border);
-    box-shadow: var(--shadow-soft);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
 .filter-btn {
     padding: 10px 20px;
     border: none;
     background: transparent;
-    color: var(--primary-light);
+    color: #4a7c5f;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
@@ -128,24 +129,68 @@ body.admin-layout {
     display: flex;
     align-items: center;
     gap: 8px;
+    white-space: nowrap;
 }
 
 .filter-btn.active {
-    background: var(--primary-dark);
+    background: #2d5a3d;
     color: white;
+    box-shadow: 0 4px 10px rgba(45, 90, 61, 0.2);
 }
+
+.select-wrapper-glass {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#filterPrezzo {
+    appearance: none; /* Rimuove lo stile standard del browser */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid white;
+    padding: 12px 40px 12px 15px; /* Spazio per l'icona a destra */
+    border-radius: 14px;
+    color: #2d5a3d;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    transition: all 0.3s ease;
+    min-width: 160px;
+}
+
+#filterPrezzo:hover {
+    background: rgba(255, 255, 255, 0.8);
+}
+
+.select-icon {
+    position: absolute;
+    right: 15px;
+    color: #2d5a3d;
+    pointer-events: none; /* L'icona non blocca il click */
+    font-size: 0.8rem;
+}
+
 
 /* Search Box */
 .search-box-glass {
-    flex: 1;
-    max-width: 350px;
     display: flex;
     align-items: center;
     padding: 8px 15px;
-    background: var(--glass-bg);
+    background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(8px);
     border-radius: 14px;
-    border: 1px solid var(--glass-border);
+    border: 1px solid white;
+    flex: 1; /* Prende lo spazio rimanente */
+    max-width: 350px;
+}
+
+.search-icon {
+    color: #4a7c5f;
+    margin-right: 10px;
 }
 
 .search-box-glass input {
@@ -153,14 +198,13 @@ body.admin-layout {
     border: none;
     background: transparent;
     outline: none;
-    padding: 5px 10px;
-    color: var(--primary-dark);
+    color: #2d5a3d;
+    font-size: 0.9rem;
 }
 
-/* Button Nuovo Item */
 .btn-primary-glass {
-    padding: 12px 24px;
-    background: var(--primary-dark);
+    padding: 13px 25px;
+    background: #2d5a3d;
     color: white;
     border: none;
     border-radius: 14px;
@@ -168,6 +212,9 @@ body.admin-layout {
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
     box-shadow: 0 4px 15px rgba(45, 90, 61, 0.3);
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .btn-primary-glass:hover {
@@ -299,9 +346,22 @@ body.admin-layout {
    7. RESPONSIVE
    ========================================= */
 @media (max-width: 768px) {
-    .header-toolbar { flex-direction: column; width: 100%; }
-    .search-box-glass, .filter-toggle-container { width: 100%; max-width: none; }
-    .header-text h1 { font-size: 2rem; }
+    .header-toolbar {
+        flex-direction: column; /* Incolonna gli elementi */
+        gap: 12px;
+    }
+
+    .select-wrapper-glass, 
+    .search-box-glass, 
+    .filter-toggle-container, 
+    .btn-primary-glass {
+        width: 100%; /* Tutto a larghezza piena */
+        max-width: none;
+    }
+
+    #filterPrezzo {
+        width: 100%;
+    }
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

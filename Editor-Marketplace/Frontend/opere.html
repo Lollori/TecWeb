@@ -47,29 +47,29 @@
         </div>
         
         <div class="header-toolbar">
-            <!-- NUOVI FILTRI MARKETPLACE -->
-            <div class="filters-row">
-                <div class="filter-toggle-container">
-                    <button id="filterMie" class="filter-btn active" onclick="setFilter('mie')">
-                        <i class="fa-solid fa-user-gear"></i> Le mie opere
-                    </button>
-                    <button id="filterTutte" class="filter-btn" onclick="setFilter('tutte')">
-                        <i class="fa-solid fa-globe"></i> Marketplace
-                    </button>
-                </div>
-                <div class="filter-selects">
-                    <select id="filterPrezzo" onchange="applyFilters()">
-                        <option value="tutti">Tutti i prezzi</option>
-                        <option value="gratuiti">Solo gratuiti</option>
-                        <option value="pagamento">A pagamento</option>
-                    </select>
-                </div>
+            <div class="filter-toggle-container">
+                <button id="filterMie" class="filter-btn active" onclick="setFilter('mie')">
+                    <i class="fa-solid fa-user-gear"></i> Le mie opere
+                </button>
+                <button id="filterTutte" class="filter-btn" onclick="setFilter('tutte')">
+                    <i class="fa-solid fa-globe"></i> Marketplace
+                </button>
             </div>
-            
+
+            <div class="select-wrapper-glass">
+                <select id="filterPrezzo" onchange="applyFilters()">
+                    <option value="tutti">Tutti i prezzi</option>
+                    <option value="gratuiti">Solo gratuiti</option>
+                    <option value="pagamento">A pagamento</option>
+                </select>
+                <i class="fa-solid fa-chevron-down select-icon"></i>
+            </div>
+
             <div class="search-box-glass">
-                <i class="fa-solid fa-magnifying-glass"></i>
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
                 <input type="text" id="searchText" placeholder="Cerca opera..." oninput="applyFilters()">
             </div>
+
             <button onclick="apriModaleItem()" class="btn-primary-glass">
                 <i class="fa-solid fa-plus"></i> Nuovo Item
             </button>
