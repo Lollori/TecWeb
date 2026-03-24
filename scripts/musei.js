@@ -4,7 +4,9 @@ Gestione musei con Mongoose.
 Segue lo stesso pattern di mongoDB.js del professore.
 */
 
+console.log('[musei.js] modulo caricato');
 const mongoose = require("mongoose");
+console.log('[musei.js] mongoose importato');
 
 // ── SCHEMA ──────────────────────────────────────────────────────────────────
 // Lo Schema descrive la "forma" di un documento museo in MongoDB.
@@ -22,6 +24,7 @@ const museoSchema = new mongoose.Schema({
 // Il "Model" è la classe che usiamo per interagire con la collection "museos" in MongoDB.
 // Mongoose crea automaticamente la collection al plurale del nome ("Museo" → "museos").
 const Museo = mongoose.model("Museo", museoSchema);
+console.log('[musei.js] schema e model definiti');
 
 mongoose.set("strictQuery", false);
 
@@ -52,9 +55,11 @@ async function disconnect() {
 // Legge musei.json, svuota la collection, reinserisce tutto.
 // Utile per inizializzare o resettare i dati.
 exports.seed = async (credentials) => {
+    console.log('[musei.js] seed() chiamato');
     const fs = require("fs").promises;
     let debug = [];
     try {
+        console.log('[musei.js] tentativo connessione MongoDB...');
         await connect(credentials);
         debug.push("Connesso a MongoDB.");
 

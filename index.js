@@ -38,7 +38,13 @@ global.startDate = null;
 
 const template = require(global.rootDir + '/scripts/tpl.js');
 const mymongo = require(global.rootDir + '/scripts/mongo.js');
-const musei = require(global.rootDir + '/scripts/musei.js');
+let musei;
+try {
+    musei = require(global.rootDir + '/scripts/musei.js');
+    console.log('[index.js] scripts/musei.js caricato correttamente');
+} catch(e) {
+    console.error('[index.js] ERRORE nel caricare scripts/musei.js:', e.message);
+}
 const express = require('express');
 const cors = require('cors')
 const path = require('path');
@@ -128,6 +134,16 @@ app.get('/db/search', async function (req, res) {
 /*        API MUSEI           */
 /*                            */
 /* ========================== */
+
+// Route di test: verifica che il server risponda alle route dinamiche
+// senza toccare MongoDB. GET /api/test → {"ok":true}
+app.get('/api/test', (_req, res) => {
+    console.log('[index.js] /api/test chiamato');
+    res.json({ ok: true, message: 'Il server risponde correttamente.' });
+});
+
+console.log('[index.js] route /api/test registrata');
+console.log('[index.js] musei module disponibile:', !!musei);
 
 // Seed: carica i musei da musei.json nel database.
 // Da chiamare una volta sola per inizializzare i dati.
