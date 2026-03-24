@@ -247,56 +247,59 @@ body.admin-layout {
 /* =========================================
    4. DASHBOARD & GRAFICI - FIX FINALE
    ========================================= */
-  .mini-stats-aside {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      position: fixed; /* Lo tiene fisso a lato dello schermo */
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 100;
-      width: 180px;
-  }
+  .stats-sidebar {
+    position: fixed;
+    right: 20px;
+    top: 160px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 999;
+    width: 160px;
+}
 
-  .mini-stat-item {
-      background: white;
-      padding: 15px;
-      border-radius: 15px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border: 1px solid rgba(0,0,0,0.05);
-  }
+.mini-stat-card {
+    background: white !important;
+    padding: 12px;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border: 1px solid #eee;
+}
 
-  .stat-info h4 {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      color: #666;
-      margin: 0;
-  }
+.stat-ring-container {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
 
-  .stat-info span {
-      font-size: 1.1rem;
-      font-weight: 800;
-      color: #2d5a3d;
-  }
+.stat-texts {
+    display: flex;
+    flex-direction: column;
+}
 
-  .svg-container {
-      width: 50px;
-      height: 50px;
-  }
+.stat-texts small {
+    font-size: 0.65rem;
+    color: #888;
+    text-transform: uppercase;
+    font-weight: 700;
+}
 
-  /* Stile del cerchio SVG */
-  .circle-bg { fill: none; stroke: #eee; stroke-width: 3; }
-  .circle-progress {
-      fill: none;
-      stroke: #2d5a3d;
-      stroke-width: 3;
-      stroke-linecap: round;
-      transition: stroke-dasharray 0.5s ease;
-  }
+.stat-texts strong {
+    font-size: 1rem;
+    color: #2d5a3d;
+}
+
+/* Cerchi SVG */
+.c-bg { fill: none; stroke: #f0f0f0; stroke-width: 4; }
+.c-fill { 
+    fill: none; 
+    stroke-width: 4; 
+    stroke-linecap: round; 
+    transition: stroke-dashoffset 0.6s ease; 
+}
 /* =========================================
    5. GRID & CARDS OPERE
    ========================================= */

@@ -16,13 +16,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFilter = 'mie'; 
     let currentUserId = 'autore1'; 
 
-    // --- 1. FUNZIONE MINI-STATISTICHE (SVG PROGRESS) ---
+    // --- 1. FUNZIONE MINI-STATISTICHE (SVG RING) ---
     function updateCharts() {
+        // Prendiamo solo le opere dell'utente corrente
         const mieOpere = currentItems.filter(item => item.autore === currentUserId);
         const dashboard = document.getElementById('statsDashboard');
         
         if (!dashboard) return;
 
+        // Gestione visibilità
         if (mieOpere.length === 0) {
             dashboard.style.display = 'none';
             return;
@@ -33,45 +35,46 @@ document.addEventListener('DOMContentLoaded', () => {
         const totalAdo = mieOpere.reduce((sum, item) => sum + (item.adozioni || 0), 0);
         const totalRic = mieOpere.reduce((sum, item) => sum + ((item.adozioni || 0) * (item.prezzo || 0)), 0);
 
-        // Obiettivi per il calcolo della percentuale (es. 100 adozioni e 500€ ricavi)
-        const goalAdo = 100;
-        const goalRic = 500;
+        // Obiettivi per riempire il cerchio (es. 50 adozioni e 100€)
+        const goalAdo = 50;
+        const goalRic = 100;
 
-        // Funzione interna per iniettare l'SVG
-        const renderRing = (containerId, value, label, subValue, color, percent) => {
-            const target = dashboard.querySelector(containerId);
-            if (!target) return;
-
-            const radius = 18;
-            const circum = 2 * Math.PI * radius;
+        // Funzione per generare il codice SVG di un anello
+        const getRingSVG = (percent, color) => {
+            const r = 16;
+            const circum = 2 * Math.PI * r;
             const offset = circum - (Math.min(percent, 100) / 100) * circum;
-
-            target.innerHTML = `
-                <div class="mini-stat-card">
-                    <div class="stat-ring">
-                        <svg width="45" height="45" viewBox="0 0 50 50">
-                            <circle cx="25" cy="25" r="${radius}" fill="none" stroke="#eee" stroke-width="4"/>
-                            <circle cx="25" cy="25" r="${radius}" fill="none" stroke="${color}" 
-                                stroke-width="4" stroke-dasharray="${circum}" 
-                                stroke-dashoffset="${offset}" stroke-linecap="round"
-                                transform="rotate(-90 25 25)" style="transition: stroke-dashoffset 0.6s ease-out;"/>
-                        </svg>
-                        <span class="stat-perc">${Math.round(percent)}%</span>
-                    </div>
-                    <div class="stat-details">
-                        <span class="stat-label">${label}</span>
-                        <span class="stat-value">${subValue}</span>
-                    </div>
-                </div>
+            return `
+                <svg width="40" height="40" viewBox="0 0 40 40">
+                    <circle cx="20" cy="20" r="${r}" fill="none" stroke="#f0f0f0" stroke-width="4"/>
+                    <circle cx="20" cy="20" r="${r}" fill="none" stroke="${color}" 
+                        stroke-width="4" stroke-dasharray="${circum}" 
+                        stroke-dashoffset="${offset}" stroke-linecap="round"
+                        transform="rotate(-90 20 20)" style="transition: stroke-dashoffset 0.6s ease;"/>
+                </svg>
             `;
         };
 
-        // Renderizziamo i due anelli
-        renderRing('.stat-card:nth-child(1)', totalAdo, 'Adozioni Totali', totalAdo, '#2d5a3d', (totalAdo / goalAdo) * 100);
-        renderRing('.stat-card:nth-child(2)', totalRic, 'Ricavi Stimati', `€${totalRic.toFixed(2)}`, '#ff6b35', (totalRic / goalRic) * 100);
+        // Iniezione diretta dell'HTML nella sidebar
+        dashboard.innerHTML = `
+            <div class="mini-stat-card">
+                <div class="stat-ring-container">${getRingSVG((totalAdo / goalAdo) * 100, '#2d5a3d')}</div>
+                <div class="stat-texts">
+                    <small>Adozioni</small>
+                    <strong>${totalAdo}</strong>
+                </div>
+            </div>
+            <div class="mini-stat-card">
+                <div class="stat-ring-container">${getRingSVG((totalRic / goalRic) * 100, '#ff6b35')}</div>
+                <div class="stat-texts">
+                    <small>Ricavi</small>
+                    <strong>€${totalRic.toFixed(2)}</strong>
+                </div>
+            </div>
+        `;
     }
 
-    // --- 2. GESTIONE FILTRI ---
+    // --- 2. FILTRI & RICERCA ---
     window.setFilter = function(filter) {
         currentFilter = filter;
         if(filterMieBtn) filterMieBtn.classList.toggle('active', filter === 'mie');
@@ -86,15 +89,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (item) {
             item.adozioni = (item.adozioni || 0) + 1;
             syncToLocalStorage();
+            alert(`Hai adottato "${item.operaId}"!`);
         }
     };
 
-    // --- 3. LOGICA DATI (LOCAL STORAGE) ---
+    // --- 3. GESTIONE DATI (LOCALSTORAGE) ---
     function loadFromLocalStorage() {
         const savedData = localStorage.getItem('opere_marketplace');
         if (savedData) {
             currentItems = JSON.parse(savedData);
         } else {
+            // Dati demo iniziali
             currentItems = [
                 {id:'1', operaId:'La Primavera', museo:'Uffizi', testo:'Capolavoro di Botticelli', lunghezza:'1min', linguaggio:'medio', licenza:'gratuita', prezzo:0, pubblica:true, autore:'autore1', adozioni:12},
                 {id:'2', operaId:'Notte Stellata', museo:'MOMA', testo:'Celebre opera di Van Gogh', lunghezza:'15s', linguaggio:'infantile', licenza:'pagamento', prezzo:3.50, pubblica:true, autore:'autore1', adozioni:5}
@@ -106,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function syncToLocalStorage() {
         localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
-        loadItems();
+        loadItems(); // Questo scatena anche updateCharts()
     }
 
     function loadItems() {
@@ -125,13 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCharts(); 
     }
 
-    // --- 4. RENDER CARD OPERE ---
+    // --- 4. RENDER CARD ---
     function renderItems(dati) {
         if (!container) return;
         container.innerHTML = ''; 
 
         if (dati.length === 0) {
-            container.innerHTML = '<p class="empty-msg">Nessuna opera trovata.</p>';
+            container.innerHTML = '<p style="grid-column:1/-1; text-align:center; padding:50px; color:#4a7c5f;">Nessun contenuto trovato.</p>';
             return;
         }
 
@@ -173,7 +178,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- 5. MODALE & AZIONI ---
+    // --- 5. MODALE & FORM ---
     window.apriModaleItem = (item) => {
         modal.style.display = 'flex';
         if (item) {
@@ -197,7 +202,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.closeModal = () => { modal.style.display = 'none'; editingId = null; };
 
     window.eliminaOpera = (id) => {
-        if (confirm("Eliminare quest'opera?")) {
+        if (confirm("Eliminare definitivamente quest'opera?")) {
             currentItems = currentItems.filter(i => i.id !== id);
             syncToLocalStorage();
         }
