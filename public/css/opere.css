@@ -273,8 +273,10 @@ body.admin-layout {
 
 .chart-container {
     position: relative;
-    height: 250px;
+    /* AGGIUNGI QUESTE DUE RIGHE SOTTO */
+    height: 300px; 
     width: 100%;
+    margin-top: 15px;
 }
 
 /* =========================================
@@ -598,3 +600,18 @@ body.admin-layout {
 }
 
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+/* Fix specifico per Desktop */
+@media (min-width: 1024px) {
+    .stats-dashboard-container {
+        gap: 40px; /* Più spazio tra i due grafici su schermi grandi */
+    }
+    
+    .stat-card {
+        padding: 30px;
+    }
+
+    .chart-container {
+        height: 350px; /* Grafici leggermente più grandi su PC */
+    }
+}

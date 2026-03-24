@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
 
         const commonOptions = {
+            responsive: true,
             maintainAspectRatio: false,
             plugins: {
                 legend: { 
