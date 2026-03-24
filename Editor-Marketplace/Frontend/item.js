@@ -53,17 +53,27 @@ document.addEventListener('DOMContentLoaded', () => {
             // Configurazione comune per entrambi i grafici
             const commonOptions = {
                 responsive: true,
-                maintainAspectRatio: false, // Obbligatorio per usare l'altezza del CSS (320px)
+                maintainAspectRatio: false, // Fondamentale per leggere l'altezza del CSS
                 layout: {
-                    padding: { top: 10, bottom: 10 }
+                    padding: {
+                        top: 30,    // Forza spazio sopra il cerchio
+                        bottom: 30, // Forza spazio sotto il cerchio
+                        left: 20,
+                        right: 20
+                    }
                 },
                 plugins: {
                     legend: { 
                         position: 'bottom',
+                        display: true,
                         labels: { 
                             usePointStyle: true, 
-                            padding: 20, 
-                            font: { family: 'Inter', size: 12, weight: '600' },
+                            padding: 30, // Spinge la legenda lontano dal grafico
+                            font: { 
+                                family: 'Inter', 
+                                size: 12, 
+                                weight: '600' 
+                            },
                             color: '#2d5a3d'
                         }
                     },
@@ -79,9 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }
                 },
-                cutout: '75%', // Effetto ciambella elegante
+                cutout: '70%', // Leggermente più spesso per renderlo più visibile
                 animation: {
-                    duration: 800,
+                    duration: 1000,
                     easing: 'easeOutQuart'
                 }
             };
