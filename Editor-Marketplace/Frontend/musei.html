@@ -1,1 +1,164 @@
-LALALALALALALALA
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtAround – Gestione Musei</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body { font-family: Inter, sans-serif; background: #f5f5f5; margin: 0; padding: 0; }
+
+        .top-bar {
+            background: #1a1a2e; color: white; padding: 1rem 2rem;
+            display: flex; align-items: center; gap: 1rem;
+        }
+        .top-bar a { color: #aaa; text-decoration: none; font-size: 0.9rem; }
+        .top-bar a:hover { color: white; }
+        .top-bar h1 { margin: 0; font-size: 1.3rem; flex: 1; }
+
+        .toolbar {
+            background: white; padding: 1rem 2rem; border-bottom: 1px solid #ddd;
+            display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+        }
+        .toolbar input {
+            padding: 0.5rem 1rem; border: 1px solid #ccc; border-radius: 6px;
+            font-size: 0.9rem; width: 220px;
+        }
+        .btn {
+            padding: 0.5rem 1.2rem; border: none; border-radius: 6px;
+            cursor: pointer; font-size: 0.9rem; font-weight: 500;
+        }
+        .btn-primary { background: #4a6cf7; color: white; }
+        .btn-primary:hover { background: #3a5ce7; }
+        .btn-danger  { background: #e53935; color: white; }
+        .btn-danger:hover  { background: #c62828; }
+        .btn-secondary { background: #eee; color: #333; }
+        .btn-secondary:hover { background: #ddd; }
+        .btn-seed { background: #43a047; color: white; }
+        .btn-seed:hover { background: #388e3c; }
+
+        .container { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+
+        .status-msg {
+            padding: 0.75rem 1rem; border-radius: 6px; margin-bottom: 1rem;
+            display: none;
+        }
+        .status-msg.ok  { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .status-msg.err { background: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+
+        .musei-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .museo-card {
+            background: white; border-radius: 10px; overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .museo-card img {
+            width: 100%; height: 160px; object-fit: cover;
+            background: #ddd;
+        }
+        .museo-card img.placeholder {
+            display: flex; align-items: center; justify-content: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            height: 160px; color: white; font-size: 3rem;
+        }
+        .card-body { padding: 1rem; }
+        .card-body h3 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+        .card-body .citta { color: #666; font-size: 0.85rem; margin-bottom: 0.5rem; }
+        .card-body .isil { font-size: 0.75rem; color: #999; font-family: monospace; }
+        .card-body p { font-size: 0.85rem; color: #444; margin: 0.5rem 0; }
+        .card-actions { padding: 0.75rem 1rem; border-top: 1px solid #f0f0f0; display: flex; gap: 0.5rem; }
+
+        /* Modal */
+        .modal-overlay {
+            display: none; position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5); z-index: 100;
+            align-items: center; justify-content: center;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal {
+            background: white; border-radius: 12px; padding: 2rem;
+            width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto;
+        }
+        .modal h2 { margin: 0 0 1.5rem; font-size: 1.3rem; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+        .form-group input, .form-group textarea {
+            width: 100%; padding: 0.5rem 0.75rem; border: 1px solid #ccc;
+            border-radius: 6px; font-size: 0.9rem; box-sizing: border-box;
+        }
+        .form-group textarea { height: 80px; resize: vertical; }
+        .modal-actions { display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 1.5rem; }
+
+        .empty-state { text-align: center; padding: 3rem; color: #999; }
+        .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <a href="/Editor-Marketplace/Frontend/menu.html"><i class="fa fa-arrow-left"></i></a>
+    <h1>Gestione Musei</h1>
+</div>
+
+<div class="toolbar">
+    <input type="text" id="searchInput" placeholder="Cerca per nome o città..." oninput="filterMusei()">
+    <button class="btn btn-primary" onclick="openModal()"><i class="fa fa-plus"></i> Nuovo museo</button>
+    <button class="btn btn-seed" onclick="seedDB()" title="Carica i musei dal file JSON nel database">
+        <i class="fa fa-database"></i> Inizializza DB
+    </button>
+</div>
+
+<div class="container">
+    <div class="status-msg" id="statusMsg"></div>
+    <div class="musei-grid" id="museiGrid">
+        <div class="empty-state">
+            <i class="fa fa-spinner fa-spin"></i>
+            Caricamento musei...
+        </div>
+    </div>
+</div>
+
+<!-- Modal crea/modifica museo -->
+<div class="modal-overlay" id="modalOverlay">
+    <div class="modal">
+        <h2 id="modalTitle">Nuovo museo</h2>
+        <form id="museoForm" onsubmit="submitForm(event)">
+            <input type="hidden" id="editIsil">
+            <div class="form-group">
+                <label>Nome *</label>
+                <input type="text" id="fNome" required>
+            </div>
+            <div class="form-group">
+                <label>Città *</label>
+                <input type="text" id="fCitta" required>
+            </div>
+            <div class="form-group">
+                <label>Indirizzo</label>
+                <input type="text" id="fIndirizzo">
+            </div>
+            <div class="form-group">
+                <label>Codice ISIL</label>
+                <input type="text" id="fCodiceIsil" placeholder="es. IT-TO0576">
+            </div>
+            <div class="form-group">
+                <label>URL immagine di copertina</label>
+                <input type="url" id="fImmagine">
+            </div>
+            <div class="form-group">
+                <label>Descrizione breve</label>
+                <textarea id="fDescrizione"></textarea>
+            </div>
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Annulla</button>
+                <button type="submit" class="btn btn-primary" id="submitBtn">Salva</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="musei.js"></script>
+</body>
+</html>
