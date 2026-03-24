@@ -5,107 +5,81 @@ document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('itemsContainer');
     const form = document.getElementById('itemForm');
     const modal = document.getElementById('itemModal');
-
     const filterMieBtn = document.getElementById('filterMie');
     const filterTutteBtn = document.getElementById('filterTutte');
     const filterPrezzo = document.getElementById('filterPrezzo');
-    
     const brandTitle = modal?.querySelector('.brand');
 
     // --- STATO APPLICAZIONE ---
-    currentItems = [
-    {id:'1', operaId:'Test 1', museo:'M1', adozioni: 10, prezzo: 0, autore:'autore1'},
-    {id:'2', operaId:'Test 2', museo:'M2', adozioni: 5, prezzo: 10, autore:'autore1'}];
+    let currentItems = [];
     let editingId = null; 
     let currentFilter = 'mie'; 
     let currentUserId = 'autore1'; 
 
-    // Variabili per i Grafici
+    // Variabili globali per le istanze dei Grafici (per poterle distruggere)
     let chartAdozioni = null;
     let chartRicavi = null;
 
     // --- FUNZIONE GRAFICI (CHART.JS) ---
-    // --- FUNZIONE GRAFICI (CHART.JS) - VERSIONE FIX DESKTOP ---
-    // --- FUNZIONE GRAFICI (CHART.JS) - FIX DEFINITIVO PC/MOBILE ---
     function updateCharts() {
-        // 1. Filtriamo i dati (solo le opere dell'utente loggato)
         const mieOpere = currentItems.filter(item => item.autore === currentUserId);
         const statsDashboard = document.getElementById('statsDashboard');
 
         if (!statsDashboard) return;
 
-        // Se non ci sono opere, nascondiamo la sezione
+        // Mostra o nascondi la dashboard in base ai dati
         if (mieOpere.length === 0) {
             statsDashboard.style.display = 'none';
             return;
         } 
-
-        // Mostriamo la dashboard (usa grid per allineare le due card)
         statsDashboard.style.display = 'grid';
 
-        // 2. TIMEOUT FONDAMENTALE: Aspettiamo che il browser "disegni" i div bianchi
-        // Senza questo, su Computer l'altezza del canvas rimane 0 e il grafico non appare.
+        // Controllo se la libreria Chart.js è disponibile
+        if (typeof Chart === 'undefined') {
+            console.warn("Chart.js non ancora caricato...");
+            return;
+        }
+
+        // Timeout per garantire che il CSS abbia calcolato le altezze del contenitore
         setTimeout(() => {
             const labels = mieOpere.map(item => item.operaId);
             const datiAdozioni = mieOpere.map(item => item.adozioni || 0);
             const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
 
-            // Configurazione comune per entrambi i grafici
             const commonOptions = {
                 responsive: true,
-                maintainAspectRatio: false, // Fondamentale per leggere l'altezza del CSS
-                layout: {
-                    padding: {
-                        top: 30,    // Forza spazio sopra il cerchio
-                        bottom: 30, // Forza spazio sotto il cerchio
-                        left: 20,
-                        right: 20
-                    }
-                },
+                maintainAspectRatio: false,
+                layout: { padding: { top: 20, bottom: 20, left: 10, right: 10 } },
                 plugins: {
                     legend: { 
                         position: 'bottom',
-                        display: true,
                         labels: { 
                             usePointStyle: true, 
-                            padding: 30, // Spinge la legenda lontano dal grafico
-                            font: { 
-                                family: 'Inter', 
-                                size: 12, 
-                                weight: '600' 
-                            },
+                            padding: 25, 
+                            font: { family: 'Inter', size: 12, weight: '600' },
                             color: '#2d5a3d'
                         }
                     },
                     tooltip: { 
                         backgroundColor: 'rgba(45, 90, 61, 0.9)',
                         padding: 12,
-                        cornerRadius: 10,
-                        callbacks: {
-                            label: function(context) {
-                                let val = context.raw;
-                                return context.dataset.label === 'Ricavi' ? ` €${val.toFixed(2)}` : ` ${val} adozioni`;
-                            }
-                        }
+                        cornerRadius: 10
                     }
                 },
-                cutout: '70%', // Leggermente più spesso per renderlo più visibile
-                animation: {
-                    duration: 1000,
-                    easing: 'easeOutQuart'
-                }
+                cutout: '70%',
+                animation: { duration: 800, easing: 'easeOutQuart' }
             };
 
             // --- GRAFICO ADOZIONI ---
             const ctxAdo = document.getElementById('chartAdozioni');
             if (ctxAdo) {
-                if (chartAdozioni) chartAdozioni.destroy(); // Pulizia vecchio grafico
+                if (chartAdozioni) chartAdozioni.destroy();
                 chartAdozioni = new Chart(ctxAdo.getContext('2d'), {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Successo',
+                            label: 'Adozioni',
                             data: datiAdozioni,
                             backgroundColor: ['#2d5a3d', '#4a7c5f', '#74a889', '#a3c9b1', '#cfe5d2'],
                             borderWidth: 0,
@@ -119,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // --- GRAFICO RICAVI ---
             const ctxRic = document.getElementById('chartRicavi');
             if (ctxRic) {
-                if (chartRicavi) chartRicavi.destroy(); // Pulizia vecchio grafico
+                if (chartRicavi) chartRicavi.destroy();
                 chartRicavi = new Chart(ctxRic.getContext('2d'), {
                     type: 'doughnut',
                     data: {
@@ -135,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     options: commonOptions
                 });
             }
-        }, 150); // 150ms di attesa per sicurezza
+        }, 200); 
     }
 
     // --- FUNZIONI FILTRI ---
@@ -165,7 +139,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (savedData) {
             currentItems = JSON.parse(savedData);
         } else {
-            // Dati demo
+            // Dati demo iniziali
             currentItems = [
                 {id:'1', operaId:'La Primavera', museo:'Uffizi', testo:'Capolavoro di Botticelli', lunghezza:'1min', linguaggio:'medio', licenza:'gratuita', prezzo:0, pubblica:true, autore:'autore1', adozioni:12},
                 {id:'2', operaId:'Notte Stellata', museo:'MOMA', testo:'Celebre opera di Van Gogh', lunghezza:'15s', linguaggio:'infantile', licenza:'pagamento', prezzo:3.50, pubblica:true, autore:'autore1', adozioni:5}
@@ -178,7 +152,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function syncToLocalStorage() {
         localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
         loadItems();
-        updateCharts(); // Aggiorna i grafici ogni volta che i dati cambiano
     }
 
     function loadItems() {
@@ -194,79 +167,64 @@ document.addEventListener('DOMContentLoaded', () => {
         });
         
         renderItems(filtrati);
-        updateCharts(); // Aggiorna i grafici anche al caricamento filtri
+        updateCharts(); 
     }
 
     // --- RENDER CARD ---
     function renderItems(dati) {
-    if (!container) return;
-    container.innerHTML = ''; 
+        if (!container) return;
+        container.innerHTML = ''; 
 
-    if (dati.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
-        return;
-    }
-
-    dati.forEach(item => {
-        const card = document.createElement('div');
-        card.className = 'item-card';
-        const isMia = item.autore === currentUserId;
-
-        // Creiamo l'HTML con la NUOVA struttura allineata al CSS
-        card.innerHTML = `
-            <div class="card-main-header">
-                <div class="title-group">
-                    <h3>${item.operaId}</h3>
-                    <p class="museum-sub"><i class="fa-solid fa-museum"></i> ${item.museo}</p>
-                </div>
-                
-                <div class="action-group">
-                    <div class="badges-row">
-                        ${item.prezzo > 0 ? 
-                            `<span class="price-badge">€${item.prezzo}</span>` : 
-                            `<span class="free-badge">Gratis</span>`
-                        }
-                    </div>
-                    <div class="buttons-row">
-                        ${isMia ? `
-                            <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
-                            <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
-                        ` : `
-                            <button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>
-                        `}
-                    </div>
-                </div>
-            </div>
-            
-            <div class="card-body">
-                <p class="description-text">${item.testo}</p>
-            </div>
-
-            <div class="card-footer">
-                <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
-                <span class="adozioni-count">${item.adozioni || 0} adozioni</span>
-            </div>
-        `;
-
-        // AGGANCIAMO GLI EVENTI AI BOTTONI (Questo risolve il problema del click)
-        if (isMia) {
-            const btnEdit = card.querySelector('.edit-btn');
-            const btnDelete = card.querySelector('.delete-btn');
-
-            btnEdit.addEventListener('click', (e) => {
-                e.stopPropagation();
-                apriModaleItem(item); // Passiamo l'oggetto item alla funzione globale
-            });
-
-            btnDelete.addEventListener('click', (e) => {
-                e.stopPropagation();
-                eliminaOpera(item.id);
-            });
+        if (dati.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
+            return;
         }
 
-        container.appendChild(card);
-    });
-}
+        dati.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            const isMia = item.autore === currentUserId;
+
+            card.innerHTML = `
+                <div class="card-main-header">
+                    <div class="title-group">
+                        <h3>${item.operaId}</h3>
+                        <p class="museum-sub"><i class="fa-solid fa-museum"></i> ${item.museo}</p>
+                    </div>
+                    <div class="action-group">
+                        <div class="badges-row">
+                            ${item.prezzo > 0 ? `<span class="price-badge">€${item.prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
+                        </div>
+                        <div class="buttons-row">
+                            ${isMia ? `
+                                <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                            ` : `<button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>`}
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="description-text">${item.testo}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
+                    <span class="adozioni-count">${item.adozioni || 0} adozioni</span>
+                </div>
+            `;
+
+            if (isMia) {
+                card.querySelector('.edit-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    apriModaleItem(item);
+                });
+                card.querySelector('.delete-btn').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    eliminaOpera(item.id);
+                });
+            }
+            container.appendChild(card);
+        });
+    }
 
     // --- GESTIONE MODALE ---
     window.apriModaleItem = function(item) {
