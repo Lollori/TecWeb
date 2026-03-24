@@ -245,45 +245,35 @@ body.admin-layout {
 }
 
 /* =========================================
-   4. DASHBOARD & GRAFICI - FIX DEFINITIVO
+   4. DASHBOARD & GRAFICI - FIX FINALE
    ========================================= */
 .stats-dashboard-container {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 25px;
     width: 100%;
-    margin: 30px 0 50px 0;
-    min-height: 450px; /* Evita che la sezione collassi */
+    margin-bottom: 40px;
+    z-index: 10;
 }
 
 .stat-card {
-    background: #ffffff !important; /* Forza il bianco per il riquadro */
+    background: #ffffff !important; /* Forza il bianco solido */
     border-radius: 24px;
-    padding: 30px;
-    border: 1px solid rgba(0,0,0,0.05);
+    padding: 25px;
+    border: 1px solid rgba(0,0,0,0.08);
     box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 420px;
-}
-
-.stat-card h3 {
-    color: var(--primary-dark);
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-    font-family: 'Inter', sans-serif;
-    font-weight: 700;
+    min-height: 400px; /* Altezza minima della card */
 }
 
 .chart-container {
     position: relative;
-    height: 320px !important; /* ALTEZZA FISSA OBBLIGATORIA */
+    height: 300px !important; /* ALTEZZA FISSA PER CANVAS */
     width: 100% !important;
-    max-width: 100%;
+    display: block !important;
 }
-
-
 
 /* =========================================
    5. GRID & CARDS OPERE
