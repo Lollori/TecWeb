@@ -23,69 +23,107 @@ document.addEventListener('DOMContentLoaded', () => {
     let chartRicavi = null;
 
     // --- FUNZIONE GRAFICI (CHART.JS) ---
-    function updateCharts() {
-        // Prendiamo solo le opere dell'utente corrente per le statistiche personali
-        const mieOpere = currentItems.filter(item => item.autore === currentUserId);
-        const statsDashboard = document.getElementById('statsDashboard');
+    // --- FUNZIONE GRAFICI (CHART.JS) - VERSIONE FIX DESKTOP ---
+function updateCharts() {
+    // 1. Filtriamo le opere dell'utente corrente
+    const mieOpere = currentItems.filter(item => item.autore === currentUserId);
+    const statsDashboard = document.getElementById('statsDashboard');
 
-        if (mieOpere.length === 0) {
-            if (statsDashboard) statsDashboard.style.display = 'none';
-            return;
-        } else {
-            if (statsDashboard) statsDashboard.style.display = 'grid';
-        }
+    // 2. Gestione visibilità Dashboard
+    if (!statsDashboard) return;
 
+    if (mieOpere.length === 0) {
+        statsDashboard.style.display = 'none';
+        return;
+    } else {
+        // Usiamo flex o grid in base al tuo CSS
+        statsDashboard.style.display = 'grid'; 
+    }
+
+    // 3. Eseguiamo il rendering dopo che il browser ha calcolato i layout (Fix per PC)
+    window.requestAnimationFrame(() => {
         const labels = mieOpere.map(item => item.operaId);
         const datiAdozioni = mieOpere.map(item => item.adozioni || 0);
         const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
 
+        // Opzioni comuni ottimizzate
         const commonOptions = {
             responsive: true,
-            maintainAspectRatio: false,
+            maintainAspectRatio: false, // Permette al grafico di riempire l'altezza definita nel CSS
+            animation: {
+                duration: 1000,
+                easing: 'easeOutQuart'
+            },
             plugins: {
                 legend: { 
                     position: 'bottom',
-                    labels: { usePointStyle: true, padding: 20, font: { family: 'Inter', size: 12 } }
+                    labels: { 
+                        usePointStyle: true, 
+                        padding: 20, 
+                        font: { family: 'Inter', size: 12, weight: '600' },
+                        color: '#2d5a3d'
+                    }
                 },
-                tooltip: { backgroundColor: 'rgba(45, 90, 61, 0.9)', padding: 10 }
+                tooltip: { 
+                    backgroundColor: 'rgba(45, 90, 61, 0.9)', 
+                    padding: 12,
+                    bodyFont: { family: 'Inter' },
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.dataset.label || '';
+                            if (label) label += ': ';
+                            if (context.parsed !== null) {
+                                label += context.dataset.label === 'Ricavi' ? '€' + context.parsed.toFixed(2) : context.parsed;
+                            }
+                            return label;
+                        }
+                    }
+                }
             },
-            cutout: '70%' // Rende il grafico a "ciambella" sottile ed elegante
+            cutout: '75%' // Design a ciambella sottile
         };
 
-        // Grafico Adozioni
-        if (chartAdozioni) chartAdozioni.destroy();
-        const ctxAdo = document.getElementById('chartAdozioni').getContext('2d');
-        chartAdozioni = new Chart(ctxAdo, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: datiAdozioni,
-                    backgroundColor: ['#2d5a3d', '#4a7c5f', '#6aab7e', '#8fbc94', '#cfe5d2'],
-                    hoverOffset: 15,
-                    borderWidth: 0
-                }]
-            },
-            options: commonOptions
-        });
+        // --- GRAFICO ADOZIONI ---
+        const canvasAdo = document.getElementById('chartAdozioni');
+        if (canvasAdo) {
+            if (chartAdozioni) chartAdozioni.destroy(); // Distruggi istanza precedente
+            chartAdozioni = new Chart(canvasAdo.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Adozioni',
+                        data: datiAdozioni,
+                        backgroundColor: ['#2d5a3d', '#4a7c5f', '#6aab7e', '#8fbc94', '#cfe5d2'],
+                        hoverOffset: 10,
+                        borderWidth: 0
+                    }]
+                },
+                options: commonOptions
+            });
+        }
 
-        // Grafico Ricavi
-        if (chartRicavi) chartRicavi.destroy();
-        const ctxRic = document.getElementById('chartRicavi').getContext('2d');
-        chartRicavi = new Chart(ctxRic, {
-            type: 'doughnut',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: datiRicavi,
-                    backgroundColor: ['#ff6b35', '#ff9f1c', '#f9c74f', '#90be6d', '#43aa8b'],
-                    hoverOffset: 15,
-                    borderWidth: 0
-                }]
-            },
-            options: commonOptions
-        });
-    }
+        // --- GRAFICO RICAVI ---
+        const canvasRic = document.getElementById('chartRicavi');
+        if (canvasRic) {
+            if (chartRicavi) chartRicavi.destroy(); // Distruggi istanza precedente
+            chartRicavi = new Chart(canvasRic.getContext('2d'), {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Ricavi',
+                        data: datiRicavi,
+                        backgroundColor: ['#ff6b35', '#ff9f1c', '#fecba1', '#f9c74f', '#90be6d'],
+                        hoverOffset: 10,
+                        borderWidth: 0
+                    }]
+                },
+                options: commonOptions
+            });
+        }
+    });
+}
 
     // --- FUNZIONI FILTRI ---
     window.setFilter = function(filter) {
