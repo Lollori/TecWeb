@@ -28,59 +28,78 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         dashboard.style.display = 'flex';
 
+        // Palette di colori (puoi aggiungerne quanti ne vuoi)
+        const palette = ['#2d5a3d', '#ff6b35', '#4a7c5f', '#ff9f1c', '#74a889', '#f9c74f', '#a3c9b1', '#e67e22'];
+        const getColor = (index) => palette[index % palette.length];
+
         const totalAdo = mieOpere.reduce((sum, item) => sum + (item.adozioni || 0), 0);
         const totalRic = mieOpere.reduce((sum, item) => sum + ((item.adozioni || 0) * (item.prezzo || 0)), 0);
 
-        // Funzione per generare la lista completa per il tooltip
+        // Genera la lista con i pallini colorati
         const generateFullList = (isMoney) => {
-            return mieOpere.map(op => {
+            return mieOpere.map((op, index) => {
+                const color = getColor(index);
                 const val = isMoney 
                     ? `€${((op.adozioni || 0) * (op.prezzo || 0)).toFixed(2)}` 
                     : `${op.adozioni || 0}`;
                 return `
                     <div class="tooltip-row">
-                        <span style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${op.operaId}</span>
+                        <div style="display:flex; align-items:center; gap:8px; max-width:160px;">
+                            <span style="width:8px; height:8px; background:${color}; border-radius:50%; flex-shrink:0;"></span>
+                            <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${op.operaId}</span>
+                        </div>
                         <span style="font-weight: 700;">${val}</span>
                     </div>`;
             }).join('');
         };
 
-        const getRingSVG = (percent, color) => {
+        // Funzione per l'SVG Multi-Colore (disegna segmenti diversi)
+        const getMultiColorSVG = (items, isMoney, totalGoal) => {
             const r = 16;
             const circum = 2 * Math.PI * r;
-            const offset = circum - (Math.min(percent, 100) / 100) * circum;
-            return `
-                <svg width="42" height="42" viewBox="0 0 40 40">
-                    <circle class="c-bg" cx="20" cy="20" r="${r}" />
-                    <circle class="c-fill" cx="20" cy="20" r="${r}" 
-                        stroke="${color}" 
-                        stroke-dasharray="${circum}" 
-                        stroke-dashoffset="${offset}" 
-                        transform="rotate(-90 20 20)" />
-                </svg>`;
+            let currentOffset = 0;
+            let circles = `<circle class="c-bg" cx="20" cy="20" r="${r}" />`;
+
+            items.forEach((op, index) => {
+                const val = isMoney ? ((op.adozioni || 0) * (op.prezzo || 0)) : (op.adozioni || 0);
+                if (val <= 0) return;
+
+                const segmentLength = (val / totalGoal) * circum;
+                const color = getColor(index);
+
+                circles += `
+                    <circle cx="20" cy="20" r="${r}" fill="none" stroke="${color}" 
+                        stroke-width="4" stroke-dasharray="${segmentLength} ${circum}" 
+                        stroke-dashoffset="-${currentOffset}" stroke-linecap="round"
+                        transform="rotate(-90 20 20)" style="transition: all 0.6s ease;" />
+                `;
+                currentOffset += segmentLength;
+            });
+
+            return `<svg width="42" height="42" viewBox="0 0 40 40">${circles}</svg>`;
         };
 
         dashboard.innerHTML = `
             <div class="mini-stat-card">
-                <div class="stat-ring-container">${getRingSVG((totalAdo / 100) * 100, '#2d5a3d')}</div>
+                <div class="stat-ring-container">${getMultiColorSVG(mieOpere, false, 100)}</div>
                 <div class="stat-texts">
                     <small>Adozioni</small>
                     <strong>${totalAdo}</strong>
                 </div>
                 <div class="stat-tooltip">
-                    <div class="tooltip-header"><span>Titolo Opera</span><span>Adozioni</span></div>
+                    <div class="tooltip-header"><span>Opera</span><span>Adozioni</span></div>
                     <div class="stat-tooltip-list">${generateFullList(false)}</div>
                 </div>
             </div>
 
             <div class="mini-stat-card">
-                <div class="stat-ring-container">${getRingSVG((totalRic / 500) * 100, '#ff6b35')}</div>
+                <div class="stat-ring-container">${getMultiColorSVG(mieOpere, true, 500)}</div>
                 <div class="stat-texts">
                     <small>Ricavi</small>
                     <strong>€${totalRic.toFixed(2)}</strong>
                 </div>
                 <div class="stat-tooltip">
-                    <div class="tooltip-header"><span>Titolo Opera</span><span>Ricavo</span></div>
+                    <div class="tooltip-header"><span>Opera</span><span>Ricavo</span></div>
                     <div class="stat-tooltip-list">${generateFullList(true)}</div>
                 </div>
             </div>
