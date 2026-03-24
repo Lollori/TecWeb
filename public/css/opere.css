@@ -245,33 +245,46 @@ body.admin-layout {
 }
 
 /* =========================================
-   4. DASHBOARD & GRAFICI - FIX FINALE
+   4. DASHBOARD & STATS (SIDEBAR COMPLETA)
    ========================================= */
-  .stats-sidebar {
+
+/* Posizionamento fisso a destra */
+.stats-sidebar {
     position: fixed;
-    right: 20px;
-    top: 160px;
+    right: 25px;
+    top: 180px;
     display: flex;
     flex-direction: column;
     gap: 15px;
     z-index: 999;
-    width: 160px;
+    width: 170px;
 }
 
+/* Card base con animazione */
 .mini-stat-card {
     background: white !important;
-    padding: 12px;
-    border-radius: 16px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    padding: 14px;
+    border-radius: 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
     display: flex;
     align-items: center;
-    gap: 10px;
-    border: 1px solid #eee;
+    gap: 12px;
+    border: 1px solid rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    cursor: help;
+    position: relative;
 }
 
+.mini-stat-card:hover {
+    transform: scale(1.1) translateX(-5px);
+    z-index: 1000;
+    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
+}
+
+/* Layout testi interni */
 .stat-ring-container {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     flex-shrink: 0;
 }
 
@@ -281,25 +294,94 @@ body.admin-layout {
 }
 
 .stat-texts small {
-    font-size: 0.65rem;
-    color: #888;
+    font-size: 0.6rem;
+    color: #999;
     text-transform: uppercase;
     font-weight: 700;
+    letter-spacing: 0.5px;
 }
 
 .stat-texts strong {
-    font-size: 1rem;
+    font-size: 1.1rem;
     color: #2d5a3d;
+    font-weight: 800;
 }
 
-/* Cerchi SVG */
+/* --- TOOLTIP (LISTA COMPLETA) --- */
+.stat-tooltip {
+    position: absolute;
+    right: 115%; /* Appare a sinistra */
+    top: 0;
+    width: 240px;
+    max-height: 300px;
+    background: #2d5a3d;
+    color: white;
+    padding: 15px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    pointer-events: auto;
+}
+
+.mini-stat-card:hover .stat-tooltip {
+    opacity: 1;
+    visibility: visible;
+}
+
+.stat-tooltip-list {
+    overflow-y: auto;
+    padding-right: 5px;
+}
+
+/* Scrollbar Tooltip */
+.stat-tooltip-list::-webkit-scrollbar { width: 4px; }
+.stat-tooltip-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.3); border-radius: 10px; }
+
+.tooltip-header {
+    font-size: 0.7rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    margin-bottom: 10px;
+    padding-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.8rem;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+/* --- CERCHI SVG --- */
 .c-bg { fill: none; stroke: #f0f0f0; stroke-width: 4; }
 .c-fill { 
     fill: none; 
     stroke-width: 4; 
     stroke-linecap: round; 
-    transition: stroke-dashoffset 0.6s ease; 
+    transition: stroke-dashoffset 0.8s ease; 
 }
+
+/* Mobile Fix */
+@media (max-width: 1200px) {
+    .stats-sidebar {
+        position: relative;
+        flex-direction: row;
+        width: 100%;
+        right: 0; top: 0;
+        margin-bottom: 30px;
+        justify-content: center;
+    }
+    .stat-tooltip { display: none; } /* Nascondiamo i tooltip su mobile per spazio */
+}
+
 /* =========================================
    5. GRID & CARDS OPERE
    ========================================= */

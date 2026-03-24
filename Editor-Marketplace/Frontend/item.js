@@ -18,28 +18,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- 1. FUNZIONE MINI-STATISTICHE (SVG RING) ---
     function updateCharts() {
-        // Prendiamo solo le opere dell'utente corrente
         const mieOpere = currentItems.filter(item => item.autore === currentUserId);
         const dashboard = document.getElementById('statsDashboard');
-        
         if (!dashboard) return;
 
-        // Gestione visibilità
         if (mieOpere.length === 0) {
             dashboard.style.display = 'none';
             return;
         }
         dashboard.style.display = 'flex';
 
-        // Calcolo Totali
         const totalAdo = mieOpere.reduce((sum, item) => sum + (item.adozioni || 0), 0);
         const totalRic = mieOpere.reduce((sum, item) => sum + ((item.adozioni || 0) * (item.prezzo || 0)), 0);
 
-        // Obiettivi per riempire il cerchio (es. 50 adozioni e 100€)
-        const goalAdo = 50;
-        const goalRic = 100;
+        // Funzione per generare la lista COMPLETA delle opere
+        const generateFullList = (isMoney) => {
+            return mieOpere.map(op => {
+                const val = isMoney ? `€${((op.adozioni || 0) * (op.prezzo || 0)).toFixed(2)}` : op.adozioni;
+                return `
+                    <div class="tooltip-row">
+                        <span style="max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${op.operaId}</span>
+                        <span style="font-weight: 700;">${val}</span>
+                    </div>`;
+            }).join('');
+        };
 
-        // Funzione per generare il codice SVG di un anello
         const getRingSVG = (percent, color) => {
             const r = 16;
             const circum = 2 * Math.PI * r;
@@ -51,24 +54,32 @@ document.addEventListener('DOMContentLoaded', () => {
                         stroke-width="4" stroke-dasharray="${circum}" 
                         stroke-dashoffset="${offset}" stroke-linecap="round"
                         transform="rotate(-90 20 20)" style="transition: stroke-dashoffset 0.6s ease;"/>
-                </svg>
-            `;
+                </svg>`;
         };
 
-        // Iniezione diretta dell'HTML nella sidebar
+        // Iniezione HTML con lista completa
         dashboard.innerHTML = `
             <div class="mini-stat-card">
-                <div class="stat-ring-container">${getRingSVG((totalAdo / goalAdo) * 100, '#2d5a3d')}</div>
+                <div class="stat-ring-container">${getRingSVG((totalAdo / 100) * 100, '#2d5a3d')}</div>
                 <div class="stat-texts">
                     <small>Adozioni</small>
                     <strong>${totalAdo}</strong>
                 </div>
+                <div class="stat-tooltip">
+                    <div class="tooltip-header"><span>Opera</span><span>Adozioni</span></div>
+                    <div class="stat-tooltip-list">${generateFullList(false)}</div>
+                </div>
             </div>
+
             <div class="mini-stat-card">
-                <div class="stat-ring-container">${getRingSVG((totalRic / goalRic) * 100, '#ff6b35')}</div>
+                <div class="stat-ring-container">${getRingSVG((totalRic / 500) * 100, '#ff6b35')}</div>
                 <div class="stat-texts">
                     <small>Ricavi</small>
                     <strong>€${totalRic.toFixed(2)}</strong>
+                </div>
+                <div class="stat-tooltip">
+                    <div class="tooltip-header"><span>Opera</span><span>Guadagno</span></div>
+                    <div class="stat-tooltip-list">${generateFullList(true)}</div>
                 </div>
             </div>
         `;
