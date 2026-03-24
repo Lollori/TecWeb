@@ -6,11 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('itemForm');
     const modal = document.getElementById('itemModal');
 
-    // Elementi Filtri Marketplace
     const filterMieBtn = document.getElementById('filterMie');
     const filterTutteBtn = document.getElementById('filterTutte');
     const filterPrezzo = document.getElementById('filterPrezzo');
-    const statsBody = document.getElementById('statsBody');
     
     const brandTitle = modal?.querySelector('.brand');
 
@@ -20,91 +18,135 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFilter = 'mie'; 
     let currentUserId = 'autore1'; 
 
-    // --- FUNZIONI MARKETPLACE ---
-    function setFilter(filter) {
+    // Variabili per i Grafici
+    let chartAdozioni = null;
+    let chartRicavi = null;
+
+    // --- FUNZIONE GRAFICI (CHART.JS) ---
+    function updateCharts() {
+        // Prendiamo solo le opere dell'utente corrente per le statistiche personali
+        const mieOpere = currentItems.filter(item => item.autore === currentUserId);
+        const statsDashboard = document.getElementById('statsDashboard');
+
+        if (mieOpere.length === 0) {
+            if (statsDashboard) statsDashboard.style.display = 'none';
+            return;
+        } else {
+            if (statsDashboard) statsDashboard.style.display = 'grid';
+        }
+
+        const labels = mieOpere.map(item => item.operaId);
+        const datiAdozioni = mieOpere.map(item => item.adozioni || 0);
+        const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
+
+        const commonOptions = {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { 
+                    position: 'bottom',
+                    labels: { usePointStyle: true, padding: 20, font: { family: 'Inter', size: 12 } }
+                },
+                tooltip: { backgroundColor: 'rgba(45, 90, 61, 0.9)', padding: 10 }
+            },
+            cutout: '70%' // Rende il grafico a "ciambella" sottile ed elegante
+        };
+
+        // Grafico Adozioni
+        if (chartAdozioni) chartAdozioni.destroy();
+        const ctxAdo = document.getElementById('chartAdozioni').getContext('2d');
+        chartAdozioni = new Chart(ctxAdo, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: datiAdozioni,
+                    backgroundColor: ['#2d5a3d', '#4a7c5f', '#6aab7e', '#8fbc94', '#cfe5d2'],
+                    hoverOffset: 15,
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
+        });
+
+        // Grafico Ricavi
+        if (chartRicavi) chartRicavi.destroy();
+        const ctxRic = document.getElementById('chartRicavi').getContext('2d');
+        chartRicavi = new Chart(ctxRic, {
+            type: 'doughnut',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: datiRicavi,
+                    backgroundColor: ['#ff6b35', '#ff9f1c', '#f9c74f', '#90be6d', '#43aa8b'],
+                    hoverOffset: 15,
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
+        });
+    }
+
+    // --- FUNZIONI FILTRI ---
+    window.setFilter = function(filter) {
         currentFilter = filter;
         if(filterMieBtn) filterMieBtn.classList.toggle('active', filter === 'mie');
         if(filterTutteBtn) filterTutteBtn.classList.toggle('active', filter === 'tutte');
         loadItems();
-    }
+    };
 
-    function applyFilters() {
+    window.applyFilters = function() {
         loadItems();
-    }
-
-    window.setFilter = setFilter; 
-    window.applyFilters = applyFilters;
-
-    function updateStats() {
-        const mieVendite = currentItems.filter(item => item.autore === currentUserId && item.pubblica);
-        if (statsBody) {
-            statsBody.innerHTML = mieVendite.map(item => `
-                <tr>
-                    <td>${item.operaId}</td>
-                    <td>${item.adozioni || 0}</td>
-                    <td>€${((item.adozioni || 0) * (item.prezzo || 0)).toFixed(2)}</td>
-                </tr>
-            `).join('');
-            const statsSection = document.getElementById('statisticheVendite');
-            if(statsSection) statsSection.style.display = mieVendite.length ? 'block' : 'none';
-        }
-    }
+    };
 
     window.adottaOpera = function(itemId) {
         const item = currentItems.find(i => i.id === itemId);
         if (item) {
             item.adozioni = (item.adozioni || 0) + 1;
             syncToLocalStorage();
-            alert(`"${item.operaId}" adottata per la visita!\nCosto: ${item.prezzo > 0 ? '€' + item.prezzo : 'Gratuito'}`);
+            alert(`"${item.operaId}" aggiunta alla visita!`);
         }
     };
 
-    // --- GESTIONE DATI (LocalStorage) ---
+    // --- GESTIONE DATI ---
     function loadFromLocalStorage() {
         const savedData = localStorage.getItem('opere_marketplace');
         if (savedData) {
             currentItems = JSON.parse(savedData);
         } else {
-            // Dati di test iniziali se vuoto
+            // Dati demo
             currentItems = [
-                {id:'1', operaId:'La Primavera', museo:'Uffizi', testo:'Opera test', lunghezza:'1min', linguaggio:'medio', licenza:'gratuita', prezzo:0, pubblica:true, autore:'autore1', adozioni:2},
-                {id:'2', operaId:'Notte Stellata', museo:'MOMA', testo:'Opera test a pagamento', lunghezza:'15s', linguaggio:'infantile', licenza:'pagamento', prezzo:0.99, pubblica:true, autore:'autore2', adozioni:1}
+                {id:'1', operaId:'La Primavera', museo:'Uffizi', testo:'Capolavoro di Botticelli', lunghezza:'1min', linguaggio:'medio', licenza:'gratuita', prezzo:0, pubblica:true, autore:'autore1', adozioni:12},
+                {id:'2', operaId:'Notte Stellata', museo:'MOMA', testo:'Celebre opera di Van Gogh', lunghezza:'15s', linguaggio:'infantile', licenza:'pagamento', prezzo:3.50, pubblica:true, autore:'autore1', adozioni:5}
             ];
             syncToLocalStorage();
-            return;
         }
         loadItems();
     }
 
     function syncToLocalStorage() {
         localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
-        loadItems(); 
+        loadItems();
+        updateCharts(); // Aggiorna i grafici ogni volta che i dati cambiano
     }
 
-    // --- LOGICA FILTRI ---
     function loadItems() {
         const searchFiltro = searchInput?.value.toLowerCase() || '';
         const prezzoFiltro = filterPrezzo?.value || 'tutti';
 
         const filtrati = currentItems.filter(item => {
             const matchSearch = item.operaId.toLowerCase().includes(searchFiltro) || 
-                                item.museo.toLowerCase().includes(searchFiltro) ||
-                                item.testo.toLowerCase().includes(searchFiltro);
-            
+                                item.museo.toLowerCase().includes(searchFiltro);
             const matchUser = currentFilter === 'mie' ? item.autore === currentUserId : item.pubblica === true;
-            
-            const matchPrezzo = prezzoFiltro === 'tutti' || 
-                               (prezzoFiltro === 'gratuiti' ? item.prezzo == 0 : item.prezzo > 0);
-
+            const matchPrezzo = prezzoFiltro === 'tutti' || (prezzoFiltro === 'gratuiti' ? item.prezzo == 0 : item.prezzo > 0);
             return matchSearch && matchUser && matchPrezzo;
         });
         
         renderItems(filtrati);
-        updateStats();
+        updateCharts(); // Aggiorna i grafici anche al caricamento filtri
     }
 
-    // --- FUNZIONE DI RENDER ---
-    function renderItems(dati = currentItems) {
+    // --- RENDER CARD ---
+    function renderItems(dati) {
         if (!container) return;
         container.innerHTML = ''; 
 
@@ -116,87 +158,41 @@ document.addEventListener('DOMContentLoaded', () => {
         dati.forEach(item => {
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.dataset.id = item.id;
-            
-            card.style.display = 'flex';
-            card.style.flexDirection = 'column';
-            card.style.height = '100%'; 
-            card.style.overflow = 'hidden'; 
-
             const isMia = item.autore === currentUserId;
 
             card.innerHTML = `
-                <div class="card-actions" style="display:flex; justify-content:space-between; width:100%; margin-bottom:10px;">
-                    <div>
-                        ${item.prezzo > 0 ? 
-                            `<span class="price-badge" style="background:#ff6b35; color:white; padding:4px 8px; border-radius:12px; font-size:0.8rem;">€${item.prezzo}</span>` : 
-                            `<span class="free-badge" style="background:#4a7c5f; color:white; padding:4px 8px; border-radius:12px; font-size:0.8rem;">Gratuito</span>`
-                        }
-                    </div>
+                <div class="card-actions" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    ${item.prezzo > 0 ? 
+                        `<span class="price-badge">€${item.prezzo}</span>` : 
+                        `<span class="free-badge">Gratuito</span>`
+                    }
                     <div style="display:flex; gap:8px;">
-                        ${isMia ? `<button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
-                                   <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>` 
-                                 : ''}
+                        ${isMia ? `
+                            <button type="button" class="icon-btn edit-btn" onclick="event.stopPropagation(); apriModaleItem(${JSON.stringify(item).replace(/"/g, '&quot;')})"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="icon-btn delete-btn" onclick="event.stopPropagation(); eliminaOpera('${item.id}')"><i class="fa-solid fa-trash"></i></button>
+                        ` : ''}
                     </div>
                 </div>
-                
                 <h3>${item.operaId}</h3>
-                
-                <div class="card-details" style="flex-grow: 1;">
-                    <p><i class="fa-solid fa-museum"></i> <strong>Museo:</strong> ${item.museo}</p>
-                    <p class="description-text" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.5; margin-bottom: 10px;">
-                        <i class="fa-solid fa-quote-left"></i> <strong>Descrizione:</strong> ${item.testo}
-                    </p>
+                <div class="card-details">
+                    <p><i class="fa-solid fa-museum"></i> ${item.museo}</p>
+                    <p class="description-text">${item.testo}</p>
                 </div>
-
-                <div class="card-tags" style="margin-top: auto; padding-top: 15px; display: flex; gap: 8px; flex-wrap: wrap; justify-content:space-between; align-items:center;">
-                    <div style="display:flex; gap:8px;">
-                        <span class="tag-bubble" style="background: rgba(45, 90, 61, 0.1); color: #2d5a3d; padding: 5px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
-                            <i class="fa-solid fa-brain" style="opacity: 0.8;"></i> ${item.linguaggio}
-                        </span>
-                        <span class="tag-bubble" style="background: rgba(45, 90, 61, 0.1); color: #2d5a3d; padding: 5px 12px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
-                            <i class="fa-solid fa-hourglass-half" style="opacity: 0.8;"></i> ${item.lunghezza}
-                        </span>
-                    </div>
-                    
-                    ${!isMia ? `<button class="btn-add" onclick="adottaOpera('${item.id}')" style="background:#4a7c5f; color:white; border:none; padding:6px 12px; border-radius:8px; cursor:pointer;"><i class="fa-solid fa-plus"></i> Aggiungi</button>` : `<span style="font-size:0.8rem; color:#666;">${item.adozioni || 0} adozioni</span>`}
+                <div class="card-tags" style="margin-top:auto; display:flex; justify-content:space-between; align-items:center; padding-top:15px; border-top:1px solid rgba(0,0,0,0.05);">
+                    <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
+                    ${!isMia ? 
+                        `<button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>` : 
+                        `<span style="font-size:0.8rem; font-weight:700; color:#2d5a3d;">${item.adozioni || 0} adozioni</span>`
+                    }
                 </div>
             `;
-
-            // Eventi
-            card.addEventListener('click', (e) => {
-                if (!e.target.closest('.icon-btn') && !e.target.closest('.btn-add')) {
-                    document.querySelectorAll('.item-card').forEach(c => c.classList.remove('selected'));
-                    card.classList.add('selected');
-                }
-            });
-
-            if(isMia) {
-                card.querySelector('.edit-btn').addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    apriModaleItem(item);
-                });
-                card.querySelector('.delete-btn').addEventListener('click', (e) => {
-                    e.stopPropagation(); 
-                    if (confirm(`Eliminare l'opera "${item.operaId}"?`)) {
-                        currentItems = currentItems.filter(i => i.id !== item.id);
-                        syncToLocalStorage();
-                    }
-                });
-            }
-
             container.appendChild(card);
         });
     }
 
     // --- GESTIONE MODALE ---
-    window.openModal = function() { apriModaleItem(null); };
-    window.closeModal = function() { chiudiModaleItem(); };
-
-    function apriModaleItem(item) {
-        if (!modal) return;
+    window.apriModaleItem = function(item) {
         modal.style.display = 'flex';
-        
         if (item) {
             editingId = item.id;
             document.getElementById('operaId').value = item.operaId;
@@ -204,51 +200,41 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('lunghezza').value = item.lunghezza;
             document.getElementById('linguaggio').value = item.linguaggio;
             document.getElementById('testo').value = item.testo;
-            
-            // Nuovi campi
             document.getElementById('licenza').value = item.licenza || 'gratuita';
             document.getElementById('prezzo').value = item.prezzo || 0;
             document.getElementById('pubblica').checked = item.pubblica || false;
-            
-            if (brandTitle) brandTitle.innerHTML = `Modifica <span>Opera</span>`;
+            brandTitle.innerHTML = `Modifica <span>Opera</span>`;
         } else {
             editingId = null;
             form.reset();
-            document.getElementById('prezzo').value = 0; // Default
-            if (brandTitle) brandTitle.innerHTML = `Nuova <span>Opera</span>`;
+            brandTitle.innerHTML = `Nuova <span>Opera</span>`;
         }
-    }
+    };
 
-    function chiudiModaleItem() {
-        if (!modal) return;
-        modal.style.display = 'none';
-        form.reset();
-        editingId = null;
-    }
+    window.closeModal = function() { modal.style.display = 'none'; editingId = null; };
 
-    // --- SALVATAGGIO FORM ---
+    window.eliminaOpera = function(id) {
+        if (confirm("Eliminare quest'opera?")) {
+            currentItems = currentItems.filter(i => i.id !== id);
+            syncToLocalStorage();
+        }
+    };
+
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-
-        // Recupero opera esistente per mantenere le adozioni
         const existingItem = editingId ? currentItems.find(i => i.id === editingId) : null;
 
         const itemData = {
-            id: editingId ? editingId : Date.now().toString(),
+            id: editingId || Date.now().toString(),
             operaId: document.getElementById('operaId').value,
             museo: document.getElementById('museo').value,
             lunghezza: document.getElementById('lunghezza').value,
             linguaggio: document.getElementById('linguaggio').value,
             testo: document.getElementById('testo').value,
-            
-            // Nuovi campi
             licenza: document.getElementById('licenza').value,
             prezzo: parseFloat(document.getElementById('prezzo').value) || 0,
             pubblica: document.getElementById('pubblica').checked,
-            
-            // Mantiene autore originale o setta current se nuova
             autore: existingItem ? existingItem.autore : currentUserId,
-            // Mantiene adozioni storiche
             adozioni: existingItem ? existingItem.adozioni : 0
         };
 
@@ -258,11 +244,9 @@ document.addEventListener('DOMContentLoaded', () => {
             currentItems.push(itemData);
         }
 
-        syncToLocalStorage(); 
-        chiudiModaleItem();
+        syncToLocalStorage();
+        closeModal();
     });
-
-    searchInput?.addEventListener('input', applyFilters);
 
     // --- AVVIO ---
     loadFromLocalStorage();

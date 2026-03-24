@@ -75,15 +75,22 @@
     <div id="itemsContainer" class="items-grid"></div>
 
     <!-- NUOVA TABELLA STATISTICHE -->
-    <div id="statisticheVendite" class="stats-section" style="display:none;">
-        <h3>Le mie vendite</h3>
-        <table class="stats-table">
-            <thead>
-                <tr><th>Opera</th><th>Adozioni</th><th>Introiti €</th></tr>
-            </thead>
-            <tbody id="statsBody"></tbody>
-        </table>
-    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<div id="statsDashboard" class="stats-dashboard-container">
+        <div class="stat-card">
+            <h3>Successo Opere (Adozioni)</h3>
+            <div class="chart-container">
+                <canvas id="chartAdozioni"></canvas>
+            </div>
+        </div>
+        <div class="stat-card">
+            <h3>Distribuzione Ricavi</h3>
+            <div class="chart-container">
+                <canvas id="chartRicavi"></canvas>
+            </div>
+        </div>
+    </div>  
 </main>
 
 <div id="itemModal" class="modal-overlay" style="display:none;">
