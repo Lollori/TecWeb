@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandTitle = modal?.querySelector('.brand');
 
     // --- STATO APPLICAZIONE ---
-    let currentItems = [];
+    window.currentItems = [];
     let editingId = null; 
     let currentFilter = 'mie'; 
     let currentUserId = 'autore1'; 
@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadItems();
     }
 
-    function syncToLocalStorage() {
+     window.syncToLocalStorage = function () {
         localStorage.setItem('opere_marketplace', JSON.stringify(currentItems));
         loadItems(); // Questo scatena anche updateCharts()
     }
