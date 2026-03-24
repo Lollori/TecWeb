@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ArtAround</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/opere.css"> </head>
+<body class="admin-layout" style="justify-content: center; align-items: center; display: flex; min-height: 100vh;">
+
+    <div class="auth-wrapper">
+        <div class="modal-glass-card auth-card">
+            <div class="modal-glass-header" style="justify-content: center;">
+                <div class="brand">ArtAround <span>Portal</span></div>
+            </div>
+
+            <div class="auth-body">
+                <h2 id="authTitle">Bentornato!</h2>
+                <p id="authSubtitle">Inserisci le tue credenziali per accedere.</p>
+
+                <form id="authForm">
+                    <div class="form-grid" style="grid-template-columns: 1fr;">
+                        <label>Email
+                            <input type="email" id="email" placeholder="esempio@mail.it" required>
+                        </label>
+
+                        <label id="nameField" style="display: none;">Nome Completo
+                            <input type="text" id="username" placeholder="Mario Rossi">
+                        </label>
+
+                        <label>Password
+                            <input type="password" id="password" placeholder="••••••••" required>
+                        </label>
+
+                        <label id="confirmPasswordField" style="display: none;">Conferma Password
+                            <input type="password" id="confirmPassword" placeholder="••••••••">
+                        </label>
+                    </div>
+
+                    <div class="modal-actions" style="flex-direction: column; gap: 15px; margin-top: 25px;">
+                        <button type="submit" class="btn-submit" style="width: 100%; padding: 15px;">
+                            <span id="submitBtnText">Accedi</span>
+                        </button>
+                        
+                        <p class="toggle-text">
+                            <span id="questionText">Non hai un account?</span> 
+                            <a href="#" id="toggleAuthLink">Registrati ora</a>
+                        </p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
