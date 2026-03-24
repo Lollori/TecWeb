@@ -26,35 +26,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- FUNZIONE GRAFICI (CHART.JS) ---
     // --- FUNZIONE GRAFICI (CHART.JS) - VERSIONE FIX DESKTOP ---
+    // --- FUNZIONE GRAFICI (CHART.JS) - FIX DEFINITIVO PC/MOBILE ---
     function updateCharts() {
-        // 1. Filtriamo le opere dell'utente corrente
+        // 1. Filtriamo i dati (solo le opere dell'utente loggato)
         const mieOpere = currentItems.filter(item => item.autore === currentUserId);
         const statsDashboard = document.getElementById('statsDashboard');
 
-        // 2. Gestione visibilità Dashboard
         if (!statsDashboard) return;
 
+        // Se non ci sono opere, nascondiamo la sezione
         if (mieOpere.length === 0) {
             statsDashboard.style.display = 'none';
             return;
-        } else {
-            // Usiamo flex o grid in base al tuo CSS
-            statsDashboard.style.display = 'grid'; 
-        }
+        } 
 
-        // 3. Eseguiamo il rendering dopo che il browser ha calcolato i layout (Fix per PC)
-        window.requestAnimationFrame(() => {
+        // Mostriamo la dashboard (usa grid per allineare le due card)
+        statsDashboard.style.display = 'grid';
+
+        // 2. TIMEOUT FONDAMENTALE: Aspettiamo che il browser "disegni" i div bianchi
+        // Senza questo, su Computer l'altezza del canvas rimane 0 e il grafico non appare.
+        setTimeout(() => {
             const labels = mieOpere.map(item => item.operaId);
             const datiAdozioni = mieOpere.map(item => item.adozioni || 0);
             const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
 
-            // Opzioni comuni ottimizzate
+            // Configurazione comune per entrambi i grafici
             const commonOptions = {
                 responsive: true,
-                maintainAspectRatio: false, // Permette al grafico di riempire l'altezza definita nel CSS
-                animation: {
-                    duration: 1000,
-                    easing: 'easeOutQuart'
+                maintainAspectRatio: false, // Obbligatorio per usare l'altezza del CSS (320px)
+                layout: {
+                    padding: { top: 10, bottom: 10 }
                 },
                 plugins: {
                     legend: { 
@@ -67,38 +68,38 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     },
                     tooltip: { 
-                        backgroundColor: 'rgba(45, 90, 61, 0.9)', 
+                        backgroundColor: 'rgba(45, 90, 61, 0.9)',
                         padding: 12,
-                        bodyFont: { family: 'Inter' },
+                        cornerRadius: 10,
                         callbacks: {
                             label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) label += ': ';
-                                if (context.parsed !== null) {
-                                    label += context.dataset.label === 'Ricavi' ? '€' + context.parsed.toFixed(2) : context.parsed;
-                                }
-                                return label;
+                                let val = context.raw;
+                                return context.dataset.label === 'Ricavi' ? ` €${val.toFixed(2)}` : ` ${val} adozioni`;
                             }
                         }
                     }
                 },
-                cutout: '75%' // Design a ciambella sottile
+                cutout: '75%', // Effetto ciambella elegante
+                animation: {
+                    duration: 800,
+                    easing: 'easeOutQuart'
+                }
             };
 
             // --- GRAFICO ADOZIONI ---
-            const canvasAdo = document.getElementById('chartAdozioni');
-            if (canvasAdo) {
-                if (chartAdozioni) chartAdozioni.destroy(); // Distruggi istanza precedente
-                chartAdozioni = new Chart(canvasAdo.getContext('2d'), {
+            const ctxAdo = document.getElementById('chartAdozioni');
+            if (ctxAdo) {
+                if (chartAdozioni) chartAdozioni.destroy(); // Pulizia vecchio grafico
+                chartAdozioni = new Chart(ctxAdo.getContext('2d'), {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
-                            label: 'Adozioni',
+                            label: 'Successo',
                             data: datiAdozioni,
-                            backgroundColor: ['#2d5a3d', '#4a7c5f', '#6aab7e', '#8fbc94', '#cfe5d2'],
-                            hoverOffset: 10,
-                            borderWidth: 0
+                            backgroundColor: ['#2d5a3d', '#4a7c5f', '#74a889', '#a3c9b1', '#cfe5d2'],
+                            borderWidth: 0,
+                            hoverOffset: 15
                         }]
                     },
                     options: commonOptions
@@ -106,25 +107,25 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // --- GRAFICO RICAVI ---
-            const canvasRic = document.getElementById('chartRicavi');
-            if (canvasRic) {
-                if (chartRicavi) chartRicavi.destroy(); // Distruggi istanza precedente
-                chartRicavi = new Chart(canvasRic.getContext('2d'), {
+            const ctxRic = document.getElementById('chartRicavi');
+            if (ctxRic) {
+                if (chartRicavi) chartRicavi.destroy(); // Pulizia vecchio grafico
+                chartRicavi = new Chart(ctxRic.getContext('2d'), {
                     type: 'doughnut',
                     data: {
                         labels: labels,
                         datasets: [{
                             label: 'Ricavi',
                             data: datiRicavi,
-                            backgroundColor: ['#ff6b35', '#ff9f1c', '#fecba1', '#f9c74f', '#90be6d'],
-                            hoverOffset: 10,
-                            borderWidth: 0
+                            backgroundColor: ['#ff6b35', '#ff8e64', '#ffb193', '#ffd4c2', '#ffe9e0'],
+                            borderWidth: 0,
+                            hoverOffset: 15
                         }]
                     },
                     options: commonOptions
                 });
             }
-        });
+        }, 150); // 150ms di attesa per sicurezza
     }
 
     // --- FUNZIONI FILTRI ---

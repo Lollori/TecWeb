@@ -245,36 +245,42 @@ body.admin-layout {
 }
 
 /* =========================================
-   4. DASHBOARD & GRAFICI
+   4. DASHBOARD & GRAFICI - FIX DEFINITIVO
    ========================================= */
 .stats-dashboard-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 25px;
     width: 100%;
-    margin-bottom: 50px;
-}
-
-.chart-container {
-    position: relative;
-    /* Forza l'altezza minima, altrimenti il PC la schiaccia a zero */
-    height: 320px !important; 
-    min-height: 320px !important;
-    width: 100% !important;
-    display: block !important;
-    margin: 0 auto;
+    margin: 30px 0 50px 0;
+    min-height: 450px; /* Evita che la sezione collassi */
 }
 
 .stat-card {
-    min-height: 400px; /* Assicura che la card bianca sia abbastanza alta */
+    background: #ffffff !important; /* Forza il bianco per il riquadro */
+    border-radius: 24px;
+    padding: 30px;
+    border: 1px solid rgba(0,0,0,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
+    align-items: center;
+    min-height: 420px;
 }
 
 .stat-card h3 {
     color: var(--primary-dark);
-    font-size: 1.1rem;
-    margin-bottom: 15px;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+}
+
+.chart-container {
+    position: relative;
+    height: 320px !important; /* ALTEZZA FISSA OBBLIGATORIA */
+    width: 100% !important;
+    max-width: 100%;
 }
 
 
