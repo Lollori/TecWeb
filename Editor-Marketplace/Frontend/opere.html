@@ -11,8 +11,6 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/opere.css">
     <link rel="stylesheet" href="/css/visite.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="admin-layout">
 
@@ -78,21 +76,26 @@
         </div>
     </header>
 
-    
-    <div id="statsDashboard" class="stats-dashboard-container">
-            <div class="stat-card">
-                <h3>Successo Opere (Adozioni)</h3>
-                <div class="chart-container">
-                    <canvas id="chartAdozioni"></canvas>
-                </div>
+
+    <div id="statsDashboard" class="mini-stats-aside">
+        <div class="mini-stat-item">
+            <div class="stat-info">
+                <h4>Adozioni</h4>
+                <span id="totalAdozioni">0</span>
             </div>
-            <div class="stat-card">
-                <h3>Distribuzione Ricavi</h3>
-                <div class="chart-container">
-                    <canvas id="chartRicavi"></canvas>
+            <div class="svg-container" id="svgAdozioni">
                 </div>
+        </div>
+
+        <div class="mini-stat-item">
+            <div class="stat-info">
+                <h4>Ricavi</h4>
+                <span id="totalRicavi">€0</span>
             </div>
-        </div>  
+            <div class="svg-container" id="svgRicavi">
+                </div>
+        </div>
+    </div>
     <div id="itemsContainer" class="items-grid"></div>
 </main>
 

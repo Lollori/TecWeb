@@ -247,32 +247,56 @@ body.admin-layout {
 /* =========================================
    4. DASHBOARD & GRAFICI - FIX FINALE
    ========================================= */
-.stat-card {
-    background: #ffffff !important;
-    border-radius: 24px;
-    padding: 30px;
-    border: 1px solid rgba(0,0,0,0.08);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-    display: flex;
-    flex-direction: column; /* Fondamentale: mette titolo sopra e grafico sotto */
-    align-items: center;
-    min-height: 450px; /* Alziamo un po' la card */
-}
+  .mini-stats-aside {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      position: fixed; /* Lo tiene fisso a lato dello schermo */
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 100;
+      width: 180px;
+  }
 
-.stat-card h3 {
-    margin-bottom: 30px !important; /* Spinge il grafico verso il basso */
-    width: 100%;
-    text-align: center;
-}
+  .mini-stat-item {
+      background: white;
+      padding: 15px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid rgba(0,0,0,0.05);
+  }
 
-.chart-container {
-    position: relative;
-    flex: 1; /* Prende tutto lo spazio rimasto nella card */
-    width: 100% !important;
-    height: 300px !important; /* Forza l'altezza */
-    display: block !important;
-}
+  .stat-info h4 {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      color: #666;
+      margin: 0;
+  }
 
+  .stat-info span {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: #2d5a3d;
+  }
+
+  .svg-container {
+      width: 50px;
+      height: 50px;
+  }
+
+  /* Stile del cerchio SVG */
+  .circle-bg { fill: none; stroke: #eee; stroke-width: 3; }
+  .circle-progress {
+      fill: none;
+      stroke: #2d5a3d;
+      stroke-width: 3;
+      stroke-linecap: round;
+      transition: stroke-dasharray 0.5s ease;
+  }
 /* =========================================
    5. GRID & CARDS OPERE
    ========================================= */

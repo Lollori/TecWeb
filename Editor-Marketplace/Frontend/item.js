@@ -16,103 +16,62 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentFilter = 'mie'; 
     let currentUserId = 'autore1'; 
 
-    // Variabili globali per le istanze dei Grafici (per poterle distruggere)
-    let chartAdozioni = null;
-    let chartRicavi = null;
-
-    // --- FUNZIONE GRAFICI (CHART.JS) ---
+    // --- 1. FUNZIONE MINI-STATISTICHE (SVG PROGRESS) ---
     function updateCharts() {
         const mieOpere = currentItems.filter(item => item.autore === currentUserId);
-        const statsDashboard = document.getElementById('statsDashboard');
+        const dashboard = document.getElementById('statsDashboard');
+        
+        if (!dashboard) return;
 
-        if (!statsDashboard) return;
-
-        // Mostra o nascondi la dashboard in base ai dati
         if (mieOpere.length === 0) {
-            statsDashboard.style.display = 'none';
-            return;
-        } 
-        statsDashboard.style.display = 'grid';
-
-        // Controllo se la libreria Chart.js è disponibile
-        if (typeof Chart === 'undefined') {
-            console.warn("Chart.js non ancora caricato...");
+            dashboard.style.display = 'none';
             return;
         }
+        dashboard.style.display = 'flex';
 
-        // Timeout per garantire che il CSS abbia calcolato le altezze del contenitore
-        setTimeout(() => {
-            const labels = mieOpere.map(item => item.operaId);
-            const datiAdozioni = mieOpere.map(item => item.adozioni || 0);
-            const datiRicavi = mieOpere.map(item => (item.adozioni || 0) * (item.prezzo || 0));
+        // Calcolo Totali
+        const totalAdo = mieOpere.reduce((sum, item) => sum + (item.adozioni || 0), 0);
+        const totalRic = mieOpere.reduce((sum, item) => sum + ((item.adozioni || 0) * (item.prezzo || 0)), 0);
 
-            const commonOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                layout: { padding: { top: 20, bottom: 20, left: 10, right: 10 } },
-                plugins: {
-                    legend: { 
-                        position: 'bottom',
-                        labels: { 
-                            usePointStyle: true, 
-                            padding: 25, 
-                            font: { family: 'Inter', size: 12, weight: '600' },
-                            color: '#2d5a3d'
-                        }
-                    },
-                    tooltip: { 
-                        backgroundColor: 'rgba(45, 90, 61, 0.9)',
-                        padding: 12,
-                        cornerRadius: 10
-                    }
-                },
-                cutout: '70%',
-                animation: { duration: 800, easing: 'easeOutQuart' }
-            };
+        // Obiettivi per il calcolo della percentuale (es. 100 adozioni e 500€ ricavi)
+        const goalAdo = 100;
+        const goalRic = 500;
 
-            // --- GRAFICO ADOZIONI ---
-            const ctxAdo = document.getElementById('chartAdozioni');
-            if (ctxAdo) {
-                if (chartAdozioni) chartAdozioni.destroy();
-                chartAdozioni = new Chart(ctxAdo.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Adozioni',
-                            data: datiAdozioni,
-                            backgroundColor: ['#2d5a3d', '#4a7c5f', '#74a889', '#a3c9b1', '#cfe5d2'],
-                            borderWidth: 0,
-                            hoverOffset: 15
-                        }]
-                    },
-                    options: commonOptions
-                });
-            }
+        // Funzione interna per iniettare l'SVG
+        const renderRing = (containerId, value, label, subValue, color, percent) => {
+            const target = dashboard.querySelector(containerId);
+            if (!target) return;
 
-            // --- GRAFICO RICAVI ---
-            const ctxRic = document.getElementById('chartRicavi');
-            if (ctxRic) {
-                if (chartRicavi) chartRicavi.destroy();
-                chartRicavi = new Chart(ctxRic.getContext('2d'), {
-                    type: 'doughnut',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Ricavi',
-                            data: datiRicavi,
-                            backgroundColor: ['#ff6b35', '#ff8e64', '#ffb193', '#ffd4c2', '#ffe9e0'],
-                            borderWidth: 0,
-                            hoverOffset: 15
-                        }]
-                    },
-                    options: commonOptions
-                });
-            }
-        }, 200); 
+            const radius = 18;
+            const circum = 2 * Math.PI * radius;
+            const offset = circum - (Math.min(percent, 100) / 100) * circum;
+
+            target.innerHTML = `
+                <div class="mini-stat-card">
+                    <div class="stat-ring">
+                        <svg width="45" height="45" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="${radius}" fill="none" stroke="#eee" stroke-width="4"/>
+                            <circle cx="25" cy="25" r="${radius}" fill="none" stroke="${color}" 
+                                stroke-width="4" stroke-dasharray="${circum}" 
+                                stroke-dashoffset="${offset}" stroke-linecap="round"
+                                transform="rotate(-90 25 25)" style="transition: stroke-dashoffset 0.6s ease-out;"/>
+                        </svg>
+                        <span class="stat-perc">${Math.round(percent)}%</span>
+                    </div>
+                    <div class="stat-details">
+                        <span class="stat-label">${label}</span>
+                        <span class="stat-value">${subValue}</span>
+                    </div>
+                </div>
+            `;
+        };
+
+        // Renderizziamo i due anelli
+        renderRing('.stat-card:nth-child(1)', totalAdo, 'Adozioni Totali', totalAdo, '#2d5a3d', (totalAdo / goalAdo) * 100);
+        renderRing('.stat-card:nth-child(2)', totalRic, 'Ricavi Stimati', `€${totalRic.toFixed(2)}`, '#ff6b35', (totalRic / goalRic) * 100);
     }
 
-    // --- FUNZIONI FILTRI ---
+    // --- 2. GESTIONE FILTRI ---
     window.setFilter = function(filter) {
         currentFilter = filter;
         if(filterMieBtn) filterMieBtn.classList.toggle('active', filter === 'mie');
@@ -120,26 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
         loadItems();
     };
 
-    window.applyFilters = function() {
-        loadItems();
-    };
+    window.applyFilters = () => loadItems();
 
     window.adottaOpera = function(itemId) {
         const item = currentItems.find(i => i.id === itemId);
         if (item) {
             item.adozioni = (item.adozioni || 0) + 1;
             syncToLocalStorage();
-            alert(`"${item.operaId}" aggiunta alla visita!`);
         }
     };
 
-    // --- GESTIONE DATI ---
+    // --- 3. LOGICA DATI (LOCAL STORAGE) ---
     function loadFromLocalStorage() {
         const savedData = localStorage.getItem('opere_marketplace');
         if (savedData) {
             currentItems = JSON.parse(savedData);
         } else {
-            // Dati demo iniziali
             currentItems = [
                 {id:'1', operaId:'La Primavera', museo:'Uffizi', testo:'Capolavoro di Botticelli', lunghezza:'1min', linguaggio:'medio', licenza:'gratuita', prezzo:0, pubblica:true, autore:'autore1', adozioni:12},
                 {id:'2', operaId:'Notte Stellata', museo:'MOMA', testo:'Celebre opera di Van Gogh', lunghezza:'15s', linguaggio:'infantile', licenza:'pagamento', prezzo:3.50, pubblica:true, autore:'autore1', adozioni:5}
@@ -170,13 +125,13 @@ document.addEventListener('DOMContentLoaded', () => {
         updateCharts(); 
     }
 
-    // --- RENDER CARD ---
+    // --- 4. RENDER CARD OPERE ---
     function renderItems(dati) {
         if (!container) return;
         container.innerHTML = ''; 
 
         if (dati.length === 0) {
-            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #4a7c5f; padding: 40px;">Nessuna opera trovata.</p>';
+            container.innerHTML = '<p class="empty-msg">Nessuna opera trovata.</p>';
             return;
         }
 
@@ -197,15 +152,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         </div>
                         <div class="buttons-row">
                             ${isMia ? `
-                                <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
-                                <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                                <button type="button" class="icon-btn edit-btn"><i class="fa-solid fa-pen"></i></button>
+                                <button type="button" class="icon-btn delete-btn"><i class="fa-solid fa-trash"></i></button>
                             ` : `<button class="btn-add" onclick="adottaOpera('${item.id}')">Adotta</button>`}
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <p class="description-text">${item.testo}</p>
-                </div>
+                <div class="card-body"><p class="description-text">${item.testo}</p></div>
                 <div class="card-footer">
                     <span class="tag-bubble"><i class="fa-solid fa-hourglass-half"></i> ${item.lunghezza}</span>
                     <span class="adozioni-count">${item.adozioni || 0} adozioni</span>
@@ -213,21 +166,15 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
 
             if (isMia) {
-                card.querySelector('.edit-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    apriModaleItem(item);
-                });
-                card.querySelector('.delete-btn').addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    eliminaOpera(item.id);
-                });
+                card.querySelector('.edit-btn').onclick = () => apriModaleItem(item);
+                card.querySelector('.delete-btn').onclick = () => eliminaOpera(item.id);
             }
             container.appendChild(card);
         });
     }
 
-    // --- GESTIONE MODALE ---
-    window.apriModaleItem = function(item) {
+    // --- 5. MODALE & AZIONI ---
+    window.apriModaleItem = (item) => {
         modal.style.display = 'flex';
         if (item) {
             editingId = item.id;
@@ -247,19 +194,18 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.closeModal = function() { modal.style.display = 'none'; editingId = null; };
+    window.closeModal = () => { modal.style.display = 'none'; editingId = null; };
 
-    window.eliminaOpera = function(id) {
+    window.eliminaOpera = (id) => {
         if (confirm("Eliminare quest'opera?")) {
             currentItems = currentItems.filter(i => i.id !== id);
             syncToLocalStorage();
         }
     };
 
-    form.addEventListener('submit', (e) => {
+    form.onsubmit = (e) => {
         e.preventDefault();
         const existingItem = editingId ? currentItems.find(i => i.id === editingId) : null;
-
         const itemData = {
             id: editingId || Date.now().toString(),
             operaId: document.getElementById('operaId').value,
@@ -274,16 +220,12 @@ document.addEventListener('DOMContentLoaded', () => {
             adozioni: existingItem ? existingItem.adozioni : 0
         };
 
-        if (editingId) {
-            currentItems = currentItems.map(i => i.id === editingId ? itemData : i);
-        } else {
-            currentItems.push(itemData);
-        }
+        if (editingId) currentItems = currentItems.map(i => i.id === editingId ? itemData : i);
+        else currentItems.push(itemData);
 
         syncToLocalStorage();
         closeModal();
-    });
+    };
 
-    // --- AVVIO ---
     loadFromLocalStorage();
 });
