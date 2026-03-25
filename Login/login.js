@@ -61,43 +61,42 @@ authForm.onsubmit = async (e) => {
 
     const emailRaw = emailInput.value;
     const passwordRaw = passwordInput.value;
-    
-    // Costruiamo l'email finale (es: CUR_esempio@mail.it)
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
-
-    // Decidiamo a quale rotta bussare
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
 
     try {
-        // fetch con percorso assoluto per evitare "Server non raggiungibile"
-        const response = await fetch(window.location.origin + endpoint, {
+        const response = await fetch(endpoint, { 
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: finalEmail, password: passwordRaw })
         });
 
+        // PRIMA di fare .json(), controlliamo se la risposta è OK
+        if (!response.ok) {
+            // Se il server risponde 404 o 500, non è un JSON!
+            const errorText = await response.text();
+            console.error("Il server ha risposto con un errore non-JSON:", errorText);
+            throw new Error("Il server ha risposto con un errore (codice " + response.status + ")");
+        }
+
         const data = await response.json();
 
         if (data.success) {
             if (isLoginMode) {
-                // LOGIN OK -> Redirect
-                if (finalEmail.startsWith("CUR_")) {
-                    window.location.href = "../Editor-Marketplace/Frontend/menu.html";
-                } else {
-                    window.location.href = "../navigator/index.html";
-                }
+                // Redirect basato sul prefisso
+                window.location.href = finalEmail.startsWith("CUR_") 
+                    ? "../Editor-Marketplace/Frontend/menu.html" 
+                    : "../navigator/index.html";
             } else {
-                // REGISTRAZIONE OK
-                alert("Registrazione completata! Ora puoi accedere.");
-                toggleLink.click(); // Torna al login
+                alert("Registrazione completata! Ora effettua il login.");
+                location.reload(); // Ricarica per tornare al login pulito
             }
         } else {
-            alert("Errore: " + data.message);
-            passwordInput.value = "";
+            alert("Errore" + data.message);
         }
     } catch (error) {
-        console.error("Errore di rete:", error);
-        alert("Server non raggiungibile. Assicurati che il server Node sia attivo su porta 8000.");
+        console.error("Errore fatale:", error);
+        alert("Errore di connessione: il server non ha risposto correttamente. Controlla la console (F12).");
     }
 };
 
