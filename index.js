@@ -1,13 +1,6 @@
 ﻿/* ========================== */
 /* SETUP            */
 /* ========================== */
-const { execSync } = require('child_process');
-try {
-    execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
-} catch(e) {
-    console.error('npm install fallito:', e.message);
-}
-
 global.rootDir = __dirname ;
 global.startDate = null;
 

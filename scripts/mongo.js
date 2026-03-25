@@ -5,8 +5,6 @@ Author: Fabio Vitali (Originale) + Modifiche per Utenti
 
 const mongoose = require("mongoose");
 const fs = require("fs").promises;
-const bcrypt = require("bcryptjs");
-const SALT_ROUNDS = 10;
 
 // --- CONFIGURAZIONE E SCHEMI ESISTENTI (Paesi/Capitali) ---
 let fn = "/public/data/country-by-capital-city.json"
@@ -76,8 +74,7 @@ exports.registerUser = async (userData, credentials) => {
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${userDB}?authSource=admin&writeConcern=majority`;
     try {
         await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
-        const hashedPassword = await bcrypt.hash(userData.password, SALT_ROUNDS);
-        const newUser = new User({ ...userData, password: hashedPassword });
+        const newUser = new User(userData);
         await newUser.save();
         await mongoose.connection.close();
         return { success: true };
@@ -91,13 +88,8 @@ exports.findUser = async (query, credentials) => {
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${userDB}?authSource=admin&writeConcern=majority`;
     try {
         await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
-        const user = await User.findOne({ email: query.email });
+        const user = await User.findOne(query);
         if (!user) { await mongoose.connection.close(); return null; }
-        // se c'è una password nella query, confronta con l'hash
-        if (query.password) {
-            const match = await bcrypt.compare(query.password, user.password);
-            if (!match) { await mongoose.connection.close(); return null; }
-        }
         await mongoose.connection.close();
         return user;
     } catch (e) {
@@ -110,7 +102,7 @@ exports.getAllUsers = async (credentials) => {
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${userDB}?authSource=admin&writeConcern=majority`;
     try {
         await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
-        const users = await User.find({}, { __v: 0 }); // password visibile temporaneamente per verifica
+        const users = await User.find({}, { password: 0, __v: 0 });
         await mongoose.connection.close();
         return { ok: true, data: users };
     } catch (e) {
