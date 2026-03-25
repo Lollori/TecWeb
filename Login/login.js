@@ -5,7 +5,7 @@ const roleField = document.getElementById('roleField');
 const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
-const userAvatar = document.getElementById('userAvatar'); // Il tondino
+const userAvatar = document.getElementById('userAvatar'); 
 
 const authTitle = document.getElementById('authTitle');
 const submitBtnText = document.getElementById('submitBtnText');
@@ -20,21 +20,28 @@ let isLoginMode = true;
 function updateUI() {
     if (isLoginMode) {
         emailPrefix.innerText = "";
+        emailPrefix.style.display = "none";
         return;
     }
 
-    // Se siamo in registrazione, aggiorna prefisso e immagine
+    // --- MODALITÀ REGISTRAZIONE ---
     const selected = userRole.value; // "VIS" o "CUR"
+    
+    // Mostra il prefisso CUR_ o VIS_
     emailPrefix.innerText = selected + "_";
+    emailPrefix.style.display = "inline-block";
 
-    // Cambia immagine dell'avatar
+    // --- AGGIORNAMENTO AVATAR (Link Ultra-Affidabili) ---
     if (selected === 'CUR') {
-        // Immagine per il Curatore (puoi cambiare l'URL con uno tuo)
-        userAvatar.src = "https://i.imgur.com/8K6mD9v.png"; 
+        // Immagine Curatore: Busto di Seneca (Wikimedia)
+        userAvatar.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Dying_Seneca.jpg/300px-Dying_Seneca.jpg"; 
     } else {
-        // Immagine per il Visitatore
-        userAvatar.src = "https://i.imgur.com/zW6u2pD.png";
+        // Immagine Visitatore: Ragazze al piano di Renoir (Wikimedia)
+        userAvatar.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Auguste_Renoir_-_Jeunes_filles_au_piano.jpg/300px-Auguste_Renoir_-_Jeunes_filles_au_piano.jpg";
     }
+    
+    // Pulizia alt text per evitare scritte sgradevoli se la connessione è lenta
+    userAvatar.alt = "";
 }
 
 /**
@@ -45,9 +52,8 @@ toggleLink.addEventListener('click', (e) => {
     isLoginMode = !isLoginMode;
 
     if (!isLoginMode) {
-        /* --- MODALITÀ REGISTRAZIONE --- */
+        /* --- PASSAGGIO A REGISTRAZIONE --- */
         roleField.style.display = "block";
-        // Timeout per far scattare l'animazione CSS slideDownField
         setTimeout(() => {
             roleField.classList.add('role-visible');
         }, 10);
@@ -59,9 +65,8 @@ toggleLink.addEventListener('click', (e) => {
         
         updateUI();
     } else {
-        /* --- MODALITÀ LOGIN --- */
+        /* --- PASSAGGIO A LOGIN --- */
         roleField.classList.remove('role-visible');
-        // Aspettiamo la fine dell'animazione prima di nascondere
         setTimeout(() => {
             roleField.style.display = "none";
         }, 400);
@@ -87,16 +92,20 @@ authForm.onsubmit = (e) => {
     e.preventDefault();
 
     const emailRaw = emailInput.value;
+    // Se siamo in registrazione, incolliamo il prefisso CUR_ o VIS_
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
 
-    console.log("Email inviata al server:", finalEmail);
+    console.log("Email finale per il server:", finalEmail);
 
-    // Esempio logica redirect
     if (finalEmail.startsWith("CUR_")) {
-        alert("Accesso Curatore: " + finalEmail);
         window.location.href = "../Editor-Marketplace/Frontend/menu.html";
+    } else if (finalEmail.startsWith("VIS_")) {
+        // Se hai una pagina per il visitatore, mettila qui
+        alert("Benvenuto Visitatore: " + finalEmail);
     } else {
-        alert("Accesso Visitatore: " + finalEmail);
-        // window.location.href = "../navigator/index.html";
+        alert("Effettua il login inserendo le tue credenziali.");
     }
 };
+
+// Forza l'inizializzazione al caricamento
+updateUI();
