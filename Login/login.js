@@ -1,4 +1,6 @@
-/* --- RIFERIMENTI ELEMENTI DOM --- */
+/* ========================== */
+/* ELEMENTI DEL DOM        */
+/* ========================== */
 const authForm = document.getElementById('authForm');
 const toggleLink = document.getElementById('toggleAuthLink');
 const roleField = document.getElementById('roleField');
@@ -14,16 +16,23 @@ const questionText = document.getElementById('questionText');
 
 let isLoginMode = true;
 
+/* ========================== */
+/* LOGICA INTERFACCIA      */
+/* ========================== */
+
+// Aggiorna l'anteprima del cerchietto e il prefisso email
 function updateUI() {
     if (isLoginMode) {
         emailPrefix.innerText = "";
         emailPrefix.style.display = "none";
         return;
     }
-    const selected = userRole.value;
+    
+    const selected = userRole.value; // "CUR" o "VIS"
     emailPrefix.innerText = selected + "_";
     emailPrefix.style.display = "inline-block";
 
+    // Cambia la lettera nel cerchietto durante la registrazione
     if (selected === 'CUR') {
         avatarContainer.style.backgroundColor = "#1a3a2a";
         avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">C</span>';
@@ -33,10 +42,10 @@ function updateUI() {
     }
 }
 
+// Switch tra Login e Registrazione
 toggleLink.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
-    console.log("Switch mode: isLoginMode =", isLoginMode);
     
     if (!isLoginMode) {
         roleField.style.display = "block";
@@ -58,19 +67,19 @@ toggleLink.addEventListener('click', (e) => {
 
 userRole.addEventListener('change', updateUI);
 
-// --- GESTIONE INVIO FORM ---
+/* ========================== */
+/* INVIO DATI AL SERVER    */
+/* ========================== */
+
 authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    console.log("Form inviato!"); // Se non vedi questo in console, il problema è l'ID del form nel HTML
 
     const emailRaw = emailInput.value.trim();
     const passwordRaw = passwordInput.value.trim();
     
-    // Costruiamo l'email finale
+    // Costruiamo l'email finale con prefisso (solo se siamo in registrazione)
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
-
-    console.log("Dati pronti per l'invio:", { finalEmail, endpoint });
 
     try {
         const response = await fetch(endpoint, {
@@ -79,29 +88,37 @@ authForm.addEventListener('submit', async (e) => {
             body: JSON.stringify({ email: finalEmail, password: passwordRaw })
         });
 
-        console.log("Risposta ricevuta dal server, status:", response.status);
-
         const data = await response.json();
-        console.log("Dati JSON:", data);
 
         if (data.success) {
-            alert(isLoginMode ? "Accesso eseguito!" : "Registrazione completata!");
             if (isLoginMode) {
-                // Redirect
-                window.location.href = finalEmail.startsWith("CUR_") 
-                    ? "../Editor-Marketplace/Frontend/menu.html" 
-                    : "../navigator/index.html";
+                // --- LOGIN SUCCESS ---
+                // Salviamo i dati per la Navbar di tutte le pagine
+                localStorage.setItem('userEmail', data.user.email);
+                
+                // Determiniamo il ruolo dall'email (se inizia per CUR_ è Curatore)
+                const role = data.user.email.startsWith("CUR_") ? "CUR" : "VIS";
+                localStorage.setItem('userRole', role);
+                
+                alert("Accesso eseguito!");
+                // Reindirizzamento alla Home Page principale
+                window.location.href = "../index.html"; 
             } else {
-                // Dopo registrazione torna al login
+                // --- REGISTRAZIONE SUCCESS ---
+                alert("Registrazione completata! Ora puoi accedere.");
+                // Torna automaticamente alla schermata di Login
+                isLoginMode = true;
                 toggleLink.click();
             }
         } else {
+            // Messaggio di errore dal server (es: "Credenziali errate")
             alert("Errore: " + data.message);
         }
     } catch (error) {
-        console.error("Errore FETCH:", error);
-        alert("Errore di connessione. Controlla che il server Node sia acceso.");
+        console.error("Errore Fetch:", error);
+        alert("Impossibile connettersi al server. Controlla che Node.js sia attivo.");
     }
 });
 
+// Inizializzazione UI
 updateUI();

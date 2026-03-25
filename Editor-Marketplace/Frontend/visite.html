@@ -11,21 +11,29 @@
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/opere.css">
     <link rel="stylesheet" href="/css/visite.css">
+    <link rel="stylesheet" href="/css/profile.css">
+
 
 </head>
 
 <body class="admin-layout">
 
-    <header class="app-header">
+   <header class="app-header">
         <div class="header-inner">
         <div style="width: 38px;"></div>
         <h1 class="logo">
             <a href="/" class="logo-link">ArtAround</a>
             <span>Editor</span>
-            </h1>
-        <button class="user-icon-btn" type="button" onclick="window.location.href='/'">
-            <i class="fa-solid fa-right-from-bracket"></i>
-        </button>
+        </h1>
+
+        <div class="nav-profile-container">
+            <div class="nav-avatar" id="navAvatar">U</div>
+            <div class="profile-dropdown">
+                <p id="userEmailDisplay" style="padding: 10px; font-size: 11px; color: #666; border-bottom: 1px solid #eee; margin: 0;">email@esempio.com</p>
+                <a href="/profile.html">Gestisci Profilo</a>
+                <a href="#" onclick="logout()">Logout</a>
+            </div>
+        </div>
         </div>
     </header>
 
@@ -108,5 +116,6 @@
     </div>
 
     <script src="visite.js"></script>
+    <script src="/js/profile.js"></script>
 </body>
 </html>
