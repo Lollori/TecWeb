@@ -97,6 +97,19 @@ exports.findUser = async (query, credentials) => {
     }
 }
 
+exports.getAllUsers = async (credentials) => {
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${userDB}?authSource=admin&writeConcern=majority`;
+    try {
+        await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const users = await User.find({}, { password: 0, __v: 0 }); // nasconde password
+        await mongoose.connection.close();
+        return { ok: true, data: users };
+    } catch (e) {
+        if (mongoose.connection.readyState !== 0) await mongoose.connection.close();
+        return { ok: false, error: e.message };
+    }
+}
+
 exports.isConnected = async function (mongouri) {
     let client = await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
     return !!client && !!client.topology && client.topology.isConnected()

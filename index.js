@@ -93,6 +93,14 @@ app.post('/api/register', async (req, res) => {
 });
 
 /* ========================== */
+/* API UTENTI          */
+/* ========================== */
+app.get('/api/utenti', async (_req, res) => {
+    const result = await mymongo.getAllUsers(mongoCredentials);
+    res.json(result);
+});
+
+/* ========================== */
 /* API MUSEI           */
 /* ========================== */
 app.get('/api/test', (_req, res) => {
