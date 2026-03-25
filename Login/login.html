@@ -4,139 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArtAround | Accesso Portale</title>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+    
     <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/opere.css">
     <link rel="stylesheet" href="/css/auth.css">
-
-    <style>
-        /* Reset e Base */
-        body, html { margin: 0; padding: 0; overflow: hidden; }
-
-        .auth-wrapper {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: radial-gradient(circle at top left, #f8faf8, #d9e8dc);
-        }
-
-        /* Card Compatta e Professionale */
-        .auth-card {
-            position: relative;
-            padding: 40px 35px;
-            border-radius: 30px;
-            width: 90%;
-            max-width: 380px; /* Dimensione ridotta ed elegante */
-            background: rgba(255, 255, 255, 0.82); /* Trasparenza per il quadro */
-            backdrop-filter: blur(12px) saturate(150%);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
-            z-index: 1;
-            overflow: hidden;
-            text-align: center;
-        }
-
-        /* Immagine dell'opera d'arte in filigrana */
-        .auth-card::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1024px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
-            background-size: cover;
-            background-position: center;
-            opacity: 0.1; /* Visibile ma non disturba */
-            z-index: -1;
-            filter: grayscale(10%);
-        }
-
-        .auth-body h2 {
-            font-family: 'Playfair Display', serif;
-            color: #1a3a2a;
-            font-size: 1.8rem;
-            margin: 0 0 10px 0;
-        }
-
-        .auth-body p {
-            color: #5c7568;
-            font-size: 0.85rem;
-            margin-bottom: 30px;
-        }
-
-        /* Form Styling */
-        .form-grid { text-align: left; }
-
-        .form-grid label {
-            font-family: 'Inter', sans-serif;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 1.2px;
-            color: #2d5a3d;
-            display: block;
-            margin-bottom: 5px;
-        }
-
-        .form-grid input, .form-grid select {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 18px;
-            border-radius: 12px;
-            border: 1px solid rgba(0,0,0,0.1);
-            background: rgba(255, 255, 255, 0.5);
-            font-size: 0.9rem;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-
-        .form-grid input:focus {
-            outline: none;
-            border-color: #2d5a3d;
-            background: #fff;
-        }
-
-        /* Bottone Premium */
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            background: #1a3a2a;
-            color: white;
-            border: none;
-            border-radius: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 8px 15px rgba(26, 58, 42, 0.2);
-        }
-
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            filter: brightness(1.2);
-        }
-
-        .toggle-text {
-            margin-top: 20px;
-            font-size: 0.8rem;
-            color: #4a7c5f;
-        }
-
-        .toggle-text a {
-            font-weight: 700;
-            color: #1a3a2a;
-            text-decoration: none;
-        }
-    </style>
 </head>
 <body>
 
     <div class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-body">
-                <div style="font-size: 1.5rem; color: #2d5a3d; margin-bottom: 10px;">✦</div>
+                <div class="brand-icon">✦</div>
                 <h2 id="authTitle">Bentornato!</h2>
                 <p id="authSubtitle">Accedi per esplorare la tua collezione.</p>
 
@@ -170,6 +50,6 @@
         </div>
     </div>
 
-    <script src="login.js"></script>
+    <script src="/login/login.js"></script>
 </body>
 </html>
