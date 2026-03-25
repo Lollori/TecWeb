@@ -1,59 +1,58 @@
-/* --- 1. RESET & VARIABILI --- */
+/* --- 1. VARIABILI AGGIORNATE --- */
 :root {
     --primary-dark: #1a3a2a;
     --primary-mid: #2d5a3d;
     --accent-soft: #5c7568;
     --bg-gradient: radial-gradient(circle at top left, #f8faf8, #d9e8dc);
-    /* Modificata: aumentata la trasparenza per il reveal del quadro */
-    --glass-white: rgba(255, 255, 255, 0.7); 
-    --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    --glass-white: rgba(255, 255, 255, 0.75); 
+    --transition-smooth: all 0.4s ease;
 }
 
 body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
 }
 
-/* --- 2. CONTAINER PRINCIPALE --- */
 .auth-wrapper {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
     background: var(--bg-gradient);
 }
 
-/* --- 3. CARD (ALLARGATA E SOLIDA) --- */
+/* --- 2. CARD COMPATTA (DIMENSIONI RIDOTTE) --- */
 .auth-card {
     position: relative;
-    padding: 55px 50px !important; /* Più respiro interno */
-    border-radius: 35px;
-    width: 95%;
-    max-width: 460px; /* Allargata per un look più premium */
-    background: rgba(255, 255, 255, 1); /* Bianco pieno di base */
+    padding: 35px 30px !important; /* Ridotto il padding interno */
+    border-radius: 24px;
+    width: 90%;
+    max-width: 360px; /* Torniamo a una larghezza standard da login */
+    background: #ffffff; 
     border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
     z-index: 1;
     overflow: hidden;
     transition: var(--transition-smooth);
-    animation: fadeIn 0.8s ease-out;
 }
 
-/* EFFETTO HOVER SULLA CARD */
 .auth-card:hover {
-    background: var(--glass-white) !important; /* Trasparenza attiva */
-    backdrop-filter: blur(12px) saturate(160%);
-    -webkit-backdrop-filter: blur(12px);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
-    transform: translateY(-8px);
+    background: var(--glass-white) !important;
+    backdrop-filter: blur(8px);
+    transform: translateY(-4px);
 }
 
-/* --- 4. IMMAGINE OPERA D'ARTE (L'EFFETTO REVEAL) --- */
+/* --- 3. STELLINA CENTRATA (FIX) --- */
+.brand-icon {
+    display: block;
+    text-align: center;
+    width: 100%;
+    font-size: 1.2rem;
+    color: var(--primary-mid);
+    margin-bottom: 10px;
+}
+
+/* --- 4. REVEAL QUADRO --- */
 .auth-card::before {
     content: "";
     position: absolute;
@@ -61,111 +60,72 @@ body, html {
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1024px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
     background-size: cover;
     background-position: center;
-    
-    /* Stato iniziale: Totalmente invisibile */
     opacity: 0;
-    filter: blur(15px);
-    
-    z-index: -1; /* Dietro al testo */
-    transition: all 0.8s ease-in-out;
+    filter: blur(10px);
+    z-index: -1;
+    transition: opacity 0.6s ease;
 }
 
-/* MOSTRA IL QUADRO AL PASSAGGIO DEL MOUSE */
 .auth-card:hover::before {
-    opacity: 0.3; /* Aumentata l'opacità per essere finalmente visibile */
-    filter: blur(3px); /* Rimane sfuocata per non disturbare il testo */
+    opacity: 0.2;
 }
 
-/* --- 5. TIPOGRAFIA --- */
-.auth-body {
-    position: relative;
-    z-index: 2; /* Forza il testo sopra l'immagine */
-}
-
+/* --- 5. TESTI --- */
 .auth-body h2 {
     font-family: 'Playfair Display', serif;
     color: var(--primary-dark);
-    font-size: 2.2rem;
-    font-weight: 700;
-    letter-spacing: -0.5px;
-    margin: 0 0 10px 0;
+    font-size: 1.6rem; /* Più piccolo */
+    margin: 0 0 5px 0;
     text-align: center;
 }
 
 .auth-body p {
     color: var(--accent-soft);
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 40px;
+    font-size: 0.85rem;
+    margin-bottom: 25px;
     text-align: center;
 }
 
-/* --- 6. FORM E INPUT (PIÙ SPESSI E PROFESSIONALI) --- */
-.form-grid {
-    text-align: left;
-}
-
+/* --- 6. INPUT PIÙ SOTTILI --- */
 .form-grid label {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.8px;
+    letter-spacing: 1px;
     color: var(--primary-mid);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     display: block;
 }
 
-.form-grid input, 
-.form-grid select {
+.form-grid input, .form-grid select {
     width: 100%;
-    padding: 18px; /* Aumentato lo spessore */
-    margin-bottom: 25px;
-    background: rgba(255, 255, 255, 0.9);
+    padding: 12px 15px; /* Molto più sottili */
+    margin-bottom: 15px;
+    background: #fdfdfd;
     border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 18px;
-    font-size: 1rem;
+    border-radius: 12px;
+    font-size: 0.9rem;
     box-sizing: border-box;
-    transition: all 0.3s ease;
-}
-
-.form-grid input:focus,
-.form-grid select:focus {
-    outline: none;
-    border-color: var(--primary-mid);
-    background: #ffffff;
-    box-shadow: 0 10px 20px rgba(45, 90, 61, 0.08);
 }
 
 /* --- 7. BOTTONE --- */
 .btn-submit {
     width: 100%;
-    padding: 20px !important;
+    padding: 14px !important;
     background-color: var(--primary-dark) !important;
-    color: #ffffff !important;
+    color: white !important;
     border: none;
-    border-radius: 20px !important;
-    font-weight: 700;
-    font-size: 1.1rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    border-radius: 12px !important;
+    font-weight: 600;
+    font-size: 1rem;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 12px 24px rgba(26, 58, 42, 0.2);
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
-.btn-submit:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 15px 30px rgba(26, 58, 42, 0.3);
-    filter: brightness(1.2);
-}
-
-/* --- 8. LINK --- */
 .toggle-text {
-    margin-top: 30px;
+    margin-top: 20px;
     text-align: center;
-    font-size: 0.9rem;
-    color: var(--accent-soft);
+    font-size: 0.8rem;
 }
 
 .toggle-text a {
