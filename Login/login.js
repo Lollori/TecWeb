@@ -90,23 +90,23 @@ authForm.addEventListener('submit', async (e) => {
 
         const data = await response.json();
 
-        if (data.success) {
+       if (data.success) {
             if (isLoginMode) {
                 // --- LOGIN SUCCESS ---
-                // Salviamo i dati per la Navbar di tutte le pagine
                 localStorage.setItem('userEmail', data.user.email);
                 
-                // Determiniamo il ruolo dall'email (se inizia per CUR_ è Curatore)
                 const role = data.user.email.startsWith("CUR_") ? "CUR" : "VIS";
                 localStorage.setItem('userRole', role);
                 
                 alert("Accesso eseguito!");
-                // Reindirizzamento alla Home Page principale
-                window.location.href = "/index.html"; 
+
+                // CAMBIA QUESTA RIGA:
+                window.location.href = "/"; 
+                // ---------------------------------
+                
             } else {
                 // --- REGISTRAZIONE SUCCESS ---
                 alert("Registrazione completata! Ora puoi accedere.");
-                // Torna automaticamente alla schermata di Login
                 isLoginMode = true;
                 toggleLink.click();
             }
