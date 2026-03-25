@@ -1,90 +1,84 @@
-/* --- RIFERIMENTI DOM --- */
+/* --- RIFERIMENTI ELEMENTI DOM --- */
 const authForm = document.getElementById('authForm');
 const toggleLink = document.getElementById('toggleAuthLink');
 const roleField = document.getElementById('roleField');
 const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
-const userAvatar = document.getElementById('userAvatar');
+const userAvatar = document.getElementById('userAvatar'); // Il tondino
 
 const authTitle = document.getElementById('authTitle');
 const submitBtnText = document.getElementById('submitBtnText');
 const questionText = document.getElementById('questionText');
 
-// Stato iniziale: Login
+// Stato iniziale: Login (true)
 let isLoginMode = true;
 
 /**
- * Funzione per aggiornare l'avatar e il prefisso dell'email
- * Viene chiamata al cambio della tendina e al toggle del form.
+ * Funzione per aggiornare l'interfaccia (Avatar e Prefisso Email)
  */
-function updateRoleFeedback() {
+function updateUI() {
     if (isLoginMode) {
-        // In Login non mostriamo prefissi automatici
         emailPrefix.innerText = "";
-        emailPrefix.style.display = "none";
         return;
     }
 
-    // --- LOGICA REGISTRAZIONE ---
-    const selectedRole = userRole.value; // VIS o CUR
+    // Se siamo in registrazione, aggiorna prefisso e immagine
+    const selected = userRole.value; // "VIS" o "CUR"
+    emailPrefix.innerText = selected + "_";
 
-    // 1. Aggiorna il prefisso email ("Blindato")
-    emailPrefix.innerText = selectedRole + "_";
-    emailPrefix.style.display = "inline-block";
-
-    // 2. Aggiorna l'immagine profilo predefinita
-    if (selectedRole === 'CUR') {
-        // Avatar Curatore (Busto Classico)
-        userAvatar.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Dying_Seneca.jpg/300px-Dying_Seneca.jpg';
+    // Cambia immagine dell'avatar
+    if (selected === 'CUR') {
+        // Immagine per il Curatore (puoi cambiare l'URL con uno tuo)
+        userAvatar.src = "https://i.imgur.com/8K6mD9v.png"; 
     } else {
-        // Avatar Visitatore (Ritratto Moderno/Fauves)
-        userAvatar.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Auguste_Renoir_-_Jeunes_filles_au_piano.jpg/300px-Auguste_Renoir_-_Jeunes_filles_au_piano.jpg';
+        // Immagine per il Visitatore
+        userAvatar.src = "https://i.imgur.com/zW6u2pD.png";
     }
 }
 
 /**
- * Switch tra Login e Registrazione (Animato e Fluido)
+ * Toggle tra Login e Registrazione
  */
 toggleLink.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
 
     if (!isLoginMode) {
-        /* --- PASSAGGIO A REGISTRAZIONE --- */
+        /* --- MODALITÀ REGISTRAZIONE --- */
         roleField.style.display = "block";
-        // Timeout minimo per far agganciare l'animazione CSS
+        // Timeout per far scattare l'animazione CSS slideDownField
         setTimeout(() => {
             roleField.classList.add('role-visible');
         }, 10);
-        
+
         authTitle.innerText = "Crea Account";
         submitBtnText.innerText = "Registrati";
         questionText.innerText = "Hai già un account?";
         toggleLink.innerText = "Accedi qui";
         
-        updateRoleFeedback(); // Carica avatar e prefisso VIS_ predefinito
+        updateUI();
     } else {
-        /* --- PASSAGGIO A LOGIN --- */
+        /* --- MODALITÀ LOGIN --- */
         roleField.classList.remove('role-visible');
-        // Aspettiamo la fine dell'animazione CSS prima di nascondere il display
+        // Aspettiamo la fine dell'animazione prima di nascondere
         setTimeout(() => {
             roleField.style.display = "none";
-        }, 500);
+        }, 400);
 
         authTitle.innerText = "Bentornato!";
         submitBtnText.innerText = "Accedi";
         questionText.innerText = "Non hai un account?";
         toggleLink.innerText = "Registrati ora";
         
-        updateRoleFeedback(); // Rimuove il prefisso
+        updateUI();
     }
 });
 
 /**
- * Ascolta il cambio della tendina per aggiornare avatar e prefisso in tempo reale
+ * Ascolta il cambio della tendina (Visitatore <-> Curatore)
  */
-userRole.addEventListener('change', updateRoleFeedback);
+userRole.addEventListener('change', updateUI);
 
 /**
  * Gestione invio Form
@@ -92,28 +86,17 @@ userRole.addEventListener('change', updateRoleFeedback);
 authForm.onsubmit = (e) => {
     e.preventDefault();
 
-    const emailValue = emailInput.value;
-    let finalEmail = emailValue;
+    const emailRaw = emailInput.value;
+    const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
 
-    if (!isLoginMode) {
-        // In registrazione "incolliamo" il prefisso (blindato) all'email scritta
-        const prefix = emailPrefix.innerText; // es: "CUR_"
-        finalEmail = prefix + emailValue;
-        
-        console.log("Registrazione completata per ID:", finalEmail);
-        alert(`Account creato con successo!\nIl tuo ID unico è: ${finalEmail}`);
-        
-        // Opzionale: riporta al login dopo la registrazione
-        toggleLink.click();
+    console.log("Email inviata al server:", finalEmail);
+
+    // Esempio logica redirect
+    if (finalEmail.startsWith("CUR_")) {
+        alert("Accesso Curatore: " + finalEmail);
+        window.location.href = "../Editor-Marketplace/Frontend/menu.html";
     } else {
-        // In Login usiamo l'email così come inserita
-        console.log("Tentativo di Login per:", finalEmail);
-        
-        // Esempio di redirect basato sul prefisso
-        if (finalEmail.startsWith("CUR_")) {
-            window.location.href = "../Editor-Marketplace/Frontend/menu.html";
-        } else {
-            window.location.href = "../navigator/index.html";
-        }
+        alert("Accesso Visitatore: " + finalEmail);
+        // window.location.href = "../navigator/index.html";
     }
 };

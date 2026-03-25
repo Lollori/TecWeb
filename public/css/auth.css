@@ -21,7 +21,7 @@ body, html {
     background: var(--bg-gradient);
 }
 
-/* --- 3. CARD (CON ANIMAZIONE ENTRATA) --- */
+/* --- 3. CARD (ANIMATA E PROPORZIONATA) --- */
 .auth-card {
     position: relative;
     padding: 40px 35px !important;
@@ -34,8 +34,6 @@ body, html {
     z-index: 1;
     overflow: hidden;
     transition: var(--transition-smooth);
-    
-    /* Animazione di ingresso pagina */
     animation: cardEntrance 0.8s ease-out;
 }
 
@@ -44,19 +42,20 @@ body, html {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- 4. STELLINA CENTRATA --- */
+/* --- 4. BRAND & TITOLI --- */
 .brand-icon-container {
     display: flex; justify-content: center;
-    width: 100%; margin-bottom: 12px;
+    width: 100%; margin-bottom: 15px;
 }
 .brand-icon { font-size: 1.3rem; color: var(--primary-mid); }
 
-/* --- 5. TIPOGRAFIA --- */
 .auth-body h2 {
     font-family: 'Playfair Display', serif;
     color: var(--primary-dark);
-    font-size: 1.7rem; font-weight: 700;
-    margin: 0 0 6px 0; text-align: center;
+    font-size: 1.6rem !important; 
+    font-weight: 700;
+    margin: 0 0 8px 0; text-align: center;
+    white-space: nowrap;
 }
 .auth-body p {
     color: var(--accent-soft);
@@ -64,7 +63,7 @@ body, html {
     margin-bottom: 30px; text-align: center;
 }
 
-/* --- 6. FIX AVATAR E TENDINA (ANIMAZIONE FLUIDA) --- */
+/* --- 5. SEZIONE RUOLO (SOLO REGISTRAZIONE) --- */
 .role-section {
     display: none; 
     opacity: 0;
@@ -73,12 +72,11 @@ body, html {
     transition: var(--transition-smooth);
 }
 
-/* Quando questa classe viene aggiunta dal JS */
 .role-visible {
     display: block !important;
     opacity: 1;
-    max-height: 120px; /* Spazio sufficiente per avatar+label */
-    margin-bottom: 20px;
+    max-height: 150px; 
+    margin-bottom: 25px; /* Spazio sotto la tendina */
     animation: slideDownField 0.5s forwards;
 }
 
@@ -87,30 +85,24 @@ body, html {
     to { opacity: 1; transform: translateY(0); }
 }
 
-.role-input-group { display: flex; align-items: center; gap: 12px; }
+.role-input-group { 
+    display: flex; align-items: center; gap: 15px; 
+}
 
 .auth-avatar-container {
-    width: 48px; height: 48px;
+    width: 55px; height: 55px;
     border-radius: 50%;
     background: #f1f5f2;
-    overflow: hidden;
-    border: 2px solid rgba(45, 90, 61, 0.1);
+    border: 1px solid rgba(0, 0, 0, 0.08);
     display: flex; justify-content: center; align-items: center;
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
+    flex-shrink: 0; overflow: hidden;
 }
-/* Effetto "pop" quando cambia l'immagine */
 .auth-avatar-container img {
     width: 100%; height: 100%;
     object-fit: cover;
-    animation: avatarFade 0.5s ease;
-}
-@keyframes avatarFade {
-    from { opacity: 0; scale: 0.8; }
-    to { opacity: 0.9; scale: 1; }
 }
 
-/* --- 7. INPUT E EMAIL GROUP --- */
+/* --- 6. FORM & INPUT --- */
 .form-grid label {
     font-size: 0.68rem; font-weight: 700;
     text-transform: uppercase; letter-spacing: 1.2px;
@@ -120,36 +112,37 @@ body, html {
 .input-group-email {
     display: flex; align-items: center;
     background: #fdfdfd; border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px; padding-left: 15px; margin-bottom: 18px;
+    border-radius: 12px; padding-left: 15px; margin-bottom: 20px;
     transition: all 0.3s ease;
 }
-.input-group-email:focus-within {
-    border-color: var(--primary-mid);
-    box-shadow: 0 4px 12px rgba(45, 90, 61, 0.05);
-}
 
-#emailPrefix {
-    font-weight: 700; color: var(--primary-mid);
-    font-size: 0.92rem; margin-right: 2px;
-}
+#emailPrefix { font-weight: 700; color: var(--primary-mid); font-size: 0.92rem; }
 
 .form-grid input, .role-input-group select {
     width: 100%; padding: 13px 16px;
     border-radius: 12px; font-size: 0.92rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
+    background: #fdfdfd;
 }
-.input-group-email input { border: none !important; flex: 1; padding: 13px 5px !important; }
 
-/* --- 8. BOTTONE E LINK --- */
+.form-grid input { margin-bottom: 20px; } /* Spazio tra i campi */
+
+.input-group-email input { border: none !important; flex: 1; padding: 13px 5px !important; margin-bottom: 0; }
+
+/* --- 7. BOTTONE (FIX DISTANZA) --- */
 .btn-submit {
-    width: 100%; padding: 15px !important;
+    width: 100%; 
+    padding: 15px !important;
     background-color: var(--primary-dark) !important;
     color: #ffffff !important; border: none;
     border-radius: 14px !important; font-weight: 600;
-    cursor: pointer; transition: all 0.3s ease;
+    cursor: pointer; 
+    transition: all 0.3s ease;
+    
+    margin-top: 15px; /* STACCA IL TASTO DAL CAMPO PASSWORD */
 }
+
 .btn-submit:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
-.toggle-text { margin-top: 22px; font-size: 0.82rem; text-align: center; }
+.toggle-text { margin-top: 25px; font-size: 0.82rem; text-align: center; }
 .toggle-text a { font-weight: 700; color: var(--primary-dark); text-decoration: none; }
-.toggle-text a:hover { text-decoration: underline; }
