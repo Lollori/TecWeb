@@ -60,43 +60,59 @@ authForm.onsubmit = async (e) => {
     e.preventDefault();
 
     const emailRaw = emailInput.value;
-    const passwordRaw = passwordInput.value;
+    const passwordRaw = document.getElementById('password').value;
+    
+    // Costruiamo l'email finale (es: CUR_esempio@mail.it)
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
+
+    // Determiniamo l'endpoint (usiamo il percorso assoluto per sicurezza)
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
+    const targetUrl = window.location.origin + endpoint;
+
+    console.log("🚀 Chiamata a:", targetUrl);
+    console.log("📦 Dati inviati:", { email: finalEmail, password: passwordRaw });
 
     try {
-        const response = await fetch(endpoint, { 
+        const response = await fetch(targetUrl, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: finalEmail, password: passwordRaw })
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ 
+                email: finalEmail, 
+                password: passwordRaw 
+            })
         });
 
-        // PRIMA di fare .json(), controlliamo se la risposta è OK
-        if (!response.ok) {
-            // Se il server risponde 404 o 500, non è un JSON!
-            const errorText = await response.text();
-            console.error("Il server ha risposto con un errore non-JSON:", errorText);
-            throw new Error("Il server ha risposto con un errore (codice " + response.status + ")");
+        // Se il server risponde con qualcosa che non è JSON (es. un errore HTML 404/500)
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const textError = await response.text();
+            console.error("⚠️ Risposta non-JSON ricevuta:", textError);
+            alert("Il server ha risposto in modo inaspettato. Controlla la console.");
+            return;
         }
 
         const data = await response.json();
 
         if (data.success) {
             if (isLoginMode) {
-                // Redirect basato sul prefisso
+                alert("Login effettuato!");
+                // Redirect intelligente
                 window.location.href = finalEmail.startsWith("CUR_") 
                     ? "../Editor-Marketplace/Frontend/menu.html" 
                     : "../navigator/index.html";
             } else {
-                alert("Registrazione completata! Ora effettua il login.");
-                location.reload(); // Ricarica per tornare al login pulito
+                alert("✨ Registrazione completata! Ora puoi accedere.");
+                location.reload(); // Torna al login pulito
             }
         } else {
-            alert("Errore" + data.message);
+            alert("Errore: " + data.message);
         }
     } catch (error) {
-        console.error("Errore fatale:", error);
-        alert("Errore di connessione: il server non ha risposto correttamente. Controlla la console (F12).");
+        console.error("Errore fatale Fetch:", error);
+        alert("Server non raggiungibile. Controlla che la rotta " + endpoint + " sia attiva.");
     }
 };
 
