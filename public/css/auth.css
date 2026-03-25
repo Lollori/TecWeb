@@ -123,6 +123,7 @@ body, html {
     border-radius: 12px; font-size: 0.92rem;
     border: 1px solid rgba(0, 0, 0, 0.1);
     background: #fdfdfd;
+    box-sizing: border-box;
 }
 
 .form-grid input { margin-bottom: 20px; } /* Spazio tra i campi */

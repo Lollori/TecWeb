@@ -107,6 +107,8 @@ authForm.addEventListener('submit', async (e) => {
             } else {
                 // --- REGISTRAZIONE SUCCESS ---
                 alert("Registrazione completata! Ora puoi accedere.");
+                emailInput.value = '';
+                passwordInput.value = '';
                 isLoginMode = true;
                 toggleLink.click();
             }
