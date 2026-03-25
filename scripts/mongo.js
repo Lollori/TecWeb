@@ -5,7 +5,7 @@ Author: Fabio Vitali (Originale) + Modifiche per Utenti
 
 const mongoose = require("mongoose");
 const fs = require("fs").promises;
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const SALT_ROUNDS = 10;
 
 // --- CONFIGURAZIONE E SCHEMI ESISTENTI (Paesi/Capitali) ---
