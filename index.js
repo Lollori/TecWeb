@@ -67,7 +67,7 @@ app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
 app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
 // login prova
-app.use('/login', express.static(global.rootDir + '/login'));
+app.use('/login', express.static(global.rootDir + '/Login'));
 
 app.use(express.urlencoded({ extended: true })) 
 app.use(express.json())
