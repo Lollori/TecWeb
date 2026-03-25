@@ -1,78 +1,118 @@
-// --- RIFERIMENTI AGLI ELEMENTI DEL DOM ---
+/* --- RIFERIMENTI DOM --- */
 const authForm = document.getElementById('authForm');
-const toggleAuthLink = document.getElementById('toggleAuthLink');
-const authTitle = document.getElementById('authTitle');
-const authSubtitle = document.getElementById('authSubtitle');
-const submitBtnText = document.getElementById('submitBtnText');
+const toggleLink = document.getElementById('toggleAuthLink');
 const roleField = document.getElementById('roleField');
+const userRole = document.getElementById('userRole');
+const emailPrefix = document.getElementById('emailPrefix');
+const emailInput = document.getElementById('email');
+const userAvatar = document.getElementById('userAvatar');
+
+const authTitle = document.getElementById('authTitle');
+const submitBtnText = document.getElementById('submitBtnText');
 const questionText = document.getElementById('questionText');
 
-// Variabile di stato: true = Login, false = Registrazione
+// Stato iniziale: Login
 let isLoginMode = true;
 
 /**
- * Funzione per switchare tra Login e Registrazione
+ * Funzione per aggiornare l'avatar e il prefisso dell'email
+ * Viene chiamata al cambio della tendina e al toggle del form.
  */
-toggleAuthLink.addEventListener('click', (e) => {
-    e.preventDefault(); // Evita il refresh della pagina
-    
+function updateRoleFeedback() {
+    if (isLoginMode) {
+        // In Login non mostriamo prefissi automatici
+        emailPrefix.innerText = "";
+        emailPrefix.style.display = "none";
+        return;
+    }
+
+    // --- LOGICA REGISTRAZIONE ---
+    const selectedRole = userRole.value; // VIS o CUR
+
+    // 1. Aggiorna il prefisso email ("Blindato")
+    emailPrefix.innerText = selectedRole + "_";
+    emailPrefix.style.display = "inline-block";
+
+    // 2. Aggiorna l'immagine profilo predefinita
+    if (selectedRole === 'CUR') {
+        // Avatar Curatore (Busto Classico)
+        userAvatar.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Dying_Seneca.jpg/300px-Dying_Seneca.jpg';
+    } else {
+        // Avatar Visitatore (Ritratto Moderno/Fauves)
+        userAvatar.src = 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Auguste_Renoir_-_Jeunes_filles_au_piano.jpg/300px-Auguste_Renoir_-_Jeunes_filles_au_piano.jpg';
+    }
+}
+
+/**
+ * Switch tra Login e Registrazione (Animato e Fluido)
+ */
+toggleLink.addEventListener('click', (e) => {
+    e.preventDefault();
     isLoginMode = !isLoginMode;
 
-    if (isLoginMode) {
-        // Interfaccia per il LOGIN
-        authTitle.innerText = "Bentornato!";
-        authSubtitle.innerText = "Accedi per esplorare la tua collezione.";
-        submitBtnText.innerText = "Accedi";
-        questionText.innerText = "Non hai un account?";
-        toggleAuthLink.innerText = "Registrati ora";
-        roleField.style.display = "none"; // Nasconde la tendina Visitatore/Curatore
-    } else {
-        // Interfaccia per la REGISTRAZIONE
+    if (!isLoginMode) {
+        /* --- PASSAGGIO A REGISTRAZIONE --- */
+        roleField.style.display = "block";
+        // Timeout minimo per far agganciare l'animazione CSS
+        setTimeout(() => {
+            roleField.classList.add('role-visible');
+        }, 10);
+        
         authTitle.innerText = "Crea Account";
-        authSubtitle.innerText = "Unisciti alla community di ArtAround.";
         submitBtnText.innerText = "Registrati";
         questionText.innerText = "Hai già un account?";
-        toggleAuthLink.innerText = "Accedi qui";
-        roleField.style.display = "block"; // Mostra la tendina dei ruoli
+        toggleLink.innerText = "Accedi qui";
+        
+        updateRoleFeedback(); // Carica avatar e prefisso VIS_ predefinito
+    } else {
+        /* --- PASSAGGIO A LOGIN --- */
+        roleField.classList.remove('role-visible');
+        // Aspettiamo la fine dell'animazione CSS prima di nascondere il display
+        setTimeout(() => {
+            roleField.style.display = "none";
+        }, 500);
+
+        authTitle.innerText = "Bentornato!";
+        submitBtnText.innerText = "Accedi";
+        questionText.innerText = "Non hai un account?";
+        toggleLink.innerText = "Registrati ora";
+        
+        updateRoleFeedback(); // Rimuove il prefisso
     }
 });
 
 /**
- * Gestione dell'invio del form
+ * Ascolta il cambio della tendina per aggiornare avatar e prefisso in tempo reale
  */
-authForm.onsubmit = async (e) => {
+userRole.addEventListener('change', updateRoleFeedback);
+
+/**
+ * Gestione invio Form
+ */
+authForm.onsubmit = (e) => {
     e.preventDefault();
 
-    const emailInput = document.getElementById('email').value;
-    const passwordInput = document.getElementById('password').value;
-    const selectedRole = document.getElementById('userRole').value;
+    const emailValue = emailInput.value;
+    let finalEmail = emailValue;
 
     if (!isLoginMode) {
-        // --- LOGICA REGISTRAZIONE ---
-        // Generazione dell'ID con prefisso (es: CUR_mario@email.it o VIS_mario@email.it)
-        const finalUserId = `${selectedRole}_${emailInput}`;
+        // In registrazione "incolliamo" il prefisso (blindato) all'email scritta
+        const prefix = emailPrefix.innerText; // es: "CUR_"
+        finalEmail = prefix + emailValue;
         
-        console.log("Registrazione in corso...");
-        console.log("Ruolo scelto:", selectedRole);
-        console.log("ID Finale generato:", finalUserId);
-
-        alert(`Registrazione completata!\nIl tuo ID utente è: ${finalUserId}\nOra puoi effettuare il login.`);
+        console.log("Registrazione completata per ID:", finalEmail);
+        alert(`Account creato con successo!\nIl tuo ID unico è: ${finalEmail}`);
         
-        // Dopo la registrazione, riportiamo l'utente al login
-        toggleAuthLink.click(); 
-
+        // Opzionale: riporta al login dopo la registrazione
+        toggleLink.click();
     } else {
-        // --- LOGICA LOGIN ---
-        console.log("Tentativo di login per:", emailInput);
-
-        // Per ora facciamo un redirect simulato
-        // Se l'utente è un curatore (CUR_), andrà al Marketplace, altrimenti al Navigator
-        if (emailInput.startsWith("CUR_")) {
-            alert("Accesso come Curatore confermato. Reindirizzamento...");
+        // In Login usiamo l'email così come inserita
+        console.log("Tentativo di Login per:", finalEmail);
+        
+        // Esempio di redirect basato sul prefisso
+        if (finalEmail.startsWith("CUR_")) {
             window.location.href = "../Editor-Marketplace/Frontend/menu.html";
         } else {
-            alert("Accesso come Visitatore confermato. Reindirizzamento...");
-            // Cambia questo percorso con quello del tuo Navigator se necessario
             window.location.href = "../navigator/index.html";
         }
     }

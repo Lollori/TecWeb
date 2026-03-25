@@ -16,22 +16,34 @@
     <div class="auth-wrapper">
         <div class="auth-card">
             <div class="auth-body">
-                <div class="brand-icon">✦</div>
+                
+                <div class="brand-icon-container">
+                    <div class="brand-icon">✦</div>
+                </div>
+
                 <h2 id="authTitle">Bentornato!</h2>
                 <p id="authSubtitle">Accedi per esplorare la tua collezione.</p>
 
                 <form id="authForm">
                     <div class="form-grid">
-                        <div id="roleField" style="display: none;">
+                        
+                        <div id="roleField" class="role-section">
                             <label>Tipo di Account</label>
-                            <select id="userRole">
-                                <option value="VIS">Visitatore (VIS_)</option>
-                                <option value="CUR">Curatore (CUR_)</option>
-                            </select>
+                            <div class="role-input-group">
+                                <div class="auth-avatar-container">
+                                    <img id="userAvatar" src="" alt="Avatar Profilo">
+                                </div>
+                                <select id="userRole">
+                                    <option value="VIS" selected>Visitatore (VIS_)</option>
+                                    <option value="CUR">Curatore (CUR_)</option>
+                                </select>
+                            </div>
                         </div>
 
                         <label>Email o Username</label>
-                        <input type="text" id="email" placeholder="esempio@mail.it" required>
+                        <div class="input-group-email">
+                            <span id="emailPrefix"></span> <input type="text" id="email" placeholder="esempio@mail.it" required>
+                        </div>
 
                         <label>Password</label>
                         <input type="password" id="password" placeholder="••••••••" required>
