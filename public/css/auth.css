@@ -4,36 +4,32 @@
     --primary-mid: #2d5a3d;
     --accent-soft: #4a7c5f;
     --bg-gradient: radial-gradient(circle at top left, #f8faf8, #d9e8dc);
-    --glass-white: rgba(255, 255, 255, 0.85);
+    /* Modificata: più trasparente per far vedere il quadro in hover */
+    --glass-white: rgba(255, 255, 255, 0.75); 
     --transition-smooth: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body, html {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
+    margin: 0; padding: 0;
+    width: 100%; height: 100%;
     font-family: 'Inter', sans-serif;
-    overflow: hidden; /* Evita scroll fastidiosi durante le animazioni */
+    overflow: hidden;
 }
 
 /* --- 2. CONTAINER PRINCIPALE --- */
 .auth-wrapper {
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    width: 100vw; height: 100vh;
+    display: flex; justify-content: center; align-items: center;
     background: var(--bg-gradient);
 }
 
-/* --- 3. CARD (L'ELEMENTO CENTRALE) --- */
+/* --- 3. CARD (PIÙ LARGA E PROPORZIONATA) --- */
 .auth-card {
     position: relative;
-    padding: 45px 40px !important;
+    padding: 50px 45px !important; /* Più respiro interno */
     border-radius: 32px;
-    width: 90%;
-    max-width: 380px; /* Compatta ed elegante */
+    width: 95%;
+    max-width: 440px; /* Aumentata: prima era 380px, ora è più solida */
     background: rgba(255, 255, 255, 1); /* Bianco solido di base */
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
@@ -45,15 +41,14 @@ body, html {
 
 /* Effetto al passaggio del mouse sulla Card */
 .auth-card:hover {
-    background: var(--glass-white);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
+    background: var(--glass-white) !important; /* Diventa trasparente */
+    backdrop-filter: blur(12px) saturate(160%);
+    -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 25px 50px rgba(0, 0, 0, 0.12);
     transform: translateY(-5px);
-    border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* --- 4. IMMAGINE OPERA D'ARTE (HOVER REVEAL) --- */
+/* --- 4. IMMAGINE OPERA D'ARTE (REVEAL) --- */
 .auth-card::before {
     content: "";
     position: absolute;
@@ -61,121 +56,96 @@ body, html {
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1024px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
     background-size: cover;
     background-position: center;
-    
-    /* Stato iniziale: nascosto e molto sfuocato */
     opacity: 0;
-    filter: grayscale(20%) blur(12px);
-    
+    filter: grayscale(10%) blur(10px);
     z-index: -1;
     transition: all 0.7s ease-in-out;
 }
 
 .auth-card:hover::before {
-    opacity: 0.18; /* Appare con scarsa opacità artistica */
-    filter: grayscale(0%) blur(2px); /* Mette quasi a fuoco */
+    opacity: 0.22; /* Aumentata l'opacità per essere sicuri di vederlo */
+    filter: grayscale(0%) blur(2px); 
 }
 
 /* --- 5. TIPOGRAFIA --- */
 .auth-body {
     position: relative;
-    z-index: 2; /* Sopra l'immagine */
+    z-index: 2;
 }
 
 .auth-body h2 {
     font-family: 'Playfair Display', serif;
     color: var(--primary-dark);
-    font-size: 1.9rem;
+    font-size: 2.1rem; /* Titolo leggermente più grande */
     font-weight: 700;
     letter-spacing: -0.5px;
-    margin: 0 0 8px 0;
+    margin: 0 0 10px 0;
+    text-align: center;
 }
 
 .auth-body p {
     color: var(--accent-soft);
-    font-size: 0.9rem;
+    font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 35px;
+    text-align: center;
 }
 
 /* --- 6. FORM E INPUT --- */
-.form-grid {
-    text-align: left;
-}
-
 .form-grid label {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 1.2px;
+    letter-spacing: 1.5px;
     color: var(--primary-mid);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     display: block;
 }
 
 .form-grid input, 
 .form-grid select {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 20px;
-    background: rgba(255, 255, 255, 0.6);
+    padding: 16px; /* Più alti per comodità */
+    margin-bottom: 22px;
+    background: rgba(255, 255, 255, 0.8);
     border: 1px solid rgba(0, 0, 0, 0.08);
-    border-radius: 14px;
-    font-size: 0.95rem;
+    border-radius: 16px;
+    font-size: 1rem;
     box-sizing: border-box;
     transition: all 0.3s ease;
-}
-
-.form-grid input:focus,
-.form-grid select:focus {
-    outline: none;
-    border-color: var(--primary-mid);
-    background: #ffffff;
-    box-shadow: 0 8px 15px rgba(45, 90, 61, 0.05);
 }
 
 /* --- 7. BOTTONE --- */
 .btn-submit {
     width: 100%;
-    padding: 16px !important;
+    padding: 18px !important;
     background-color: var(--primary-dark) !important;
     color: #ffffff !important;
     border: none;
-    border-radius: 16px !important;
+    border-radius: 18px !important;
     font-weight: 600;
-    font-size: 1rem;
+    font-size: 1.05rem;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     box-shadow: 0 10px 20px rgba(26, 58, 42, 0.15);
-    margin-top: 5px;
 }
 
 .btn-submit:hover {
     transform: translateY(-2px);
-    box-shadow: 0 12px 25px rgba(26, 58, 42, 0.25);
-    filter: brightness(1.1);
+    box-shadow: 0 15px 30px rgba(26, 58, 42, 0.25);
+    filter: brightness(1.2);
 }
 
-/* --- 8. LINK E TEXT --- */
+/* --- 8. LINK --- */
 .toggle-text {
     margin-top: 25px;
-    font-size: 0.82rem;
-    color: var(--accent-soft);
-}
-
-.toggle-text a {
-    font-weight: 700;
-    color: var(--primary-dark);
-    text-decoration: none;
-    transition: 0.3s;
-}
-
-.toggle-text a:hover {
-    text-decoration: underline;
+    text-align: center;
+    font-size: 0.85rem;
 }
 
 /* --- 9. ANIMAZIONI --- */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(15px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
