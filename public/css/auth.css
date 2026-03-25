@@ -11,24 +11,21 @@
     font-family: 'Inter', sans-serif;
 }
 
-/* --- CARD EFFETTO VETRO (GLASSMORPHISM) --- */
 .auth-card {
     position: relative;
-    padding: 60px 50px !important;
-    border-radius: 40px;
+    padding: 40px 35px !important; /* Più compatta */
+    border-radius: 30px;
     width: 100%;
-    max-width: 460px;
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(15px) saturate(160%);
-    -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
+    max-width: 380px; /* Larghezza ridotta per eleganza */
+    background: rgba(255, 255, 255, 0.85); /* Leggera trasparenza per far vedere il quadro */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
     z-index: 1;
-    animation: fadeIn 0.5s ease-out;
+    overflow: hidden;
 }
 
-/* --- IMMAGINE OPERA D'ARTE IN FILIGRANA --- */
+/* Fix Immagine: la mettiamo come sfondo della card stessa */
 .auth-card::before {
     content: "";
     position: absolute;
@@ -36,20 +33,15 @@
     background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1024px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg');
     background-size: cover;
     background-position: center;
-    opacity: 0.08; /* Leggermente aumentata per vederla meglio */
-    filter: grayscale(20%) blur(1px);
+    opacity: 0.12; /* Alzata un po' per renderla visibile sotto il bianco */
     z-index: -1;
+    filter: grayscale(20%);
 }
 
-/* --- TESTI --- */
+/* Titoli più piccoli per la card ridotta */
 .auth-body h2 {
-    font-family: 'Playfair Display', serif;
-    color: #1a3a2a;
-    font-size: 2.4rem;
-    font-weight: 700;
-    letter-spacing: -1px;
-    margin-bottom: 10px;
-    text-align: center;
+    font-size: 1.8rem !important;
+    margin-bottom: 5px !important;
 }
 
 .auth-body p {
