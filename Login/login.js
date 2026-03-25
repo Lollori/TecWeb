@@ -5,7 +5,7 @@ const roleField = document.getElementById('roleField');
 const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password'); // Preso una volta sola
+const passwordInput = document.getElementById('password'); 
 const avatarContainer = document.querySelector('.auth-avatar-container');
 
 const authTitle = document.getElementById('authTitle');
@@ -36,6 +36,8 @@ function updateUI() {
 toggleLink.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
+    console.log("Switch mode: isLoginMode =", isLoginMode);
+    
     if (!isLoginMode) {
         roleField.style.display = "block";
         setTimeout(() => { roleField.classList.add('role-visible'); updateUI(); }, 10);
@@ -56,39 +58,50 @@ toggleLink.addEventListener('click', (e) => {
 
 userRole.addEventListener('change', updateUI);
 
-authForm.onsubmit = async (e) => {
+// --- GESTIONE INVIO FORM ---
+authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    console.log("Form inviato!"); // Se non vedi questo in console, il problema è l'ID del form nel HTML
 
-    const emailRaw = emailInput.value;
-    const passwordRaw = document.getElementById('password').value;
+    const emailRaw = emailInput.value.trim();
+    const passwordRaw = passwordInput.value.trim();
+    
+    // Costruiamo l'email finale
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
-
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
-    const targetUrl = window.location.origin + endpoint;
+
+    console.log("Dati pronti per l'invio:", { finalEmail, endpoint });
 
     try {
-        const response = await fetch(targetUrl, {
+        const response = await fetch(endpoint, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ 
-                email: finalEmail, 
-                password: passwordRaw 
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: finalEmail, password: passwordRaw })
         });
 
+        console.log("Risposta ricevuta dal server, status:", response.status);
+
         const data = await response.json();
+        console.log("Dati JSON:", data);
 
         if (data.success) {
-            // ... resto del codice (redirect o alert)
+            alert(isLoginMode ? "Accesso eseguito!" : "Registrazione completata!");
+            if (isLoginMode) {
+                // Redirect
+                window.location.href = finalEmail.startsWith("CUR_") 
+                    ? "../Editor-Marketplace/Frontend/menu.html" 
+                    : "../navigator/index.html";
+            } else {
+                // Dopo registrazione torna al login
+                toggleLink.click();
+            }
         } else {
             alert("Errore: " + data.message);
         }
     } catch (error) {
-        // Qui lasciamo il log solo per gli errori tecnici, non per i dati utente
-        console.error("Errore di connessione.");
+        console.error("Errore FETCH:", error);
+        alert("Errore di connessione. Controlla che il server Node sia acceso.");
     }
-};
+});
 
 updateUI();
