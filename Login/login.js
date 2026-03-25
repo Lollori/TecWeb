@@ -75,15 +75,40 @@ toggleLink.addEventListener('click', (e) => {
 
 userRole.addEventListener('change', updateUI);
 
-authForm.onsubmit = (e) => {
+authForm.onsubmit = async (e) => {
     e.preventDefault();
+
     const emailRaw = emailInput.value;
+    const passwordRaw = document.getElementById('password').value;
+    
+    // In registrazione attacchiamo il prefisso, in login usiamo quello che scrive l'utente
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
 
-    if (finalEmail.startsWith("CUR_")) {
-        window.location.href = "../Editor-Marketplace/Frontend/menu.html";
-    } else {
-        alert("Accesso effettuato come: " + finalEmail);
+    try {
+        const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: finalEmail, password: passwordRaw })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            // ACCESSO CORRETTO
+            if (finalEmail.startsWith("CUR_")) {
+                window.location.href = "../Editor-Marketplace/Frontend/menu.html";
+            } else {
+                window.location.href = "../navigator/index.html";
+            }
+        } else {
+            // ERRORE: Email o Password sbagliati
+            alert("Errore: " + data.message);
+            // Opzionale: pulisci il campo password
+            document.getElementById('password').value = "";
+        }
+    } catch (error) {
+        console.error("Errore durante il login:", error);
+        alert("Server non raggiungibile. Riprova più tardi.");
     }
 };
 

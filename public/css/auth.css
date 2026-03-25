@@ -146,3 +146,14 @@ body, html {
 
 .toggle-text { margin-top: 25px; font-size: 0.82rem; text-align: center; }
 .toggle-text a { font-weight: 700; color: var(--primary-dark); text-decoration: none; }
+
+/*password errata*/
+.shake {
+    animation: shakeAnim 0.4s;
+}
+
+@keyframes shakeAnim {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+}

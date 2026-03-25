@@ -126,6 +126,41 @@ app.get('/db/search', async function (req, res) {
 	res.send(await mymongo.search(req.query, mongoCredentials))
 });
 
+/* login errato */
+/* sezione aggiunta per il login reale */
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body;
+    
+    console.log(`[index.js] Tentativo di login per: ${email}`);
+
+    try {
+        // Usiamo la funzione search che è già definita nel tuo modulo mymongo
+        // Cerchiamo un documento che abbia esattamente quella email e quella password
+        const result = await mymongo.search({ email: email, password: password }, mongoCredentials);
+        
+        // result sarà un array. Se è vuoto, le credenziali sono sbagliate.
+        if (!result || result.length === 0) {
+            console.log(`[index.js] Login fallito per: ${email}`);
+            return res.status(401).json({ 
+                success: false, 
+                message: "Email o password errati. Accesso negato." 
+            });
+        }
+
+        // Se arriviamo qui, l'utente esiste
+        console.log(`[index.js] Login successo per: ${email}`);
+        res.json({ 
+            success: true, 
+            message: "Login effettuato",
+            user: result[0] // Mandiamo i dati dell'utente al frontend
+        });
+
+    } catch (error) {
+        console.error('[index.js] Errore durante il login:', error);
+        res.status(500).json({ success: false, message: "Errore interno del server" });
+    }
+});
+
 
 
 
