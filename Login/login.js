@@ -5,8 +5,8 @@ const roleField = document.getElementById('roleField');
 const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
-const userAvatar = document.getElementById('userAvatar'); 
-const avatarContainer = document.querySelector('.auth-avatar-container'); // Il cerchio grigio
+const passwordInput = document.getElementById('password'); // Preso una volta sola
+const avatarContainer = document.querySelector('.auth-avatar-container');
 
 const authTitle = document.getElementById('authTitle');
 const submitBtnText = document.getElementById('submitBtnText');
@@ -14,57 +14,38 @@ const questionText = document.getElementById('questionText');
 
 let isLoginMode = true;
 
-/**
- * Funzione per aggiornare l'interfaccia (Avatar e Prefisso Email)
- */
 function updateUI() {
     if (isLoginMode) {
         emailPrefix.innerText = "";
         emailPrefix.style.display = "none";
         return;
     }
-
-    const selected = userRole.value; // "VIS" o "CUR"
+    const selected = userRole.value;
     emailPrefix.innerText = selected + "_";
     emailPrefix.style.display = "inline-block";
 
-    // --- LOGICA AVATAR SENZA IMMAGINI ESTERNE (ANTIFALLIMENTO) ---
-    // Invece di una <img> che può rompersi, usiamo testo e colori
-    userAvatar.style.display = "none"; // Nascondiamo il tag img che non carica
-    
     if (selected === 'CUR') {
-        avatarContainer.style.backgroundColor = "#1a3a2a"; // Verde scuro
+        avatarContainer.style.backgroundColor = "#1a3a2a";
         avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">C</span>';
     } else {
-        avatarContainer.style.backgroundColor = "#4a7c5f"; // Verde chiaro
+        avatarContainer.style.backgroundColor = "#4a7c5f";
         avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">V</span>';
     }
 }
 
-/**
- * Toggle tra Login e Registrazione
- */
 toggleLink.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
-
     if (!isLoginMode) {
         roleField.style.display = "block";
-        setTimeout(() => {
-            roleField.classList.add('role-visible');
-            updateUI();
-        }, 10);
-
+        setTimeout(() => { roleField.classList.add('role-visible'); updateUI(); }, 10);
         authTitle.innerText = "Crea Account";
         submitBtnText.innerText = "Registrati";
         questionText.innerText = "Hai già un account?";
         toggleLink.innerText = "Accedi qui";
     } else {
         roleField.classList.remove('role-visible');
-        setTimeout(() => {
-            roleField.style.display = "none";
-        }, 400);
-
+        setTimeout(() => { roleField.style.display = "none"; }, 400);
         authTitle.innerText = "Bentornato!";
         submitBtnText.innerText = "Accedi";
         questionText.innerText = "Non hai un account?";
@@ -79,13 +60,17 @@ authForm.onsubmit = async (e) => {
     e.preventDefault();
 
     const emailRaw = emailInput.value;
-    const passwordRaw = document.getElementById('password').value;
+    const passwordRaw = passwordInput.value;
     
-    // In registrazione attacchiamo il prefisso, in login usiamo quello che scrive l'utente
+    // Costruiamo l'email finale (es: CUR_esempio@mail.it)
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
 
+    // Decidiamo a quale rotta bussare
+    const endpoint = isLoginMode ? '/api/login' : '/api/register';
+
     try {
-        const response = await fetch('/api/login', {
+        // fetch con percorso assoluto per evitare "Server non raggiungibile"
+        const response = await fetch(window.location.origin + endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: finalEmail, password: passwordRaw })
@@ -94,23 +79,26 @@ authForm.onsubmit = async (e) => {
         const data = await response.json();
 
         if (data.success) {
-            // ACCESSO CORRETTO
-            if (finalEmail.startsWith("CUR_")) {
-                window.location.href = "../Editor-Marketplace/Frontend/menu.html";
+            if (isLoginMode) {
+                // LOGIN OK -> Redirect
+                if (finalEmail.startsWith("CUR_")) {
+                    window.location.href = "../Editor-Marketplace/Frontend/menu.html";
+                } else {
+                    window.location.href = "../navigator/index.html";
+                }
             } else {
-                window.location.href = "../navigator/index.html";
+                // REGISTRAZIONE OK
+                alert("Registrazione completata! Ora puoi accedere.");
+                toggleLink.click(); // Torna al login
             }
         } else {
-            // ERRORE: Email o Password sbagliati
             alert("Errore: " + data.message);
-            // Opzionale: pulisci il campo password
-            document.getElementById('password').value = "";
+            passwordInput.value = "";
         }
     } catch (error) {
-        console.error("Errore durante il login:", error);
-        alert("Server non raggiungibile. Riprova più tardi.");
+        console.error("Errore di rete:", error);
+        alert("Server non raggiungibile. Assicurati che il server Node sia attivo su porta 8000.");
     }
 };
 
-// Inizializza
 updateUI();

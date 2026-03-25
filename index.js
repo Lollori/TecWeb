@@ -161,6 +161,24 @@ app.post('/api/login', async (req, res) => {
     }
 });
 
+/*prova login*/
+app.post('/api/register', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        // Verifica se l'utente esiste già
+        const check = await mymongo.search({ email: email }, mongoCredentials);
+        if (check && check.length > 0) {
+            return res.status(400).json({ success: false, message: "Email già registrata!" });
+        }
+
+        // Creazione utente (usa il metodo del tuo modulo mongo.js)
+        await mymongo.create({ email, password }, mongoCredentials);
+        res.json({ success: true, message: "Registrazione avvenuta!" });
+    } catch (e) {
+        res.status(500).json({ success: false, message: "Errore nel salvataggio DB" });
+    }
+});
+
 
 
 
