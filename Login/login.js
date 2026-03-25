@@ -102,7 +102,7 @@ authForm.addEventListener('submit', async (e) => {
                 
                 alert("Accesso eseguito!");
                 // Reindirizzamento alla Home Page principale
-                window.location.href = "../index.html"; 
+                window.location.href = "/index.html"; 
             } else {
                 // --- REGISTRAZIONE SUCCESS ---
                 alert("Registrazione completata! Ora puoi accedere.");
