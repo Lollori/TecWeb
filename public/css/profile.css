@@ -84,3 +84,24 @@
     border-left: 4px solid #1a3a2a !important;
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+/* Stile per il bottone Login della Home se vuoi che sia coerente */
+.login-button {
+    background-color: #4a7c5f;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.login-button:hover {
+    background-color: #1a3a2a;
+}
+
