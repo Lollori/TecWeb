@@ -6,12 +6,12 @@ const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
 const userAvatar = document.getElementById('userAvatar'); 
+const avatarContainer = document.querySelector('.auth-avatar-container'); // Il cerchio grigio
 
 const authTitle = document.getElementById('authTitle');
 const submitBtnText = document.getElementById('submitBtnText');
 const questionText = document.getElementById('questionText');
 
-// Stato iniziale: Login (true)
 let isLoginMode = true;
 
 /**
@@ -24,24 +24,21 @@ function updateUI() {
         return;
     }
 
-    // --- MODALITÀ REGISTRAZIONE ---
     const selected = userRole.value; // "VIS" o "CUR"
-    
-    // Mostra il prefisso CUR_ o VIS_
     emailPrefix.innerText = selected + "_";
     emailPrefix.style.display = "inline-block";
 
-    // --- AGGIORNAMENTO AVATAR (Link Ultra-Affidabili) ---
-    if (selected === 'CUR') {
-        // Immagine Curatore: Busto di Seneca (Wikimedia)
-        userAvatar.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Dying_Seneca.jpg/300px-Dying_Seneca.jpg"; 
-    } else {
-        // Immagine Visitatore: Ragazze al piano di Renoir (Wikimedia)
-        userAvatar.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Auguste_Renoir_-_Jeunes_filles_au_piano.jpg/300px-Auguste_Renoir_-_Jeunes_filles_au_piano.jpg";
-    }
+    // --- LOGICA AVATAR SENZA IMMAGINI ESTERNE (ANTIFALLIMENTO) ---
+    // Invece di una <img> che può rompersi, usiamo testo e colori
+    userAvatar.style.display = "none"; // Nascondiamo il tag img che non carica
     
-    // Pulizia alt text per evitare scritte sgradevoli se la connessione è lenta
-    userAvatar.alt = "";
+    if (selected === 'CUR') {
+        avatarContainer.style.backgroundColor = "#1a3a2a"; // Verde scuro
+        avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">C</span>';
+    } else {
+        avatarContainer.style.backgroundColor = "#4a7c5f"; // Verde chiaro
+        avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">V</span>';
+    }
 }
 
 /**
@@ -52,20 +49,17 @@ toggleLink.addEventListener('click', (e) => {
     isLoginMode = !isLoginMode;
 
     if (!isLoginMode) {
-        /* --- PASSAGGIO A REGISTRAZIONE --- */
         roleField.style.display = "block";
         setTimeout(() => {
             roleField.classList.add('role-visible');
+            updateUI();
         }, 10);
 
         authTitle.innerText = "Crea Account";
         submitBtnText.innerText = "Registrati";
         questionText.innerText = "Hai già un account?";
         toggleLink.innerText = "Accedi qui";
-        
-        updateUI();
     } else {
-        /* --- PASSAGGIO A LOGIN --- */
         roleField.classList.remove('role-visible');
         setTimeout(() => {
             roleField.style.display = "none";
@@ -75,37 +69,23 @@ toggleLink.addEventListener('click', (e) => {
         submitBtnText.innerText = "Accedi";
         questionText.innerText = "Non hai un account?";
         toggleLink.innerText = "Registrati ora";
-        
         updateUI();
     }
 });
 
-/**
- * Ascolta il cambio della tendina (Visitatore <-> Curatore)
- */
 userRole.addEventListener('change', updateUI);
 
-/**
- * Gestione invio Form
- */
 authForm.onsubmit = (e) => {
     e.preventDefault();
-
     const emailRaw = emailInput.value;
-    // Se siamo in registrazione, incolliamo il prefisso CUR_ o VIS_
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
-
-    console.log("Email finale per il server:", finalEmail);
 
     if (finalEmail.startsWith("CUR_")) {
         window.location.href = "../Editor-Marketplace/Frontend/menu.html";
-    } else if (finalEmail.startsWith("VIS_")) {
-        // Se hai una pagina per il visitatore, mettila qui
-        alert("Benvenuto Visitatore: " + finalEmail);
     } else {
-        alert("Effettua il login inserendo le tue credenziali.");
+        alert("Accesso effettuato come: " + finalEmail);
     }
 };
 
-// Forza l'inizializzazione al caricamento
+// Inizializza
 updateUI();
