@@ -7,7 +7,15 @@ const roleField = document.getElementById('roleField');
 const userRole = document.getElementById('userRole');
 const emailPrefix = document.getElementById('emailPrefix');
 const emailInput = document.getElementById('email');
-const passwordInput = document.getElementById('password'); 
+const passwordInput = document.getElementById('password');
+const togglePasswordBtn = document.getElementById('togglePassword');
+const togglePasswordIcon = document.getElementById('togglePasswordIcon');
+
+togglePasswordBtn.addEventListener('click', () => {
+    const isHidden = passwordInput.type === 'password';
+    passwordInput.type = isHidden ? 'text' : 'password';
+    togglePasswordIcon.className = isHidden ? 'fa-regular fa-eye-slash' : 'fa-regular fa-eye';
+});
 const avatarContainer = document.querySelector('.auth-avatar-container');
 
 const authTitle = document.getElementById('authTitle');

@@ -130,6 +130,19 @@ body, html {
 
 .input-group-email input { border: none !important; flex: 1; padding: 13px 5px !important; margin-bottom: 0; }
 
+.input-group-password {
+    display: flex; align-items: center;
+    background: #fdfdfd; border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px; margin-bottom: 20px;
+}
+.input-group-password input { border: none !important; flex: 1; padding: 13px 16px !important; margin-bottom: 0; box-sizing: border-box; }
+.input-group-password button {
+    background: none; border: none; cursor: pointer;
+    padding: 0 14px; color: var(--accent-soft);
+    font-size: 0.95rem; display: flex; align-items: center;
+}
+.input-group-password button:hover { color: var(--primary-dark); }
+
 /* --- 7. BOTTONE (FIX DISTANZA) --- */
 .btn-submit {
     width: 100%; 

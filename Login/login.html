@@ -49,9 +49,14 @@
                         </div>
 
                         <label>Password</label>
-                        <input type="password" id="password" placeholder="••••••••" 
-                        autocomplete="new-password" readonly 
-                        onfocus="this.removeAttribute('readonly');" required>
+                        <div class="input-group-password">
+                            <input type="password" id="password" placeholder="••••••••"
+                            autocomplete="new-password" readonly
+                            onfocus="this.removeAttribute('readonly');" required>
+                            <button type="button" id="togglePassword" tabindex="-1">
+                                <i class="fa-regular fa-eye" id="togglePasswordIcon"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn-submit">
