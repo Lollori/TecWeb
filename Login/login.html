@@ -42,11 +42,16 @@
 
                         <label>Email o Username</label>
                         <div class="input-group-email">
-                            <span id="emailPrefix"></span> <input type="text" id="email" placeholder="esempio@mail.it" autocomplete="off" required>
+                            <span id="emailPrefix"></span> 
+                            <input type="text" id="email" placeholder="esempio@mail.it" 
+                            autocomplete="one-time-code" readonly 
+                            onfocus="this.removeAttribute('readonly');" required>
                         </div>
 
                         <label>Password</label>
-                        <input type="password" id="password" placeholder="••••••••" autocomplete="new-password" required>
+                        <input type="password" id="password" placeholder="••••••••" 
+                        autocomplete="new-password" readonly 
+                        onfocus="this.removeAttribute('readonly');" required>
                     </div>
 
                     <button type="submit" class="btn-submit">
