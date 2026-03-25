@@ -1,12 +1,14 @@
-/* Container del profilo */
+/* Container principale */
 .nav-profile-container {
     position: relative;
-    z-index: 10000; /* Altissimo per stare sopra a tutto */
+    z-index: 10000;
     cursor: pointer;
-    padding: 5px;
+    /* IL SEGRETO: il padding crea un'area cliccabile continua tra avatar e menu */
+    padding-bottom: 20px; 
+    margin-bottom: -20px;
 }
 
-/* Avatar circolare */
+/* Avatar */
 .nav-avatar {
     width: 38px;
     height: 38px;
@@ -25,43 +27,60 @@
     display: none;
     position: absolute;
     right: 0;
-    top: 100%; /* Si attacca sotto al container */
+    top: 45px; /* Leggermente più su per toccare l'area del container */
     background: white;
     min-width: 200px;
     border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-    padding: 10px 0;
-    margin-top: 10px;
+    padding: 8px 0;
+    border: 1px solid #eee;
 }
 
-/* Mostra la tendina quando passi sopra al container */
+/* Mostra la tendina */
 .nav-profile-container:hover .profile-dropdown {
     display: block;
 }
 
-/* Stile testo Email */
+/* Testo Email (Non cliccabile) */
 #userEmailDisplay {
-    padding: 8px 15px;
-    font-size: 12px;
-    color: #888;
-    border-bottom: 1px solid #eee;
+    padding: 10px 15px;
+    font-size: 11px;
+    color: #999;
+    border-bottom: 1px solid #f0f0f0;
     margin-bottom: 5px;
     display: block;
-    word-break: break-all; /* Evita che mail lunghe rompano il box */
+    font-style: italic;
 }
 
-/* Link della tendina */
+/* Opzioni della tendina (I Link) */
 .profile-dropdown a {
     display: block;
-    padding: 10px 15px;
+    padding: 12px 20px;
     color: #333;
     text-decoration: none;
     font-size: 14px;
-    transition: background 0.2s;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent; /* Sottolineatura laterale invisibile di base */
 }
 
+/* EFFETTO HOVER IN PALETTE VERDE */
 .profile-dropdown a:hover {
-    background-color: #f5f5f5;
-    color: #1a3a2a;
+    background-color: #f0f7f4; /* Verde chiarissimo di sfondo */
+    color: #1a3a2a;            /* Verde scuro del brand per il testo */
+    border-left: 4px solid #4a7c5f; /* La "sottolineatura" verticale verde */
+    padding-left: 25px;        /* Leggero spostamento a destra */
+}
+
+/* Rimuoviamo il rosso del logout e lo rendiamo uguale agli altri */
+.logout-link {
+    border-top: 1px solid #f0f0f0;
+    margin-top: 5px;
+}
+
+.logout-link:hover {
+    background-color: #f0f7f4 !important;
+    color: #1a3a2a !important;
+    border-left: 4px solid #1a3a2a !important;
 }
 
