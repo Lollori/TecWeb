@@ -1,0 +1,65 @@
+/* Estensione minima per le card museo con immagine.
+   Tutto il resto viene da opere.css e styles.css */
+
+.item-card.museo-card {
+    padding: 0;
+    overflow: hidden;
+}
+
+.museo-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.museo-card-img-placeholder {
+    height: 160px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.35);
+    font-size: 2.5rem;
+}
+
+.museo-card-body {
+    padding: 18px 20px 14px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.museo-card-citta {
+    font-size: 0.82rem;
+    color: var(--primary-light);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.museo-card-isil {
+    font-size: 0.72rem;
+    color: #9aad9a;
+    font-family: monospace;
+}
+
+.museo-card-desc {
+    font-size: 0.85rem;
+    color: #555;
+    line-height: 1.6;
+    margin-top: 6px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.museo-card-actions {
+    padding: 12px 20px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    display: flex;
+    gap: 8px;
+}

@@ -1,74 +1,59 @@
 /*
  * musei.js — Frontend per la gestione musei.
- *
- * Tutte le operazioni parlano con il backend Express tramite fetch().
- * Il backend a sua volta usa Mongoose per leggere/scrivere su MongoDB.
- *
  * Flusso: browser → fetch('/api/musei') → index.js → scripts/musei.js → MongoDB
  */
 
 const API = '/api/musei';
 
-let tuttiIMusei = []; // cache locale per il filtro di ricerca
-
-
-// ── AL CARICAMENTO DELLA PAGINA ──────────────────────────────────────────────
+let tuttiIMusei = [];
 
 document.addEventListener('DOMContentLoaded', loadMusei);
 
 
-// ── CARICA TUTTI I MUSEI ─────────────────────────────────────────────────────
+// ── CARICA TUTTI I MUSEI ──────────────────────────────────────────────────────
 
 async function loadMusei() {
     try {
-        // fetch() fa una richiesta HTTP GET al nostro server Express
         const response = await fetch(API);
         const result = await response.json();
-
-        if (!result.ok) {
-            showStatus('Errore nel caricamento: ' + result.error, 'err');
-            return;
-        }
-
+        if (!result.ok) { showStatus('Errore nel caricamento: ' + result.error); return; }
         tuttiIMusei = result.data;
         renderMusei(tuttiIMusei);
     } catch (e) {
-        showStatus('Impossibile contattare il server.', 'err');
+        showStatus('Impossibile contattare il server.');
     }
 }
 
 
-// ── RENDER DELLE CARD ────────────────────────────────────────────────────────
+// ── RENDER DELLE CARD ─────────────────────────────────────────────────────────
 
 function renderMusei(musei) {
-    const grid = document.getElementById('museiGrid');
+    const grid = document.getElementById('museiContainer');
 
     if (musei.length === 0) {
-        grid.innerHTML = `
-            <div class="empty-state" style="grid-column: 1/-1">
-                <i class="fa fa-building-columns"></i>
-                Nessun museo trovato. Clicca "Inizializza DB" per caricare i dati di esempio.
-            </div>`;
+        grid.innerHTML = `<p style="color:#4a7c5f; text-align:center; padding:40px; grid-column:1/-1">
+            Nessun museo trovato. Clicca "Inizializza DB" per caricare i dati di esempio.
+        </p>`;
         return;
     }
 
     grid.innerHTML = musei.map(m => `
-        <div class="museo-card">
+        <div class="item-card museo-card">
             ${m.immagineCopertina
-                ? `<img src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
-                : `<div style="height:160px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:white;font-size:3rem"><i class="fa fa-building-columns"></i></div>`
+                ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
+                : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
             }
-            <div class="card-body">
+            <div class="museo-card-body">
                 <h3>${m.nome}</h3>
-                <div class="citta"><i class="fa fa-location-dot"></i> ${m.citta}</div>
-                ${m.codiceIsil ? `<div class="isil">${m.codiceIsil}</div>` : ''}
-                ${m.descrizioneBreve ? `<p>${m.descrizioneBreve}</p>` : ''}
+                <div class="museo-card-citta"><i class="fa fa-location-dot"></i> ${m.citta}</div>
+                ${m.codiceIsil ? `<div class="museo-card-isil">${m.codiceIsil}</div>` : ''}
+                ${m.descrizioneBreve ? `<p class="museo-card-desc">${m.descrizioneBreve}</p>` : ''}
             </div>
-            <div class="card-actions">
-                <button class="btn btn-secondary" onclick="openModal('${m.codiceIsil}')">
-                    <i class="fa fa-pencil"></i> Modifica
+            <div class="museo-card-actions">
+                <button class="icon-btn edit-btn" onclick="openModal('${m.codiceIsil}')" title="Modifica">
+                    <i class="fa fa-pencil"></i>
                 </button>
-                <button class="btn btn-danger" onclick="deleteMuseo('${m.codiceIsil}', '${m.nome}')">
+                <button class="icon-btn delete-btn" onclick="deleteMuseo('${m.codiceIsil}', '${m.nome}')" title="Elimina">
                     <i class="fa fa-trash"></i>
                 </button>
             </div>
@@ -77,10 +62,10 @@ function renderMusei(musei) {
 }
 
 
-// ── FILTRO DI RICERCA (lato client, senza nuova richiesta al server) ─────────
+// ── FILTRO DI RICERCA ─────────────────────────────────────────────────────────
 
 function filterMusei() {
-    const q = document.getElementById('searchInput').value.toLowerCase();
+    const q = document.getElementById('searchMusei').value.toLowerCase();
     const filtrati = tuttiIMusei.filter(m =>
         m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q)
     );
@@ -88,68 +73,62 @@ function filterMusei() {
 }
 
 
-// ── SEED: inizializza il DB dal file JSON ─────────────────────────────────────
+// ── SEED ──────────────────────────────────────────────────────────────────────
 
 async function seedDB() {
-    if (!confirm('Questa operazione sovrascrive tutti i musei nel database con i dati del file JSON. Continuare?')) return;
+    if (!confirm('Inizializza il DB con i musei di esempio?')) return;
     try {
-        const response = await fetch('/api/musei/seed');
-        const result = await response.json();
-        if (result.ok) {
-            showStatus(result.message, 'ok');
-            loadMusei(); // ricarica le card
-        } else {
-            showStatus('Errore seed: ' + result.error, 'err');
-        }
+        const result = await (await fetch('/api/musei/seed')).json();
+        showStatus(result.ok ? result.message : 'Errore: ' + result.error);
+        if (result.ok) loadMusei();
     } catch (e) {
-        showStatus('Impossibile contattare il server.', 'err');
+        showStatus('Impossibile contattare il server.');
     }
 }
 
 
-// ── MODAL: apri (nuovo o modifica) ──────────────────────────────────────────
+// ── MODAL ─────────────────────────────────────────────────────────────────────
 
 function openModal(codiceIsil) {
     document.getElementById('museoForm').reset();
     document.getElementById('editIsil').value = '';
+    const modal = document.getElementById('museoModal');
 
     if (codiceIsil) {
-        // Modalità modifica: precompila il form con i dati del museo
         const m = tuttiIMusei.find(x => x.codiceIsil === codiceIsil);
         if (!m) return;
-        document.getElementById('modalTitle').textContent = 'Modifica museo';
-        document.getElementById('submitBtn').textContent = 'Aggiorna';
+        document.getElementById('modalTitle').innerHTML = 'Modifica <span>Museo</span>';
+        document.getElementById('submitBtn').textContent = 'Aggiorna Museo';
         document.getElementById('editIsil').value = codiceIsil;
-        document.getElementById('fNome').value = m.nome || '';
-        document.getElementById('fCitta').value = m.citta || '';
-        document.getElementById('fIndirizzo').value = m.indirizzo || '';
+        document.getElementById('fNome').value       = m.nome || '';
+        document.getElementById('fCitta').value      = m.citta || '';
+        document.getElementById('fIndirizzo').value  = m.indirizzo || '';
         document.getElementById('fCodiceIsil').value = m.codiceIsil || '';
-        document.getElementById('fImmagine').value = m.immagineCopertina || '';
+        document.getElementById('fImmagine').value   = m.immagineCopertina || '';
         document.getElementById('fDescrizione').value = m.descrizioneBreve || '';
     } else {
-        // Modalità creazione
-        document.getElementById('modalTitle').textContent = 'Nuovo museo';
-        document.getElementById('submitBtn').textContent = 'Salva';
+        document.getElementById('modalTitle').innerHTML = 'Nuovo <span>Museo</span>';
+        document.getElementById('submitBtn').textContent = 'Salva Museo';
     }
 
-    document.getElementById('modalOverlay').classList.add('open');
+    modal.style.display = 'flex';
 }
 
 function closeModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
+    document.getElementById('museoModal').style.display = 'none';
 }
 
-// Chiude il modal cliccando fuori
-document.getElementById('modalOverlay').addEventListener('click', function(e) {
-    if (e.target === this) closeModal();
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('museoModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
 });
 
 
-// ── SUBMIT FORM: crea o aggiorna ─────────────────────────────────────────────
+// ── SUBMIT ────────────────────────────────────────────────────────────────────
 
 async function submitForm(e) {
-    e.preventDefault(); // impedisce il refresh della pagina
-
+    e.preventDefault();
     const body = {
         nome:              document.getElementById('fNome').value,
         citta:             document.getElementById('fCitta').value,
@@ -158,66 +137,38 @@ async function submitForm(e) {
         immagineCopertina: document.getElementById('fImmagine').value,
         descrizioneBreve:  document.getElementById('fDescrizione').value,
     };
-
     const editIsil = document.getElementById('editIsil').value;
 
     try {
-        let response;
-        if (editIsil) {
-            // PUT aggiorna il museo esistente
-            response = await fetch(`${API}/${editIsil}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-        } else {
-            // POST crea un nuovo museo
-            response = await fetch(API, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-        }
+        const response = editIsil
+            ? await fetch(`${API}/${editIsil}`, { method: 'PUT',  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+            : await fetch(API,                   { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
 
         const result = await response.json();
-        if (result.ok) {
-            closeModal();
-            showStatus(editIsil ? 'Museo aggiornato.' : 'Museo creato.', 'ok');
-            loadMusei();
-        } else {
-            showStatus('Errore: ' + result.error, 'err');
-        }
+        if (result.ok) { closeModal(); showStatus(editIsil ? 'Museo aggiornato.' : 'Museo creato.'); loadMusei(); }
+        else showStatus('Errore: ' + result.error);
     } catch (err) {
-        showStatus('Impossibile contattare il server.', 'err');
+        showStatus('Impossibile contattare il server.');
     }
 }
 
 
-// ── DELETE ───────────────────────────────────────────────────────────────────
+// ── DELETE ────────────────────────────────────────────────────────────────────
 
 async function deleteMuseo(codiceIsil, nome) {
     if (!confirm(`Eliminare "${nome}"?`)) return;
     try {
-        const response = await fetch(`${API}/${codiceIsil}`, { method: 'DELETE' });
-        const result = await response.json();
-        if (result.ok) {
-            showStatus(result.message, 'ok');
-            loadMusei();
-        } else {
-            showStatus('Errore: ' + result.error, 'err');
-        }
+        const result = await (await fetch(`${API}/${codiceIsil}`, { method: 'DELETE' })).json();
+        showStatus(result.ok ? result.message : 'Errore: ' + result.error);
+        if (result.ok) loadMusei();
     } catch (e) {
-        showStatus('Impossibile contattare il server.', 'err');
+        showStatus('Impossibile contattare il server.');
     }
 }
 
 
-// ── HELPER: mostra messaggio di stato ────────────────────────────────────────
+// ── STATUS ────────────────────────────────────────────────────────────────────
 
-function showStatus(msg, type) {
-    const el = document.getElementById('statusMsg');
-    el.textContent = msg;
-    el.className = 'status-msg ' + type;
-    el.style.display = 'block';
-    setTimeout(() => { el.style.display = 'none'; }, 4000);
+function showStatus(msg) {
+    alert(msg);
 }
