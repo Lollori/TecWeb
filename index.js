@@ -1,8 +1,15 @@
 ﻿/* ========================== */
 /* SETUP            */
 /* ========================== */
+const { execSync } = require('child_process');
+try {
+    execSync('npm install', { cwd: __dirname, stdio: 'inherit' });
+} catch(e) {
+    console.error('npm install fallito:', e.message);
+}
+
 global.rootDir = __dirname ;
-global.startDate = null; 
+global.startDate = null;
 
 const template = require(global.rootDir + '/scripts/tpl.js');
 const mymongo = require(global.rootDir + '/scripts/mongo.js');
