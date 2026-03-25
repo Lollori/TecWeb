@@ -61,23 +61,16 @@ authForm.onsubmit = async (e) => {
 
     const emailRaw = emailInput.value;
     const passwordRaw = document.getElementById('password').value;
-    
-    // Costruiamo l'email finale (es: CUR_esempio@mail.it)
     const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
 
-    // Determiniamo l'endpoint (usiamo il percorso assoluto per sicurezza)
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
     const targetUrl = window.location.origin + endpoint;
-
-    console.log("🚀 Chiamata a:", targetUrl);
-    console.log("📦 Dati inviati:", { email: finalEmail, password: passwordRaw });
 
     try {
         const response = await fetch(targetUrl, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({ 
                 email: finalEmail, 
@@ -85,34 +78,16 @@ authForm.onsubmit = async (e) => {
             })
         });
 
-        // Se il server risponde con qualcosa che non è JSON (es. un errore HTML 404/500)
-        const contentType = response.headers.get("content-type");
-        if (!contentType || !contentType.includes("application/json")) {
-            const textError = await response.text();
-            console.error("⚠️ Risposta non-JSON ricevuta:", textError);
-            alert("Il server ha risposto in modo inaspettato. Controlla la console.");
-            return;
-        }
-
         const data = await response.json();
 
         if (data.success) {
-            if (isLoginMode) {
-                alert("Login effettuato!");
-                // Redirect intelligente
-                window.location.href = finalEmail.startsWith("CUR_") 
-                    ? "../Editor-Marketplace/Frontend/menu.html" 
-                    : "../navigator/index.html";
-            } else {
-                alert("✨ Registrazione completata! Ora puoi accedere.");
-                location.reload(); // Torna al login pulito
-            }
+            // ... resto del codice (redirect o alert)
         } else {
             alert("Errore: " + data.message);
         }
     } catch (error) {
-        console.error("Errore fatale Fetch:", error);
-        alert("Server non raggiungibile. Controlla che la rotta " + endpoint + " sia attiva.");
+        // Qui lasciamo il log solo per gli errori tecnici, non per i dati utente
+        console.error("Errore di connessione.");
     }
 };
 
