@@ -241,6 +241,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- 5. MODALE & FORM ---
     window.apriModaleItem = (item) => {
         modal.style.display = 'flex';
+        document.body.classList.add('no-scroll');
         if (item) {
             editingId = item.id;
             document.getElementById('operaId').value = item.operaId;
@@ -259,7 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    window.closeModal = () => { modal.style.display = 'none'; editingId = null; };
+    window.closeModal = () => { 
+        modal.style.display = 'none'; 
+        document.body.classList.remove('no-scroll');
+        editingId = null; 
+    };
 
     window.eliminaOpera = (id) => {
         if (confirm("Eliminare definitivamente quest'opera?")) {

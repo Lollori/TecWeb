@@ -95,14 +95,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.dataset.id = visita._id; // Assegna l'ID all'HTML
 
             card.innerHTML = `
-                <div class="card-actions">
-                    <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                <div class="card-main-header">
+                    <div class="title-group">
+                        <h3>${visita.nomeVisita}</h3>
+                        <p class="museum-sub"><i class="fa-solid fa-key"></i> Mnemonico: ${visita.nomeMnemonico || 'Nessuno'}</p>
+                    </div>
+                    <div class="action-group">
+                        <div class="buttons-row">
+                            <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <h3>${visita.nomeVisita}</h3>
-                <div class="card-details">
-                    <p><i class="fa-solid fa-key"></i> <strong>Mnemonico:</strong> ${visita.nomeMnemonico || 'Nessuno'}</p>
-                    <p><i class="fa-solid fa-image"></i> <strong>Opere:</strong> ${visita.opereCount || 0} incluse</p>
+                <div class="card-body">
+                    <p class="description-text">${visita.logistica || 'Nessuna indicazione logistica specificata.'}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="tag-bubble"><i class="fa-solid fa-image"></i> ${visita.opereCount || 0} opere incluse</span>
                 </div>
             `;
 
@@ -195,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function apriModale(visita) {
         modal.style.display = 'flex';
+        document.body.classList.add('no-scroll');
         
         if (visita) {
             editingId = visita._id;
@@ -212,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeModale() {
         modal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
         form.reset();
         editingId = null; 
     }

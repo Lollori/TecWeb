@@ -43,20 +43,29 @@ function renderMusei(musei) {
                 ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
                 : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
             }
-            <div class="museo-card-body">
-                <h3>${m.nome}</h3>
-                <div class="museo-card-citta"><i class="fa fa-location-dot"></i> ${m.citta}</div>
-                ${m.codiceIsil ? `<div class="museo-card-isil">${m.codiceIsil}</div>` : ''}
-                ${m.descrizioneBreve ? `<p class="museo-card-desc">${m.descrizioneBreve}</p>` : ''}
+            <div class="card-main-header" style="margin-top: 20px;">
+                <div class="title-group">
+                    <h3>${m.nome}</h3>
+                    <p class="museum-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
+                </div>
+                <div class="action-group">
+                    <div class="buttons-row">
+                        <button class="icon-btn edit-btn" onclick="openModal('${m.codiceIsil}')" title="Modifica">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="icon-btn delete-btn" onclick="deleteMuseo('${m.codiceIsil}', '${m.nome}')" title="Elimina">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="museo-card-actions">
-                <button class="icon-btn edit-btn" onclick="openModal('${m.codiceIsil}')" title="Modifica">
-                    <i class="fa fa-pencil"></i>
-                </button>
-                <button class="icon-btn delete-btn" onclick="deleteMuseo('${m.codiceIsil}', '${m.nome}')" title="Elimina">
-                    <i class="fa fa-trash"></i>
-                </button>
+            <div class="card-body">
+                ${m.descrizioneBreve ? `<p class="description-text">${m.descrizioneBreve}</p>` : ''}
             </div>
+            ${m.codiceIsil ? `
+            <div class="card-footer">
+                <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
+            </div>` : ''}
         </div>
     `).join('');
 }
@@ -121,10 +130,12 @@ function openModal(codiceIsil) {
     }
 
     modal.style.display = 'flex';
+    document.body.classList.add('no-scroll');
 }
 
 function closeModal() {
     document.getElementById('museoModal').style.display = 'none';
+    document.body.classList.remove('no-scroll');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
