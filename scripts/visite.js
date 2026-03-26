@@ -33,9 +33,13 @@ async function getModel(credentials) {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         }).asPromise();
-        
-        VisitaModel = localConnection.model("Visita", visitaSchema);
     }
+    
+    // Controlla se il modello è già stato registrato su questa connessione
+    if (!VisitaModel) {
+        VisitaModel = localConnection.models.Visita || localConnection.model("Visita", visitaSchema);
+    }
+    
     return VisitaModel;
 }
 
