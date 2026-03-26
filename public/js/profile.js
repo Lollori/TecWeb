@@ -16,7 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="nav-profile-container">
                 <div class="nav-avatar" id="navAvatar">?</div>
                 <div class="profile-dropdown">
-                    <span>${userUsername}</span>
+                    <span id="userEmailDisplay">${userUsername}</span>
+                    <a href="/Editor-Marketplace/Frontend/visite.html?autore=${encodeURIComponent(localStorage.getItem('userId') || '')}" class="dropdown-item">Le mie visite</a>
                     <a href="/docs/profile.html" class="dropdown-item">Gestisci Profilo</a>
                     <a href="#" class="dropdown-item logout-link" onclick="logout(event)">Logout</a>
                 </div>

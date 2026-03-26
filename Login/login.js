@@ -102,6 +102,7 @@ authForm.addEventListener('submit', async (e) => {
             if (isLoginMode) {
                 // --- LOGIN SUCCESS ---
                 localStorage.setItem('userUsername', data.user.username);
+                localStorage.setItem('userId', data.user._id);
 
                 const role = data.user.username.startsWith("CUR_") ? "CUR" : "VIS";
                 localStorage.setItem('userRole', role);

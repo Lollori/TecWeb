@@ -27,7 +27,7 @@
     display: none;
     position: absolute;
     right: 0;
-    top: 45px; /* Leggermente più su per toccare l'area del container */
+    top: 38px;
     background: white;
     min-width: 200px;
     border-radius: 12px;
