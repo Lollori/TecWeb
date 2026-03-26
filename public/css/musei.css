@@ -4,6 +4,7 @@
 .item-card.museo-card {
     padding: 0;
     overflow: hidden;
+    cursor: pointer;
 }
 
 .museo-card-img {

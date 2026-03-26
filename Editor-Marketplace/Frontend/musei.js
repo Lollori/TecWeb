@@ -38,7 +38,7 @@ function renderMusei(musei) {
     }
 
     grid.innerHTML = musei.map(m => `
-        <div class="item-card museo-card">
+        <div class="item-card museo-card" onclick="apriMuseo(event, '${m.codiceIsil}')">
             ${m.immagineCopertina
                 ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
                 : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
@@ -59,6 +59,15 @@ function renderMusei(musei) {
             </div>
         </div>
     `).join('');
+}
+
+
+// ── NAVIGAZIONE AL MUSEO ──────────────────────────────────────────────────────
+
+function apriMuseo(event, codiceIsil) {
+    if (event.target.closest('.icon-btn')) return; // ignora click su edit/delete
+    if (!codiceIsil) return;
+    window.location.href = `opere.html?museo=${encodeURIComponent(codiceIsil)}`;
 }
 
 
