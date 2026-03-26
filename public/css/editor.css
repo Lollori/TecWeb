@@ -386,6 +386,7 @@ body:has(.mini-stat-card:hover) .items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
     gap: 25px;
+    padding-bottom: 60px;
 }
 
 .item-card {
@@ -484,6 +485,7 @@ body:has(.mini-stat-card:hover) .items-grid {
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 3;
+    line-clamp: 3;
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
@@ -549,6 +551,9 @@ body:has(.mini-stat-card:hover) .items-grid {
     background: rgba(255, 255, 255, 0.95);
     width: 90%;
     max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    overflow-x: hidden;
     border-radius: 30px;
     padding: 40px;
     box-shadow: 0 25px 50px rgba(0,0,0,0.1);
@@ -673,8 +678,13 @@ body:has(.mini-stat-card:hover) .items-grid {
 /* Fix per Mobile */
 @media (max-width: 600px) {
     .form-grid { grid-template-columns: 1fr; }
-    .full-width { grid-column: span 1; }
+    .full-width, .checkbox-row { grid-column: span 1; }
     .modal-glass-card { padding: 25px; border-radius: 20px; }
+    .filter-btn { flex: 1; justify-content: center; }
+}
+
+body.no-scroll {
+    overflow: hidden;
 }
 /* =========================================
    7. RESPONSIVE
@@ -713,4 +723,51 @@ body:has(.mini-stat-card:hover) .items-grid {
     .chart-container {
         height: 350px; /* Grafici leggermente più grandi su PC */
     }
+}
+
+/* =========================================
+   8. CLASSI SPECIFICHE (VISITE E MUSEI)
+   ========================================= */
+
+/* Visite: Modalità selezione (highlight) */
+.item-card.selected {
+    background-color: rgba(74, 124, 95, 0.1);
+    border: 2px solid #4a7c5f;
+    transform: scale(1.02);
+    box-shadow: 0 8px 12px rgba(74, 124, 95, 0.15);
+}
+
+/* Musei: Estensione per card senza bordatura interna standard in base a design (opzionale), e per immagine testata */
+.item-card.museo-card {
+    padding: 0;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.item-card.museo-card .card-main-header,
+.item-card.museo-card .card-body,
+.item-card.museo-card .card-footer {
+    padding-left: 24px;
+    padding-right: 24px;
+}
+
+.item-card.museo-card .card-footer {
+    padding-bottom: 24px;
+}
+
+.museo-card-img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+}
+
+.museo-card-img-placeholder {
+    height: 160px;
+    background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255,255,255,0.35);
+    font-size: 2.5rem;
 }

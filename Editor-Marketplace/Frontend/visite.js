@@ -5,20 +5,36 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingId = null;
 
     const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+
+    if (!currentMuseo) {
+        alert("Devi prima selezionare un museo dalla sezione Musei per accedere a questa pagina.");
+        window.location.href = "musei.html";
+        return;
+    }
+
+    // Aggiorna gli url della navbar per restare nel contesto del museo corrente
+    document.querySelectorAll('.top-nav-cards a:not(.back-card)').forEach(link => {
+        const baseHref = link.getAttribute('href').split('?')[0];
+        link.href = `${baseHref}?museo=${encodeURIComponent(currentMuseo)}`;
+    });
+
     const container = document.getElementById('visiteContainer');
     const form = document.getElementById('visitaForm');
     const modal = document.getElementById('visitaModal');
 
-    // Mostra nome museo nel subtitle
-    if (currentMuseo) {
-        fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
-            .then(r => r.json())
-            .then(result => {
-                const subtitle = document.getElementById('museoSubtitle');
-                if (subtitle && result.ok) subtitle.textContent = `Museo: ${result.data.nome}`;
-            })
-            .catch(() => {});
-    }
+    // Mostra banner del museo selezionato in testa alla pagina
+    fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
+        .then(r => r.json())
+        .then(result => {
+             if (result.ok && result.data) {
+                const header = document.querySelector('.content-header');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: rgba(74, 124, 95, 0.08); border: 1px solid rgba(74, 124, 95, 0.2); border-radius: 12px; padding: 12px 20px; margin-bottom: 24px; color: #2d503b; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;';
+                banner.innerHTML = `<i class="fa-solid fa-building-columns" style="font-size: 1.2em; color: #4a7c5f;"></i> <span>Stai operando per il museo: <strong style="color: #4a7c5f; font-size: 1.1em; margin-left: 5px;">${result.data.nome}</strong></span>`;
+                header.parentNode.insertBefore(banner, header);
+            }
+        })
+        .catch(() => {});
 
     // Carica visite dal server
     async function loadVisite() {
@@ -79,14 +95,23 @@ document.addEventListener('DOMContentLoaded', () => {
             card.dataset.id = visita._id; // Assegna l'ID all'HTML
 
             card.innerHTML = `
-                <div class="card-actions">
-                    <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
-                    <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                <div class="card-main-header">
+                    <div class="title-group">
+                        <h3>${visita.nomeVisita}</h3>
+                        <p class="museum-sub"><i class="fa-solid fa-key"></i> Mnemonico: ${visita.nomeMnemonico || 'Nessuno'}</p>
+                    </div>
+                    <div class="action-group">
+                        <div class="buttons-row">
+                            <button type="button" class="icon-btn edit-btn" title="Modifica"><i class="fa-solid fa-pen"></i></button>
+                            <button type="button" class="icon-btn delete-btn" title="Elimina"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
                 </div>
-                <h3>${visita.nomeVisita}</h3>
-                <div class="card-details">
-                    <p><i class="fa-solid fa-key"></i> <strong>Mnemonico:</strong> ${visita.nomeMnemonico || 'Nessuno'}</p>
-                    <p><i class="fa-solid fa-image"></i> <strong>Opere:</strong> ${visita.opereCount || 0} incluse</p>
+                <div class="card-body">
+                    <p class="description-text">${visita.logistica || 'Nessuna indicazione logistica specificata.'}</p>
+                </div>
+                <div class="card-footer">
+                    <span class="tag-bubble"><i class="fa-solid fa-image"></i> ${visita.opereCount || 0} opere incluse</span>
                 </div>
             `;
 
@@ -179,6 +204,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function apriModale(visita) {
         modal.style.display = 'flex';
+        document.body.classList.add('no-scroll');
         
         if (visita) {
             editingId = visita._id;
@@ -196,6 +222,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeModale() {
         modal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
         form.reset();
         editingId = null; 
     }

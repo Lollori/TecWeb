@@ -33,20 +33,26 @@ mongoose.set("strictQuery", false);
 // Funzione interna riutilizzata da tutte le operazioni CRUD.
 // Costruisce la URI di connessione dal formato usato dal professore.
 async function connect(credentials) {
-    // In locale (senza VPN) usa MongoDB installato sul tuo PC.
-    // In produzione (server UniBo o con VPN) usa le credenziali del prof.
+    if (mongoose.connection.readyState === 1) return; // Se già connesso, non riconnettere
     const isLocal = process.env.MONGO_LOCAL === 'true';
     const mongouri = isLocal
         ? 'mongodb://localhost:27017/artaround'
         : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-    await mongoose.connect(mongouri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
+    
+    try {
+        await mongoose.connect(mongouri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        });
+    } catch(e) {
+        console.error("Errore di connessione a MongoDB:", e.message);
+    }
 }
 
 async function disconnect() {
-    await mongoose.connection.close();
+    // DISATTIVATO: Mongoose Connection Pooling richiede che la connessione rimanga aperta. 
+    // Chiudere brutalmente su ogni richiesta distrugge il driver MongoDB (TopologyClosed) in caso di richieste multiple!
+    // await mongoose.connection.close(); 
 }
 
 
