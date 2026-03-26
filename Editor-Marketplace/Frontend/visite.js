@@ -7,8 +7,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Filtro l'array locale delle visite
         const visiteFiltrate = visiteArray.filter(visita => {
-            return visita.nomeVisita.toLowerCase().includes(termine) || 
+            const matchSearch = visita.nomeVisita.toLowerCase().includes(termine) ||
                 visita.nomeMnemonico.toLowerCase().includes(termine);
+            const matchMuseo = !currentMuseo || visita.codiceIsil === currentMuseo;
+            return matchSearch && matchMuseo;
         });
 
         // Ridisego la griglia solo con i risultati filtrati
@@ -31,7 +33,20 @@ document.addEventListener('DOMContentLoaded', () => {
         { id: 2, nomeVisita: "Visita Rapida (30 min)", nomeMnemonico: "Drago blu", logistica: "Ingresso principale, sala 1.", quizDomanda: "", opereCount: 5 }
     ];
 
-    let editingId = null; // Variabile per tracciare se sto modificando una visita esistente
+    const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+
+    // Mostra nome museo nel subtitle
+    if (currentMuseo) {
+        fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
+            .then(r => r.json())
+            .then(result => {
+                const subtitle = document.getElementById('museoSubtitle');
+                if (subtitle && result.ok) subtitle.textContent = `Museo: ${result.data.nome}`;
+            })
+            .catch(() => {});
+    }
+
+    let editingId = null;
 
     const container = document.getElementById('visiteContainer');
     const form = document.getElementById('visitaForm');
@@ -154,8 +169,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     //AVVIO
-    // Appena carica la pagina, disegna la griglia
-    renderVisite();
+    const visiteMuseo = currentMuseo
+        ? visiteArray.filter(v => v.codiceIsil === currentMuseo)
+        : visiteArray;
+    renderVisite(visiteMuseo);
 
 });
 

@@ -12,9 +12,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- STATO APPLICAZIONE ---
     let currentItems = [];
-    let editingId = null; 
-    let currentFilter = 'mie'; 
-    let currentUserId = 'autore1'; 
+    let editingId = null;
+    let currentFilter = 'mie';
+    let currentUserId = 'autore1';
+    const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+
+    // Mostra nome museo nel subtitle
+    if (currentMuseo) {
+        fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
+            .then(r => r.json())
+            .then(result => {
+                const subtitle = document.getElementById('museoSubtitle');
+                if (subtitle && result.ok) subtitle.textContent = `Museo: ${result.data.nome}`;
+            })
+            .catch(() => {});
+    }
 
     // --- 1. FUNZIONE MINI-STATISTICHE (SVG RING) ---
     function updateCharts() {
@@ -151,11 +163,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const prezzoFiltro = filterPrezzo?.value || 'tutti';
 
         const filtrati = currentItems.filter(item => {
-            const matchSearch = item.operaId.toLowerCase().includes(searchFiltro) || 
+            const matchSearch = item.operaId.toLowerCase().includes(searchFiltro) ||
                                 item.museo.toLowerCase().includes(searchFiltro);
             const matchUser = currentFilter === 'mie' ? item.autore === currentUserId : item.pubblica === true;
             const matchPrezzo = prezzoFiltro === 'tutti' || (prezzoFiltro === 'gratuiti' ? item.prezzo == 0 : item.prezzo > 0);
-            return matchSearch && matchUser && matchPrezzo;
+            const matchMuseo = !currentMuseo || item.codiceIsil === currentMuseo;
+            return matchSearch && matchUser && matchPrezzo && matchMuseo;
         });
         
         renderItems(filtrati);
