@@ -1,6 +1,6 @@
 /*
 File: visite.js
-Gestione visite con Mongoose - Riscritto con Connection Pooling Isolato
+Gestione visite con Mongoose - Schema Server Globale (Persistente)
 */
 
 console.log('[visite.js] modulo caricato');
@@ -13,34 +13,27 @@ const visitaSchema = new mongoose.Schema({
     logistica:        { type: String, required: false },
     quizDomanda:      { type: String, required: false },
     opereCount:       { type: Number, default: 0 },
-    codiceIsil:       { type: String, required: false } // Riferimento al museo opzionale
+    codiceIsil:       { type: String, required: false }
 });
 
-// NON usiamo il connect() e disconnect() globale di mongoose perché causa "Race Conditions".
-// Se musei.js chiude la connessione globale mentre visite.js sta leggendo, ottieni un alert di errore!
-let localConnection = null;
-let VisitaModel = null;
+const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
 
-async function getModel(credentials) {
-    if (!localConnection) {
+async function connect(credentials) {
+    if (mongoose.connection.readyState === 1) return;
+    try {
         const isLocal = process.env.MONGO_LOCAL === 'true';
         const mongouri = isLocal
             ? 'mongodb://localhost:27017/artaround'
             : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-        
-        // createConnection instrada la comunicazione su un pool protetto e privato
-        localConnection = await mongoose.createConnection(mongouri, {
+            
+        await mongoose.connect(mongouri, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-        }).asPromise();
+        });
+    } catch(e) {
+        console.error("Errore di connessione in visite.js:", e.message);
+        throw e;
     }
-    
-    // Controlla se il modello è già stato registrato su questa connessione
-    if (!VisitaModel) {
-        VisitaModel = localConnection.models.Visita || localConnection.model("Visita", visitaSchema);
-    }
-    
-    return VisitaModel;
 }
 
 exports.getAll = async (credentials, query) => {
@@ -48,42 +41,42 @@ exports.getAll = async (credentials, query) => {
     if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
     
     try {
-        const Visita = await getModel(credentials);
+        await connect(credentials);
         const visite = await Visita.find(filter, { __v: 0 });
         return { ok: true, data: visite };
     } catch (e) {
-        console.error(e);
+        console.error("visite.getAll API error:", e);
         return { ok: false, error: e.message };
     }
 };
 
 exports.getOne = async (credentials, id) => {
     try {
-        const Visita = await getModel(credentials);
+        await connect(credentials);
         const visita = await Visita.findById(id, { __v: 0 });
         if (!visita) return { ok: false, error: "Visita non trovata." };
         return { ok: true, data: visita };
     } catch (e) {
-        console.error(e);
+        console.error("visite.getOne API error:", e);
         return { ok: false, error: e.message };
     }
 };
 
 exports.create = async (credentials, body) => {
     try {
-        const Visita = await getModel(credentials);
+        await connect(credentials);
         const visita = new Visita(body);
         await visita.save();
         return { ok: true, data: visita };
     } catch (e) {
-        console.error(e);
+        console.error("visite.create API error:", e);
         return { ok: false, error: e.message };
     }
 };
 
 exports.update = async (credentials, id, body) => {
     try {
-        const Visita = await getModel(credentials);
+        await connect(credentials);
         const updated = await Visita.findByIdAndUpdate(
             id,
             body,
@@ -92,19 +85,19 @@ exports.update = async (credentials, id, body) => {
         if (!updated) return { ok: false, error: "Visita non trovata." };
         return { ok: true, data: updated };
     } catch (e) {
-        console.error(e);
+        console.error("visite.update API error:", e);
         return { ok: false, error: e.message };
     }
 };
 
 exports.remove = async (credentials, id) => {
     try {
-        const Visita = await getModel(credentials);
+        await connect(credentials);
         const deleted = await Visita.findByIdAndDelete(id);
         if (!deleted) return { ok: false, error: "Visita non trovata." };
         return { ok: true, message: `Visita "${deleted.nomeVisita}" eliminata.` };
     } catch (e) {
-        console.error(e);
+        console.error("visite.remove API error:", e);
         return { ok: false, error: e.message };
     }
 };
