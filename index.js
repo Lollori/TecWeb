@@ -1,4 +1,4 @@
-﻿/* ========================== */
+/* ========================== */
 /* SETUP            */
 /* ========================== */
 global.rootDir = __dirname ;
@@ -11,6 +11,12 @@ try {
     musei = require(global.rootDir + '/scripts/musei.js');
 } catch(e) {
     console.error('[index.js] ERRORE nel caricare scripts/musei.js:', e.message);
+}
+let visite;
+try {
+    visite = require(global.rootDir + '/scripts/visite.js');
+} catch(e) {
+    console.error('[index.js] ERRORE nel caricare scripts/visite.js:', e.message);
 }
 const express = require('express');
 const cors = require('cors')
@@ -134,6 +140,34 @@ app.put('/api/musei/:codiceIsil', async function (req, res) {
 
 app.delete('/api/musei/:codiceIsil', async function (req, res) {
     const result = await musei.remove(mongoCredentials, req.params.codiceIsil);
+    res.json(result);
+});
+
+/* ========================== */
+/* API VISITE          */
+/* ========================== */
+app.get('/api/visite', async function (req, res) {
+    const result = await visite.getAll(mongoCredentials, req.query);
+    res.json(result);
+});
+
+app.get('/api/visite/:id', async function (req, res) {
+    const result = await visite.getOne(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
+app.post('/api/visite', async function (req, res) {
+    const result = await visite.create(mongoCredentials, req.body);
+    res.json(result);
+});
+
+app.put('/api/visite/:id', async function (req, res) {
+    const result = await visite.update(mongoCredentials, req.params.id, req.body);
+    res.json(result);
+});
+
+app.delete('/api/visite/:id', async function (req, res) {
+    const result = await visite.remove(mongoCredentials, req.params.id);
     res.json(result);
 });
 
