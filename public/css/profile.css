@@ -37,7 +37,7 @@
 }
 
 /* Mostra la tendina */
-.nav-profile-container:hover .profile-dropdown {
+.nav-profile-container.open .profile-dropdown {
     display: block;
 }
 

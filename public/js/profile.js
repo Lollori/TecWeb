@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (loginBtn) loginBtn.style.display = 'none';
 
         placeholder.innerHTML = `
-            <div class="nav-profile-container">
+            <div class="nav-profile-container" id="navProfileContainer">
                 <div class="nav-avatar" id="navAvatar">?</div>
                 <div class="profile-dropdown">
                     <span id="userEmailDisplay">${userUsername}</span>
@@ -23,6 +23,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             </div>
         `;
+
+        // Toggle click sul container
+        const container = document.getElementById('navProfileContainer');
+        container.addEventListener('click', (e) => {
+            if (!e.target.closest('a')) container.classList.toggle('open');
+        });
+        document.addEventListener('click', (e) => {
+            if (!container.contains(e.target)) container.classList.remove('open');
+        });
 
         // Configuriamo l'avatar (Lettera e Colore)
         const avatar = document.getElementById('navAvatar');
