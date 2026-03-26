@@ -9,13 +9,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('visitaForm');
     const modal = document.getElementById('visitaModal');
 
-    // Mostra nome museo nel subtitle
+    // Mostra nome museo nel titolo
     if (currentMuseo) {
         fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
             .then(r => r.json())
             .then(result => {
-                const subtitle = document.getElementById('museoSubtitle');
-                if (subtitle && result.ok) subtitle.textContent = `Museo: ${result.data.nome}`;
+                if (result.ok) {
+                    const headerTitolo = document.querySelector('.header-text h1');
+                    if (headerTitolo) {
+                        headerTitolo.innerHTML = `Visite <span style="font-size: 0.65em; background: rgba(74, 124, 95, 0.1); color: #2d503b; padding: 4px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-left: 10px; vertical-align: middle; border: 1px solid rgba(74, 124, 95, 0.2);"><i class="fa-solid fa-building-columns" style="margin-right:6px"></i>${result.data.nome}</span>`;
+                    }
+                }
             })
             .catch(() => {});
     }
