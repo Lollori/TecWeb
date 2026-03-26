@@ -1,11 +1,11 @@
 /* Container principale */
 .nav-profile-container {
     position: relative;
-    z-index: 10000;
     cursor: pointer;
-    /* IL SEGRETO: il padding crea un'area cliccabile continua tra avatar e menu */
-    padding-bottom: 20px; 
-    margin-bottom: -20px;
+}
+
+.nav-profile-container.open {
+    z-index: 10000;
 }
 
 /* Avatar */
