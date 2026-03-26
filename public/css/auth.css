@@ -166,8 +166,9 @@ body, html {
 
 .btn-submit:hover { filter: brightness(1.2); transform: translateY(-2px); }
 
-.toggle-text { margin-top: 25px; font-size: 0.82rem; text-align: center; }
+.toggle-text { margin-top: 15px; font-size: 0.82rem; text-align: center; }
 .toggle-text a { font-weight: 700; color: var(--primary-dark); text-decoration: none; }
+.back-home-link { font-weight: 400 !important; color: var(--accent-soft) !important; }
 
 /*password errata*/
 .shake {

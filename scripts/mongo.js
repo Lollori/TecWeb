@@ -18,8 +18,9 @@ const Capital = mongoose.model("Capital", capitalSchema);
 
 // --- [NUOVO] SCHEMA PER GLI UTENTI ---
 const userSchema = new mongoose.Schema({
-    email: { type: String, required: true, unique: true },
-    password: { type: String, required: true }
+    username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    ruolo:    { type: String, enum: ['VIS', 'CUR'], required: true }
 });
 const User = mongoose.model("User", userSchema);
 
@@ -105,6 +106,21 @@ exports.getAllUsers = async (credentials) => {
         const users = await User.find({}, { password: 0, __v: 0 });
         await mongoose.connection.close();
         return { ok: true, data: users };
+    } catch (e) {
+        if (mongoose.connection.readyState !== 0) await mongoose.connection.close();
+        return { ok: false, error: e.message };
+    }
+}
+
+exports.seedUsers = async (credentials) => {
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${userDB}?authSource=admin&writeConcern=majority`;
+    try {
+        const data = JSON.parse(await fs.readFile(global.rootDir + '/public/data/utenti.json', 'utf8'));
+        await mongoose.connect(mongouri, { useNewUrlParser: true, useUnifiedTopology: true });
+        const cleared = await User.deleteMany({});
+        await User.insertMany(data);
+        await mongoose.connection.close();
+        return { ok: true, message: `Rimossi ${cleared.deletedCount}, inseriti ${data.length} utenti.` };
     } catch (e) {
         if (mongoose.connection.readyState !== 0) await mongoose.connection.close();
         return { ok: false, error: e.message };

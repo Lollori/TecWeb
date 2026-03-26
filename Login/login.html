@@ -40,11 +40,11 @@
                             </div>
                         </div>
 
-                        <label>Email o Username</label>
+                        <label>Username</label>
                         <div class="input-group-email">
-                            <span id="emailPrefix"></span> 
-                            <input type="text" id="email" placeholder="esempio@mail.it" 
-                            autocomplete="one-time-code" readonly 
+                            <span id="emailPrefix"></span>
+                            <input type="text" id="email" placeholder="es. visitatore1"
+                            autocomplete="one-time-code" readonly
                             onfocus="this.removeAttribute('readonly');" required>
                         </div>
 
@@ -63,6 +63,9 @@
                         <span id="submitBtnText">Accedi</span>
                     </button>
                     
+                    <p class="toggle-text">
+                        <a href="/" class="back-home-link"><i class="fa-solid fa-arrow-left"></i> Torna alla home</a>
+                    </p>
                     <p class="toggle-text">
                         <span id="questionText">Non hai un account?</span> 
                         <a href="#" id="toggleAuthLink">Registrati ora</a>

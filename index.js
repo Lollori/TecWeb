@@ -61,19 +61,18 @@ app.get('/db/search', async function (req, res) {
 
 /* --- ROTTA LOGIN --- */
 app.post('/api/login', async (req, res) => {
-    const { email, password } = req.body;
-    console.log(`[index.js] Tentativo di login per: ${email}`);
+    const { username, password } = req.body;
+    console.log(`[index.js] Tentativo di login per: ${username}`);
 
     try {
-        // Usiamo findUser per cercare l'account
-        const user = await mymongo.findUser({ email: email, password: password }, mongoCredentials);
-        
+        const user = await mymongo.findUser({ username: username, password: password }, mongoCredentials);
+
         if (!user) {
-            console.log(`[index.js] Login fallito per: ${email}`);
-            return res.status(401).json({ success: false, message: "Email o password errati." });
+            console.log(`[index.js] Login fallito per: ${username}`);
+            return res.status(401).json({ success: false, message: "Username o password errati." });
         }
 
-        console.log(`[index.js] Login successo per: ${email}`);
+        console.log(`[index.js] Login successo per: ${username}`);
         res.json({ success: true, message: "Login effettuato", user: user });
     } catch (error) {
         res.status(500).json({ success: false, message: "Errore interno del server" });
@@ -82,16 +81,14 @@ app.post('/api/login', async (req, res) => {
 
 /* --- ROTTA REGISTRAZIONE --- */
 app.post('/api/register', async (req, res) => {
-    const { email, password } = req.body;
+    const { username, password, ruolo } = req.body;
     try {
-        // Verifichiamo se esiste già
-        const check = await mymongo.findUser({ email: email }, mongoCredentials);
+        const check = await mymongo.findUser({ username: username }, mongoCredentials);
         if (check) {
-            return res.status(400).json({ success: false, message: "Email già registrata!" });
+            return res.status(400).json({ success: false, message: "Username già registrato!" });
         }
 
-        // Registriamo il nuovo utente
-        await mymongo.registerUser({ email: email, password: password }, mongoCredentials);
+        await mymongo.registerUser({ username: username, password: password, ruolo: ruolo || 'VIS' }, mongoCredentials);
         res.json({ success: true, message: "Registrazione avvenuta!" });
     } catch (e) {
         res.status(500).json({ success: false, message: "Errore nel salvataggio DB" });
@@ -101,6 +98,11 @@ app.post('/api/register', async (req, res) => {
 /* ========================== */
 /* API UTENTI          */
 /* ========================== */
+app.get('/api/utenti/seed', async (_req, res) => {
+    const result = await mymongo.seedUsers(mongoCredentials);
+    res.json(result);
+});
+
 app.get('/api/utenti', async (_req, res) => {
     const result = await mymongo.getAllUsers(mongoCredentials);
     res.json(result);

@@ -175,7 +175,7 @@
 
     <nav id="menu-grid">
 
-      <a href="/navigator/index.html" class="nav-card nav-card--light">
+      <a href="#" onclick="requireAuth(event, '/navigator/index.html')" class="nav-card nav-card--light">
         <div class="nav-card-top">
           <div class="icon-wrap"><i class="fa-solid fa-compass"></i></div>
           <span class="nav-card-badge nav-card-badge--light">Per i visitatori</span>
@@ -185,7 +185,7 @@
         <div class="card-cta">Inizia come Navigator <i class="fa-solid fa-arrow-right"></i></div>
       </a>
 
-      <a href="/Editor-Marketplace/Frontend/musei.html" class="nav-card nav-card--dark">
+      <a href="#" onclick="requireAuth(event, '/Editor-Marketplace/Frontend/musei.html')" class="nav-card nav-card--dark">
         <div class="nav-card-top">
           <div class="icon-wrap"><i class="fa-solid fa-pen-to-square"></i></div>
           <span class="nav-card-badge nav-card-badge--dark">Per i curatori</span>
@@ -200,5 +200,15 @@
 </section>
 
 <script src="/js/profile.js"></script>
+<script>
+function requireAuth(event, destination) {
+    event.preventDefault();
+    if (localStorage.getItem('userUsername')) {
+        window.location.href = destination;
+    } else {
+        window.location.href = '/login/login.html?redirect=' + encodeURIComponent(destination);
+    }
+}
+</script>
 </body>
 </html>

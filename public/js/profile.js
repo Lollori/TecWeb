@@ -1,25 +1,22 @@
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Recupero dati dal LocalStorage
-    const userEmail = localStorage.getItem('userEmail');
+    const userUsername = localStorage.getItem('userUsername');
     const userRole = localStorage.getItem('userRole'); // "CUR" o "VIS"
 
     // 2. Elementi del DOM
-    const loginBtn = document.getElementById('loginBtn'); // Il tasto "Login" della Home
-    const placeholder = document.getElementById('nav-profile-placeholder'); // Il buco nell'header
+    const loginBtn = document.getElementById('loginBtn');
+    const placeholder = document.getElementById('nav-profile-placeholder');
 
     // 3. LOGICA DI VISUALIZZAZIONE
-    if (userEmail && placeholder) {
+    if (userUsername && placeholder) {
         // --- UTENTE LOGGATO ---
-        
-        // Se siamo in Home, nascondiamo il tasto Login
         if (loginBtn) loginBtn.style.display = 'none';
 
-        // Iniettiamo l'HTML della tendina nel placeholder
         placeholder.innerHTML = `
             <div class="nav-profile-container">
                 <div class="nav-avatar" id="navAvatar">?</div>
                 <div class="profile-dropdown">
-                    <span id="userEmailDisplay">${userEmail}</span>
+                    <span>${userUsername}</span>
                     <a href="/docs/profile.html" class="dropdown-item">Gestisci Profilo</a>
                     <a href="#" class="dropdown-item logout-link" onclick="logout(event)">Logout</a>
                 </div>
@@ -35,8 +32,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } else {
         // --- UTENTE NON LOGGATO ---
-        
-        // Se siamo in Home, assicuriamoci che il tasto Login sia visibile
         if (loginBtn) loginBtn.style.display = 'block';
         
         // Svuotiamo il placeholder se per caso era rimasto qualcosa

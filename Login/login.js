@@ -82,18 +82,18 @@ userRole.addEventListener('change', updateUI);
 authForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const emailRaw = emailInput.value.trim();
+    const usernameRaw = emailInput.value.trim();
     const passwordRaw = passwordInput.value.trim();
-    
-    // Costruiamo l'email finale con prefisso (solo se siamo in registrazione)
-    const finalEmail = isLoginMode ? emailRaw : emailPrefix.innerText + emailRaw;
+
+    const finalUsername = isLoginMode ? usernameRaw : emailPrefix.innerText + usernameRaw;
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
+    const ruolo = isLoginMode ? null : userRole.value;
 
     try {
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email: finalEmail, password: passwordRaw })
+            body: JSON.stringify({ username: finalUsername, password: passwordRaw, ruolo: ruolo })
         });
 
         const data = await response.json();
@@ -101,21 +101,20 @@ authForm.addEventListener('submit', async (e) => {
        if (data.success) {
             if (isLoginMode) {
                 // --- LOGIN SUCCESS ---
-                localStorage.setItem('userEmail', data.user.email);
-                
-                const role = data.user.email.startsWith("CUR_") ? "CUR" : "VIS";
+                localStorage.setItem('userUsername', data.user.username);
+
+                const role = data.user.username.startsWith("CUR_") ? "CUR" : "VIS";
                 localStorage.setItem('userRole', role);
                 
                 alert("Accesso eseguito!");
 
-                // CAMBIA QUESTA RIGA:
-                window.location.href = "/"; 
-                // ---------------------------------
+                const redirect = new URLSearchParams(window.location.search).get('redirect');
+                window.location.href = redirect || "/";
                 
             } else {
                 // --- REGISTRAZIONE SUCCESS ---
                 alert("Registrazione completata! Ora puoi accedere.");
-                emailInput.value = '';
+                emailInput.value = ''; // rinominato in usernameRaw ma il riferimento DOM resta emailInput
                 passwordInput.value = '';
                 isLoginMode = true;
                 toggleLink.click();
