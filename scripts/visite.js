@@ -1,6 +1,6 @@
 /*
 File: visite.js
-Gestione visite con Mongoose.
+Gestione visite con Mongoose - Riscritto con Connection Pooling Isolato
 */
 
 console.log('[visite.js] modulo caricato');
@@ -16,23 +16,27 @@ const visitaSchema = new mongoose.Schema({
     codiceIsil:       { type: String, required: false } // Riferimento al museo opzionale
 });
 
-const Visita = mongoose.model("Visita", visitaSchema);
-console.log('[visite.js] schema e model definiti');
+// NON usiamo il connect() e disconnect() globale di mongoose perché causa "Race Conditions".
+// Se musei.js chiude la connessione globale mentre visite.js sta leggendo, ottieni un alert di errore!
+let localConnection = null;
+let VisitaModel = null;
 
-// helper di connessione (simile a musei.js)
-async function connect(credentials) {
-    const isLocal = process.env.MONGO_LOCAL === 'true';
-    const mongouri = isLocal
-        ? 'mongodb://localhost:27017/artaround'
-        : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-    await mongoose.connect(mongouri, {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-    });
-}
-
-async function disconnect() {
-    await mongoose.connection.close();
+async function getModel(credentials) {
+    if (!localConnection) {
+        const isLocal = process.env.MONGO_LOCAL === 'true';
+        const mongouri = isLocal
+            ? 'mongodb://localhost:27017/artaround'
+            : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
+        
+        // createConnection instrada la comunicazione su un pool protetto e privato
+        localConnection = await mongoose.createConnection(mongouri, {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }).asPromise();
+        
+        VisitaModel = localConnection.model("Visita", visitaSchema);
+    }
+    return VisitaModel;
 }
 
 exports.getAll = async (credentials, query) => {
@@ -40,9 +44,8 @@ exports.getAll = async (credentials, query) => {
     if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
     
     try {
-        await connect(credentials);
+        const Visita = await getModel(credentials);
         const visite = await Visita.find(filter, { __v: 0 });
-        await disconnect();
         return { ok: true, data: visite };
     } catch (e) {
         console.error(e);
@@ -52,9 +55,8 @@ exports.getAll = async (credentials, query) => {
 
 exports.getOne = async (credentials, id) => {
     try {
-        await connect(credentials);
+        const Visita = await getModel(credentials);
         const visita = await Visita.findById(id, { __v: 0 });
-        await disconnect();
         if (!visita) return { ok: false, error: "Visita non trovata." };
         return { ok: true, data: visita };
     } catch (e) {
@@ -65,10 +67,9 @@ exports.getOne = async (credentials, id) => {
 
 exports.create = async (credentials, body) => {
     try {
-        await connect(credentials);
+        const Visita = await getModel(credentials);
         const visita = new Visita(body);
         await visita.save();
-        await disconnect();
         return { ok: true, data: visita };
     } catch (e) {
         console.error(e);
@@ -78,13 +79,12 @@ exports.create = async (credentials, body) => {
 
 exports.update = async (credentials, id, body) => {
     try {
-        await connect(credentials);
+        const Visita = await getModel(credentials);
         const updated = await Visita.findByIdAndUpdate(
             id,
             body,
             { new: true, runValidators: true, projection: { __v: 0 } }
         );
-        await disconnect();
         if (!updated) return { ok: false, error: "Visita non trovata." };
         return { ok: true, data: updated };
     } catch (e) {
@@ -95,9 +95,8 @@ exports.update = async (credentials, id, body) => {
 
 exports.remove = async (credentials, id) => {
     try {
-        await connect(credentials);
+        const Visita = await getModel(credentials);
         const deleted = await Visita.findByIdAndDelete(id);
-        await disconnect();
         if (!deleted) return { ok: false, error: "Visita non trovata." };
         return { ok: true, message: `Visita "${deleted.nomeVisita}" eliminata.` };
     } catch (e) {
