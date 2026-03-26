@@ -5,24 +5,36 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingId = null;
 
     const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+
+    if (!currentMuseo) {
+        alert("Devi prima selezionare un museo dalla sezione Musei per accedere a questa pagina.");
+        window.location.href = "musei.html";
+        return;
+    }
+
+    // Aggiorna gli url della navbar per restare nel contesto del museo corrente
+    document.querySelectorAll('.top-nav-cards a:not(.back-card)').forEach(link => {
+        const baseHref = link.getAttribute('href').split('?')[0];
+        link.href = `${baseHref}?museo=${encodeURIComponent(currentMuseo)}`;
+    });
+
     const container = document.getElementById('visiteContainer');
     const form = document.getElementById('visitaForm');
     const modal = document.getElementById('visitaModal');
 
-    // Mostra nome museo nel titolo
-    if (currentMuseo) {
-        fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
-            .then(r => r.json())
-            .then(result => {
-                if (result.ok) {
-                    const headerTitolo = document.querySelector('.header-text h1');
-                    if (headerTitolo) {
-                        headerTitolo.innerHTML = `Visite <span style="font-size: 0.65em; background: rgba(74, 124, 95, 0.1); color: #2d503b; padding: 4px 12px; border-radius: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-left: 10px; vertical-align: middle; border: 1px solid rgba(74, 124, 95, 0.2);"><i class="fa-solid fa-building-columns" style="margin-right:6px"></i>${result.data.nome}</span>`;
-                    }
-                }
-            })
-            .catch(() => {});
-    }
+    // Mostra banner del museo selezionato in testa alla pagina
+    fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
+        .then(r => r.json())
+        .then(result => {
+             if (result.ok && result.data) {
+                const header = document.querySelector('.content-header');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: rgba(74, 124, 95, 0.08); border: 1px solid rgba(74, 124, 95, 0.2); border-radius: 12px; padding: 12px 20px; margin-bottom: 24px; color: #2d503b; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;';
+                banner.innerHTML = `<i class="fa-solid fa-building-columns" style="font-size: 1.2em; color: #4a7c5f;"></i> <span>Stai operando per il museo: <strong style="color: #4a7c5f; font-size: 1.1em; margin-left: 5px;">${result.data.nome}</strong></span>`;
+                header.parentNode.insertBefore(banner, header);
+            }
+        })
+        .catch(() => {});
 
     // Carica visite dal server
     async function loadVisite() {

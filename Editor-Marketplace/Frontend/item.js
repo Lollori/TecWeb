@@ -17,16 +17,31 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentUserId = 'autore1';
     const currentMuseo = new URLSearchParams(window.location.search).get('museo');
 
-    // Mostra nome museo nel subtitle
-    if (currentMuseo) {
-        fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
-            .then(r => r.json())
-            .then(result => {
-                const subtitle = document.getElementById('museoSubtitle');
-                if (subtitle && result.ok) subtitle.textContent = `Museo: ${result.data.nome}`;
-            })
-            .catch(() => {});
+    if (!currentMuseo) {
+        alert("Devi prima selezionare un museo dalla sezione Musei per accedere a questa pagina.");
+        window.location.href = "musei.html";
+        return;
     }
+
+    // Aggiorna gli url per restare nel contesto del museo corrente
+    document.querySelectorAll('.top-nav-cards a:not(.back-card)').forEach(link => {
+        const baseHref = link.getAttribute('href').split('?')[0];
+        link.href = `${baseHref}?museo=${encodeURIComponent(currentMuseo)}`;
+    });
+
+    // Mostra un banner in testa alla pagina
+    fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
+        .then(r => r.json())
+        .then(result => {
+             if (result.ok && result.data) {
+                const header = document.querySelector('.content-header');
+                const banner = document.createElement('div');
+                banner.style.cssText = 'background: rgba(74, 124, 95, 0.08); border: 1px solid rgba(74, 124, 95, 0.2); border-radius: 12px; padding: 12px 20px; margin-bottom: 24px; color: #2d503b; font-weight: 500; display: flex; align-items: center; gap: 10px; width: 100%; box-sizing: border-box;';
+                banner.innerHTML = `<i class="fa-solid fa-building-columns" style="font-size: 1.2em; color: #4a7c5f;"></i> <span>Stai operando per il museo: <strong style="color: #4a7c5f; font-size: 1.1em; margin-left: 5px;">${result.data.nome}</strong></span>`;
+                header.parentNode.insertBefore(banner, header);
+            }
+        })
+        .catch(() => {});
 
     // --- 1. FUNZIONE MINI-STATISTICHE (SVG RING) ---
     function updateCharts() {
