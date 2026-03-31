@@ -18,6 +18,17 @@ try {
 } catch(e) {
     console.error('[index.js] ERRORE nel caricare scripts/visite.js:', e.message);
 }
+
+/* parte opere */
+
+let opere;
+try {
+    opere = require(global.rootDir + '/scripts/opere.js');
+} catch(e) {
+    console.error('[index.js] ERRORE nel caricare scripts/opere.js:', e.message);
+}
+
+
 const express = require('express');
 const cors = require('cors')
 const path = require('path');
@@ -172,6 +183,35 @@ app.delete('/api/visite/:id', async function (req, res) {
     const result = await visite.remove(mongoCredentials, req.params.id);
     res.json(result);
 });
+
+/* ========================== */
+/* API OPERE (Marketplace)    */
+/* ========================== */
+
+// Recupera le opere (filtrate per codiceIsil se presente in query)
+app.get('/api/opere', async function (req, res) {
+    const result = await opere.getAll(mongoCredentials, req.query);
+    res.json(result);
+});
+
+// Crea una nuova opera
+app.post('/api/opere', async function (req, res) {
+    const result = await opere.create(mongoCredentials, req.body);
+    res.json(result);
+});
+
+// Modifica un'opera esistente
+app.put('/api/opere/:id', async function (req, res) {
+    const result = await opere.update(mongoCredentials, req.params.id, req.body);
+    res.json(result);
+});
+
+// Elimina un'opera
+app.delete('/api/opere/:id', async function (req, res) {
+    const result = await opere.remove(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
 
 /* ========================== */
 /* ACTIVATE NODE SERVER    */

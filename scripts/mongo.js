@@ -26,6 +26,28 @@ const User = mongoose.model("User", userSchema);
 
 mongoose.set('strictQuery', false);
 
+// --- [NUOVO] SCHEMA PER LE OPERE ---
+// Questo schema definisce la struttura dell'opera nel DB
+const operaSchema = new mongoose.Schema({
+    // Il riferimento obbligatorio al museo tramite codiceIsil
+    codiceIsil: { type: String, required: true, index: true }, 
+    operaId:    { type: String, required: true },
+    testo:      { type: String },
+    lunghezza:  { type: String },
+    linguaggio: { type: String },
+    licenza:    { type: String, default: 'gratuita' },
+    prezzo:     { type: Number, default: 0 },
+    pubblica:   { type: Boolean, default: false },
+    autore:     { type: String, default: 'autore1' },
+    adozioni:   { type: Number, default: 0 }
+});
+
+// Creazione del modello Opera
+const Opera = mongoose.model("Opera", operaSchema);
+
+// Esportiamo il modello in modo che possa essere usato in scripts/opere.js
+exports.Opera = Opera;
+
 /* ========================================== */
 /* FUNZIONI ORIGINALI (NON TOCCATE)          */
 /* ========================================== */
