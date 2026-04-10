@@ -68,30 +68,38 @@ function renderVisite(data) {
     if (!container) return;
 
     if (!data || data.length === 0) {
-        container.innerHTML = `<p class="empty-msg">Nessuna visita disponibile. Torna nell'Editor per crearne una!</p>`;
+        container.innerHTML = `<p class="empty-msg">Nessuna visita disponibile.</p>`;
         return;
     }
 
-    container.innerHTML = data.map(v => `
+    container.innerHTML = data.map(v => {
+        // Gestione fallback per dati mancanti nel DB
+        const titolo = v.titolo || "Visita senza titolo";
+        const autore = v.autore || "Esperto ArtAround";
+        const prezzo = v.prezzo ? `€ ${v.prezzo}` : "Gratis";
+        const durata = v.durata || "30 min";
+        const id = v._id || v.id;
+
+        return `
         <div class="card-ecom">
-            <div class="card-image-placeholder" style="background-color: #f1f8e9;">
+            <div class="card-image-placeholder">
                 <span class="visita-label">VISITA COMPLETA</span>
             </div>
             <div class="card-body">
-                <h4 class="visita-titolo">${v.titolo}</h4>
-                <p class="visita-autore">Autore: <strong>${v.autore || 'Esperto ArtAround'}</strong></p>
+                <h4 class="visita-titolo">${titolo}</h4>
+                <p class="visita-autore">Autore: <strong>${autore}</strong></p>
                 
                 <div class="card-meta-ecom">
-                    <span class="prezzo">€ ${v.prezzo || 'Gratis'}</span>
-                    <span class="durata"><i class="fa-solid fa-clock"></i> ${v.durata || '30 min'}</span>
+                    <span class="prezzo">${prezzo}</span>
+                    <span class="durata"><i class="fa-solid fa-clock"></i> ${durata}</span>
                 </div>
 
-                <button class="btn-add-cart" onclick="aggiungiAlCarrello('${v._id}', '${v.titolo.replace(/'/g, "\\'")}')">
+                <button class="btn-add-cart" onclick="aggiungiAlCarrello('${id}', '${titolo.replace(/'/g, "\\'")}')">
                     <i class="fa-solid fa-cart-plus"></i> Aggiungi al Navigator
                 </button>
             </div>
-        </div>
-    `).join('');
+        </div>`;
+    }).join('');
 }
 
 /**
