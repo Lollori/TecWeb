@@ -17,43 +17,42 @@
 </head>
 <body class="admin-layout">
 
-    <header class="app-header">
+        <header class="app-header">
         <div class="header-inner">
             <h1 class="logo"><a href="/" class="logo-link">ArtAround</a> <span>Marketplace</span></h1>
-            <div id="nav-profile-placeholder"></div>
+            <div class="header-actions">
+                <div class="cart-wrapper">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cartCount" class="cart-badge">0</span>
+                </div>
+                <div id="nav-profile-placeholder"></div>
+            </div>
         </div>
     </header>
 
-    <nav class="top-nav-cards">
-        <div class="nav-inner-glass">
-            <a href="opere.html" class="mini-card"><i class="fa-solid fa-palette"></i><span>Editor Opere</span></a>
-            <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Editor Visite</span></a>
-            <a href="marketplace.html" class="mini-card active"><i class="fa-solid fa-cart-shopping"></i><span>Marketplace Visite</span></a>
-        </div>
-    </nav>
-
     <main class="main-viewport">
-        <header class="content-header">
-            <div class="header-text">
-                <h1>Marketplace delle Visite</h1>
-                <p>Scarica i percorsi digitali e usali con l'app Navigator durante la visita al museo.</p>
+        <section class="hero-section">
+            <h2>Esplora i musei a modo tuo.</h2>
+            <div class="search-container-ecom">
+                <input type="text" id="marketSearch" placeholder="Cerca 'Museo Egizio' o 'Monna Lisa'...">
+                <button class="btn-cerca">Cerca</button>
             </div>
-        </header>
+            <div class="quick-filters">
+                <button class="chip">Per Bambini</button>
+                <button class="chip">Esperto</button>
+                <button class="chip">Gratuiti</button>
+            </div>
+        </section>
 
-        <table class="market-table">
-            <thead>
-                <tr>
-                    <th>Codice ISIL</th>
-                    <th>Titolo Visita (Playlist)</th>
-                    <th>Dettagli Logistici</th>
-                    <th>Durata Stimata</th>
-                    <th>Autore</th>
-                    <th>Azione</th>
-                </tr>
-            </thead>
-            <tbody id="visiteTableBody">
-                </tbody>
-        </table>
+        <section class="shelf">
+            <h3>Scegli la tua Destinazione</h3>
+            <div id="museiGrid" class="grid-layout"></div>
+        </section>
+
+        <section class="shelf">
+            <h3>Visite in Evidenza (Playlist)</h3>
+            <div id="visiteGrid" class="grid-layout"></div>
+        </section>
     </main>
 
     <script src="marketplace.js"></script>

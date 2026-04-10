@@ -771,3 +771,74 @@ body.no-scroll {
     color: rgba(255,255,255,0.35);
     font-size: 2.5rem;
 }
+
+/*prova 1 marketplace*/
+
+/* Sezione Hero (Titolo e Ricerca) */
+.hero-section {
+    background-color: #e8f5e9; /* Verde chiarissimo di sfondo */
+    padding: 60px 20px;
+    text-align: center;
+    border-radius: 0 0 30px 30px;
+    margin-bottom: 40px;
+}
+
+.hero-section h2 {
+    font-family: 'Playfair Display', serif;
+    color: #2e4d3a;
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+}
+
+/* Barra di ricerca */
+.search-container-ecom {
+    display: flex;
+    max-width: 600px;
+    margin: 0 auto 20px;
+    background: white;
+    padding: 10px;
+    border-radius: 50px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.search-container-ecom input {
+    border: none;
+    flex: 1;
+    padding: 10px 20px;
+    font-size: 1rem;
+    outline: none;
+}
+
+.btn-cerca {
+    background: #4a7c5f;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+/* Filtri (Chip) */
+.quick-filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.chip {
+    background: white;
+    border: 1px solid #4a7c5f;
+    color: #4a7c5f;
+    padding: 8px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.chip:hover {
+    background: #4a7c5f;
+    color: white;
+}
+
+.bump { transform: scale(1.4); transition: transform 0.2s; color: #fff; }
