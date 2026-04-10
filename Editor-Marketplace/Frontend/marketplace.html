@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Marketplace Visite - ArtAround</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/editor.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .market-table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .market-table th { background: #4a7c5f; color: white; padding: 15px; text-align: left; }
+        .market-table td { padding: 15px; border-bottom: 1px solid #eee; }
+        .tag-visita { background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
+        .btn-get { background: #4a7c5f; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .btn-get:hover { background: #3d664e; }
+    </style>
+</head>
+<body class="admin-layout">
+
+    <header class="app-header">
+        <div class="header-inner">
+            <h1 class="logo"><a href="/" class="logo-link">ArtAround</a> <span>Marketplace</span></h1>
+            <div id="nav-profile-placeholder"></div>
+        </div>
+    </header>
+
+    <nav class="top-nav-cards">
+        <div class="nav-inner-glass">
+            <a href="opere.html" class="mini-card"><i class="fa-solid fa-palette"></i><span>Editor Opere</span></a>
+            <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Editor Visite</span></a>
+            <a href="marketplace.html" class="mini-card active"><i class="fa-solid fa-cart-shopping"></i><span>Marketplace Visite</span></a>
+        </div>
+    </nav>
+
+    <main class="main-viewport">
+        <header class="content-header">
+            <div class="header-text">
+                <h1>Marketplace delle Visite</h1>
+                <p>Scarica i percorsi digitali e usali con l'app Navigator durante la visita al museo.</p>
+            </div>
+        </header>
+
+        <table class="market-table">
+            <thead>
+                <tr>
+                    <th>Codice ISIL</th>
+                    <th>Titolo Visita (Playlist)</th>
+                    <th>Dettagli Logistici</th>
+                    <th>Durata Stimata</th>
+                    <th>Autore</th>
+                    <th>Azione</th>
+                </tr>
+            </thead>
+            <tbody id="visiteTableBody">
+                </tbody>
+        </table>
+    </main>
+
+    <script src="marketplace.js"></script>
+</body>
+</html>

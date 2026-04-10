@@ -31,126 +31,97 @@
             <a href="musei.html" class="mini-card back-card"><i class="fa-solid fa-arrow-left"></i><span>Musei</span></a>
             <a href="opere.html" class="mini-card active"><i class="fa-solid fa-palette"></i><span>Opere</span></a>
             <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Visite</span></a>
+            <a href="marketplace.html" class="mini-card"><i class="fa-solid fa-store"></i><span>Marketplace</span></a>
         </div>
     </nav>
 
-   <main class="main-viewport">
-    <header class="content-header">
-        <div class="header-text">
-            <h1>Gestione delle opere</h1>
-            <p id="museoSubtitle">Configura i contenuti multimediali del catalogo</p>
-        </div>
-        
-        <div class="header-toolbar">
-            <div class="filter-toggle-container">
-                <button id="filterMie" class="filter-btn active" onclick="setFilter('mie')">
-                    <i class="fa-solid fa-user-gear"></i> Le mie opere
+ <main class="main-viewport">
+        <header class="content-header">
+            <div class="header-text">
+                <h1>Gestione delle opere</h1>
+                <p id="museoSubtitle">Configura i contenuti multimediali (Item) del catalogo </p>
+            </div>
+            
+            <div class="header-toolbar">
+                <div class="search-box-glass">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchText" placeholder="Cerca tra i tuoi contenuti..." oninput="applyFilters()">
+                </div>
+
+                <button onclick="apriModaleItem()" class="btn-primary-glass">
+                    <i class="fa-solid fa-plus"></i> Nuovo Item
                 </button>
-                <button id="filterTutte" class="filter-btn" onclick="setFilter('tutte')">
-                    <i class="fa-solid fa-globe"></i> Marketplace
+            </div>
+        </header>
+
+        <div id="statsDashboard" class="stats-sidebar">
+            <div class="mini-stat-card">
+                <div class="stat-ring-container" id="ringAdozioni"></div>
+                <div class="stat-texts">
+                    <small>Adozioni</small>
+                    <strong id="valAdozioni">0</strong>
+                </div>
+            </div>
+            <div class="mini-stat-card">
+                <div class="stat-texts">
+                    <small>Stato Sistema</small>
+                    <strong style="color: #4a7c5f;">Online</strong>
+                </div>
+            </div>
+        </div>
+
+        <div id="itemsContainer" class="items-grid"></div>
+    </main>
+
+    <div id="itemModal" class="modal-overlay" style="display:none;">
+        <div class="modal-glass-card">
+            <div class="modal-glass-header">
+                <div class="brand">ArtAround <span>Editor</span></div>
+                <button class="modal-close-btn" onclick="closeModal()">
+                    <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+            
+            <div class="modal-content">
+                <form id="itemForm">
+                    <div class="form-grid">
+                        <label>Titolo dell'Opera / Oggetto *
+                            <input type="text" id="operaId" placeholder="Es: Il Cenacolo" required>
+                        </label>
+                        
+                        <label>Identificatore (es. Wikidata ID)
+                            <input type="text" id="wikidataId" placeholder="Es: Q12345">
+                        </label>
 
-            <div class="select-wrapper-glass">
-                <select id="filterPrezzo" onchange="applyFilters()">
-                    <option value="tutti">Tutti i prezzi</option>
-                    <option value="gratuiti">Solo gratuiti</option>
-                    <option value="pagamento">A pagamento</option>
-                </select>
-                <i class="fa-solid fa-chevron-down select-icon"></i>
-            </div>
+                        <label>Lunghezza *
+                            <select id="lunghezza" required>
+                                <option value="15s">15 secondi </option>
+                                <option value="1min">1 minuto </option>
+                                <option value="4min">4 minuti </option>
+                            </select>
+                        </label>
 
-            <div class="search-box-glass">
-                <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                <input type="text" id="searchText" placeholder="Cerca opera..." oninput="applyFilters()">
-            </div>
+                        <label>Linguaggio *
+                            <select id="linguaggio" required>
+                                <option value="infantile">Infantile [cite: 2, 3]</option>
+                                <option value="medio">Medio / Divulgativo [cite: 2, 3]</option>
+                                <option value="specialistico">Specialistico [cite: 2, 3]</option>
+                            </select>
+                        </label>
 
-            <button onclick="apriModaleItem()" class="btn-primary-glass">
-                <i class="fa-solid fa-plus"></i> Nuovo Item
-            </button>
-        </div>
-    </header>
-
-
-    <div id="statsDashboard" class="stats-sidebar">
-        <div class="mini-stat-card">
-            <div class="stat-ring-container" id="ringAdozioni"></div>
-            <div class="stat-texts">
-                <small>Adozioni</small>
-                <strong id="valAdozioni">0</strong>
-            </div>
-        </div>
-        <div class="mini-stat-card">
-            <div class="stat-ring-container" id="ringRicavi"></div>
-            <div class="stat-texts">
-                <small>Ricavi</small>
-                <strong id="valRicavi">€0.00</strong>
-            </div>
-        </div>
-    </div>
-    <div id="itemsContainer" class="items-grid"></div>
-</main>
-
-<div id="itemModal" class="modal-overlay" style="display:none;">
-    <div class="modal-glass-card">
-        <div class="modal-glass-header">
-            <div class="brand">ArtAround <span>Editor</span></div>
-            <button class="modal-close-btn" onclick="closeModal()" style="border:none; background:none; cursor:pointer; font-size:1.5rem; color:#4a7c5f;">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-        </div>
-        
-        <div class="modal-content">
-            <form id="itemForm">
-                <div class="form-grid">
-                    <label>Titolo dell'Opera *
-                        <input type="text" id="operaId" placeholder="Es: La Primavera" required>
-                    </label>
-                    <label>Museo / Collezione *
-                        <input type="text" id="museo" placeholder="Es: Uffizi" required>
-                    </label>
-                    <label>Lunghezza *
-                        <select id="lunghezza" required>
-                            <option value="3s">3s</option>
-                            <option value="15s">15s</option>
-                            <option value="1min">1min</option>
-                        </select>
-                    </label>
-                    <label>Linguaggio *
-                        <select id="linguaggio" required>
-                            <option value="infantile">Infantile</option>
-                            <option value="medio">Medio</option>
-                            <option value="specialistico">Specialistico</option>
-                        </select>
-                    </label>
-                    <label class="full-width">Testo Descrittivo *
-                        <textarea id="testo" rows="4" placeholder="Inserisci qui la descrizione..." required></textarea>
-                    </label>
+                        <label class="full-width">Testo per Audioguida *
+                            <textarea id="testo" rows="6" placeholder="Inserisci il testo per l'App Navigator..." required></textarea>
+                        </label>
+                    </div>
                     
-                    <!-- NUOVI CAMPI MARKETPLACE -->
-                    <label>Licenza *
-                        <select id="licenza" required>
-                            <option value="gratuita">Gratuita</option>
-                            <option value="cc-by">CC-BY</option>
-                            <option value="pagamento">A pagamento</option>
-                        </select>
-                    </label>
-                    <label>Prezzo (€)
-                        <input type="number" id="prezzo" step="0.01" min="0" value="0" placeholder="0 per gratuito">
-                    </label>
-                    <label class="checkbox-row">
-                        <input type="checkbox" id="pubblica"> Pubblica sul marketplace
-                    </label>
-                </div>
-                
-                <div class="modal-actions">
-                    <button type="button" class="btn-cancel" onclick="closeModal()">Annulla</button>
-                    <button type="submit" class="btn-submit">Salva</button>
-                </div>
-            </form>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeModal()">Annulla</button>
+                        <button type="submit" class="btn-submit">Salva Contenuto</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
 
 <script src="item.js"></script>
