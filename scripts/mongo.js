@@ -17,7 +17,15 @@ const capitalSchema = new mongoose.Schema({
 const Capital = mongoose.model("Capital", capitalSchema);
 
 // --- [NUOVO] SCHEMA PER GLI UTENTI ---
+function generateUserId() {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    for (let i = 0; i < 10; i++) result += chars.charAt(Math.floor(Math.random() * chars.length));
+    return result;
+}
+
 const userSchema = new mongoose.Schema({
+    userId:   { type: String, unique: true, default: generateUserId },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     ruolo:    { type: String, enum: ['VIS', 'CUR'], required: true }

@@ -1,6 +1,6 @@
 [
-  { "username": "VIS_visitatore1", "password": "12345678", "ruolo": "VIS" },
-  { "username": "VIS_visitatore2", "password": "12345678", "ruolo": "VIS" },
-  { "username": "CUR_autore1",     "password": "12345678", "ruolo": "CUR" },
-  { "username": "CUR_autore2",     "password": "12345678", "ruolo": "CUR" }
+  { "userId": "VIS1a2b3c4d5e", "username": "VIS_visitatore1", "password": "12345678", "ruolo": "VIS" },
+  { "userId": "VIS2f6g7h8i9j", "username": "VIS_visitatore2", "password": "12345678", "ruolo": "VIS" },
+  { "userId": "CUR1k2l3m4n5o", "username": "CUR_autore1",     "password": "12345678", "ruolo": "CUR" },
+  { "userId": "CUR2p6q7r8s9t", "username": "CUR_autore2",     "password": "12345678", "ruolo": "CUR" }
 ]

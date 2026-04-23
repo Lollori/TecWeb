@@ -13,7 +13,8 @@ const visitaSchema = new mongoose.Schema({
     logistica:        { type: String, required: false },
     quizDomanda:      { type: String, required: false },
     opereCount:       { type: Number, default: 0 },
-    codiceIsil:       { type: String, required: false }
+    codiceIsil:       { type: String, required: false },
+    autoreId:         { type: String, required: false }
 });
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
@@ -35,6 +36,30 @@ async function connect(credentials) {
         throw e;
     }
 }
+
+exports.seed = async (credentials) => {
+    const fs = require("fs").promises;
+    let debug = [];
+    try {
+        await connect(credentials);
+        debug.push("Connesso a MongoDB.");
+
+        const raw = await fs.readFile(global.rootDir + "/public/data/visite.json", "utf8");
+        const data = JSON.parse(raw);
+        debug.push(`Letti ${data.length} visite dal file JSON.`);
+
+        const cleared = await Visita.deleteMany({});
+        debug.push(`Eliminati ${cleared.deletedCount} documenti esistenti.`);
+
+        await Visita.insertMany(data);
+        debug.push(`Inserite ${data.length} nuove visite.`);
+
+        return { ok: true, message: `Seed completato: ${data.length} visite inserite.`, debug };
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message, debug };
+    }
+};
 
 exports.getAll = async (credentials, query) => {
     let filter = {};

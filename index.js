@@ -159,6 +159,11 @@ app.delete('/api/musei/:codiceIsil', async function (req, res) {
 /* ========================== */
 /* API VISITE          */
 /* ========================== */
+app.get('/api/visite/seed', async function (_req, res) {
+    const result = await visite.seed(mongoCredentials);
+    res.json(result);
+});
+
 app.get('/api/visite', async function (req, res) {
     const result = await visite.getAll(mongoCredentials, req.query);
     res.json(result);
