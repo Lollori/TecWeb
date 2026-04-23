@@ -43,10 +43,13 @@ const operaSchema = new mongoose.Schema({
     testo:      { type: String },
     lunghezza:  { type: String },
     linguaggio: { type: String },
+    artistName: { type: String, default: '' },
+    datazione:  { type: String, default: '' },
+    immagine:   { type: String, default: '' },
     licenza:    { type: String, default: 'gratuita' },
     prezzo:     { type: Number, default: 0 },
     pubblica:   { type: Boolean, default: false },
-    autore:     { type: String, default: 'autore1' },
+    autore:     { type: String, default: '' },
     adozioni:   { type: Number, default: 0 }
 });
 

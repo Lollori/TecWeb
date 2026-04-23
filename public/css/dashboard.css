@@ -1,0 +1,287 @@
+/* =========================================
+   DASHBOARD — LAYOUT LATERALE
+   ========================================= */
+
+.dashboard-wrapper {
+    display: flex;
+    align-items: flex-start;
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 24px 60px;
+    gap: 24px;
+}
+
+/* ── SIDEBAR ─────────────────────────────── */
+
+.sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+    padding: 20px 14px 24px;
+    position: sticky;
+    top: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-brand {
+    padding: 4px 10px 16px;
+    border-bottom: 1px solid rgba(45, 90, 61, 0.1);
+    margin-bottom: 14px;
+}
+
+.sidebar-brand .dashboard-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #2d5a3d;
+}
+
+.sidebar-brand .role-badge {
+    display: block;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: #4a7c5f;
+    margin-top: 3px;
+    text-transform: capitalize;
+}
+
+.sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 11px 14px;
+    border: none;
+    border-radius: 12px;
+    background: transparent;
+    color: #4a5568;
+    font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.18s, color 0.18s;
+}
+
+.nav-item i {
+    width: 18px;
+    text-align: center;
+    color: #4a7c5f;
+    transition: color 0.18s;
+}
+
+.nav-item:hover {
+    background: rgba(74, 124, 95, 0.1);
+    color: #2d5a3d;
+}
+
+.nav-item.active {
+    background: rgba(45, 90, 61, 0.13);
+    color: #2d5a3d;
+    font-weight: 600;
+}
+
+.nav-item.active i {
+    color: #2d5a3d;
+}
+
+/* ── MAIN CONTENT ────────────────────────── */
+
+.dashboard-main {
+    flex: 1;
+    min-width: 0;
+}
+
+.dashboard-section {
+    display: none;
+}
+
+.section-header {
+    margin-bottom: 24px;
+}
+
+.section-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    color: #2d5a3d;
+    margin-bottom: 4px;
+}
+
+.section-header p {
+    color: #6b7280;
+    font-size: 0.88rem;
+}
+
+/* ── FORMS INLINE (fuori da modale) ──────── */
+
+.section-form {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 20px;
+    padding: 28px 28px 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    max-width: 680px;
+}
+
+.select-museo {
+    display: block;
+    width: 100%;
+    max-width: 420px;
+    padding: 11px 16px;
+    border: 1.5px solid rgba(45, 90, 61, 0.22);
+    border-radius: 12px;
+    background: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    color: #2d5a3d;
+    margin-bottom: 22px;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+}
+
+.select-museo:focus {
+    border-color: #4a7c5f;
+}
+
+/* ── DETTAGLIO MUSEO ─────────────────────── */
+
+.museo-detail-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(45, 90, 61, 0.1);
+    border: none;
+    border-radius: 10px;
+    color: #2d5a3d;
+    font-size: 0.88rem;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s;
+    margin-bottom: 14px;
+}
+
+.museo-detail-back:hover {
+    background: rgba(45, 90, 61, 0.2);
+}
+
+.museo-detail-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    color: #2d5a3d;
+    margin-bottom: 2px;
+}
+
+.museo-detail-sub {
+    color: #6b7280;
+    font-size: 0.88rem;
+    margin-bottom: 18px;
+}
+
+.detail-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.tab-btn {
+    padding: 7px 22px;
+    border: 1.5px solid rgba(45, 90, 61, 0.25);
+    border-radius: 20px;
+    background: transparent;
+    color: #4a7c5f;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+}
+
+.tab-btn.active {
+    background: #2d5a3d;
+    color: white;
+    border-color: #2d5a3d;
+}
+
+/* ── OPERA CARD (read-only nel dettaglio) ── */
+
+.opera-read-card {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.opera-read-card img {
+    width: 100%;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.opera-read-card h3 {
+    font-size: 0.98rem;
+    color: #2d5a3d;
+    font-weight: 600;
+}
+
+.opera-read-card .opera-meta {
+    font-size: 0.82rem;
+    color: #6b7280;
+}
+
+/* ── VISITA CARD (read-only) ─────────────── */
+
+.visita-read-card {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.visita-read-card h3 {
+    font-size: 0.98rem;
+    color: #2d5a3d;
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.visita-read-card p {
+    font-size: 0.84rem;
+    color: #4a5568;
+    line-height: 1.5;
+}
+
+/* ── EMPTY / LOADING ─────────────────────── */
+
+.empty-msg, .loading-msg {
+    color: #4a7c5f;
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 0.92rem;
+    grid-column: 1 / -1;
+}
