@@ -38,6 +38,16 @@ exports.create = async (credentials, data) => {
     } catch (e) { return { ok: false, error: e.message }; }
 };
 
+// PUT: Aggiorna opera per ID
+exports.update = async (credentials, id, data) => {
+    try {
+        await connect();
+        const updated = await Opera.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+        if (!updated) return { ok: false, error: 'Opera non trovata.' };
+        return { ok: true, data: updated };
+    } catch (e) { return { ok: false, error: e.message }; }
+};
+
 // DELETE: Elimina per ID
 exports.remove = async (credentials, id) => {
     try {

@@ -2,68 +2,218 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Marketplace Visite - ArtAround</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketplace — ArtAround</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/editor.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="/css/profile.css">
+
     <style>
-        .market-table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-        .market-table th { background: #4a7c5f; color: white; padding: 15px; text-align: left; }
-        .market-table td { padding: 15px; border-bottom: 1px solid #eee; }
-        .tag-visita { background: #e8f5e9; color: #2e7d32; padding: 5px 10px; border-radius: 4px; font-weight: bold; font-size: 0.8rem; }
-        .btn-get { background: #4a7c5f; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; }
-        .btn-get:hover { background: #3d664e; }
+        /* Filter bar */
+        .market-filter-bar {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 0 0 28px;
+            flex-wrap: wrap;
+        }
+
+        .market-filter-bar label {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: #2d5a3d;
+        }
+
+        .market-filter-select {
+            padding: 9px 16px;
+            border: 1.5px solid rgba(45,90,61,0.22);
+            border-radius: 12px;
+            background: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #2d5a3d;
+            outline: none;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            min-width: 200px;
+        }
+
+        .market-filter-select:focus { border-color: #4a7c5f; }
+
+        /* Tab buttons nella navbar */
+        .mini-card.tab-active {
+            background: rgba(255,255,255,0.6);
+            color: #1b3a27;
+            border-color: rgba(255,255,255,0.8);
+        }
+
+        /* Badge stato */
+        .badge-privata {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #f5f0e8;
+            color: #7c5a1a;
+        }
+
+        .badge-standard {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: #e8eef5;
+            color: #1a3a5a;
+        }
+
+        /* Pulsanti azione nelle card */
+        .btn-sell {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: none;
+            border-radius: 10px;
+            background: #2d5a3d;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.18s;
+        }
+
+        .btn-sell:hover { background: #1b3a27; }
+
+        .btn-sell.is-sold {
+            background: #4a7c5f;
+        }
+
+        .btn-adopt {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border: 1.5px solid rgba(45,90,61,0.3);
+            border-radius: 10px;
+            background: transparent;
+            color: #2d5a3d;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.18s;
+        }
+
+        .btn-adopt:hover {
+            background: rgba(45,90,61,0.08);
+        }
+
+        /* Opera image nella card */
+        .card-opera-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin: 8px 0 4px;
+        }
+
+        /* Visita logistica text clamp */
+        .logistica-clamp {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
     </style>
 </head>
+
 <body class="admin-layout">
 
-        <header class="app-header">
+    <!-- HEADER -->
+    <header class="app-header">
         <div class="header-inner">
-            <h1 class="logo"><a href="/" class="logo-link">ArtAround</a> <span>Marketplace</span></h1>
-            <div class="header-actions">
-                <div class="cart-wrapper">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span id="cartCount" class="cart-badge">0</span>
-                </div>
-                <div id="nav-profile-placeholder"></div>
-            </div>
+            <div style="width:38px;"></div>
+            <h1 class="logo">
+                <a href="/" class="logo-link">ArtAround</a>
+                <span>Marketplace</span>
+            </h1>
+            <div id="nav-profile-placeholder"></div>
         </div>
     </header>
 
+    <!-- NAVBAR TABS -->
     <nav class="top-nav-cards">
         <div class="nav-inner-glass">
-            <a href="musei.html" class="mini-card back-card"><i class="fa-solid fa-arrow-left"></i><span>Musei</span></a>
-            <a href="opere.html" class="mini-card"><i class="fa-solid fa-palette"></i><span>Opere</span></a>
-            <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Visite</span></a>
-            <a href="marketplace.html" class="mini-card active"><i class="fa-solid fa-store"></i><span>Marketplace</span></a>
+            <a href="/" class="mini-card back-card">
+                <i class="fa-solid fa-arrow-left"></i><span>Home</span>
+            </a>
+            <button id="tabBtnOpere" class="mini-card tab-active" onclick="setTab('opere')">
+                <i class="fa-solid fa-palette"></i><span>Opere</span>
+            </button>
+            <button id="tabBtnVisite" class="mini-card" onclick="setTab('visite')"
+                    style="border:none;cursor:pointer;background:transparent;">
+                <i class="fa-solid fa-map"></i><span>Visite</span>
+            </button>
         </div>
     </nav>
 
+    <!-- MAIN -->
     <main class="main-viewport">
-        <section class="hero-section">
-            <h2>Esplora i musei a modo tuo.</h2>
-            <div class="search-container-ecom">
-                <input type="text" id="marketSearch" placeholder="Cerca 'Museo Egizio' o 'Monna Lisa'...">
-                <button class="btn-cerca">Cerca</button>
-            </div>
-            <div class="quick-filters">
-                <button class="chip">Per Bambini</button>
-                <button class="chip">Esperto</button>
-                <button class="chip">Gratuiti</button>
-            </div>
-        </section>
 
-        <section class="shelf">
-            <h3>Scegli la tua Destinazione</h3>
-            <div id="museiGrid" class="grid-layout"></div>
-        </section>
+        <!-- Filtro museo -->
+        <div class="market-filter-bar">
+            <label for="museoFilter"><i class="fa-solid fa-building-columns"></i> Filtra per museo:</label>
+            <select id="museoFilter" class="market-filter-select" onchange="applyFilter()">
+                <option value="">Tutti i musei</option>
+            </select>
+        </div>
 
-        <section class="shelf">
-            <h3>Visite in Evidenza (Playlist)</h3>
-            <div id="visiteGrid" class="grid-layout"></div>
-        </section>
+        <!-- Tab Opere -->
+        <div id="tabOpere" class="items-grid"></div>
+
+        <!-- Tab Visite -->
+        <div id="tabVisite" class="items-grid" style="display:none"></div>
+
     </main>
 
+    <!-- MODAL: Metti in vendita -->
+    <div id="vendidaModal" class="modal-overlay" style="display:none;">
+        <div class="modal-glass-card" style="max-width:400px;">
+            <div class="modal-glass-header">
+                <div class="brand" id="vendidaTitle">Metti in <span>Vendita</span></div>
+                <button onclick="closeVendidaModal()"
+                        style="border:none;background:none;cursor:pointer;font-size:1.4rem;color:#4a7c5f;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="modal-content">
+                <form id="vendidaForm">
+                    <div class="form-grid">
+                        <label class="full-width">Prezzo (€) — inserisci 0 per renderlo gratuito
+                            <input type="number" id="vfPrezzo" min="0" step="0.01" value="0">
+                        </label>
+                        <label class="full-width" style="flex-direction:row;align-items:center;gap:10px;">
+                            <input type="checkbox" id="vfPubblica" style="width:auto;margin:0;">
+                            Rendi pubblicamente disponibile
+                        </label>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-cancel" onclick="closeVendidaModal()">Annulla</button>
+                        <button type="submit" class="btn-submit">
+                            <i class="fa-solid fa-tag"></i> Conferma
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="marketplace.js"></script>
+    <script src="/js/profile.js"></script>
 </body>
 </html>

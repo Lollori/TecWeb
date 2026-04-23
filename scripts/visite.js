@@ -14,7 +14,9 @@ const visitaSchema = new mongoose.Schema({
     quizDomanda:      { type: String, required: false },
     opereCount:       { type: Number, default: 0 },
     codiceIsil:       { type: String, required: false },
-    autoreId:         { type: String, required: false }
+    autoreId:         { type: String, required: false },
+    pubblica:         { type: Boolean, default: false },
+    prezzo:           { type: Number,  default: 0 }
 });
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
