@@ -74,8 +74,12 @@ function renderMusei(musei) {
 // ── NAVIGAZIONE AL MUSEO ──────────────────────────────────────────────────────
 
 function apriMuseo(event, codiceIsil) {
-    if (event.target.closest('.icon-btn')) return; // ignora click su edit/delete
+    if (event.target.closest('.icon-btn')) return; 
     if (!codiceIsil) return;
+    
+    // Salva il codiceIsil in sessione
+    sessionStorage.setItem('currentMuseo', codiceIsil);
+    
     window.location.href = `opere.html?museo=${encodeURIComponent(codiceIsil)}`;
 }
 

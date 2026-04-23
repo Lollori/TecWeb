@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let visiteArray = [];
     let editingId = null;
 
-    const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+    // Cerca prima nell'URL, se non c'è controlla nel sessionStorage
+    const currentMuseo = new URLSearchParams(window.location.search).get('museo') || sessionStorage.getItem('currentMuseo');
 
     if (!currentMuseo) {
         alert("Devi prima selezionare un museo dalla sezione Musei per accedere a questa pagina.");
