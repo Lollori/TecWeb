@@ -15,8 +15,20 @@ document.addEventListener('DOMContentLoaded', () => {
     let editingId = null;
     let currentFilter = 'mie';
     let currentUserId = 'autore1'; 
-    const currentMuseo = new URLSearchParams(window.location.search).get('museo');
+    const currentMuseo = new URLSearchParams(window.location.search).get('museo') || sessionStorage.getItem('currentMuseo');
 
+    
+    if (currentMuseo) {
+        // 2. Salva in sessione in modo da resistere ai reload
+        sessionStorage.setItem('currentMuseo', currentMuseo);
+        
+        // 3. Aggiorna dinamicamente tutti i link della navbar aggiungendo il parametro
+        document.querySelectorAll('.top-nav-cards a:not(.back-card)').forEach(link => {
+            const baseHref = link.getAttribute('href').split('?')[0];
+            link.href = `${baseHref}?museo=${encodeURIComponent(currentMuseo)}`;
+        });
+    }
+    
     // Controllo sicurezza: se non c'è il museo nell'URL, torna alla selezione
     if (!currentMuseo) {
         alert("Devi prima selezionare un museo dalla sezione Musei.");
