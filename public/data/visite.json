@@ -1,0 +1,50 @@
+[
+  {
+    "nomeVisita": "Antico Egitto: Vita e Morte",
+    "nomeMnemonico": "egizio_vita_morte",
+    "logistica": "Partenza dall'atrio principale. Il percorso si sviluppa su due piani: primo piano per le sale delle mummie e dei sarcofagi, secondo piano per papiri e oggetti quotidiani. Durata stimata: 90 minuti.",
+    "quizDomanda": "In quale materiale venivano avvolte le mummie egizie per preservarle?",
+    "opereCount": 0,
+    "codiceIsil": "IT-TO0576"
+  },
+  {
+    "nomeVisita": "I Faraoni: Potere e Divinità",
+    "nomeMnemonico": "egizio_faraoni",
+    "logistica": "Accesso dalla sala delle statue colossali al piano terra. Il percorso segue la cronologia delle dinastie faraoniche, dalle più antiche alle più recenti. Gruppi massimo 15 persone. Durata stimata: 60 minuti.",
+    "quizDomanda": "Quale faraone è considerato il più grande costruttore di monumenti nella storia egizia?",
+    "opereCount": 0,
+    "codiceIsil": "IT-TO0576"
+  },
+  {
+    "nomeVisita": "Misteri dell'Oltretomba",
+    "nomeMnemonico": "egizio_oltretomba",
+    "logistica": "Percorso serale consigliato. Inizia dalla sala del Libro dei Morti al secondo piano e scende verso la cripta con le tombe ricostruite. Luce soffusa nelle sale — visitatori sensibili alla claustrofobia valutino l'ingresso. Durata stimata: 75 minuti.",
+    "quizDomanda": "Come si chiamava il dio egizio che giudicava le anime dei defunti pesando il loro cuore?",
+    "opereCount": 0,
+    "codiceIsil": "IT-TO0576"
+  },
+  {
+    "nomeVisita": "Rinascimento Fiorentino",
+    "nomeMnemonico": "uffizi_rinascimento",
+    "logistica": "Inizio dalla Sala delle Carte Geografiche al primo corridoio. Il percorso copre le sale 2–15, con focus sui grandi maestri del '400 e '500 toscano. Accesso con biglietto standard. Durata stimata: 2 ore.",
+    "quizDomanda": "In quale città italiana è nato il movimento artistico del Rinascimento?",
+    "opereCount": 0,
+    "codiceIsil": "IT-FI0082"
+  },
+  {
+    "nomeVisita": "Botticelli e la Primavera",
+    "nomeMnemonico": "uffizi_botticelli",
+    "logistica": "Percorso tematico incentrato sulla Sala di Botticelli (Sala 10–14). Include la Nascita di Venere e la Primavera. Consigliato arrivare all'apertura per evitare affollamento. Durata stimata: 45 minuti.",
+    "quizDomanda": "Chi commissionò a Botticelli il dipinto 'La Primavera'?",
+    "opereCount": 0,
+    "codiceIsil": "IT-FI0082"
+  },
+  {
+    "nomeVisita": "Leonardo, Michelangelo e i Grandi del '500",
+    "nomeMnemonico": "uffizi_cinquecento",
+    "logistica": "Percorso nel secondo corridoio, sale 35–55. Include opere di Leonardo da Vinci, Michelangelo, Raffaello e Tiziano. Audioguida disponibile in italiano e inglese. Durata stimata: 2 ore e 30 minuti.",
+    "quizDomanda": "Quale tecnica pittorica, usata da Leonardo, consiste nel graduale sfumato dei contorni?",
+    "opereCount": 0,
+    "codiceIsil": "IT-FI0082"
+  }
+]
