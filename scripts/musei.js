@@ -19,6 +19,7 @@ const museoSchema = new mongoose.Schema({
     codiceIsil:       { type: String, required: false, unique: true },
     immagineCopertina:{ type: String, required: false },
     descrizioneBreve: { type: String, required: false },
+    curatoreId:       { type: String, required: false },
 });
 
 // Il "Model" è la classe che usiamo per interagire con la collection "museos" in MongoDB.
@@ -93,12 +94,9 @@ exports.seed = async (credentials) => {
 // Supporta filtro opzionale per città: GET /api/musei?citta=Torino
 exports.getAll = async (credentials, query) => {
     let filter = {};
-    if (query.citta) {
-        filter.citta = { $regex: new RegExp(query.citta, "i") };
-    }
-    if (query.nome) {
-        filter.nome = { $regex: new RegExp(query.nome, "i") };
-    }
+    if (query.citta)       filter.citta       = { $regex: new RegExp(query.citta, "i") };
+    if (query.nome)        filter.nome        = { $regex: new RegExp(query.nome, "i") };
+    if (query.curatoreId)  filter.curatoreId  = query.curatoreId;
     try {
         await connect(credentials);
         const musei = await Museo.find(filter, { __v: 0 }); // esclude il campo interno __v

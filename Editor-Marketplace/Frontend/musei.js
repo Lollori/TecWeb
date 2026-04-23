@@ -6,6 +6,8 @@
 const API = '/api/musei';
 
 let tuttiIMusei = [];
+const currentUserId = localStorage.getItem('userId') || '';
+const currentRole   = localStorage.getItem('userRole') || '';
 
 document.addEventListener('DOMContentLoaded', loadMusei);
 
@@ -14,7 +16,11 @@ document.addEventListener('DOMContentLoaded', loadMusei);
 
 async function loadMusei() {
     try {
-        const response = await fetch(API);
+        // i curatori vedono solo i propri musei
+        const url = (currentRole === 'curatore' && currentUserId)
+            ? `${API}?curatoreId=${encodeURIComponent(currentUserId)}`
+            : API;
+        const response = await fetch(url);
         const result = await response.json();
         if (!result.ok) { showStatus('Errore nel caricamento: ' + result.error); return; }
         tuttiIMusei = result.data;
@@ -62,10 +68,10 @@ function renderMusei(musei) {
             <div class="card-body">
                 ${m.descrizioneBreve ? `<p class="description-text">${m.descrizioneBreve}</p>` : ''}
             </div>
-            ${m.codiceIsil ? `
             <div class="card-footer">
-                <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
-            </div>` : ''}
+                ${m.codiceIsil ? `<span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>` : ''}
+                ${m.curatoreId ? `<span class="tag-bubble"><i class="fa-solid fa-user-tie"></i> ${m.curatoreId}</span>` : ''}
+            </div>
         </div>
     `).join('');
 }
@@ -121,16 +127,19 @@ function openModal(codiceIsil) {
         if (!m) return;
         document.getElementById('modalTitle').innerHTML = 'Modifica <span>Museo</span>';
         document.getElementById('submitBtn').textContent = 'Aggiorna Museo';
-        document.getElementById('editIsil').value = codiceIsil;
-        document.getElementById('fNome').value       = m.nome || '';
-        document.getElementById('fCitta').value      = m.citta || '';
-        document.getElementById('fIndirizzo').value  = m.indirizzo || '';
-        document.getElementById('fCodiceIsil').value = m.codiceIsil || '';
-        document.getElementById('fImmagine').value   = m.immagineCopertina || '';
-        document.getElementById('fDescrizione').value = m.descrizioneBreve || '';
+        document.getElementById('editIsil').value       = codiceIsil;
+        document.getElementById('fNome').value          = m.nome || '';
+        document.getElementById('fCitta').value         = m.citta || '';
+        document.getElementById('fIndirizzo').value     = m.indirizzo || '';
+        document.getElementById('fCodiceIsil').value    = m.codiceIsil || '';
+        document.getElementById('fImmagine').value      = m.immagineCopertina || '';
+        document.getElementById('fDescrizione').value   = m.descrizioneBreve || '';
+        document.getElementById('fCuratoreId').value    = m.curatoreId || '';
     } else {
         document.getElementById('modalTitle').innerHTML = 'Nuovo <span>Museo</span>';
         document.getElementById('submitBtn').textContent = 'Salva Museo';
+        // nuovo museo: il curatore è chi sta creando
+        document.getElementById('fCuratoreId').value = currentUserId;
     }
 
     modal.style.display = 'flex';
@@ -160,6 +169,7 @@ async function submitForm(e) {
         codiceIsil:        document.getElementById('fCodiceIsil').value,
         immagineCopertina: document.getElementById('fImmagine').value,
         descrizioneBreve:  document.getElementById('fDescrizione').value,
+        curatoreId:        document.getElementById('fCuratoreId').value,
     };
     const editIsil = document.getElementById('editIsil').value;
 

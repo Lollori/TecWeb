@@ -36,8 +36,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Configuriamo l'avatar (Lettera e Colore)
         const avatar = document.getElementById('navAvatar');
         if (avatar && userRole) {
-            avatar.innerText = userRole === "CUR" ? "C" : "V";
-            avatar.style.backgroundColor = userRole === "CUR" ? "#1a3a2a" : "#4a7c5f";
+            const roleMap = {
+                curatore:   { letter: 'C', color: '#1a3a2a' },
+                visitatore: { letter: 'V', color: '#4a7c5f' },
+                autore:     { letter: 'A', color: '#7c4a1a' }
+            };
+            const cfg = roleMap[userRole] || { letter: '?', color: '#888' };
+            avatar.innerText = cfg.letter;
+            avatar.style.backgroundColor = cfg.color;
         }
 
     } else {

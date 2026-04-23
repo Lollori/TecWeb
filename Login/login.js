@@ -1,5 +1,5 @@
 /* ========================== */
-/* ELEMENTI DEL DOM        */
+/* ELEMENTI DEL DOM          */
 /* ========================== */
 const authForm = document.getElementById('authForm');
 const toggleLink = document.getElementById('toggleAuthLink');
@@ -25,50 +25,46 @@ const questionText = document.getElementById('questionText');
 let isLoginMode = true;
 
 /* ========================== */
-/* LOGICA INTERFACCIA      */
+/* LOGICA INTERFACCIA        */
 /* ========================== */
 
-// Aggiorna l'anteprima del cerchietto e il prefisso email
-function updateUI() {
-    if (isLoginMode) {
-        emailPrefix.innerText = "";
-        emailPrefix.style.display = "none";
-        return;
-    }
-    
-    const selected = userRole.value; // "CUR" o "VIS"
-    emailPrefix.innerText = selected + "_";
-    emailPrefix.style.display = "inline-block";
+const ROLE_CONFIG = {
+    curatore:   { letter: 'C', color: '#1a3a2a' },
+    visitatore: { letter: 'V', color: '#4a7c5f' },
+    autore:     { letter: 'A', color: '#7c4a1a' }
+};
 
-    // Cambia la lettera nel cerchietto durante la registrazione
-    if (selected === 'CUR') {
-        avatarContainer.style.backgroundColor = "#1a3a2a";
-        avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">C</span>';
-    } else {
-        avatarContainer.style.backgroundColor = "#4a7c5f";
-        avatarContainer.innerHTML = '<span style="color: white; font-weight: bold; font-size: 1.2rem;">V</span>';
-    }
+function updateUI() {
+    emailPrefix.innerText = '';
+    emailPrefix.style.display = 'none';
+
+    if (isLoginMode) return;
+
+    const selected = userRole.value;
+    const cfg = ROLE_CONFIG[selected] || ROLE_CONFIG.visitatore;
+    avatarContainer.style.backgroundColor = cfg.color;
+    avatarContainer.innerHTML = `<span style="color:white;font-weight:bold;font-size:1.2rem;">${cfg.letter}</span>`;
 }
 
-// Switch tra Login e Registrazione
+/* Switch tra Login e Registrazione */
 toggleLink.addEventListener('click', (e) => {
     e.preventDefault();
     isLoginMode = !isLoginMode;
-    
+
     if (!isLoginMode) {
-        roleField.style.display = "block";
+        roleField.style.display = 'block';
         setTimeout(() => { roleField.classList.add('role-visible'); updateUI(); }, 10);
-        authTitle.innerText = "Crea Account";
-        submitBtnText.innerText = "Registrati";
-        questionText.innerText = "Hai già un account?";
-        toggleLink.innerText = "Accedi qui";
+        authTitle.innerText = 'Crea Account';
+        submitBtnText.innerText = 'Registrati';
+        questionText.innerText = 'Hai già un account?';
+        toggleLink.innerText = 'Accedi qui';
     } else {
         roleField.classList.remove('role-visible');
-        setTimeout(() => { roleField.style.display = "none"; }, 400);
-        authTitle.innerText = "Bentornato!";
-        submitBtnText.innerText = "Accedi";
-        questionText.innerText = "Non hai un account?";
-        toggleLink.innerText = "Registrati ora";
+        setTimeout(() => { roleField.style.display = 'none'; }, 400);
+        authTitle.innerText = 'Bentornato!';
+        submitBtnText.innerText = 'Accedi';
+        questionText.innerText = 'Non hai un account?';
+        toggleLink.innerText = 'Registrati ora';
         updateUI();
     }
 });
@@ -76,7 +72,7 @@ toggleLink.addEventListener('click', (e) => {
 userRole.addEventListener('change', updateUI);
 
 /* ========================== */
-/* INVIO DATI AL SERVER    */
+/* INVIO DATI AL SERVER      */
 /* ========================== */
 
 authForm.addEventListener('submit', async (e) => {
@@ -84,8 +80,6 @@ authForm.addEventListener('submit', async (e) => {
 
     const usernameRaw = emailInput.value.trim();
     const passwordRaw = passwordInput.value.trim();
-
-    const finalUsername = isLoginMode ? usernameRaw : emailPrefix.innerText + usernameRaw;
     const endpoint = isLoginMode ? '/api/login' : '/api/register';
     const ruolo = isLoginMode ? null : userRole.value;
 
@@ -93,40 +87,36 @@ authForm.addEventListener('submit', async (e) => {
         const response = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: finalUsername, password: passwordRaw, ruolo: ruolo })
+            body: JSON.stringify({ username: usernameRaw, password: passwordRaw, ruolo: ruolo })
         });
 
         const data = await response.json();
 
-       if (data.success) {
+        if (data.success) {
             if (isLoginMode) {
                 // --- LOGIN SUCCESS ---
                 localStorage.setItem('userUsername', data.user.username);
-                localStorage.setItem('userId', data.user._id);
+                localStorage.setItem('userId', data.user.userId);
+                localStorage.setItem('userRole', data.user.ruolo);
 
-                const role = data.user.username.startsWith("CUR_") ? "CUR" : "VIS";
-                localStorage.setItem('userRole', role);
-                
-                alert("Accesso eseguito!");
+                alert('Accesso eseguito!');
 
                 const redirect = new URLSearchParams(window.location.search).get('redirect');
-                window.location.href = redirect || "/";
-                
+                window.location.href = redirect || '/';
             } else {
                 // --- REGISTRAZIONE SUCCESS ---
-                alert("Registrazione completata! Ora puoi accedere.");
-                emailInput.value = ''; // rinominato in usernameRaw ma il riferimento DOM resta emailInput
+                alert('Registrazione completata! Ora puoi accedere.');
+                emailInput.value = '';
                 passwordInput.value = '';
                 isLoginMode = true;
                 toggleLink.click();
             }
         } else {
-            // Messaggio di errore dal server (es: "Credenziali errate")
-            alert("Errore: " + data.message);
+            alert('Errore: ' + data.message);
         }
     } catch (error) {
-        console.error("Errore Fetch:", error);
-        alert("Impossibile connettersi al server. Controlla che Node.js sia attivo.");
+        console.error('Errore Fetch:', error);
+        alert('Impossibile connettersi al server. Controlla che Node.js sia attivo.');
     }
 });
 

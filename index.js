@@ -99,7 +99,7 @@ app.post('/api/register', async (req, res) => {
             return res.status(400).json({ success: false, message: "Username già registrato!" });
         }
 
-        await mymongo.registerUser({ username: username, password: password, ruolo: ruolo || 'VIS' }, mongoCredentials);
+        await mymongo.registerUser({ username: username, password: password, ruolo: ruolo || 'visitatore' }, mongoCredentials);
         res.json({ success: true, message: "Registrazione avvenuta!" });
     } catch (e) {
         res.status(500).json({ success: false, message: "Errore nel salvataggio DB" });

@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentItems = [];
     let editingId = null;
     let currentFilter = 'mie';
-    let currentUserId = 'autore1'; 
+    let currentUserId = localStorage.getItem('userId') || '';
     const currentMuseo = new URLSearchParams(window.location.search).get('museo') || sessionStorage.getItem('currentMuseo');
 
     

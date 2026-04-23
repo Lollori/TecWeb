@@ -5,7 +5,8 @@
     "indirizzo": "Via Accademia delle Scienze, 6, 10123 Torino TO",
     "codiceIsil": "IT-TO0576",
     "immagineCopertina": "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
-    "descrizioneBreve": "Il più antico museo del mondo dedicato interamente alla cultura egizia."
+    "descrizioneBreve": "Il più antico museo del mondo dedicato interamente alla cultura egizia.",
+    "curatoreId": "a3f7k2m9qz"
   },
   {
     "nome": "Galleria degli Uffizi",
@@ -13,6 +14,7 @@
     "indirizzo": "Piazzale degli Uffizi, 6, 50122 Firenze FI",
     "codiceIsil": "IT-FI0082",
     "immagineCopertina": "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
-    "descrizioneBreve": "Uno dei più importanti musei italiani e tra i più conosciuti al mondo."
+    "descrizioneBreve": "Uno dei più importanti musei italiani e tra i più conosciuti al mondo.",
+    "curatoreId": "b8h4p1r6xw"
   }
 ]

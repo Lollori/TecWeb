@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     userId:   { type: String, unique: true, default: generateUserId },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    ruolo:    { type: String, enum: ['VIS', 'CUR'], required: true }
+    ruolo:    { type: String, enum: ['curatore', 'visitatore', 'autore'], required: true }
 });
 const User = mongoose.model("User", userSchema);
 

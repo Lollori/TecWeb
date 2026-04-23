@@ -1,6 +1,8 @@
 [
-  { "userId": "VIS1a2b3c4d5e", "username": "VIS_visitatore1", "password": "12345678", "ruolo": "VIS" },
-  { "userId": "VIS2f6g7h8i9j", "username": "VIS_visitatore2", "password": "12345678", "ruolo": "VIS" },
-  { "userId": "CUR1k2l3m4n5o", "username": "CUR_autore1",     "password": "12345678", "ruolo": "CUR" },
-  { "userId": "CUR2p6q7r8s9t", "username": "CUR_autore2",     "password": "12345678", "ruolo": "CUR" }
+  { "userId": "a3f7k2m9qz", "username": "curatore1",   "password": "12345678", "ruolo": "curatore"   },
+  { "userId": "b8h4p1r6xw", "username": "curatore2",   "password": "12345678", "ruolo": "curatore"   },
+  { "userId": "c5j9n3t8vy", "username": "visitatore1", "password": "12345678", "ruolo": "visitatore" },
+  { "userId": "d2l6s4u7ez", "username": "visitatore2", "password": "12345678", "ruolo": "visitatore" },
+  { "userId": "e9o1w5g3hk", "username": "autore1",     "password": "12345678", "ruolo": "autore"     },
+  { "userId": "f4q8y2c7mt", "username": "autore2",     "password": "12345678", "ruolo": "autore"     }
 ]
