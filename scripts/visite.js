@@ -19,18 +19,23 @@ const visitaSchema = new mongoose.Schema({
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
 
+const MONGO_URI_ARTAROUND = (credentials) => {
+    const isLocal = process.env.MONGO_LOCAL === 'true';
+    return isLocal
+        ? 'mongodb://localhost:27017/artaround'
+        : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
+};
+
 async function connect(credentials) {
-    if (mongoose.connection.readyState === 1) return;
+    const state = mongoose.connection.readyState;
+    // 1 = connected, 2 = connecting
+    if (state === 1 || state === 2) return;
+    // 3 = disconnecting: aspetta prima di riconnettersi
+    if (state === 3) {
+        await new Promise(resolve => mongoose.connection.once('close', resolve));
+    }
     try {
-        const isLocal = process.env.MONGO_LOCAL === 'true';
-        const mongouri = isLocal
-            ? 'mongodb://localhost:27017/artaround'
-            : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-            
-        await mongoose.connect(mongouri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        });
+        await mongoose.connect(MONGO_URI_ARTAROUND(credentials));
     } catch(e) {
         console.error("Errore di connessione in visite.js:", e.message);
         throw e;
