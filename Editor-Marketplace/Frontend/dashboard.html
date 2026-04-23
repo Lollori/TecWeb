@@ -47,11 +47,22 @@
 
             <!-- ── SEZIONE: MUSEI (curatore) ── -->
             <section class="dashboard-section" id="section-musei">
-                <div class="section-header">
-                    <h2>I tuoi Musei</h2>
-                    <p>Clicca su un museo per vedere le opere e le visite associate.</p>
+                <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                    <div>
+                        <h2>I tuoi Musei</h2>
+                        <p>Clicca su un museo per vedere le opere e le visite associate.</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                        <div class="search-box-glass" style="min-width:200px;">
+                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                            <input type="text" id="searchMuseiDash" placeholder="Cerca museo..." oninput="filterMuseiDash()">
+                        </div>
+                        <button class="btn-primary-glass" onclick="switchSection('aggiungi-museo')">
+                            <i class="fa-solid fa-plus"></i> Aggiungi Museo
+                        </button>
+                    </div>
                 </div>
-                <div id="museiView" class="items-grid"></div>
+                <div id="museiView" class="items-grid" style="margin-top:20px;"></div>
             </section>
 
             <!-- ── SEZIONE: MODIFICA MUSEO ── -->

@@ -104,17 +104,26 @@ async function loadMuseiCuratore() {
    SEZIONE: MUSEI — lista
    ============================================================ */
 
-function renderMusei() {
+function filterMuseiDash() {
+    const q = (document.getElementById('searchMuseiDash')?.value || '').toLowerCase();
+    const filtered = q
+        ? curMusei.filter(m => m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q))
+        : curMusei;
+    renderMusei(filtered);
+}
+
+function renderMusei(lista) {
+    if (!lista) lista = curMusei;
     const view = document.getElementById('museiView');
 
-    if (curMusei.length === 0) {
+    if (lista.length === 0) {
         view.className = '';
         view.innerHTML = '<p class="empty-msg">Nessun museo assegnato. Aggiungine uno dalla sezione "Aggiungi Museo".</p>';
         return;
     }
 
     view.className = 'items-grid';
-    view.innerHTML = curMusei.map(m => `
+    view.innerHTML = lista.map(m => `
         <div class="item-card museo-card" style="cursor:pointer" onclick="showMuseoDetail('${m.codiceIsil}')">
             ${m.immagineCopertina
                 ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`

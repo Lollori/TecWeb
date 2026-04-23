@@ -178,10 +178,7 @@ function renderVisite(visite) {
                    <i class="fa-solid fa-tag"></i>
                    ${v.pubblica ? 'Modifica vendita' : 'Metti in vendita'}
                </button>`
-            : `<button class="btn-adopt"
-                        onclick="alert('Funzionalità partecipazione in arrivo!')">
-                   <i class="fa-solid fa-route"></i> Partecipa
-               </button>`;
+            : '';
 
         return `
             <div class="item-card">
