@@ -31,6 +31,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadMuseiCuratore();
         switchSection('musei');
     }
+
+    if (SESSION.role === 'autore') {
+        switchSection('autore-musei');
+    }
 });
 
 /* ============================================================
@@ -45,7 +49,11 @@ const SECTIONS_BY_ROLE = {
         { id: 'aggiungi-museo',  icon: 'fa-plus-circle',      label: 'Aggiungi Museo' },
     ],
     visitatore: [],
-    autore: [],
+    autore: [
+        { id: 'autore-musei',  icon: 'fa-building-columns', label: 'Musei' },
+        { id: 'autore-visite', icon: 'fa-route',             label: 'Visite' },
+        { id: 'autore-opere',  icon: 'fa-image',             label: 'Opere' },
+    ],
 };
 
 function buildSidebar() {
@@ -84,6 +92,10 @@ function switchSection(id) {
     if (id === 'musei')           renderMusei();
     if (id === 'modifica-museo')  initModificaMuseo();
     if (id === 'aggiungi-opere')  initAggiungiOpere();
+
+    if (id === 'autore-musei')  initAutoreMusei();
+    if (id === 'autore-visite') initAutoreVisite();
+    if (id === 'autore-opere')  initAutoreOpere();
 }
 
 /* ============================================================
@@ -324,6 +336,38 @@ function attachFormHandlers() {
         }
     });
 
+    // Submit aggiungi visita (autore)
+    const visitaForm = document.getElementById('visitaForm');
+    if (visitaForm) {
+        visitaForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const body = {
+                nomeVisita:    document.getElementById('vfNomeVisita').value,
+                nomeMnemonico: document.getElementById('vfNomeMnemonico').value,
+                logistica:     document.getElementById('vfLogistica').value,
+                quizDomanda:   document.getElementById('vfQuizDomanda').value,
+                codiceIsil:    document.getElementById('vfCodiceIsil').value,
+                autoreId:      SESSION.userId,
+            };
+            try {
+                const res  = await fetch('/api/visite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
+                const data = await res.json();
+                if (data.ok) {
+                    alert('Visita creata!');
+                    visitaForm.reset();
+                } else {
+                    alert('Errore: ' + data.error);
+                }
+            } catch (err) {
+                alert('Impossibile contattare il server.');
+            }
+        });
+    }
+
     // Submit aggiungi museo
     document.getElementById('nuovoMuseoForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -354,4 +398,111 @@ function attachFormHandlers() {
             alert('Impossibile contattare il server.');
         }
     });
+}
+
+/* ============================================================
+   SEZIONI AUTORE
+   ============================================================ */
+
+async function initAutoreMusei() {
+    try {
+        const [rMusei, rVisite] = await Promise.all([
+            fetch('/api/musei'),
+            fetch('/api/visite'),
+        ]);
+        const [dMusei, dVisite] = await Promise.all([rMusei.json(), rVisite.json()]);
+
+        const museiRow = document.getElementById('autoreMuseiRow');
+        if (dMusei.ok && dMusei.data.length) {
+            museiRow.innerHTML = dMusei.data.map(m => `
+                <div class="scroll-card">
+                    ${m.immagineCopertina
+                        ? `<img class="scroll-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
+                        : `<div class="scroll-card-img scroll-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
+                    }
+                    <h3>${m.nome}</h3>
+                    <p class="scroll-card-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
+                    <span class="tag-bubble" style="margin-top:auto"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
+                </div>
+            `).join('');
+        } else {
+            museiRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">Nessun museo disponibile.</p>';
+        }
+
+        const visiteRow = document.getElementById('autoreVisitePopRow');
+        if (dVisite.ok && dVisite.data.length) {
+            const sorted = [...dVisite.data].sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0));
+            visiteRow.innerHTML = sorted.map(v => `
+                <div class="scroll-card">
+                    <h3>${v.nomeVisita}</h3>
+                    <p class="scroll-card-sub"><i class="fa-solid fa-barcode"></i> ${v.codiceIsil}</p>
+                    <p class="scroll-card-buyers"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</p>
+                    ${v.prezzo > 0
+                        ? `<span class="price-badge" style="margin-top:auto">€${v.prezzo}</span>`
+                        : `<span class="free-badge" style="margin-top:auto">Gratis</span>`
+                    }
+                </div>
+            `).join('');
+        } else {
+            visiteRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">Nessuna visita disponibile.</p>';
+        }
+    } catch (e) {
+        console.error('Errore autore-musei:', e);
+    }
+}
+
+async function initAutoreVisite() {
+    const view = document.getElementById('autoreVisiteView');
+    view.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
+    try {
+        const res  = await fetch('/api/visite');
+        const data = await res.json();
+        if (!data.ok || !data.data.length) {
+            view.innerHTML = '<p class="empty-msg">Nessuna visita disponibile.</p>';
+            return;
+        }
+        view.className = 'items-grid';
+        view.innerHTML = data.data.map(v => `
+            <div class="visita-read-card">
+                <h3>${v.nomeVisita}</h3>
+                ${v.logistica ? `<p>${v.logistica}</p>` : ''}
+                <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${v.codiceIsil}</span>
+                    <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
+                    ${v.prezzo > 0
+                        ? `<span class="price-badge">€${v.prezzo}</span>`
+                        : `<span class="free-badge">Gratis</span>`
+                    }
+                </div>
+            </div>
+        `).join('');
+    } catch (e) {
+        view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>';
+    }
+}
+
+async function initAutoreOpere() {
+    const view = document.getElementById('autoreOpereView');
+    view.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
+    try {
+        const res  = await fetch('/api/opere');
+        const data = await res.json();
+        if (!data.ok || !data.data.length) {
+            view.innerHTML = '<p class="empty-msg">Nessuna opera disponibile.</p>';
+            return;
+        }
+        view.className = 'items-grid';
+        view.innerHTML = data.data.map(op => `
+            <div class="opera-read-card">
+                ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
+                <h3>${op.operaId}</h3>
+                ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`            : ''}
+                ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`      : ''}
+                ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>`  : ''}
+                <span class="tag-bubble" style="margin-top:auto"><i class="fa-solid fa-barcode"></i> ${op.codiceIsil}</span>
+            </div>
+        `).join('');
+    } catch (e) {
+        view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>';
+    }
 }
