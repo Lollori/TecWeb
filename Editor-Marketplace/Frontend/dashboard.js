@@ -396,17 +396,25 @@ async function initAutoreMusei() {
         <div class="scroll-row" id="autoreVisitePopRow">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
         </div>
+        <h3 class="scroll-section-label" style="margin-top:36px;">Opere con più Collezioni</h3>
+        <div class="scroll-row" id="autoreOpereItemsRow">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
+        </div>
     `;
 
-    const museiRow  = document.getElementById('autoreMuseiRow');
-    const visiteRow = document.getElementById('autoreVisitePopRow');
+    const museiRow     = document.getElementById('autoreMuseiRow');
+    const visiteRow    = document.getElementById('autoreVisitePopRow');
+    const opereItemRow = document.getElementById('autoreOpereItemsRow');
 
     try {
-        const [rMusei, rVisite] = await Promise.all([
+        const [rMusei, rVisite, rItems] = await Promise.all([
             fetch('/api/musei'),
             fetch('/api/visite'),
+            fetch('/api/items'),
         ]);
-        const [dMusei, dVisite] = await Promise.all([rMusei.json(), rVisite.json()]);
+        const [dMusei, dVisite, dItems] = await Promise.all([
+            rMusei.json(), rVisite.json(), rItems.json(),
+        ]);
 
         allMuseiAutore = dMusei.ok ? dMusei.data : [];
 
@@ -442,10 +450,41 @@ async function initAutoreMusei() {
         } else {
             visiteRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessuna visita disponibile. Avvia il seed delle visite.</p>';
         }
+
+        // Opere con più items
+        if (dItems.ok && dItems.data.length) {
+            const museoMap = {};
+            allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome; });
+            // Count items per operaId
+            const counts = {};
+            dItems.data.forEach(it => {
+                if (!counts[it.operaId]) counts[it.operaId] = { count: 0, museumId: it.museumId, img: it.image || '' };
+                counts[it.operaId].count++;
+                if (!counts[it.operaId].img && it.image) counts[it.operaId].img = it.image;
+            });
+            const ranked = Object.entries(counts)
+                .sort((a, b) => b[1].count - a[1].count);
+            opereItemRow.innerHTML = ranked.map(([operaId, info]) => `
+                <div class="scroll-card">
+                    ${info.img
+                        ? `<img class="scroll-card-img" src="${info.img}" alt="${operaId}" onerror="this.style.display='none'">`
+                        : `<div class="scroll-card-img scroll-card-img-placeholder"><i class="fa fa-image"></i></div>`
+                    }
+                    <h3>${operaId}</h3>
+                    <p class="scroll-card-sub"><i class="fa-solid fa-building-columns"></i> ${museoMap[info.museumId] || info.museumId}</p>
+                    <p class="scroll-card-buyers" style="margin-top:auto">
+                        <i class="fa-solid fa-layer-group"></i> ${info.count} collezioni
+                    </p>
+                </div>
+            `).join('');
+        } else {
+            opereItemRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessun item disponibile. Avvia il seed degli items.</p>';
+        }
     } catch (e) {
         console.error('Errore autore-musei:', e);
-        if (museiRow)  museiRow.innerHTML  = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento dei musei.</p>';
-        if (visiteRow) visiteRow.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento delle visite.</p>';
+        if (museiRow)     museiRow.innerHTML     = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento dei musei.</p>';
+        if (visiteRow)    visiteRow.innerHTML    = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento delle visite.</p>';
+        if (opereItemRow) opereItemRow.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento degli items.</p>';
     }
 }
 
@@ -737,7 +776,7 @@ function renderOpereAutore(opere) {
     }
     view.className = 'items-grid';
     view.innerHTML = opere.map(op => `
-        <div class="opera-read-card">
+        <div class="opera-read-card scroll-card-clickable" onclick="showOperaDetail('${op._id}')">
             ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
             <h3>${op.operaId}</h3>
             ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`           : ''}
@@ -767,4 +806,158 @@ function populateMuseoSelect(id, musei) {
     if (!sel) return;
     sel.innerHTML = '<option value="">— Seleziona museo —</option>' +
         musei.map(m => `<option value="${m.codiceIsil}">${m.nome}</option>`).join('');
+}
+
+/* ============================================================
+   DETTAGLIO OPERA — items e creazione
+   ============================================================ */
+
+window.showOperaDetail = async function (operaMongoId) {
+    const opera = allOpereAutore.find(op => String(op._id) === operaMongoId);
+    if (!opera) return;
+
+    const museoNome = allMuseiAutore.find(m => m.codiceIsil === opera.codiceIsil)?.nome || opera.codiceIsil;
+    const section   = document.getElementById('section-autore-opere');
+
+    section.innerHTML = `
+        <button class="museo-detail-back" onclick="switchSection('autore-opere')">
+            <i class="fa-solid fa-arrow-left"></i> Torna alle opere
+        </button>
+        <h2 class="museo-detail-title">${opera.operaId}</h2>
+        <p class="museo-detail-sub">
+            ${opera.autore ? opera.autore + ' · ' : ''}${museoNome}
+            ${opera.datazione ? ' · ' + opera.datazione : ''}
+        </p>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin:20px 0 14px;">
+            <h3 class="scroll-section-label" style="margin:0;">Collezioni associate</h3>
+            <button class="btn-primary-glass" onclick="toggleItemForm()">
+                <i class="fa-solid fa-plus"></i> Crea item per quest'opera
+            </button>
+        </div>
+
+        <div id="itemFormContainer" style="display:none;margin-bottom:28px;">
+            <form id="itemFormAutore" class="section-form">
+                <h3 style="font-family:'Playfair Display',serif;color:#2d5a3d;margin-bottom:16px;font-size:1.1rem;">Nuovo Item</h3>
+                <div class="form-grid">
+                    <label class="full-width">Descrizione / Contenuto *
+                        <textarea id="ifContenuto" rows="4" placeholder="Inserisci una descrizione, nota critica o approfondimento..." required></textarea>
+                    </label>
+                    <label>Materiale
+                        <input type="text" id="ifMateriale" placeholder="es. Marmo, Tempera su tavola">
+                    </label>
+                    <label>Tecnica
+                        <input type="text" id="ifTecnica" placeholder="es. Scultura, Affresco">
+                    </label>
+                    <label>Dimensioni
+                        <input type="text" id="ifDimensioni" placeholder="es. 194 cm, 172 × 278 cm">
+                    </label>
+                    <label>Provenienza
+                        <input type="text" id="ifProvenienza" placeholder="es. Tebe, Firenze">
+                    </label>
+                    <label>Periodo
+                        <input type="text" id="ifPeriodo" placeholder="es. XIII sec. a.C., 1477–1478">
+                    </label>
+                    <label class="full-width">URL Immagine
+                        <input type="url" id="ifImmagine" placeholder="https://...">
+                    </label>
+                </div>
+                <div class="modal-actions" style="gap:10px;">
+                    <button type="button" class="btn-secondary-dash" onclick="toggleItemForm()">Annulla</button>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-plus"></i> Salva Item</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="itemsGrid" class="items-grid"></div>
+    `;
+
+    // Attach form submit
+    document.getElementById('itemFormAutore').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const contenuto = document.getElementById('ifContenuto').value.trim();
+        if (!contenuto) { alert('Inserisci almeno una descrizione.'); return; }
+
+        const metadata = {};
+        const fields = { materiale: 'ifMateriale', tecnica: 'ifTecnica', dimensioni: 'ifDimensioni', provenienza: 'ifProvenienza', periodo: 'ifPeriodo' };
+        Object.entries(fields).forEach(([key, id]) => {
+            const val = document.getElementById(id).value.trim();
+            if (val) metadata[key] = val;
+        });
+
+        const body = {
+            operaId:  opera.operaId,
+            museumId: opera.codiceIsil,
+            authorId: SESSION.userId,
+            objectId: opera.operaId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now(),
+            contents: [contenuto],
+            metadata,
+            image:    document.getElementById('ifImmagine').value.trim(),
+        };
+
+        try {
+            const res  = await fetch('/api/items', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            if (data.ok) {
+                alert('Item creato!');
+                document.getElementById('itemFormAutore').reset();
+                toggleItemForm();
+                await loadItemsForOpera(opera.operaId);
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        } catch (err) {
+            alert('Impossibile contattare il server.');
+        }
+    });
+
+    await loadItemsForOpera(opera.operaId);
+};
+
+window.toggleItemForm = function () {
+    const c = document.getElementById('itemFormContainer');
+    if (!c) return;
+    c.style.display = c.style.display === 'none' ? 'block' : 'none';
+};
+
+async function loadItemsForOpera(operaId) {
+    const grid = document.getElementById('itemsGrid');
+    if (!grid) return;
+    grid.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
+
+    try {
+        const res  = await fetch(`/api/items?operaId=${encodeURIComponent(operaId)}`);
+        const data = await res.json();
+
+        if (!data.ok || !data.data.length) {
+            grid.className = '';
+            grid.innerHTML = '<p class="empty-msg">Nessun item ancora. Creane uno con il pulsante qui sopra.</p>';
+            return;
+        }
+
+        grid.className = 'items-grid';
+        grid.innerHTML = data.data.map(item => `
+            <div class="item-read-card">
+                ${item.image ? `<img src="${item.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                <div class="item-contents">
+                    ${(item.contents || []).map(c => `<p>${c}</p>`).join('')}
+                </div>
+                ${Object.keys(item.metadata || {}).length ? `
+                <ul class="item-metadata-list">
+                    ${Object.entries(item.metadata).map(([k, v]) => `
+                        <li><span class="meta-key">${k}:</span> ${v}</li>
+                    `).join('')}
+                </ul>` : ''}
+                <span class="tag-bubble" style="margin-top:auto;font-size:0.78rem;">
+                    <i class="fa-solid fa-user"></i> ${item.authorId}
+                </span>
+            </div>
+        `).join('');
+    } catch (e) {
+        grid.innerHTML = '<p class="empty-msg">Errore nel caricamento degli items.</p>';
+    }
 }

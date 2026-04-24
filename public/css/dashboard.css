@@ -412,6 +412,69 @@
     border-color: #4a7c5f;
 }
 
+/* ── ITEM CARD (dettaglio opera) ─────────── */
+
+.item-read-card {
+    background: rgba(255, 255, 255, 0.62);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.75);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+}
+
+.item-read-card img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.item-contents p {
+    font-size: 0.87rem;
+    color: #374151;
+    line-height: 1.6;
+    margin-bottom: 4px;
+}
+
+.item-metadata-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background: rgba(45, 90, 61, 0.05);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.item-metadata-list li {
+    font-size: 0.82rem;
+    color: #4a5568;
+}
+
+.meta-key {
+    font-weight: 600;
+    color: #2d5a3d;
+    text-transform: capitalize;
+}
+
+/* opera card clickable hover */
+.opera-read-card.scroll-card-clickable {
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.opera-read-card.scroll-card-clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(45, 90, 61, 0.12);
+}
+
 /* ── EMPTY / LOADING ─────────────────────── */
 
 .empty-msg, .loading-msg {

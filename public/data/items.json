@@ -1,0 +1,122 @@
+[
+  {
+    "museumId": "IT-TO0576",
+    "operaId": "Statua di Ramesse II",
+    "objectId": "ramesse-ii-scheda",
+    "contents": [
+      "La statua è realizzata in granito rosso di Assuan e raffigura il faraone Ramesse II seduto in trono con la doppia corona.",
+      "Scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti, è una delle opere più imponenti dell'intero museo."
+    ],
+    "metadata": {
+      "materiale": "Granito rosso di Assuan",
+      "altezza": "194 cm",
+      "periodo": "XIX Dinastia, regno di Ramesse II",
+      "tecnica": "Scultura in granito",
+      "provenienza": "Tebe (Karnak)"
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg/800px-Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg",
+    "authorId": "e9o1w5g3hk"
+  },
+  {
+    "museumId": "IT-TO0576",
+    "operaId": "Statua di Ramesse II",
+    "objectId": "ramesse-ii-iconografia",
+    "contents": [
+      "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto.",
+      "Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre."
+    ],
+    "metadata": {
+      "soggetto": "Ritratto regale",
+      "attributi": "Corona pschent, barba rituale, cartiglio",
+      "stato_conservazione": "Ottimo",
+      "note_restauro": "Restauro conservativo 1989"
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt"
+  },
+  {
+    "museumId": "IT-TO0576",
+    "operaId": "Libro dei Morti di Hunefer",
+    "objectId": "hunefer-analisi",
+    "contents": [
+      "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di straordinaria qualità.",
+      "La scena più celebre raffigura il giudizio di Osiride: il cuore di Hunefer viene pesato contro la piuma di Maat."
+    ],
+    "metadata": {
+      "materiale": "Papiro",
+      "lunghezza": "500 cm",
+      "altezza": "39 cm",
+      "periodo": "XIX Dinastia, ca. 1275 a.C.",
+      "scrittura": "Ieratica e geroglifica"
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Hunefer.jpg/800px-Hunefer.jpg",
+    "authorId": "e9o1w5g3hk"
+  },
+  {
+    "museumId": "IT-TO0576",
+    "operaId": "Libro dei Morti di Hunefer",
+    "objectId": "hunefer-contesto",
+    "contents": [
+      "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo.",
+      "Il documento fu acquistato dal British Museum nel 1852; questa copia torinese è una delle riproduzioni più fedeli del XIX secolo."
+    ],
+    "metadata": {
+      "committente": "Hunefer, scriba reale di Seti I",
+      "collocazione_originale": "Tomba di Hunefer, Tebe",
+      "tecnica_illustrazione": "Tempera su papiro"
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt"
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Nascita di Venere",
+    "objectId": "venere-analisi-tecnica",
+    "contents": [
+      "La dea emerge dal mare su una grande conchiglia di madreperla, simbolo di nascita e purezza neoplatonica.",
+      "I pigmenti includono lapislazzuli per i blu, verderame per i verdi e biacca di piombo per le carnagioni."
+    ],
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "172,5 × 278,9 cm",
+      "collocazione": "Sala di Botticelli, Uffizi",
+      "commissione": "Lorenzo di Pierfrancesco de' Medici"
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_046.jpg/800px-Sandro_Botticelli_046.jpg",
+    "authorId": "e9o1w5g3hk"
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Nascita di Venere",
+    "objectId": "venere-iconografia",
+    "contents": [
+      "Zefiro con la ninfa Clori soffia vento caldo; a destra una delle Ore accoglie Venere con un manto fiorito.",
+      "La posa richiama la Venere Pudica ellenistica, rielaborata in chiave neoplatonica medicea."
+    ],
+    "metadata": {
+      "fonti_letterarie": "Stanze di Angelo Poliziano (1475–1478)",
+      "stile": "Gotico internazionale, Primo Rinascimento",
+      "simbolismo": "Neoplatonismo mediceo, Venere Celeste"
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt"
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Primavera",
+    "objectId": "primavera-botanica",
+    "contents": [
+      "Il giardino contiene oltre 500 specie botaniche identificate dagli studiosi, quasi tutte autoctone della Toscana.",
+      "Al centro Venere presiede la scena; a destra le Tre Grazie danzano e Mercurio disperde le nuvole con il caduceo."
+    ],
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "203 × 314 cm",
+      "periodo": "1477–1478",
+      "commissione": "Lorenzo di Pierfrancesco de' Medici",
+      "specie_botaniche": "oltre 500 identificate"
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/800px-Botticelli-primavera.jpg",
+    "authorId": "e9o1w5g3hk"
+  }
+]

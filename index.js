@@ -28,6 +28,13 @@ try {
     console.error('[index.js] ERRORE nel caricare scripts/opere.js:', e.message);
 }
 
+let items;
+try {
+    items = require(global.rootDir + '/scripts/items.js');
+} catch(e) {
+    console.error('[index.js] ERRORE nel caricare scripts/items.js:', e.message);
+}
+
 
 const express = require('express');
 const cors = require('cors')
@@ -224,9 +231,44 @@ app.delete('/api/opere/:id', async function (req, res) {
 
 
 /* ========================== */
+/* API ITEMS                  */
+/* ========================== */
+
+app.get('/api/items/seed', async function (_req, res) {
+    const result = await items.seed(mongoCredentials);
+    res.json(result);
+});
+
+app.get('/api/items', async function (req, res) {
+    const result = await items.getAll(mongoCredentials, req.query);
+    res.json(result);
+});
+
+app.get('/api/items/:id', async function (req, res) {
+    const result = await items.getOne(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
+app.post('/api/items', async function (req, res) {
+    const result = await items.create(mongoCredentials, req.body);
+    res.json(result);
+});
+
+app.put('/api/items/:id', async function (req, res) {
+    const result = await items.update(mongoCredentials, req.params.id, req.body);
+    res.json(result);
+});
+
+app.delete('/api/items/:id', async function (req, res) {
+    const result = await items.remove(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
+
+/* ========================== */
 /* ACTIVATE NODE SERVER    */
 /* ========================== */
-app.listen(8000, function() { 
+app.listen(8000, function() {
     global.startDate = new Date() ; 
     console.log(`App listening on port 8000 started ${global.startDate.toLocaleString()}` )
 });
