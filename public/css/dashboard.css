@@ -372,6 +372,46 @@
     box-shadow: 0 8px 24px rgba(45, 90, 61, 0.12);
 }
 
+/* ── SECONDARY BUTTON (form annulla) ────── */
+
+.btn-secondary-dash {
+    padding: 10px 22px;
+    border: 1.5px solid rgba(45, 90, 61, 0.3);
+    border-radius: 12px;
+    background: transparent;
+    color: #4a7c5f;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.18s, color 0.18s;
+}
+
+.btn-secondary-dash:hover {
+    background: rgba(45, 90, 61, 0.08);
+    color: #2d5a3d;
+}
+
+/* select inside section-form (visita form) */
+.section-form select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid rgba(45, 90, 61, 0.22);
+    border-radius: 10px;
+    background: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    color: #2d5a3d;
+    outline: none;
+    transition: border-color 0.2s;
+    cursor: pointer;
+    margin-top: 6px;
+}
+
+.section-form select:focus {
+    border-color: #4a7c5f;
+}
+
 /* ── EMPTY / LOADING ─────────────────────── */
 
 .empty-msg, .loading-msg {

@@ -12,7 +12,9 @@ const SESSION = {
 let curMusei = [];
 
 // Musei per la vista autore (usati nel click handler)
-let allMuseiAutore = [];
+let allMuseiAutore  = [];
+let allVisiteAutore = [];
+let allOpereAutore  = [];
 
 /* ============================================================
    INIT
@@ -341,38 +343,6 @@ function attachFormHandlers() {
         }
     });
 
-    // Submit aggiungi visita (autore)
-    const visitaForm = document.getElementById('visitaForm');
-    if (visitaForm) {
-        visitaForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const body = {
-                nomeVisita:    document.getElementById('vfNomeVisita').value,
-                nomeMnemonico: document.getElementById('vfNomeMnemonico').value,
-                logistica:     document.getElementById('vfLogistica').value,
-                quizDomanda:   document.getElementById('vfQuizDomanda').value,
-                codiceIsil:    document.getElementById('vfCodiceIsil').value,
-                autoreId:      SESSION.userId,
-            };
-            try {
-                const res  = await fetch('/api/visite', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(body),
-                });
-                const data = await res.json();
-                if (data.ok) {
-                    alert('Visita creata!');
-                    visitaForm.reset();
-                } else {
-                    alert('Errore: ' + data.error);
-                }
-            } catch (err) {
-                alert('Impossibile contattare il server.');
-            }
-        });
-    }
-
     // Submit aggiungi museo
     const nuovoMuseoForm = document.getElementById('nuovoMuseoForm');
     if (nuovoMuseoForm) nuovoMuseoForm.addEventListener('submit', async (e) => {
@@ -551,57 +521,250 @@ window.showAutoreTab = async function (type, codiceIsil, btn) {
 };
 
 async function initAutoreVisite() {
+    const section = document.getElementById('section-autore-visite');
+    section.innerHTML = `
+        <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h2>Visite</h2>
+                <p>Tutte le visite disponibili sulla piattaforma.</p>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
+                <div class="search-box-glass" style="min-width:200px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                    <input type="text" id="searchVisiteAutore" placeholder="Cerca per nome o museo..." oninput="filterVisiteAutore()">
+                </div>
+                <button class="btn-primary-glass" onclick="toggleVisitaForm()">
+                    <i class="fa-solid fa-plus"></i> Crea Visita
+                </button>
+            </div>
+        </div>
+
+        <div id="visitaFormContainer" style="display:none;margin-bottom:28px;">
+            <form id="visitaFormAutore" class="section-form">
+                <h3 style="font-family:'Playfair Display',serif;color:#2d5a3d;margin-bottom:16px;font-size:1.1rem;">Nuova Visita</h3>
+                <div class="form-grid">
+                    <label class="full-width">Museo *
+                        <select id="vfMuseo" required>
+                            <option value="">— Seleziona museo —</option>
+                        </select>
+                    </label>
+                    <label class="full-width">Nome Visita *
+                        <input type="text" id="vfNomeVisita" placeholder="es. Rinascimento Fiorentino" required>
+                    </label>
+                    <label>Nome Mnemonico
+                        <input type="text" id="vfNomeMnemonico" placeholder="es. uffizi_rinascimento">
+                    </label>
+                    <label>Prezzo (€)
+                        <input type="number" id="vfPrezzo" min="0" step="0.01" value="0">
+                    </label>
+                    <label class="full-width">Logistica
+                        <textarea id="vfLogistica" rows="3" placeholder="Descrivi il percorso della visita..."></textarea>
+                    </label>
+                    <label class="full-width">Domanda Quiz
+                        <input type="text" id="vfQuizDomanda" placeholder="es. In quale anno fu dipinta la Primavera?">
+                    </label>
+                    <label class="full-width" style="flex-direction:row;align-items:center;gap:10px;cursor:pointer;">
+                        <input type="checkbox" id="vfPubblica" style="width:auto;accent-color:#2d5a3d;">
+                        <span>Metti in vendita subito</span>
+                    </label>
+                </div>
+                <div class="modal-actions" style="gap:10px;">
+                    <button type="button" class="btn-secondary-dash" onclick="toggleVisitaForm()">Annulla</button>
+                    <button type="submit" class="btn-submit"><i class="fa-solid fa-plus"></i> Crea Visita</button>
+                </div>
+            </form>
+        </div>
+
+        <div id="autoreVisiteView" class="items-grid"></div>
+    `;
+
+    // Popola dropdown museo
+    if (!allMuseiAutore.length) {
+        try {
+            const r = await fetch('/api/musei');
+            const d = await r.json();
+            if (d.ok) allMuseiAutore = d.data;
+        } catch (e) { /* silent */ }
+    }
+    populateMuseoSelect('vfMuseo', allMuseiAutore);
+
+    document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const body = {
+            nomeVisita:    document.getElementById('vfNomeVisita').value,
+            nomeMnemonico: document.getElementById('vfNomeMnemonico').value,
+            logistica:     document.getElementById('vfLogistica').value,
+            quizDomanda:   document.getElementById('vfQuizDomanda').value,
+            codiceIsil:    document.getElementById('vfMuseo').value,
+            prezzo:        parseFloat(document.getElementById('vfPrezzo').value) || 0,
+            pubblica:      document.getElementById('vfPubblica').checked,
+            autoreId:      SESSION.userId,
+        };
+        if (!body.codiceIsil) { alert('Seleziona un museo.'); return; }
+        try {
+            const res  = await fetch('/api/visite', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body),
+            });
+            const data = await res.json();
+            if (data.ok) {
+                alert('Visita creata!');
+                document.getElementById('visitaFormAutore').reset();
+                toggleVisitaForm();
+                await loadVisiteAutore();
+            } else {
+                alert('Errore: ' + data.error);
+            }
+        } catch (err) {
+            alert('Impossibile contattare il server.');
+        }
+    });
+
+    await loadVisiteAutore();
+}
+
+window.toggleVisitaForm = function () {
+    const c = document.getElementById('visitaFormContainer');
+    if (!c) return;
+    c.style.display = c.style.display === 'none' ? 'block' : 'none';
+};
+
+async function loadVisiteAutore() {
     const view = document.getElementById('autoreVisiteView');
+    if (!view) return;
+    view.className = '';
     view.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
     try {
         const res  = await fetch('/api/visite');
         const data = await res.json();
-        if (!data.ok || !data.data.length) {
-            view.innerHTML = '<p class="empty-msg">Nessuna visita disponibile.</p>';
-            return;
-        }
-        view.className = 'items-grid';
-        view.innerHTML = data.data.map(v => `
-            <div class="visita-read-card">
-                <h3>${v.nomeVisita}</h3>
-                ${v.logistica ? `<p>${v.logistica}</p>` : ''}
-                <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                    <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${v.codiceIsil}</span>
-                    <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
-                    ${v.prezzo > 0
-                        ? `<span class="price-badge">€${v.prezzo}</span>`
-                        : `<span class="free-badge">Gratis</span>`
-                    }
-                </div>
-            </div>
-        `).join('');
+        if (!data.ok) { view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>'; return; }
+        allVisiteAutore = data.data;
+        renderVisiteAutore(allVisiteAutore);
     } catch (e) {
         view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>';
     }
 }
 
+function renderVisiteAutore(visite) {
+    const view = document.getElementById('autoreVisiteView');
+    if (!view) return;
+    if (!visite.length) {
+        view.className = '';
+        view.innerHTML = '<p class="empty-msg">Nessuna visita trovata.</p>';
+        return;
+    }
+    view.className = 'items-grid';
+    view.innerHTML = visite.map(v => `
+        <div class="visita-read-card">
+            <h3>${v.nomeVisita}</h3>
+            ${v.logistica ? `<p>${v.logistica}</p>` : ''}
+            <div style="margin-top:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${v.codiceIsil}</span>
+                <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0}</span>
+                ${v.prezzo > 0
+                    ? `<span class="price-badge">€${v.prezzo}</span>`
+                    : `<span class="free-badge">Gratis</span>`
+                }
+            </div>
+        </div>
+    `).join('');
+}
+
+window.filterVisiteAutore = function () {
+    const q = (document.getElementById('searchVisiteAutore')?.value || '').toLowerCase();
+    if (!q) { renderVisiteAutore(allVisiteAutore); return; }
+    const museoMap = {};
+    allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome.toLowerCase(); });
+    const filtered = allVisiteAutore.filter(v =>
+        v.nomeVisita.toLowerCase().includes(q) ||
+        (museoMap[v.codiceIsil] || '').includes(q) ||
+        v.codiceIsil.toLowerCase().includes(q)
+    );
+    renderVisiteAutore(filtered);
+};
+
 async function initAutoreOpere() {
+    const section = document.getElementById('section-autore-opere');
+    section.innerHTML = `
+        <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+            <div>
+                <h2>Opere</h2>
+                <p>Tutte le opere presenti nei musei.</p>
+            </div>
+            <div class="search-box-glass" style="min-width:200px;">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchOpereAutore" placeholder="Cerca per titolo o museo..." oninput="filterOpereAutore()">
+            </div>
+        </div>
+        <div id="autoreOpereView" class="items-grid"></div>
+    `;
+
+    if (!allMuseiAutore.length) {
+        try {
+            const r = await fetch('/api/musei');
+            const d = await r.json();
+            if (d.ok) allMuseiAutore = d.data;
+        } catch (e) { /* silent */ }
+    }
+
+    await loadOpereAutore();
+}
+
+async function loadOpereAutore() {
     const view = document.getElementById('autoreOpereView');
+    if (!view) return;
+    view.className = '';
     view.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
     try {
         const res  = await fetch('/api/opere');
         const data = await res.json();
-        if (!data.ok || !data.data.length) {
-            view.innerHTML = '<p class="empty-msg">Nessuna opera disponibile.</p>';
-            return;
-        }
-        view.className = 'items-grid';
-        view.innerHTML = data.data.map(op => `
-            <div class="opera-read-card">
-                ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
-                <h3>${op.operaId}</h3>
-                ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`            : ''}
-                ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`      : ''}
-                ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>`  : ''}
-                <span class="tag-bubble" style="margin-top:auto"><i class="fa-solid fa-barcode"></i> ${op.codiceIsil}</span>
-            </div>
-        `).join('');
+        if (!data.ok) { view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>'; return; }
+        allOpereAutore = data.data;
+        renderOpereAutore(allOpereAutore);
     } catch (e) {
         view.innerHTML = '<p class="empty-msg">Errore nel caricamento.</p>';
     }
+}
+
+function renderOpereAutore(opere) {
+    const view = document.getElementById('autoreOpereView');
+    if (!view) return;
+    if (!opere.length) {
+        view.className = '';
+        view.innerHTML = '<p class="empty-msg">Nessuna opera trovata.</p>';
+        return;
+    }
+    view.className = 'items-grid';
+    view.innerHTML = opere.map(op => `
+        <div class="opera-read-card">
+            ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
+            <h3>${op.operaId}</h3>
+            ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`           : ''}
+            ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`     : ''}
+            ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
+            <span class="tag-bubble" style="margin-top:auto"><i class="fa-solid fa-barcode"></i> ${op.codiceIsil}</span>
+        </div>
+    `).join('');
+}
+
+window.filterOpereAutore = function () {
+    const q = (document.getElementById('searchOpereAutore')?.value || '').toLowerCase();
+    if (!q) { renderOpereAutore(allOpereAutore); return; }
+    const museoMap = {};
+    allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome.toLowerCase(); });
+    const filtered = allOpereAutore.filter(op =>
+        op.operaId.toLowerCase().includes(q) ||
+        (museoMap[op.codiceIsil] || '').includes(q) ||
+        op.codiceIsil.toLowerCase().includes(q) ||
+        (op.autore || '').toLowerCase().includes(q)
+    );
+    renderOpereAutore(filtered);
+};
+
+function populateMuseoSelect(id, musei) {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = '<option value="">— Seleziona museo —</option>' +
+        musei.map(m => `<option value="${m.codiceIsil}">${m.nome}</option>`).join('');
 }
