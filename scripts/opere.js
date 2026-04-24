@@ -17,6 +17,19 @@ async function connect() {
     }
 }
 
+// SEED: carica opere.json nel DB
+exports.seed = async (credentials) => {
+    const fs = require('fs').promises;
+    try {
+        await connect();
+        const raw  = await fs.readFile(global.rootDir + '/public/data/opere.json', 'utf8');
+        const data = JSON.parse(raw);
+        const cleared = await Opera.deleteMany({});
+        await Opera.insertMany(data);
+        return { ok: true, message: `Rimossi ${cleared.deletedCount}, inseriti ${data.length} opere.` };
+    } catch (e) { return { ok: false, error: e.message }; }
+};
+
 // GET: Recupera opere di un museo specifico
 exports.getAll = async (credentials, query) => {
     try {

@@ -1,0 +1,50 @@
+[
+  {
+    "codiceIsil": "IT-TO0576",
+    "operaId": "Statua di Ramesse II",
+    "tipo": "Scultura",
+    "autore": "Scultori del Nuovo Regno",
+    "datazione": "XIII sec. a.C.",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg/800px-Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg"
+  },
+  {
+    "codiceIsil": "IT-TO0576",
+    "operaId": "Libro dei Morti di Hunefer",
+    "tipo": "Manoscritto",
+    "autore": "Anonimo",
+    "datazione": "ca. 1275 a.C.",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Hunefer.jpg/800px-Hunefer.jpg"
+  },
+  {
+    "codiceIsil": "IT-TO0576",
+    "operaId": "Mummia di Kha",
+    "tipo": "Reperto",
+    "autore": "Anonimo",
+    "datazione": "ca. 1400 a.C.",
+    "immagine": ""
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "La Nascita di Venere",
+    "tipo": "Pittura",
+    "autore": "Sandro Botticelli",
+    "datazione": "1484–1486",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_046.jpg/800px-Sandro_Botticelli_046.jpg"
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "La Primavera",
+    "tipo": "Pittura",
+    "autore": "Sandro Botticelli",
+    "datazione": "1477–1478",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/800px-Botticelli-primavera.jpg"
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Annunciazione",
+    "tipo": "Pittura",
+    "autore": "Leonardo da Vinci",
+    "datazione": "1472–1475",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg/800px-Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg"
+  }
+]

@@ -193,6 +193,11 @@ app.delete('/api/visite/:id', async function (req, res) {
 /* API OPERE (Marketplace)    */
 /* ========================== */
 
+app.get('/api/opere/seed', async function (_req, res) {
+    const result = await opere.seed(mongoCredentials);
+    res.json(result);
+});
+
 // Recupera le opere (filtrate per codiceIsil se presente in query)
 app.get('/api/opere', async function (req, res) {
     const result = await opere.getAll(mongoCredentials, req.query);

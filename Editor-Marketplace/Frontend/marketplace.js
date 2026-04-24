@@ -112,44 +112,23 @@ function renderOpere(opere) {
         return;
     }
 
-    grid.innerHTML = opere.map(op => {
-        const isMia   = SESSION.userId && op.autore === SESSION.userId;
-        const prezzoEl = op.pubblica
-            ? (op.prezzo > 0
-                ? `<span class="price-badge">€${op.prezzo}</span>`
-                : `<span class="free-badge">Gratis</span>`)
-            : `<span class="badge-privata">Privata</span>`;
-
-        const azioneEl = isMia
-            ? `<button class="btn-sell ${op.pubblica ? 'is-sold' : ''}"
-                        onclick="openVendida('opera','${op._id}',${op.prezzo || 0},${!!op.pubblica})">
-                   <i class="fa-solid fa-tag"></i>
-                   ${op.pubblica ? 'Modifica vendita' : 'Metti in vendita'}
-               </button>`
-            : `<button class="btn-adopt"
-                        onclick="alert('Funzionalità acquisto in arrivo!')">
-                   <i class="fa-solid fa-hand-holding-heart"></i> Adotta
-               </button>`;
-
-        return `
-            <div class="item-card">
-                ${op.immagine
-                    ? `<img class="card-opera-img" src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
-                    : ''}
-                <div class="card-main-header">
-                    <div class="title-group">
-                        <h3>${op.operaId}</h3>
-                        ${op.artistName ? `<p class="museum-sub"><i class="fa-solid fa-palette"></i> ${op.artistName}</p>` : ''}
-                        ${op.datazione  ? `<p class="museum-sub"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>`  : ''}
-                    </div>
-                    <div class="badges-row">${prezzoEl}</div>
+    grid.innerHTML = opere.map(op => `
+        <div class="item-card">
+            ${op.immagine
+                ? `<img class="card-opera-img" src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
+                : ''}
+            <div class="card-main-header">
+                <div class="title-group">
+                    <h3>${op.operaId}</h3>
+                    ${op.autore    ? `<p class="museum-sub"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`    : ''}
+                    ${op.datazione ? `<p class="museum-sub"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
                 </div>
-                <div class="card-footer">
-                    <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${op.codiceIsil}</span>
-                    ${azioneEl}
-                </div>
-            </div>`;
-    }).join('');
+            </div>
+            <div class="card-footer">
+                <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${op.codiceIsil}</span>
+            </div>
+        </div>`
+    ).join('');
 }
 
 /* ============================================================

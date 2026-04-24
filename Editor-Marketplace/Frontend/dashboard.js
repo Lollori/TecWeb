@@ -196,8 +196,9 @@ window.showTab = async function (type, codiceIsil, btn) {
                 <div class="opera-read-card">
                     ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
                     <h3>${op.operaId}</h3>
-                    ${op.artistName ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.artistName}</p>` : ''}
-                    ${op.datazione  ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>`  : ''}
+                    ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`           : ''}
+                    ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`     : ''}
+                    ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
                 </div>
             `).join('');
         } else {
@@ -298,11 +299,11 @@ function attachFormHandlers() {
 
         const body = {
             codiceIsil,
-            operaId:    document.getElementById('ofTitolo').value,
-            artistName: document.getElementById('ofAutore').value,
-            datazione:  document.getElementById('ofDatazione').value,
-            immagine:   document.getElementById('ofImmagine').value,
-            autore:     SESSION.userId,
+            operaId:   document.getElementById('ofTitolo').value,
+            tipo:      document.getElementById('ofTipo').value,
+            autore:    document.getElementById('ofAutore').value,
+            datazione: document.getElementById('ofDatazione').value,
+            immagine:  document.getElementById('ofImmagine').value,
         };
         try {
             const res  = await fetch('/api/opere', {

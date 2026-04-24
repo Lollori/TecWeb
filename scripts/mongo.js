@@ -37,20 +37,12 @@ mongoose.set('strictQuery', false);
 // --- [NUOVO] SCHEMA PER LE OPERE ---
 // Questo schema definisce la struttura dell'opera nel DB
 const operaSchema = new mongoose.Schema({
-    // Il riferimento obbligatorio al museo tramite codiceIsil
-    codiceIsil: { type: String, required: true, index: true }, 
+    codiceIsil: { type: String, required: true, index: true },
     operaId:    { type: String, required: true },
-    testo:      { type: String },
-    lunghezza:  { type: String },
-    linguaggio: { type: String },
-    artistName: { type: String, default: '' },
+    tipo:       { type: String, default: '' },
+    autore:     { type: String, default: '' },
     datazione:  { type: String, default: '' },
     immagine:   { type: String, default: '' },
-    licenza:    { type: String, default: 'gratuita' },
-    prezzo:     { type: Number, default: 0 },
-    pubblica:   { type: Boolean, default: false },
-    autore:     { type: String, default: '' },
-    adozioni:   { type: Number, default: 0 }
 });
 
 // Creazione del modello Opera
