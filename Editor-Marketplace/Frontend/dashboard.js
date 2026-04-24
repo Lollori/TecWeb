@@ -11,6 +11,9 @@ const SESSION = {
 // Musei appartenenti all'utente corrente (curatore)
 let curMusei = [];
 
+// Musei per la vista autore (usati nel click handler)
+let allMuseiAutore = [];
+
 /* ============================================================
    INIT
    ============================================================ */
@@ -408,6 +411,23 @@ function attachFormHandlers() {
    ============================================================ */
 
 async function initAutoreMusei() {
+    // Rebuild section content each call (handles back-from-detail correctly)
+    const section = document.getElementById('section-autore-musei');
+    section.innerHTML = `
+        <div class="section-header">
+            <h2>Musei</h2>
+            <p>Esplora i musei disponibili e scopri le visite più popolari.</p>
+        </div>
+        <h3 class="scroll-section-label">Tutti i Musei</h3>
+        <div class="scroll-row" id="autoreMuseiRow">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
+        </div>
+        <h3 class="scroll-section-label" style="margin-top:36px;">Visite più Popolari</h3>
+        <div class="scroll-row" id="autoreVisitePopRow">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
+        </div>
+    `;
+
     const museiRow  = document.getElementById('autoreMuseiRow');
     const visiteRow = document.getElementById('autoreVisitePopRow');
 
@@ -418,9 +438,11 @@ async function initAutoreMusei() {
         ]);
         const [dMusei, dVisite] = await Promise.all([rMusei.json(), rVisite.json()]);
 
+        allMuseiAutore = dMusei.ok ? dMusei.data : [];
+
         if (dMusei.ok && dMusei.data.length) {
             museiRow.innerHTML = dMusei.data.map(m => `
-                <div class="scroll-card">
+                <div class="scroll-card scroll-card-clickable" onclick="showAutoreMuseoDetail('${m.codiceIsil}')">
                     ${m.immagineCopertina
                         ? `<img class="scroll-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
                         : `<div class="scroll-card-img scroll-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
@@ -456,6 +478,77 @@ async function initAutoreMusei() {
         if (visiteRow) visiteRow.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento delle visite.</p>';
     }
 }
+
+window.showAutoreMuseoDetail = async function (codiceIsil) {
+    const museo = allMuseiAutore.find(m => m.codiceIsil === codiceIsil);
+    if (!museo) return;
+
+    const section = document.getElementById('section-autore-musei');
+    section.innerHTML = `
+        <button class="museo-detail-back" onclick="switchSection('autore-musei')">
+            <i class="fa-solid fa-arrow-left"></i> Torna ai musei
+        </button>
+        <h2 class="museo-detail-title">${museo.nome}</h2>
+        <p class="museo-detail-sub">${museo.citta} · ${museo.codiceIsil}</p>
+        <div class="detail-tabs">
+            <button class="tab-btn active" onclick="showAutoreTab('opere','${codiceIsil}',this)">Opere</button>
+            <button class="tab-btn"        onclick="showAutoreTab('visite','${codiceIsil}',this)">Visite</button>
+        </div>
+        <div id="autoreDetailContent" class="items-grid"></div>
+    `;
+
+    showAutoreTab('opere', codiceIsil, section.querySelector('.tab-btn.active'));
+};
+
+window.showAutoreTab = async function (type, codiceIsil, btn) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const content = document.getElementById('autoreDetailContent');
+    content.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>';
+
+    const url = type === 'opere'
+        ? `/api/opere?codiceIsil=${encodeURIComponent(codiceIsil)}`
+        : `/api/visite?codiceIsil=${encodeURIComponent(codiceIsil)}`;
+
+    try {
+        const res  = await fetch(url);
+        const data = await res.json();
+
+        if (!data.ok || data.data.length === 0) {
+            content.innerHTML = `<p class="empty-msg">Nessun${type === 'opere' ? "'opera" : 'a visita'} presente.</p>`;
+            return;
+        }
+
+        if (type === 'opere') {
+            content.innerHTML = data.data.map(op => `
+                <div class="opera-read-card">
+                    ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
+                    <h3>${op.operaId}</h3>
+                    ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>`           : ''}
+                    ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>`     : ''}
+                    ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
+                </div>
+            `).join('');
+        } else {
+            content.innerHTML = data.data.map(v => `
+                <div class="visita-read-card">
+                    <h3>${v.nomeVisita}</h3>
+                    ${v.logistica ? `<p>${v.logistica}</p>` : ''}
+                    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                        <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
+                        ${v.prezzo > 0
+                            ? `<span class="price-badge">€${v.prezzo}</span>`
+                            : `<span class="free-badge">Gratis</span>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+        }
+    } catch (e) {
+        content.innerHTML = '<p class="empty-msg">Errore nel caricamento dei dati.</p>';
+    }
+};
 
 async function initAutoreVisite() {
     const view = document.getElementById('autoreVisiteView');

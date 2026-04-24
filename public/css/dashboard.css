@@ -362,6 +362,16 @@
     font-weight: 500;
 }
 
+.scroll-card-clickable {
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.scroll-card-clickable:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(45, 90, 61, 0.12);
+}
+
 /* ── EMPTY / LOADING ─────────────────────── */
 
 .empty-msg, .loading-msg {
