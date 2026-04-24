@@ -25,14 +25,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     document.getElementById('sidebarRole').textContent = SESSION.role;
 
     buildSidebar();
-    attachFormHandlers();
+
+    try { attachFormHandlers(); } catch (e) { console.warn('attachFormHandlers:', e); }
 
     if (SESSION.role === 'curatore') {
         await loadMuseiCuratore();
         switchSection('musei');
-    }
-
-    if (SESSION.role === 'autore') {
+    } else if (SESSION.role === 'autore') {
         switchSection('autore-musei');
     }
 });
@@ -255,7 +254,8 @@ function initAggiungiOpere() {
 function attachFormHandlers() {
 
     // Dropdown modifica → mostra form
-    document.getElementById('selectModifica').addEventListener('change', function () {
+    const selectModifica = document.getElementById('selectModifica');
+    if (selectModifica) selectModifica.addEventListener('change', function () {
         const codice = this.value;
         const form = document.getElementById('modificaForm');
         if (!codice) { form.style.display = 'none'; return; }
@@ -272,7 +272,8 @@ function attachFormHandlers() {
     });
 
     // Submit modifica museo
-    document.getElementById('modificaForm').addEventListener('submit', async (e) => {
+    const modificaForm = document.getElementById('modificaForm');
+    if (modificaForm) modificaForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const codiceIsil = document.getElementById('selectModifica').value;
         const body = {
@@ -304,7 +305,8 @@ function attachFormHandlers() {
     });
 
     // Submit aggiungi opera
-    document.getElementById('operaForm').addEventListener('submit', async (e) => {
+    const operaForm = document.getElementById('operaForm');
+    if (operaForm) operaForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const codiceIsil = document.getElementById('selectOpereMuseo').value;
         if (!codiceIsil) { alert('Seleziona prima un museo.'); return; }
@@ -369,7 +371,8 @@ function attachFormHandlers() {
     }
 
     // Submit aggiungi museo
-    document.getElementById('nuovoMuseoForm').addEventListener('submit', async (e) => {
+    const nuovoMuseoForm = document.getElementById('nuovoMuseoForm');
+    if (nuovoMuseoForm) nuovoMuseoForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const body = {
             nome:              document.getElementById('nmNome').value,
@@ -405,6 +408,9 @@ function attachFormHandlers() {
    ============================================================ */
 
 async function initAutoreMusei() {
+    const museiRow  = document.getElementById('autoreMuseiRow');
+    const visiteRow = document.getElementById('autoreVisitePopRow');
+
     try {
         const [rMusei, rVisite] = await Promise.all([
             fetch('/api/musei'),
@@ -412,7 +418,6 @@ async function initAutoreMusei() {
         ]);
         const [dMusei, dVisite] = await Promise.all([rMusei.json(), rVisite.json()]);
 
-        const museiRow = document.getElementById('autoreMuseiRow');
         if (dMusei.ok && dMusei.data.length) {
             museiRow.innerHTML = dMusei.data.map(m => `
                 <div class="scroll-card">
@@ -426,10 +431,9 @@ async function initAutoreMusei() {
                 </div>
             `).join('');
         } else {
-            museiRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">Nessun museo disponibile.</p>';
+            museiRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessun museo disponibile. Avvia il seed dei musei.</p>';
         }
 
-        const visiteRow = document.getElementById('autoreVisitePopRow');
         if (dVisite.ok && dVisite.data.length) {
             const sorted = [...dVisite.data].sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0));
             visiteRow.innerHTML = sorted.map(v => `
@@ -444,10 +448,12 @@ async function initAutoreMusei() {
                 </div>
             `).join('');
         } else {
-            visiteRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;">Nessuna visita disponibile.</p>';
+            visiteRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessuna visita disponibile. Avvia il seed delle visite.</p>';
         }
     } catch (e) {
         console.error('Errore autore-musei:', e);
+        if (museiRow)  museiRow.innerHTML  = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento dei musei.</p>';
+        if (visiteRow) visiteRow.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento delle visite.</p>';
     }
 }
 

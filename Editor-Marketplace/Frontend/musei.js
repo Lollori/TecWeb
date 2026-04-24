@@ -54,6 +54,7 @@ function renderMusei(musei) {
                     <h3>${m.nome}</h3>
                     <p class="museum-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
                 </div>
+                ${currentRole === 'curatore' ? `
                 <div class="action-group">
                     <div class="buttons-row">
                         <button class="icon-btn edit-btn" onclick="openModal('${m.codiceIsil}')" title="Modifica">
@@ -63,7 +64,7 @@ function renderMusei(musei) {
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
-                </div>
+                </div>` : ''}
             </div>
             <div class="card-body">
                 ${m.descrizioneBreve ? `<p class="description-text">${m.descrizioneBreve}</p>` : ''}
