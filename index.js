@@ -1,4 +1,4 @@
-/* ========================== */
+﻿/* ========================== */
 /* SETUP            */
 /* ========================== */
 global.rootDir = __dirname ;
@@ -67,8 +67,10 @@ app.get('/', (req, res) => {
 const mongoCredentials = {
     user: "site252630",
     pwd: "Tei2xiip",
-    site: "mongo_site252630"
+    site: (process.env.NODE_ENV === 'production') ? "mongo_site252630" : "localhost"
 }  
+
+console.log(`Connessione DB impostata su: ${mongoCredentials.site}`);
 
 app.get('/db/create', async function (req, res) {
     res.send(await mymongo.create(mongoCredentials))
