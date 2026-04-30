@@ -1,182 +1,152 @@
-/* --- 1. RESET & VARIABILI --- */
+/* --- VARIABILI BRAND --- */
 :root {
-    --primary-dark: #1a3a2a;
-    --primary-mid: #2d5a3d;
-    --accent-soft: #5c7568;
-    --bg-gradient: radial-gradient(circle at top left, #f8faf8, #d9e8dc);
-    --transition-smooth: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    --primary-magenta: #e91e63;
+    --dark-navy: #0f172a;
+    --soft-navy-bg: rgba(15, 23, 42, 0.12); 
+    --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
+/* --- BASE --- */
 body, html {
     margin: 0; padding: 0;
     width: 100%; height: 100%;
+    background: none !important; 
+    background-color: var(--soft-navy-bg) !important;
     font-family: 'Inter', sans-serif;
-    overflow: hidden;
+    display: flex; /* Centra la card perfettamente */
+    align-items: center;
+    justify-content: center;
 }
 
-/* --- 2. CONTAINER --- */
-.auth-wrapper {
-    width: 100vw; height: 100vh;
-    display: flex; justify-content: center; align-items: center;
-    background: var(--bg-gradient);
-}
-
-/* --- 3. CARD (ANIMATA E PROPORZIONATA) --- */
+/* --- CARD --- */
 .auth-card {
-    position: relative;
-    padding: 40px 35px !important;
-    border-radius: 28px;
+    border-radius: 35px !important;
+    background: #ffffff !important;
+    box-shadow: 0 20px 40px -10px rgba(15, 23, 42, 0.1) !important;
+    max-width: 420px !important; 
     width: 90%;
-    max-width: 370px;
-    background: #ffffff;
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.06);
-    z-index: 1;
-    overflow: hidden;
-    transition: var(--transition-smooth);
+    padding: 2.2rem 2rem !important; /* Calibrato per compattezza */
     animation: cardEntrance 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
 }
 
 @keyframes cardEntrance {
-    from { opacity: 0; transform: translateY(30px); }
+    from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- 4. BRAND & TITOLI --- */
-.brand-icon-container {
-    display: flex; justify-content: center;
-    width: 100%; margin-bottom: 15px;
+/* --- LOGO E TITOLI --- */
+.logo-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800;
+    font-size: 1.8rem !important; /* Rimpicciolito per la card da 420px */
+    color: var(--dark-navy);
+    margin-bottom: 0;
 }
-.brand-icon { font-size: 1.3rem; color: var(--primary-mid); }
+
+.brand-accent {
+    width: 40px;
+    height: 4px;
+    background: var(--primary-magenta);
+    margin: 8px auto 0;
+    border-radius: 10px;
+}
 
 .auth-body h2 {
     font-family: 'Playfair Display', serif;
-    color: var(--primary-dark);
-    font-size: 1.6rem !important; 
+    font-size: 1.5rem !important;
+    color: var(--dark-navy);
     font-weight: 700;
-    margin: 0 0 8px 0; text-align: center;
-    white-space: nowrap;
-}
-.auth-body p {
-    color: var(--accent-soft);
-    font-size: 0.88rem; line-height: 1.5;
-    margin-bottom: 30px; text-align: center;
 }
 
-/* --- 5. SEZIONE RUOLO (SOLO REGISTRAZIONE) --- */
-.role-section {
-    display: none; 
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-    transition: var(--transition-smooth);
-}
+/* --- SPAZIATURE COMPATTE --- */
+.brand-header { margin-bottom: 1.2rem !important; }
+#authSubtitle { margin-bottom: 1.8rem !important; font-size: 0.9rem; color: #94a3b8; }
+.mb-4 { margin-bottom: 1rem !important; } 
+.mb-5 { margin-bottom: 1.5rem !important; }
 
-.role-visible {
-    display: block !important;
-    opacity: 1;
-    max-height: 150px; 
-    margin-bottom: 25px; /* Spazio sotto la tendina */
-    animation: slideDownField 0.5s forwards;
-}
-
-@keyframes slideDownField {
-    from { opacity: 0; transform: translateY(-15px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.role-input-group { 
-    display: flex; align-items: center; gap: 15px; 
-}
-
+/* --- AVATAR --- */
 .auth-avatar-container {
-    width: 55px; height: 55px;
-    border-radius: 50%;
-    background: #f1f5f2;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-    display: flex; justify-content: center; align-items: center;
-    flex-shrink: 0; overflow: hidden;
-}
-.auth-avatar-container img {
-    width: 100%; height: 100%;
-    object-fit: cover;
+    width: 60px !important;
+    height: 60px !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    flex-shrink: 0;
+    transition: var(--transition);
 }
 
-/* --- 6. FORM & INPUT --- */
-.form-grid label {
-    font-size: 0.68rem; font-weight: 700;
-    text-transform: uppercase; letter-spacing: 1.2px;
-    color: var(--primary-mid); margin-bottom: 7px; display: block;
+#avatarLetter {
+    font-family: 'Playfair Display', serif;
+    color: white;
+    font-weight: 800;
+    font-size: 1.6rem;
 }
 
-.input-group-email {
-    display: flex; align-items: center;
-    background: #fdfdfd; border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px; padding-left: 15px; margin-bottom: 20px;
-    transition: all 0.3s ease;
-}
-.input-group-email:focus-within {
-    border-color: var(--primary-mid);
-}
-.input-group-email input { outline: none; }
+.bg-visitatore { background-color: var(--primary-magenta) !important; }
+.bg-curatore { background-color: #6366f1 !important; }
+.bg-autore { background-color: var(--dark-navy) !important; }
 
-#emailPrefix { font-weight: 700; color: var(--primary-mid); font-size: 0.92rem; }
-
-.form-grid input, .role-input-group select {
-    width: 100%; padding: 13px 16px;
-    border-radius: 12px; font-size: 0.92rem;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-    background: #fdfdfd;
-    box-sizing: border-box;
-}
-
-.form-grid input { margin-bottom: 20px; } /* Spazio tra i campi */
-
-.input-group-email input { border: none !important; flex: 1; padding: 13px 5px !important; margin-bottom: 0; }
-
-.input-group-password {
-    display: flex; align-items: center;
-    background: #fdfdfd; border: 1px solid rgba(0, 0, 0, 0.1);
-    border-radius: 12px; margin-bottom: 20px;
-}
-.input-group-password:focus-within {
-    border-color: var(--primary-mid);
-}
-.input-group-password input { border: none !important; flex: 1; padding: 13px 16px !important; margin-bottom: 0; box-sizing: border-box; }
-.input-group-password input:focus { outline: none; }
-.input-group-password button {
-    background: none; border: none; cursor: pointer;
-    padding: 0 14px; color: var(--accent-soft);
-    font-size: 0.95rem; display: flex; align-items: center;
-}
-.input-group-password button:hover { color: var(--primary-dark); }
-
-/* --- 7. BOTTONE (FIX DISTANZA) --- */
-.btn-submit {
-    width: 100%; 
-    padding: 15px !important;
-    background-color: var(--primary-dark) !important;
-    color: #ffffff !important; border: none;
-    border-radius: 14px !important; font-weight: 600;
-    cursor: pointer; 
-    transition: all 0.3s ease;
-    
-    margin-top: 15px; /* STACCA IL TASTO DAL CAMPO PASSWORD */
+/* --- TENDINA E INPUT --- */
+.select-dark-navy {
+    background-color: var(--dark-navy) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 16px !important;
+    padding: 12px 18px !important;
+    font-weight: 600;
+    appearance: none !important;
+    -webkit-appearance: none !important;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
 }
 
-.btn-submit:hover { filter: brightness(1.2); transform: translateY(-2px); }
-
-.toggle-text { margin-top: 15px; font-size: 0.82rem; text-align: center; }
-.toggle-text a { font-weight: 700; color: var(--primary-dark); text-decoration: none; }
-.back-home-link { font-weight: 400 !important; color: var(--accent-soft) !important; }
-
-/*password errata*/
-.shake {
-    animation: shakeAnim 0.4s;
+.input-group-custom {
+    display: flex;
+    align-items: center;
+    background-color: #f8fafc;
+    border: 1.5px solid #f1f5f9;
+    border-radius: 16px;
+    transition: var(--transition);
 }
 
-@keyframes shakeAnim {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-10px); }
-    75% { transform: translateX(10px); }
+.input-group-custom input {
+    border: none !important;
+    background: transparent !important;
+    padding: 12px 15px;
+    width: 100%;
+    outline: none;
+    font-size: 0.95rem;
 }
+
+.input-group-custom .prefix { padding-left: 15px; color: var(--primary-magenta); font-weight: 700; }
+.input-group-custom .toggle-btn { border: none; background: transparent; padding-right: 15px; color: #cbd5e1; cursor: pointer; }
+
+/* --- BOTTONE --- */
+.btn-magenta-submit {
+    background: var(--primary-magenta) !important;
+    color: white !important;
+    border: none;
+    padding: 14px;
+    border-radius: 18px;
+    font-weight: 700;
+    width: 100%;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.btn-magenta-submit:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 24px rgba(233, 30, 99, 0.25);
+}
+
+/* --- VARIE --- */
+.text-magenta { color: var(--primary-magenta) !important; }
+.footer-links a { color: #94a3b8; text-decoration: none; font-size: 0.85rem; }
+.footer-links a:hover { color: var(--dark-navy); }
+.form-label { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; color: #94a3b8; letter-spacing: 1px; margin-bottom: 8px; display: block; }

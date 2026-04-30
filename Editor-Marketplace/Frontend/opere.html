@@ -5,127 +5,240 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Opere - ArtAround</title>
     
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+    <!-- JS di Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous" defer></script>
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/editor.css">
-    <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/marketplace.css">
 
+
+    <style>
+        :root {
+            --brand-green: #1b3a27;
+            --hover-green: #2d5a3d;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f7f5;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            min-height: 100vh;
+            background-color: var(--brand-green);
+            color: white;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
+
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.75);
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin: 4px 0;
+            font-weight: 500;
+        }
+
+        .sidebar .nav-link:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.1);
+        }
+
+        .sidebar .nav-link.active {
+            color: white;
+            background-color: var(--hover-green);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .main-wrapper {
+            margin-left: 16.666667%; /* col-md-2 */
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { position: static; min-height: auto; }
+            .main-wrapper { margin-left: 0; }
+        }
+
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+    </style>
 </head>
-<body class="admin-layout">
+<body>
 
-    <header class="app-header">
-        <div class="header-inner">
-        <div style="width: 38px;"></div>
-        <h1 class="logo">
-            <a href="/" class="logo-link">ArtAround</a>
-            <span>Editor</span>
-        </h1>
-
-            <div id="nav-profile-placeholder"></div>
-        </div>
-</header>
-    <nav class="top-nav-cards">
-        <div class="nav-inner-glass">
-            <a href="musei.html" class="mini-card back-card"><i class="fa-solid fa-arrow-left"></i><span>Musei</span></a>
-            <a href="opere.html" class="mini-card active"><i class="fa-solid fa-palette"></i><span>Opere</span></a>
-            <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Visite</span></a>
-            <a href="marketplace.html" class="mini-card"><i class="fa-solid fa-store"></i><span>Marketplace</span></a>
-        </div>
-    </nav>
-
- <main class="main-viewport">
-        <header class="content-header">
-            <div class="header-text">
-                <h1>Gestione delle opere</h1>
-                <p id="museoSubtitle">Configura i contenuti multimediali (Item) del catalogo </p>
+<div class="container-fluid">
+    <div class="row">
+        
+        <!-- SIDEBAR -->
+        <nav class="col-md-2 d-none d-md-block sidebar p-3">
+            <div class="mb-5 px-2">
+                <h2 class="h4 fw-bold mb-0" style="font-family: 'Playfair Display', serif;">ArtAround</h2>
+                <small class="opacity-50">Editor Opere</small>
             </div>
-            
-            <div class="header-toolbar">
-                <div class="search-box-glass">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="searchText" placeholder="Cerca tra i tuoi contenuti..." oninput="applyFilters()">
-                </div>
 
-                <button onclick="apriModaleItem()" class="btn-primary-glass">
-                    <i class="fa-solid fa-plus"></i> Nuovo Item
+            <ul class="nav flex-column mb-auto">
+                <li class="nav-item">
+                    <a href="musei.html" class="nav-link">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Torna ai Musei
+                    </a>
+                </li>
+                <hr class="text-white-50">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fa-solid fa-palette me-2"></i> Opere
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="visite.html" class="nav-link">
+                        <i class="fa-solid fa-map me-2"></i> Visite
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="marketplace.html" class="nav-link">
+                        <i class="fa-solid fa-store me-2"></i> Marketplace
+                    </a>
+                </li>
+            </ul>
+
+            <div class="mt-5 pt-5 border-top border-secondary border-opacity-25">
+                <div id="nav-profile-placeholder"></div>
+            </div>
+        </nav>
+
+        <!-- MAIN CONTENT -->
+        <main class="col-md-10 main-wrapper p-4 p-md-5">
+            
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="fw-bold text-dark">Gestione delle Opere</h1>
+                    <p class="text-muted mb-0" id="museoSubtitle text-capitalize">Configura i contenuti multimediali del catalogo</p>
+                </div>
+                <button onclick="apriModaleItem()" class="btn btn-success shadow-sm px-4 py-2">
+                    <i class="fa-solid fa-plus me-2"></i>Nuovo Item
                 </button>
             </div>
-        </header>
 
-        <div id="statsDashboard" class="stats-sidebar">
-            <div class="mini-stat-card">
-                <div class="stat-ring-container" id="ringAdozioni"></div>
-                <div class="stat-texts">
-                    <small>Adozioni</small>
-                    <strong id="valAdozioni">0</strong>
-                </div>
-            </div>
-            <div class="mini-stat-card">
-                <div class="stat-texts">
-                    <small>Stato Sistema</small>
-                    <strong style="color: #4a7c5f;">Online</strong>
-                </div>
-            </div>
-        </div>
-
-        <div id="itemsContainer" class="items-grid"></div>
-    </main>
-
-    <div id="itemModal" class="modal-overlay" style="display:none;">
-        <div class="modal-glass-card">
-            <div class="modal-glass-header">
-                <div class="brand">ArtAround <span>Editor</span></div>
-                <button class="modal-close-btn" onclick="closeModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="modal-content">
-                <form id="itemForm">
-                    <div class="form-grid">
-                        <label>Titolo dell'Opera / Oggetto *
-                            <input type="text" id="operaId" placeholder="Es: Il Cenacolo" required>
-                        </label>
-                        
-                        <label>Identificatore (es. Wikidata ID)
-                            <input type="text" id="wikidataId" placeholder="Es: Q12345">
-                        </label>
-
-                        <label>Lunghezza *
-                            <select id="lunghezza" required>
-                                <option value="15s">15 secondi </option>
-                                <option value="1min">1 minuto </option>
-                                <option value="4min">4 minuti </option>
-                            </select>
-                        </label>
-
-                        <label>Linguaggio *
-                            <select id="linguaggio" required>
-                                <option value="infantile">Infantile [cite: 2, 3]</option>
-                                <option value="medio">Medio / Divulgativo [cite: 2, 3]</option>
-                                <option value="specialistico">Specialistico [cite: 2, 3]</option>
-                            </select>
-                        </label>
-
-                        <label class="full-width">Testo per Audioguida *
-                            <textarea id="testo" rows="6" placeholder="Inserisci il testo per l'App Navigator..." required></textarea>
-                        </label>
+            <!-- Stats Bar -->
+            <div class="row mb-4 g-3" id="statsDashboard">
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center">
+                        <div id="ringAdozioni" class="me-3" style="width: 40px; height: 40px;"></div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Adozioni</small>
+                            <strong class="h4 mb-0" id="valAdozioni">0</strong>
+                        </div>
                     </div>
-                    
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal()">Annulla</button>
-                        <button type="submit" class="btn-submit">Salva Contenuto</button>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 shadow-sm p-3 d-flex flex-row align-items-center">
+                        <div class="me-3 text-success"><i class="fa-solid fa-circle-check fa-2xl"></i></div>
+                        <div>
+                            <small class="text-muted d-block text-uppercase fw-bold" style="font-size: 0.7rem;">Stato Sistema</small>
+                            <strong class="h5 mb-0 text-success">Online</strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search Bar -->
+            <div class="row mb-4">
+                <div class="col-md-6 col-lg-5">
+                    <div class="input-group shadow-sm">
+                        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                        <input type="text" id="searchText" class="form-control border-0" placeholder="Cerca tra i tuoi contenuti..." oninput="applyFilters()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenitore Dinamico Opere -->
+            <div id="itemsContainer" class="items-grid">
+                <!-- Riempito da item.js -->
+            </div>
+
+        </main>
+    </div>
+</div>
+
+<!-- MODAL: GESTIONE ITEM (Bootstrap Version) -->
+<div class="modal fade" id="itemModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header border-0 bg-light">
+                <h5 class="modal-title fw-bold">ArtAround <span class="text-success">Editor</span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
+            </div>
+            <div class="modal-body p-4">
+                <form id="itemForm">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <label class="form-label fw-bold">Titolo dell'Opera / Oggetto *</label>
+                            <input type="text" id="operaId" class="form-control" placeholder="Es: Il Cenacolo" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label fw-bold">Identificatore (Wikidata ID)</label>
+                            <input type="text" id="wikidataId" class="form-control" placeholder="Es: Q12345">
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Lunghezza *</label>
+                            <select id="lunghezza" class="form-select" required>
+                                <option value="15s">15 secondi</option>
+                                <option value="1min">1 minuto</option>
+                                <option value="4min">4 minuti</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Linguaggio *</label>
+                            <select id="linguaggio" class="form-select" required>
+                                <option value="infantile">Infantile</option>
+                                <option value="medio">Medio / Divulgativo</option>
+                                <option value="specialistico">Specialistico</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12">
+                            <label class="form-label fw-bold">Testo per Audioguida *</label>
+                            <textarea id="testo" class="form-control" rows="6" placeholder="Inserisci il testo per l'App Navigator..." required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-2 mt-4 justify-content-end">
+                        <button type="button" class="btn btn-light px-4" onclick="closeModal()">Annulla</button>
+                        <button type="submit" class="btn btn-success px-4">Salva Contenuto</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
+</div>
 
 <script src="item.js"></script>
 <script src="/js/profile.js"></script>
+
+<script>
+    // Integrazione JS per gestire la modale di Bootstrap
+    function apriModaleItem() {
+        const modal = new bootstrap.Modal(document.getElementById('itemModal'));
+        modal.show();
+    }
+
+    function closeModal() {
+        const modalEl = document.getElementById('itemModal');
+        const modal = bootstrap.Modal.getInstance(modalEl);
+        if (modal) modal.hide();
+    }
+</script>
 
 </body>
 </html>

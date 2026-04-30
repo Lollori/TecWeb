@@ -1,214 +1,165 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ArtAround | Benvenuto</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="stylesheet" href="/css/styles.css">
-  <link rel="stylesheet" href="/css/profile.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ArtAround | Elevating Your Art Experience</title>
+
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome per le icone -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
-  <header class="app-header">
-    <div class="header-inner">
-        <h1 class="logo">
-          <a href="/" class="logo-link">ArtAround</a>
-        </h1>
-    <div class="header-actions">
-        <a href="/login/login.html" id="loginBtn" class="login-button">Login</a> 
-        
-        <div id="nav-profile-placeholder"></div>
-    </div>
-    </div>
-  </header>
-
-  <!-- HERO (dentro main per max-width) -->
-  <main>
-    <section class="hero">
-      <div class="hero-left">
-        <div class="badge">✦ Guida museale personalizzata</div>
-        <h1>Esplora l'arte<br>a modo <em>tuo.</em></h1>
-        <p>Visita musei con una guida su misura per te, oppure crea e pubblica contenuti come editor.</p>
-        <div class="hero-cta">
-          <a href="#cards" class="btn-primary">Inizia a esplorare</a>
+    <!-- NAVBAR (Statica) -->
+    <header class="app-header py-4">
+        <div class="container d-flex justify-content-between align-items-center">
+            <h1 class="logo mb-0">
+                <a href="/" class="logo-link text-decoration-none" style="font-family: 'Playfair Display'; font-weight: 800; font-size: 1.8rem; color: #0f172a;">ArtAround.</a>
+            </h1>
+            <nav class="d-flex align-items-center gap-4">
+                <a href="/login/login.html" class="text-dark fw-bold text-decoration-none small">Log In</a>
+                <a href="/login/login.html" class="btn btn-magenta">Enroll Now</a>
+            </nav>
         </div>
-      </div>
-      <div class="hero-right">
-        <div class="hero-quote-card">
-          <i class="fa-solid fa-quote-left quote-icon"></i>
-          <blockquote>
-            "Si usa uno specchio di vetro per guardare il viso e si usano le opere d'arte per guardare la propria anima."
-          </blockquote>
-          <span class="quote-author">— George Bernard Shaw</span>
-        </div>
-      </div>
-    </section>
-  </main>
+    </header>
 
- <section id="features" class="features-section">
-  <div class="features-inner">
-    <div class="features-intro">
-      <div class="feat-section-icon"><i class="fa-solid fa-compass"></i></div>
-      <div class="features-intro-text">
-        <h2>Navigator</h2>
-        <p>La guida museale che si adatta a te, non il contrario</p>
-      </div>
-    </div>
+    <main>
+        <!-- 1. HERO SECTION -->
+        <section class="hero-premium">
+            <div class="container">
+                <div class="row align-items-center g-5">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">Respira l'arte <br><em>a modo tuo.</em></h1>
+                        <p class="lead text-muted mb-5 fs-5">Scopri migliaia di percorsi curati da esperti. Esplora a tuo ritmo, acquisisci nuove prospettive e connettiti con la cultura ovunque tu sia.</p>
+                        
+                        <div class="row mb-5 text-center text-lg-start">
+                            <div class="col-4">
+                                <span class="stat-number">28k</span>
+                                <span class="stat-label">Visitatori</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="stat-number">618</span>
+                                <span class="stat-label">Curatori</span>
+                            </div>
+                            <div class="col-4">
+                                <span class="stat-number">98%</span>
+                                <span class="stat-label">Success Rate</span>
+                            </div>
+                        </div>
 
-    <div class="bento bento--nav">
+                        <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
+                            <a href="#features" class="btn btn-magenta">Esplora Funzioni</a>
+                            <a href="#choices" class="btn btn-outline-purple" style="border: 2px solid #673ab7; color: #673ab7; padding: 13px 35px; border-radius: 12px; font-weight: 600; text-decoration: none;">Learn More</a>
+                        </div>
+                    </div>
 
-      <!-- Cella testo grande — area A -->
-      <div class="bento-cell bento-cell--text bento-cell--accent" style="grid-area: a;">
-        <span class="feature-number">01</span>
-        <h3>Visita personalizzata</h3>
-        <p>ArtAround costruisce il percorso sui tuoi interessi, livello di conoscenza e tempo. Ogni visita è unica.</p>
-      </div>
+                    <div class="col-lg-6 position-relative">
+                        <div class="hero-image-container">
+                            <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?q=80&w=2000&auto=format&fit=crop" class="img-fluid rounded-5 shadow-lg" alt="Art Museum Experience">
+                        </div>
+                        
+                        <div class="floating-badge d-none d-md-flex" style="top: 15%; left: -10%;">
+                            <div class="icon-box-small" style="background: #e91e63;"><i class="fa-solid fa-palette"></i></div>
+                            <div><strong class="d-block small">Curator Insights</strong><small class="text-muted">2,450 Post</small></div>
+                        </div>
+                        <div class="floating-badge d-none d-md-flex" style="bottom: 10%; right: -5%;">
+                            <div class="icon-box-small" style="background: #8b5cf6;"><i class="fa-solid fa-vr-cardboard"></i></div>
+                            <div><strong class="d-block small">Virtual Tours</strong><small class="text-muted">1,890 Percorsi</small></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-      <!-- Immagine stretta alta — specchio Arnolfini — area B (occupa 2 righe) -->
-      <div class="bento-cell bento-cell--img" style="grid-area: b;">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/3/33/Van_Eyck_-_Arnolfini_Portrait.jpg"
-          alt="Ritratto dei coniugi Arnolfini, van Eyck"
-          style="object-position: 50% 68%;"
-          referrerpolicy="no-referrer"
-        />
-        <div class="bento-img-caption-bar">Jan van Eyck · <em>Ritratto dei coniugi Arnolfini</em> · dettaglio specchio convesso · 1434</div>
-      </div>
+        <!-- 2. FEATURES SECTION (Card Immagine Pulita - No Testimonianze - No Bottoni) -->
+        <section id="features" class="features-section bg-white border-top border-bottom">
+            <div class="container">
+                <div class="row g-5 align-items-center">
+                    
+                    <div class="col-lg-6 order-2 order-lg-1">
+                        <div class="row g-4">
+                            <div class="col-md-6 feature-item">
+                                <i class="fa-solid fa-microphone-lines"></i>
+                                <h4>Audio AI</h4>
+                                <p class="text-muted small">Guide vocali dinamiche che si adattano al tuo livello di preparazione.</p>
+                            </div>
+                            <div class="col-md-6 feature-item">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                                <h4>Mappe Indoor</h4>
+                                <p class="text-muted small">Navigazione precisa tra le sale dei musei partner in tutto il mondo.</p>
+                            </div>
+                            <div class="col-md-6 feature-item">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <h4>Multilivello</h4>
+                                <p class="text-muted small">Scegli la complessità dei contenuti: narrativo, medio o specialistico.</p>
+                            </div>
+                            <div class="col-md-6 feature-item">
+                                <i class="fa-solid fa-chart-line"></i>
+                                <h4>Dashboard</h4>
+                                <p class="text-muted small">Analisi dettagliate per gli editor sull'andamento delle proprie visite.</p>
+                            </div>
+                        </div>
+                    </div>
 
+                    <!-- Card Immagine Semplice -->
+                    <div class="col-lg-5 order-1 order-lg-2 mx-auto">
+                        <div class="pink-filter-image-small">
+                            <img src="https://cdn.pixabay.com/photo/2017/08/02/11/26/art-2571027_1280.jpg" alt="Donna al museo">
+                            <div class="filter-content">
+                                <i class="fa-solid fa-wand-magic-sparkles mb-3 fs-2"></i>
+                                <h2>Sperimenta il futuro <br>dell'arte digitale</h2>
+                            </div>
+                        </div>
+                    </div>
 
+                </div>
+            </div>
+        </section>
 
-      <!-- Cella testo piccola — area C -->
-      <div class="bento-cell bento-cell--text bento-cell--muted" style="grid-area: c;">
-        <span class="feature-number">02</span>
-        <h3>Audioguida integrata</h3>
-        <p>Sintesi vocale calibrata sul tuo profilo — narrativo, medio o specialistico.</p>
-      </div>
+        <!-- 3. FINAL CHOICES -->
+        <section id="choices" class="section-dark">
+            <div class="container">
+                <div class="text-center mb-5 pb-5">
+                    <h2 class="display-4 fw-bold text-white mb-3">Scegli la tua prospettiva</h2>
+                    <p class="text-white opacity-75 fs-5">Scegli come vuoi interagire con l'ecosistema ArtAround.</p>
+                </div>
 
-      <!-- Cella testo piccola — area D -->
-      <div class="bento-cell bento-cell--text" style="grid-area: d;">
-        <span class="feature-number">03</span>
-        <h3>Comandi vocali</h3>
-        <p>"Prossimo", "Dimmi di più", "Dov'è l'uscita" — mani libere, occhi sull'opera.</p>
-      </div>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-md-5">
+                        <div class="premium-card h-100" onclick="window.location.href='/navigator/index.html'">
+                            <div class="icon-box"><i class="fa-solid fa-location-arrow"></i></div>
+                            <h3 class="fw-bold mb-3 text-white">Navigator</h3>
+                            <p class="text-white opacity-75 mb-4 px-3">L'assistente intelligente per le tue visite. Spiegazioni vocali AI e percorsi adattivi basati sui tuoi interessi personali.</p>
+                            <div class="btn btn-magenta rounded-pill w-100">Start Visiting</div>
+                        </div>
+                    </div>
 
-      <!-- Cella testo piccola — area E -->
-      <div class="bento-cell bento-cell--text bento-cell--dark-warm" style="grid-area: e;">
-        <span class="feature-number">04</span>
-        <h3>Mappa del museo</h3>
-        <p>Orientati tra le sale. Toilette, bar, uscite sempre a portata di voce.</p>
-      </div>
+                    <div class="col-md-5">
+                        <div class="premium-card h-100" onclick="window.location.href='/Editor-Marketplace/Frontend/musei.html'">
+                            <div class="icon-box"><i class="fa-solid fa-shop"></i></div>
+                            <h3 class="fw-bold mb-3 text-white">Marketplace</h3>
+                            <p class="text-white opacity-75 mb-4 px-3">Il network dei curatori professionisti. Crea, pubblica e scambia contenuti multimediali per il pubblico globale.</p>
+                            <div class="btn btn-magenta rounded-pill w-100">Open Market</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-    </div>
-  </div>
-</section>
+    <footer class="py-5 text-center bg-white border-top">
+        <p class="text-muted small mb-0">© 2026 ArtAround — Professional Art Technologies.</p>
+    </footer>
 
-
-<section class="features-section features-section--alt">
-  <div class="features-inner">
-    <div class="features-intro">
-      <div class="feat-section-icon"><i class="fa-solid fa-pen-to-square"></i></div>
-      <div class="features-intro-text">
-        <h2>Editor & Marketplace</h2>
-        <p>Gli strumenti per chi crea contenuti museali</p>
-      </div>
-    </div>
-
-    <!-- Layout diverso: immagine in basso a destra, testo grande in alto a sx -->
-    <div class="bento bento--editor-v2">
-
-      <!-- Cella testo grande — area A -->
-      <div class="bento-cell bento-cell--text bento-cell--accent" style="grid-area: a;">
-        <span class="feature-number">01</span>
-        <h3>Gestione musei e opere</h3>
-        <p>Configura il museo, carica opere, aggiungi testi multilivello e metadati strutturati.</p>
-      </div>
-
-      <!-- Cella testo piccola — area B -->
-      <div class="bento-cell bento-cell--text" style="grid-area: b;">
-        <span class="feature-number">02</span>
-        <h3>Crea visite guidate</h3>
-        <p>Sequenze con indicazioni logistiche, contenuti opzionali e livelli differenziati.</p>
-      </div>
-
-      <!-- Cella testo piccola — area C -->
-      <div class="bento-cell bento-cell--text bento-cell--muted" style="grid-area: c;">
-        <span class="feature-number">03</span>
-        <h3>Marketplace</h3>
-        <p>Sfoglia e adotta visite di altri editor, o pubblica le tue — gratis o a pagamento.</p>
-      </div>
-
-      <!-- Immagine larga e bassa — mani che scrivono — area D (occupa 2 colonne) -->
-      <div class="bento-cell bento-cell--img" style="grid-area: d;">
-        <img
-          src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Jean-Baptiste_Perronneau_-_Gabriel_Bernard_de_Rieux_%281687-1762%29%2C_detail.jpg/1280px-Jean-Baptiste_Perronneau_-_Gabriel_Bernard_de_Rieux_%281687-1762%29%2C_detail.jpg"
-          alt="Dettaglio mani con penna, ritratto XVIII sec."
-          style="object-position: 50% 55%;"
-          onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/Creaci%C3%B3n_de_Ad%C3%A1n.jpg/1280px-Creaci%C3%B3n_de_Ad%C3%A1n.jpg'; this.style.objectPosition='62% 38%';"
-        />
-        <div class="bento-img-caption-bar">Michelangelo · <em>Creazione di Adamo</em> · dettaglio mani · Cappella Sistina, 1512</div>
-      </div>
-
-      <!-- Cella testo piccola — area E -->
-      <div class="bento-cell bento-cell--text bento-cell--dark-warm" style="grid-area: e;">
-        <span class="feature-number">04</span>
-        <h3>Gestione utenti</h3>
-        <p>Permessi flessibili per autori, editori e visitatori del tuo museo.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-
-
-
-
-  <section id="cards">
-  <div class="cards-inner">
-    <div class="cards-header">
-      <p class="cards-eyebrow">Inizia ora</p>
-      <h2 class="cards-title">Con quale ruolo vuoi<br>esplorare ArtAround?</h2>
-      <p class="cards-subtitle">Scegli la modalità più adatta a te. Puoi sempre cambiare in seguito.</p>
-    </div>
-
-    <nav id="menu-grid">
-
-      <a href="#" onclick="requireAuth(event, '/navigator/index.html')" class="nav-card nav-card--light">
-        <div class="nav-card-top">
-          <div class="icon-wrap"><i class="fa-solid fa-compass"></i></div>
-          <span class="nav-card-badge nav-card-badge--light">Per i visitatori</span>
-        </div>
-        <span class="label">Navigator</span>
-        <span class="card-desc">Visita musei con un percorso costruito sui tuoi interessi, il tuo livello di conoscenza e il tempo che hai a disposizione. La guida parla come vuoi tu.</span>
-        <div class="card-cta">Inizia come Navigator <i class="fa-solid fa-arrow-right"></i></div>
-      </a>
-
-      <a href="#" onclick="requireAuth(event, '/Editor-Marketplace/Frontend/musei.html')" class="nav-card nav-card--dark">
-        <div class="nav-card-top">
-          <div class="icon-wrap"><i class="fa-solid fa-pen-to-square"></i></div>
-          <span class="nav-card-badge nav-card-badge--dark">Per i curatori</span>
-        </div>
-        <span class="label">Editor</span>
-        <span class="card-desc">Crea visite, pubblica opere e gestisci i contenuti del tuo museo. Metti a disposizione dei visitatori esperienze personalizzate e di qualità.</span>
-        <div class="card-cta">Inizia come Editor <i class="fa-solid fa-arrow-right"></i></div>
-      </a>
-
-    </nav>
-  </div>
-</section>
-
-<script src="/js/profile.js"></script>
-<script>
-function requireAuth(event, destination) {
-    event.preventDefault();
-    if (localStorage.getItem('userUsername')) {
-        window.location.href = destination;
-    } else {
-        window.location.href = '/login/login.html?redirect=' + encodeURIComponent(destination);
-    }
-}
-</script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

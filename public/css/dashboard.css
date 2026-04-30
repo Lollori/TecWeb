@@ -1,486 +1,101 @@
-/* =========================================
-   DASHBOARD — LAYOUT LATERALE
-   ========================================= */
-
-.dashboard-wrapper {
-    display: flex;
-    align-items: flex-start;
-    width: 100%;
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 0 24px 60px;
-    gap: 24px;
+/* --- 1. VARIABILI & RESET --- */
+:root {
+    --brand-green: #1b3a27;
+    --hover-green: #2d5a3d;
+    --glass-bg: rgba(255, 255, 255, 0.62);
+    --glass-border: rgba(255, 255, 255, 0.75);
 }
 
-/* ── SIDEBAR ─────────────────────────────── */
-
+/* --- 2. SIDEBAR (Stile Unico) --- */
 .sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(18px);
-    -webkit-backdrop-filter: blur(18px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 20px;
-    padding: 20px 14px 24px;
-    position: sticky;
-    top: 24px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-}
-
-.sidebar-brand {
-    padding: 4px 10px 16px;
-    border-bottom: 1px solid rgba(45, 90, 61, 0.1);
-    margin-bottom: 14px;
+    background: var(--brand-green);
+    color: white;
+    min-height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
 }
 
 .sidebar-brand .dashboard-label {
     font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    font-weight: 700;
-    color: #2d5a3d;
+    font-size: 1.1rem;
+    color: #ffffff;
 }
 
-.sidebar-brand .role-badge {
-    display: block;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #4a7c5f;
-    margin-top: 3px;
-    text-transform: capitalize;
-}
-
-.sidebar-nav {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    width: 100%;
-    padding: 11px 14px;
-    border: none;
+.sidebar .nav-link {
+    color: rgba(255,255,255,0.75);
     border-radius: 12px;
-    background: transparent;
-    color: #4a5568;
-    font-size: 0.9rem;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    text-align: left;
-    transition: background 0.18s, color 0.18s;
+    margin: 4px 0;
+    transition: all 0.2s;
 }
 
-.nav-item i {
-    width: 18px;
-    text-align: center;
-    color: #4a7c5f;
-    transition: color 0.18s;
+.sidebar .nav-link:hover, .sidebar .nav-link.active {
+    background: rgba(255,255,255,0.15);
+    color: white !important;
 }
 
-.nav-item:hover {
-    background: rgba(74, 124, 95, 0.1);
-    color: #2d5a3d;
-}
-
-.nav-item.active {
-    background: rgba(45, 90, 61, 0.13);
-    color: #2d5a3d;
-    font-weight: 600;
-}
-
-.nav-item.active i {
-    color: #2d5a3d;
-}
-
-/* ── MAIN CONTENT ────────────────────────── */
-
-.dashboard-main {
-    flex: 1;
-    min-width: 0;
-}
-
-.dashboard-section {
-    display: none;
-}
-
-.section-header {
-    margin-bottom: 24px;
-}
-
-.section-header h2 {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.55rem;
-    color: #2d5a3d;
-    margin-bottom: 4px;
-}
-
-.section-header p {
-    color: #6b7280;
-    font-size: 0.88rem;
-}
-
-/* ── FORMS INLINE (fuori da modale) ──────── */
-
-.section-form {
-    background: rgba(255, 255, 255, 0.62);
+/* --- 3. COMPONENTI GLASS (L'anima del design) --- */
+.glass-card {
+    background: var(--glass-bg);
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
+    border: 1px solid var(--glass-border);
     border-radius: 20px;
-    padding: 28px 28px 20px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
-    max-width: 680px;
 }
 
-.select-museo {
-    display: block;
-    width: 100%;
-    max-width: 420px;
-    padding: 11px 16px;
-    border: 1.5px solid rgba(45, 90, 61, 0.22);
-    border-radius: 12px;
-    background: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.92rem;
-    color: #2d5a3d;
-    margin-bottom: 22px;
-    outline: none;
-    transition: border-color 0.2s;
-    cursor: pointer;
-}
-
-.select-museo:focus {
-    border-color: #4a7c5f;
-}
-
-/* ── DETTAGLIO MUSEO ─────────────────────── */
-
-.museo-detail-back {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(45, 90, 61, 0.1);
-    border: none;
-    border-radius: 10px;
-    color: #2d5a3d;
-    font-size: 0.88rem;
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.18s;
-    margin-bottom: 14px;
-}
-
-.museo-detail-back:hover {
-    background: rgba(45, 90, 61, 0.2);
-}
-
-.museo-detail-title {
+/* --- 4. SEZIONI & TITOLI --- */
+.section-header h2 {
     font-family: 'Playfair Display', serif;
-    font-size: 1.4rem;
-    color: #2d5a3d;
-    margin-bottom: 2px;
-}
-
-.museo-detail-sub {
-    color: #6b7280;
-    font-size: 0.88rem;
-    margin-bottom: 18px;
-}
-
-.detail-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.tab-btn {
-    padding: 7px 22px;
-    border: 1.5px solid rgba(45, 90, 61, 0.25);
-    border-radius: 20px;
-    background: transparent;
-    color: #4a7c5f;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.18s;
-}
-
-.tab-btn.active {
-    background: #2d5a3d;
-    color: white;
-    border-color: #2d5a3d;
-}
-
-/* ── OPERA CARD (read-only nel dettaglio) ── */
-
-.opera-read-card {
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    overflow: hidden;
-    padding: 16px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-}
-
-.opera-read-card img {
-    width: 100%;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.opera-read-card h3 {
-    font-size: 0.98rem;
-    color: #2d5a3d;
-    font-weight: 600;
-}
-
-.opera-read-card .opera-meta {
-    font-size: 0.82rem;
-    color: #6b7280;
-}
-
-/* ── VISITA CARD (read-only) ─────────────── */
-
-.visita-read-card {
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    padding: 18px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-}
-
-.visita-read-card h3 {
-    font-size: 0.98rem;
-    color: #2d5a3d;
-    font-weight: 600;
-    margin-bottom: 6px;
-}
-
-.visita-read-card p {
-    font-size: 0.84rem;
-    color: #4a5568;
-    line-height: 1.5;
-}
-
-/* ── SCROLL ROW (autore) ─────────────────── */
-
-.scroll-section-label {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.1rem;
-    color: #2d5a3d;
-    margin-bottom: 14px;
+    color: var(--brand-green);
     font-weight: 700;
 }
 
+/* --- 5. CARDS (Opere, Visite, Musei) --- */
+.item-card-custom {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid rgba(0,0,0,0.05);
+}
+
+.item-card-custom:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(45, 90, 61, 0.12);
+}
+
+.item-card-img {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+}
+
+/* --- 6. SCROLL ROW (Sezione Autore) --- */
 .scroll-row {
     display: flex;
     gap: 16px;
     overflow-x: auto;
-    padding-bottom: 12px;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(45, 90, 61, 0.3) transparent;
+    padding: 10px 0 20px;
 }
 
-.scroll-row::-webkit-scrollbar {
-    height: 6px;
-}
-
-.scroll-row::-webkit-scrollbar-track {
-    background: transparent;
-}
-
+.scroll-row::-webkit-scrollbar { height: 6px; }
 .scroll-row::-webkit-scrollbar-thumb {
-    background: rgba(45, 90, 61, 0.3);
+    background: rgba(45, 90, 61, 0.2);
     border-radius: 10px;
 }
 
-.scroll-card {
-    flex-shrink: 0;
-    width: 210px;
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    padding: 14px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.scroll-card h3 {
-    font-size: 0.92rem;
-    color: #2d5a3d;
-    font-weight: 600;
-    line-height: 1.3;
-}
-
-.scroll-card-img {
-    width: 100%;
-    height: 110px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 4px;
-}
-
-.scroll-card-img-placeholder {
-    width: 100%;
-    height: 110px;
-    border-radius: 10px;
-    background: rgba(45, 90, 61, 0.07);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #4a7c5f;
-    font-size: 1.6rem;
-    margin-bottom: 4px;
-}
-
-.scroll-card-sub {
-    font-size: 0.8rem;
-    color: #6b7280;
-}
-
-.scroll-card-buyers {
-    font-size: 0.82rem;
-    color: #4a7c5f;
-    font-weight: 500;
-}
-
-.scroll-card-clickable {
-    cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.scroll-card-clickable:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(45, 90, 61, 0.12);
-}
-
-/* ── SECONDARY BUTTON (form annulla) ────── */
-
-.btn-secondary-dash {
-    padding: 10px 22px;
-    border: 1.5px solid rgba(45, 90, 61, 0.3);
-    border-radius: 12px;
-    background: transparent;
-    color: #4a7c5f;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.18s, color 0.18s;
-}
-
-.btn-secondary-dash:hover {
-    background: rgba(45, 90, 61, 0.08);
-    color: #2d5a3d;
-}
-
-/* select inside section-form (visita form) */
-.section-form select {
-    width: 100%;
-    padding: 10px 14px;
-    border: 1.5px solid rgba(45, 90, 61, 0.22);
-    border-radius: 10px;
-    background: white;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.92rem;
-    color: #2d5a3d;
-    outline: none;
-    transition: border-color 0.2s;
-    cursor: pointer;
-    margin-top: 6px;
-}
-
-.section-form select:focus {
-    border-color: #4a7c5f;
-}
-
-/* ── ITEM CARD (dettaglio opera) ─────────── */
-
-.item-read-card {
-    background: rgba(255, 255, 255, 0.62);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.75);
-    border-radius: 16px;
-    overflow: hidden;
-    padding: 18px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
-}
-
-.item-read-card img {
-    width: 100%;
-    height: 140px;
-    object-fit: cover;
-    border-radius: 10px;
-}
-
-.item-contents p {
-    font-size: 0.87rem;
-    color: #374151;
-    line-height: 1.6;
-    margin-bottom: 4px;
-}
-
-.item-metadata-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    background: rgba(45, 90, 61, 0.05);
-    border-radius: 8px;
-    padding: 10px 12px;
-}
-
-.item-metadata-list li {
-    font-size: 0.82rem;
-    color: #4a5568;
-}
-
+/* --- 7. UTILITY SPECIFICHE --- */
 .meta-key {
     font-weight: 600;
-    color: #2d5a3d;
-    text-transform: capitalize;
+    color: var(--brand-green);
+    font-size: 0.8rem;
 }
 
-/* opera card clickable hover */
-.opera-read-card.scroll-card-clickable {
-    transition: transform 0.15s, box-shadow 0.15s;
-}
-
-.opera-read-card.scroll-card-clickable:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(45, 90, 61, 0.12);
-}
-
-/* ── EMPTY / LOADING ─────────────────────── */
-
-.empty-msg, .loading-msg {
-    color: #4a7c5f;
-    text-align: center;
-    padding: 60px 20px;
-    font-size: 0.92rem;
-    grid-column: 1 / -1;
+.text-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
 }

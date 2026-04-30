@@ -1,107 +1,111 @@
-/* Container principale */
+/* =========================================
+   PROFILO UTENTE (Navbar & Sidebar)
+   ========================================= */
+
+/* Container dell'Avatar */
 .nav-profile-container {
     position: relative;
     cursor: pointer;
+    user-select: none;
 }
 
-.nav-profile-container.open {
-    z-index: 10000;
-}
-
-/* Avatar */
+/* Avatar circolare */
 .nav-avatar {
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--brand-mid, #2d5a3d);
     color: white;
-    font-weight: bold;
-    border: 2px solid rgba(255,255,255,0.3);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: 2px solid rgba(255,255,255,0.2);
     transition: all 0.3s ease;
 }
 
-/* La Tendina */
+.nav-avatar:hover {
+    transform: scale(1.05);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* La Tendina (Dropdown) */
 .profile-dropdown {
     display: none;
     position: absolute;
     right: 0;
-    top: 38px;
+    bottom: 50px; /* Posizionata sopra l'avatar se siamo in fondo alla sidebar */
     background: white;
     min-width: 200px;
-    border-radius: 12px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    border-radius: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
     padding: 8px 0;
-    border: 1px solid #eee;
+    border: 1px solid rgba(0,0,0,0.05);
+    z-index: 1000;
+    animation: slideUp 0.3s ease-out;
 }
 
-/* Mostra la tendina */
+/* Se la navbar è in alto (es. Login), la tendina scende */
+.app-header .profile-dropdown {
+    top: 45px;
+    bottom: auto;
+    animation: slideDown 0.3s ease-out;
+}
+
 .nav-profile-container.open .profile-dropdown {
     display: block;
 }
 
-/* Testo Email (Non cliccabile) */
+/* Info Utente (Email) */
 #userEmailDisplay {
     padding: 10px 15px;
-    font-size: 11px;
-    color: #999;
-    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.75rem;
+    color: #6c757d;
+    border-bottom: 1px solid #f8f9fa;
     margin-bottom: 5px;
     display: block;
-    font-style: italic;
+    font-weight: 500;
 }
 
-/* Opzioni della tendina (I Link) */
+/* Opzioni del Menu */
 .profile-dropdown a {
     display: block;
-    padding: 12px 20px;
-    color: #333;
+    padding: 10px 20px;
+    color: #334155;
     text-decoration: none;
-    font-size: 14px;
+    font-size: 0.88rem;
     font-weight: 500;
-    transition: all 0.3s ease;
-    border-left: 4px solid transparent; /* Sottolineatura laterale invisibile di base */
+    transition: all 0.2s ease;
+    border-left: 3px solid transparent;
 }
 
-/* EFFETTO HOVER IN PALETTE VERDE */
 .profile-dropdown a:hover {
-    background-color: #f0f7f4; /* Verde chiarissimo di sfondo */
-    color: #1a3a2a;            /* Verde scuro del brand per il testo */
-    border-left: 4px solid #4a7c5f; /* La "sottolineatura" verticale verde */
-    padding-left: 25px;        /* Leggero spostamento a destra */
+    background-color: #f0f7f4;
+    color: #1b3a27;
+    border-left-color: #4a7c5f;
+    padding-left: 25px;
 }
 
-/* Rimuoviamo il rosso del logout e lo rendiamo uguale agli altri */
+/* Logout con separatore */
 .logout-link {
-    border-top: 1px solid #f0f0f0;
+    border-top: 1px solid #f8f9fa;
     margin-top: 5px;
+    color: #dc3545 !important; /* Manteniamo un tocco di rosso per il logout? O verde se preferisci */
 }
 
 .logout-link:hover {
-    background-color: #f0f7f4 !important;
-    color: #1a3a2a !important;
-    border-left: 4px solid #1a3a2a !important;
+    background-color: #fff5f5 !important;
+    border-left-color: #dc3545 !important;
 }
 
-.header-actions {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+/* Animazioni */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
-/* Stile per il bottone Login della Home se vuoi che sia coerente */
-.login-button {
-    background-color: #4a7c5f;
-    color: white;
-    padding: 8px 20px;
-    border-radius: 20px;
-    text-decoration: none;
-    font-weight: bold;
-    transition: background 0.3s;
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
-
-.login-button:hover {
-    background-color: #1a3a2a;
-}
-

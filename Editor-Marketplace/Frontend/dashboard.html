@@ -3,227 +3,140 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — ArtAround</title>
+    <title>Dashboard — ArtAround Admin</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/editor.css">
-    <link rel="stylesheet" href="/css/profile.css">
-    <link rel="stylesheet" href="/css/dashboard.css">
+    <!-- CSS Unificato Marketplace/Admin -->
+    <link rel="stylesheet" href="/css/marketplace.css">
 </head>
+<body>
 
-<body class="admin-layout">
-
-    <!-- HEADER -->
-    <header class="app-header">
-        <div class="header-inner">
-            <div style="width:38px;"></div>
-            <h1 class="logo">
-                <a href="/" class="logo-link">ArtAround</a>
-                <span id="headerRoleLabel">Editor</span>
-            </h1>
-            <div id="nav-profile-placeholder"></div>
+<div class="admin-layout">
+    
+    <!-- SIDEBAR AGGIORNATA -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <h2 class="logo-brand">ArtAround.</h2>
+            <p class="admin-badge" id="sidebarRole">Dashboard</p>
         </div>
-    </header>
 
-    <!-- LAYOUT: sidebar + main -->
-    <div class="dashboard-wrapper">
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-link active">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="musei.html" class="menu-link">
+                <i class="fa-solid fa-museum"></i> Musei
+            </a>
+            <a href="utenti.html" class="menu-link">
+                <i class="fa-solid fa-users-gears"></i> Utenti
+            </a>
+        </nav>
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="sidebar-brand">
-                <span class="dashboard-label">Dashboard</span>
-                <span class="role-badge" id="sidebarRole">—</span>
+        <!-- FOOTER SIDEBAR STATICO (Addio vecchio menu verde) -->
+        <div class="sidebar-footer">
+            <div class="user-pill-mini">
+                <div class="avatar-sm">V</div>
+                <div class="user-info-mini">
+                    <span class="name">V. Locale</span>
+                    <span class="role" id="headerRoleLabel">Administrator</span>
+                </div>
+                <a href="/logout" class="ms-auto logout-icon" title="Logout">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
             </div>
-            <nav class="sidebar-nav" id="sidebarNav">
-                <!-- populated by JS based on role -->
-            </nav>
-        </aside>
+        </div>
+    </aside>
 
-        <!-- MAIN -->
-        <main class="dashboard-main">
-
-            <!-- ── SEZIONE: MUSEI (curatore) ── -->
-            <section class="dashboard-section" id="section-musei">
-                <div class="section-header" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-                    <div>
-                        <h2>I tuoi Musei</h2>
-                        <p>Clicca su un museo per vedere le opere e le visite associate.</p>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;">
-                        <div class="search-box-glass" style="min-width:200px;">
-                            <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                            <input type="text" id="searchMuseiDash" placeholder="Cerca museo..." oninput="filterMuseiDash()">
-                        </div>
-                        <button class="btn-primary-glass" onclick="switchSection('aggiungi-museo')">
-                            <i class="fa-solid fa-plus"></i> Aggiungi Museo
-                        </button>
-                    </div>
+    <!-- MAIN CONTENT AREA -->
+    <main class="main-content">
+        
+        <!-- HEADER DINAMICO -->
+        <header class="content-header d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h1 class="page-title">Pannello di Controllo</h1>
+                <p class="text-muted mb-0">Benvenuto nell'area di gestione globale.</p>
+            </div>
+            <div class="quick-stats d-flex gap-4">
+                <div class="stat-item text-end">
+                    <span class="d-block fw-bold h4 mb-0 text-magenta">24</span>
+                    <small class="text-muted">Musei Attivi</small>
                 </div>
-                <div id="museiView" class="items-grid" style="margin-top:20px;"></div>
-            </section>
+            </div>
+        </header>
 
-            <!-- ── SEZIONE: MODIFICA MUSEO ── -->
-            <section class="dashboard-section" id="section-modifica-museo">
-                <div class="section-header">
-                    <h2>Modifica Museo</h2>
-                    <p>Seleziona un museo e aggiorna le sue informazioni.</p>
+        <!-- SEZIONE: GESTIONE RAPIDA (Eredita lo stile card dal CSS) -->
+        <section id="section-musei" class="dashboard-section mb-5">
+            <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+                <h3 class="fw-bold h4 mb-0">I tuoi Musei</h3>
+                <div class="d-flex gap-2">
+                    <div class="search-box-container shadow-sm py-1 px-3" style="max-width: 300px;">
+                        <i class="fa-solid fa-magnifying-glass search-icon" style="font-size: 0.9rem;"></i>
+                        <input type="text" id="searchMuseiDash" class="search-input py-2" placeholder="Cerca..." oninput="filterMuseiDash()">
+                    </div>
+                    <button class="btn-magenta" onclick="switchSection('aggiungi-museo')">
+                        <i class="fa-solid fa-plus"></i>
+                    </button>
                 </div>
-                <select id="selectModifica" class="select-museo">
-                    <option value="">— Seleziona museo —</option>
-                </select>
-                <form id="modificaForm" class="section-form" style="display:none">
-                    <div class="form-grid">
-                        <label>Nome *
-                            <input type="text" id="mfNome" required>
-                        </label>
-                        <label>Città *
-                            <input type="text" id="mfCitta" required>
-                        </label>
-                        <label class="full-width">Indirizzo
-                            <input type="text" id="mfIndirizzo">
-                        </label>
-                        <label>Codice ISIL
-                            <input type="text" id="mfCodiceIsil">
-                        </label>
-                        <label>URL immagine copertina
-                            <input type="url" id="mfImmagine" placeholder="https://...">
-                        </label>
-                        <label class="full-width">Descrizione breve
-                            <textarea id="mfDescrizione" rows="3"></textarea>
-                        </label>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="submit" class="btn-submit">Salva Modifiche</button>
-                    </div>
-                </form>
-            </section>
+            </div>
+            
+            <div id="museiView" class="items-grid">
+                <!-- Popolato da dashboard.js -->
+            </div>
+        </section>
 
-            <!-- ── SEZIONE: AGGIUNGI OPERA ── -->
-            <section class="dashboard-section" id="section-aggiungi-opere">
-                <div class="section-header">
-                    <h2>Aggiungi Opera</h2>
-                    <p>Seleziona un museo e aggiungi un'opera alla sua collezione.</p>
+        <!-- SEZIONE: MODIFICA MUSEO (Stile Custom Modal in pagina) -->
+        <section id="section-modifica-museo" class="dashboard-section mb-5" style="display:none">
+            <div class="custom-card-bg p-4 shadow-sm">
+                <h3 class="mb-4 h4 fw-bold text-navy">Modifica Istituzione</h3>
+                <div class="mb-4">
+                    <label class="custom-label">Seleziona Museo</label>
+                    <select id="selectModifica" class="form-control custom-input bg-white">
+                        <option value="">— Seleziona —</option>
+                    </select>
                 </div>
-                <select id="selectOpereMuseo" class="select-museo">
-                    <option value="">— Seleziona museo —</option>
-                </select>
-                <form id="operaForm" class="section-form">
-                    <div class="form-grid">
-                        <label class="full-width">Titolo *
-                            <input type="text" id="ofTitolo" placeholder="es. La Nascita di Venere" required>
-                        </label>
-                        <label>Tipo di opera
-                            <select id="ofTipo">
-                                <option value="">— Seleziona —</option>
-                                <option value="Pittura">Pittura</option>
-                                <option value="Scultura">Scultura</option>
-                                <option value="Disegno">Disegno</option>
-                                <option value="Incisione">Incisione</option>
-                                <option value="Affresco">Affresco</option>
-                                <option value="Mosaico">Mosaico</option>
-                                <option value="Fotografia">Fotografia</option>
-                                <option value="Ceramica">Ceramica</option>
-                                <option value="Manoscritto">Manoscritto</option>
-                                <option value="Reperto">Reperto</option>
-                                <option value="Altro">Altro</option>
-                            </select>
-                        </label>
-                        <label>Autore dell'opera
-                            <input type="text" id="ofAutore" placeholder="es. Sandro Botticelli">
-                        </label>
-                        <label>Datazione
-                            <input type="text" id="ofDatazione" placeholder="es. 1484-1486">
-                        </label>
-                        <label class="full-width">URL foto
-                            <input type="url" id="ofImmagine" placeholder="https://...">
-                        </label>
+
+                <form id="modificaForm" style="display:none" class="row g-4">
+                    <div class="col-md-6">
+                        <label class="custom-label">Nome</label>
+                        <input type="text" id="mfNome" class="form-control custom-input" required>
                     </div>
-                    <div class="modal-actions">
-                        <button type="submit" class="btn-submit">
-                            <i class="fa-solid fa-plus"></i> Aggiungi Opera
-                        </button>
+                    <div class="col-md-6">
+                        <label class="custom-label">Città</label>
+                        <input type="text" id="mfCitta" class="form-control custom-input" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="custom-label">Indirizzo</label>
+                        <input type="text" id="mfIndirizzo" class="form-control custom-input">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Codice ISIL</label>
+                        <input type="text" id="mfCodiceIsil" class="form-control custom-input">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="custom-label">URL Copertina</label>
+                        <input type="url" id="mfImmagine" class="form-control custom-input">
+                    </div>
+                    <div class="col-12">
+                        <label class="custom-label">Descrizione</label>
+                        <textarea id="mfDescrizione" class="form-control custom-input" rows="3"></textarea>
+                    </div>
+                    <div class="col-12 mt-4 text-end">
+                        <button type="submit" class="btn-magenta px-5">Aggiorna Dati</button>
                     </div>
                 </form>
-            </section>
+            </div>
+        </section>
 
-            <!-- ── SEZIONE: AGGIUNGI MUSEO ── -->
-            <section class="dashboard-section" id="section-aggiungi-museo">
-                <div class="section-header">
-                    <h2>Aggiungi Museo</h2>
-                    <p>Sei il curatore di un museo non ancora presente? Aggiungilo qui.</p>
-                </div>
-                <form id="nuovoMuseoForm" class="section-form">
-                    <div class="form-grid">
-                        <label>Nome *
-                            <input type="text" id="nmNome" required>
-                        </label>
-                        <label>Città *
-                            <input type="text" id="nmCitta" required>
-                        </label>
-                        <label class="full-width">Indirizzo
-                            <input type="text" id="nmIndirizzo">
-                        </label>
-                        <label>Codice ISIL
-                            <input type="text" id="nmCodiceIsil" placeholder="es. IT-MI0001">
-                        </label>
-                        <label>URL immagine copertina
-                            <input type="url" id="nmImmagine" placeholder="https://...">
-                        </label>
-                        <label class="full-width">Descrizione breve
-                            <textarea id="nmDescrizione" rows="3"></textarea>
-                        </label>
-                    </div>
-                    <div class="modal-actions">
-                        <button type="submit" class="btn-submit">
-                            <i class="fa-solid fa-plus"></i> Aggiungi Museo
-                        </button>
-                    </div>
-                </form>
-            </section>
+    </main>
+</div>
 
-            <!-- ── SEZIONE AUTORE: MUSEI ── -->
-            <section class="dashboard-section" id="section-autore-musei">
-                <div class="section-header">
-                    <h2>Musei</h2>
-                    <p>Esplora i musei disponibili e scopri le visite più popolari.</p>
-                </div>
-
-                <h3 class="scroll-section-label">Tutti i Musei</h3>
-                <div class="scroll-row" id="autoreMuseiRow">
-                    <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
-                </div>
-
-                <h3 class="scroll-section-label" style="margin-top:36px;">Visite più Popolari</h3>
-                <div class="scroll-row" id="autoreVisitePopRow">
-                    <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento...</p>
-                </div>
-            </section>
-
-            <!-- ── SEZIONE AUTORE: VISITE ── -->
-            <section class="dashboard-section" id="section-autore-visite">
-                <div class="section-header">
-                    <h2>Visite</h2>
-                    <p>Tutte le visite disponibili sulla piattaforma.</p>
-                </div>
-                <div id="autoreVisiteView" class="items-grid"></div>
-            </section>
-
-            <!-- ── SEZIONE AUTORE: OPERE ── -->
-            <section class="dashboard-section" id="section-autore-opere">
-                <div class="section-header">
-                    <h2>Opere</h2>
-                    <p>Tutte le opere presenti nei musei.</p>
-                </div>
-                <div id="autoreOpereView" class="items-grid"></div>
-            </section>
-
-        </main>
-    </div>
-
-    <script src="dashboard.js"></script>
-    <script src="/js/profile.js"></script>
+<script src="dashboard.js"></script>
+<script src="/js/profile.js"></script>
 </body>
 </html>
