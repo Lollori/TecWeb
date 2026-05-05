@@ -3,163 +3,175 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ArtAround | Elevating Your Art Experience</title>
-
-    <!-- Bootstrap 5.2.3 CSS -->
+    <title>ArtAround | Futurismo Digitale</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
-    
-    <!-- Font Awesome per le icone -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    
-    <!-- Custom CSS -->
     <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
 
-    <!-- NAVBAR (Statica) -->
-    <header class="app-header py-4">
-        <div class="container d-flex justify-content-between align-items-center">
-            <h1 class="logo mb-0">
-                <a href="/" class="logo-link text-decoration-none" style="font-family: 'Playfair Display'; font-weight: 800; font-size: 1.8rem; color: #0f172a;">ArtAround.</a>
-            </h1>
-            <nav class="d-flex align-items-center gap-4">
-                <a href="/login/login.html" class="text-dark fw-bold text-decoration-none small">Log In</a>
-                <a href="/login/login.html" class="btn btn-magenta">Enroll Now</a>
-            </nav>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand fw-900" href="#">ArtAround<span class="text-magenta">.</span></a>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <a href="/login/login.html" class="btn btn-magenta px-4 fw-bold">ACCEDI</a>
+            </div>
         </div>
-    </header>
+    </nav>
 
-    <main>
-        <!-- 1. HERO SECTION -->
-        <section class="hero-premium">
-            <div class="container">
-                <div class="row align-items-center g-5">
-                    <div class="col-lg-6">
-                        <h1 class="hero-title">Respira l'arte <br><em>a modo tuo.</em></h1>
-                        <p class="lead text-muted mb-5 fs-5">Scopri migliaia di percorsi curati da esperti. Esplora a tuo ritmo, acquisisci nuove prospettive e connettiti con la cultura ovunque tu sia.</p>
-                        
-                        <div class="row mb-5 text-center text-lg-start">
-                            <div class="col-4">
-                                <span class="stat-number">28k</span>
-                                <span class="stat-label">Visitatori</span>
-                            </div>
-                            <div class="col-4">
-                                <span class="stat-number">618</span>
-                                <span class="stat-label">Curatori</span>
-                            </div>
-                            <div class="col-4">
-                                <span class="stat-number">98%</span>
-                                <span class="stat-label">Success Rate</span>
-                            </div>
-                        </div>
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="container text-center position-relative">
+            <div class="hero-badge mb-4">L'Arte si adatta a te</div>
+            <h1 class="hero-title fw-900 mb-4">
+                Ogni visita,<br><span class="text-magenta">fatta per te.</span>
+            </h1>
+            <p class="hero-subtitle mx-auto mb-5">
+                Esplora musei e opere con un'esperienza generativa e adattiva.
+                Contenuti personalizzati in base al tuo profilo, linguaggio e ritmo di visita.
+            </p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="#apps" class="btn btn-magenta btn-lg px-5 fw-bold">INIZIA ORA</a>
+                <a href="#features" class="btn btn-outline-light btn-lg px-5 fw-bold">SCOPRI DI PIÙ</a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
 
-                        <div class="d-flex gap-3 justify-content-center justify-content-lg-start">
-                            <a href="#features" class="btn btn-magenta">Esplora Funzioni</a>
-                            <a href="#choices" class="btn btn-outline-purple" style="border: 2px solid #673ab7; color: #673ab7; padding: 13px 35px; border-radius: 12px; font-weight: 600; text-decoration: none;">Learn More</a>
+    <!-- FEATURES SECTION -->
+    <section id="features" class="section-features">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title fw-900 text-white mb-3">Tecnologia al servizio dell'arte</h2>
+                <p class="section-subtitle mx-auto">Strumenti intelligenti per una visita museale unica e personalizzata</p>
+            </div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-brain"></i>
                         </div>
+                        <h4 class="fw-bold mb-3 text-white">Contenuti Adattivi</h4>
+                        <p class="text-white-50">Quattro livelli di linguaggio: infantile, semplice, medio o specialistico. L'arte parla la tua lingua.</p>
                     </div>
-
-                    <div class="col-lg-6 position-relative">
-                        <div class="hero-image-container">
-                            <img src="https://images.unsplash.com/photo-1544967082-d9d25d867d66?q=80&w=2000&auto=format&fit=crop" class="img-fluid rounded-5 shadow-lg" alt="Art Museum Experience">
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-microphone-lines"></i>
                         </div>
-                        
-                        <div class="floating-badge d-none d-md-flex" style="top: 15%; left: -10%;">
-                            <div class="icon-box-small" style="background: #e91e63;"><i class="fa-solid fa-palette"></i></div>
-                            <div><strong class="d-block small">Curator Insights</strong><small class="text-muted">2,450 Post</small></div>
+                        <h4 class="fw-bold mb-3 text-white">Sintesi Vocale AI</h4>
+                        <p class="text-white-50">Descrizioni audio immersive generate dall'intelligenza artificiale per una visita senza barriere.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-route"></i>
                         </div>
-                        <div class="floating-badge d-none d-md-flex" style="bottom: 10%; right: -5%;">
-                            <div class="icon-box-small" style="background: #8b5cf6;"><i class="fa-solid fa-vr-cardboard"></i></div>
-                            <div><strong class="d-block small">Virtual Tours</strong><small class="text-muted">1,890 Percorsi</small></div>
+                        <h4 class="fw-bold mb-3 text-white">Indoor Navigation</h4>
+                        <p class="text-white-50">Navigazione interna intelligente con identificazione di opere e servizi basata sulla posizione.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-palette"></i>
                         </div>
+                        <h4 class="fw-bold mb-3 text-white">Tour Personalizzati</h4>
+                        <p class="text-white-50">Crea e condividi percorsi tematici su misura. Ogni visita diventa un'esperienza unica.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3 text-white">Analytics in Tempo Reale</h4>
+                        <p class="text-white-50">Monitora l'engagement e le preferenze dei visitatori con dashboard intuitive e dati accurati.</p>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6">
+                    <div class="feature-card">
+                        <div class="feature-icon-wrapper">
+                            <i class="fa-solid fa-shop"></i>
+                        </div>
+                        <h4 class="fw-bold mb-3 text-white">Marketplace Integrato</h4>
+                        <p class="text-white-50">Vendi biglietti, audioguide e contenuti esclusivi direttamente dalla piattaforma.</p>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
+    </section>
 
-        <!-- 2. FEATURES SECTION (Card Immagine Pulita - No Testimonianze - No Bottoni) -->
-        <section id="features" class="features-section bg-white border-top border-bottom">
-            <div class="container">
-                <div class="row g-5 align-items-center">
-                    
-                    <div class="col-lg-6 order-2 order-lg-1">
-                        <div class="row g-4">
-                            <div class="col-md-6 feature-item">
-                                <i class="fa-solid fa-microphone-lines"></i>
-                                <h4>Audio AI</h4>
-                                <p class="text-muted small">Guide vocali dinamiche che si adattano al tuo livello di preparazione.</p>
-                            </div>
-                            <div class="col-md-6 feature-item">
-                                <i class="fa-solid fa-map-location-dot"></i>
-                                <h4>Mappe Indoor</h4>
-                                <p class="text-muted small">Navigazione precisa tra le sale dei musei partner in tutto il mondo.</p>
-                            </div>
-                            <div class="col-md-6 feature-item">
-                                <i class="fa-solid fa-layer-group"></i>
-                                <h4>Multilivello</h4>
-                                <p class="text-muted small">Scegli la complessità dei contenuti: narrativo, medio o specialistico.</p>
-                            </div>
-                            <div class="col-md-6 feature-item">
-                                <i class="fa-solid fa-chart-line"></i>
-                                <h4>Dashboard</h4>
-                                <p class="text-muted small">Analisi dettagliate per gli editor sull'andamento delle proprie visite.</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card Immagine Semplice -->
-                    <div class="col-lg-5 order-1 order-lg-2 mx-auto">
-                        <div class="pink-filter-image-small">
-                            <img src="https://cdn.pixabay.com/photo/2017/08/02/11/26/art-2571027_1280.jpg" alt="Donna al museo">
-                            <div class="filter-content">
-                                <i class="fa-solid fa-wand-magic-sparkles mb-3 fs-2"></i>
-                                <h2>Sperimenta il futuro <br>dell'arte digitale</h2>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+    <!-- APPS SECTION -->
+    <section id="apps" class="section-apps">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title fw-900 text-white mb-3">Scegli il tuo percorso</h2>
+                <p class="section-subtitle mx-auto">Due strumenti potenti, un'unica piattaforma integrata</p>
             </div>
-        </section>
-
-        <!-- 3. FINAL CHOICES -->
-        <section id="choices" class="section-dark">
-            <div class="container">
-                <div class="text-center mb-5 pb-5">
-                    <h2 class="display-4 fw-bold text-white mb-3">Scegli la tua prospettiva</h2>
-                    <p class="text-white opacity-75 fs-5">Scegli come vuoi interagire con l'ecosistema ArtAround.</p>
-                </div>
-
-                <div class="row g-4 justify-content-center">
-                    <div class="col-md-5">
-                        <div class="premium-card h-100" onclick="window.location.href='/navigator/index.html'">
-                            <div class="icon-box"><i class="fa-solid fa-location-arrow"></i></div>
-                            <h3 class="fw-bold mb-3 text-white">Navigator</h3>
-                            <p class="text-white opacity-75 mb-4 px-3">L'assistente intelligente per le tue visite. Spiegazioni vocali AI e percorsi adattivi basati sui tuoi interessi personali.</p>
-                            <div class="btn btn-magenta rounded-pill w-100">Start Visiting</div>
+            <div class="row g-4 justify-content-center">
+                <div class="col-lg-5 col-md-6">
+                    <div class="app-card app-card-navigator">
+                        <div class="app-card-icon">
+                            <i class="fa-solid fa-location-arrow"></i>
                         </div>
+                        <h3 class="fw-900 text-white mb-3">Navigator</h3>
+                        <p class="text-white-50 mb-4">App mobile per visite guidate personalizzate, navigazione indoor e assistenza intelligente durante il percorso museale.</p>
+                        <ul class="app-card-features">
+                            <li><i class="fa-solid fa-check text-magenta"></i> Navigazione GPS interna</li>
+                            <li><i class="fa-solid fa-check text-magenta"></i> Contenuti AI adattivi</li>
+                            <li><i class="fa-solid fa-check text-magenta"></i> Audio guide sintetiche</li>
+                        </ul>
+                        <a href="/navigator/index.html" class="btn btn-light w-100 fw-bold mt-auto">AVVIA VISITA</a>
                     </div>
-
-                    <div class="col-md-5">
-                        <div class="premium-card h-100" onclick="window.location.href='/Editor-Marketplace/Frontend/musei.html'">
-                            <div class="icon-box"><i class="fa-solid fa-shop"></i></div>
-                            <h3 class="fw-bold mb-3 text-white">Marketplace</h3>
-                            <p class="text-white opacity-75 mb-4 px-3">Il network dei curatori professionisti. Crea, pubblica e scambia contenuti multimediali per il pubblico globale.</p>
-                            <div class="btn btn-magenta rounded-pill w-100">Open Market</div>
+                </div>
+                <div class="col-lg-5 col-md-6">
+                    <div class="app-card app-card-marketplace">
+                        <div class="app-card-icon">
+                            <i class="fa-solid fa-store"></i>
                         </div>
+                        <h3 class="fw-900 text-white mb-3">Marketplace</h3>
+                        <p class="text-white-50 mb-4">Piattaforma desktop per professionisti: crea, pubblica e vendi tour virtuali, contenuti e servizi museali.</p>
+                        <ul class="app-card-features">
+                            <li><i class="fa-solid fa-check text-white"></i> Editor tour visuale</li>
+                            <li><i class="fa-solid fa-check text-white"></i> Gestione vendite</li>
+                            <li><i class="fa-solid fa-check text-white"></i> Analytics avanzate</li>
+                        </ul>
+                        <a href="/Editor-Marketplace/Frontend/musei.html" class="btn btn-outline-light w-100 fw-bold mt-auto">GESTISCI TOUR</a>
                     </div>
                 </div>
             </div>
-        </section>
-    </main>
+        </div>
+    </section>
 
-    <footer class="py-5 text-center bg-white border-top">
-        <p class="text-muted small mb-0">© 2026 ArtAround — Professional Art Technologies.</p>
+    <!-- CTA SECTION -->
+    <section class="section-cta">
+        <div class="container text-center">
+            <h2 class="display-5 fw-900 text-white mb-4">Pronto a trasformare la tua esperienza museale?</h2>
+            <p class="lead text-white-50 mb-5 mx-auto" style="max-width: 600px;">Unisciti a ArtAround e porta l'arte nel futuro con tecnologie generative e adattive.</p>
+            <a href="/login/login.html" class="btn btn-magenta btn-lg px-5 fw-bold">INIZIA GRATIS</a>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <span class="navbar-brand fw-900">ArtAround<span class="text-magenta">.</span></span>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="small text-white-50 mb-0">© 2026 Alma Mater Studiorum Università di Bologna</p>
+                </div>
+            </div>
+        </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

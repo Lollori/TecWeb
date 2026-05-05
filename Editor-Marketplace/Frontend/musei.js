@@ -1,6 +1,7 @@
 /*
  * musei.js — Frontend per la gestione musei.
  * Flusso: browser → fetch('/api/musei') → index.js → scripts/musei.js → MongoDB
+ * AGGIORNATO: ora usa sezioni inline invece di modali
  */
 
 const API = '/api/musei';
@@ -12,7 +13,7 @@ const currentRole   = localStorage.getItem('userRole') || '';
 document.addEventListener('DOMContentLoaded', loadMusei);
 
 
-// ── CARICA TUTTI I MUSEI ──────────────────────────────────────────────────────
+// ── CARICA TUTTI I MUSEI ─────────────────────────────────────────────────
 
 async function loadMusei() {
     try {
@@ -31,14 +32,14 @@ async function loadMusei() {
 }
 
 
-// ── RENDER DELLE CARD ─────────────────────────────────────────────────────────
+// ── RENDER DELLE CARD ────────────────────────────────────────────────────
 
 function renderMusei(musei) {
     const grid = document.getElementById('museiContainer');
 
     if (musei.length === 0) {
-        grid.innerHTML = `<p style="color:#4a7c5f; text-align:center; padding:40px; grid-column:1/-1">
-            Nessun museo trovato. Clicca "Inizializza DB" per caricare i dati di esempio.
+        grid.innerHTML = `<p style="color: var(--text-muted); text-align:center; padding:40px; grid-column:1/-1">
+            Nessun museo trovato. Clicca "Nuovo Museo" per aggiungerne uno.
         </p>`;
         return;
     }
@@ -47,20 +48,20 @@ function renderMusei(musei) {
         <div class="item-card museo-card" onclick="apriMuseo(event, '${m.codiceIsil}')">
             ${m.immagineCopertina
                 ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
-                : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
+                : `<div class="museo-card-img-placeholder"><i class="fa-solid fa-building-columns"></i></div>`
             }
             <div class="card-main-header" style="margin-top: 20px;">
                 <div class="title-group">
                     <h3>${m.nome}</h3>
                     <p class="museum-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
                 </div>
-                ${currentRole === 'curatore' ? `
+                ${currentRole === 'curatore' || currentRole === 'admin' ? `
                 <div class="action-group">
                     <div class="buttons-row">
-                        <button class="icon-btn edit-btn" onclick="openModal('${m.codiceIsil}')" title="Modifica">
+                        <button class="icon-btn edit-btn" onclick="event.stopPropagation(); editMuseo('${m.codiceIsil}')" title="Modifica">
                             <i class="fa-solid fa-pen"></i>
                         </button>
-                        <button class="icon-btn delete-btn" onclick="deleteMuseo('${m.codiceIsil}', '${m.nome}')" title="Elimina">
+                        <button class="icon-btn delete-btn" onclick="event.stopPropagation(); deleteMuseo('${m.codiceIsil}', '${m.nome}')" title="Elimina">
                             <i class="fa-solid fa-trash"></i>
                         </button>
                     </div>
@@ -78,20 +79,20 @@ function renderMusei(musei) {
 }
 
 
-// ── NAVIGAZIONE AL MUSEO ──────────────────────────────────────────────────────
+// ── NAVIGAZIONE AL MUSEO ─────────────────────────────────────────────────
 
 function apriMuseo(event, codiceIsil) {
-    if (event.target.closest('.icon-btn')) return; 
+    if (event.target.closest('.icon-btn')) return;
     if (!codiceIsil) return;
-    
+
     // Salva il codiceIsil in sessione
     sessionStorage.setItem('currentMuseo', codiceIsil);
-    
+
     window.location.href = `opere.html?museo=${encodeURIComponent(codiceIsil)}`;
 }
 
 
-// ── FILTRO DI RICERCA ─────────────────────────────────────────────────────────
+// ── FILTRO DI RICERCA ───────────────────────────────────────────────────
 
 function filterMusei() {
     const q = document.getElementById('searchMusei').value.toLowerCase();
@@ -102,7 +103,7 @@ function filterMusei() {
 }
 
 
-// ── SEED ──────────────────────────────────────────────────────────────────────
+// ── SEED ──────────────────────────────────────────────────────────────────
 
 async function seedDB() {
     if (!confirm('Inizializza il DB con i musei di esempio?')) return;
@@ -116,79 +117,79 @@ async function seedDB() {
 }
 
 
-// ── MODAL ─────────────────────────────────────────────────────────────────────
+// ── EDIT MUSEO (apre la sezione di modifica) ───────────────────────────
 
-function openModal(codiceIsil) {
-    document.getElementById('museoForm').reset();
-    document.getElementById('editIsil').value = '';
-    const modal = document.getElementById('museoModal');
+function editMuseo(codiceIsil) {
+    if (!codiceIsil) return;
 
-    if (codiceIsil) {
-        const m = tuttiIMusei.find(x => x.codiceIsil === codiceIsil);
-        if (!m) return;
-        document.getElementById('modalTitle').innerHTML = 'Modifica <span>Museo</span>';
-        document.getElementById('submitBtn').textContent = 'Aggiorna Museo';
-        document.getElementById('editIsil').value       = codiceIsil;
-        document.getElementById('fNome').value          = m.nome || '';
-        document.getElementById('fCitta').value         = m.citta || '';
-        document.getElementById('fIndirizzo').value     = m.indirizzo || '';
-        document.getElementById('fCodiceIsil').value    = m.codiceIsil || '';
-        document.getElementById('fImmagine').value      = m.immagineCopertina || '';
-        document.getElementById('fDescrizione').value   = m.descrizioneBreve || '';
-        document.getElementById('fCuratoreId').value    = m.curatoreId || '';
-    } else {
-        document.getElementById('modalTitle').innerHTML = 'Nuovo <span>Museo</span>';
-        document.getElementById('submitBtn').textContent = 'Salva Museo';
-        // nuovo museo: il curatore è chi sta creando
-        document.getElementById('fCuratoreId').value = currentUserId;
+    const m = tuttiIMusei.find(x => x.codiceIsil === codiceIsil);
+    if (!m) return;
+
+    // Popola il form di modifica
+    document.getElementById('editIsil').value       = codiceIsil;
+    document.getElementById('mfNome').value          = m.nome || '';
+    document.getElementById('mfCitta').value         = m.citta || '';
+    document.getElementById('mfIndirizzo').value     = m.indirizzo || '';
+    document.getElementById('mfCodiceIsil').value    = m.codiceIsil || '';
+    document.getElementById('mfImmagine').value      = m.immagineCopertina || '';
+    document.getElementById('mfDescrizione').value   = m.descrizioneBreve || '';
+
+    // Mostra la sezione di modifica
+    if (typeof switchSection === 'function') {
+        switchSection('modifica-museo');
     }
-
-    modal.style.display = 'flex';
-    document.body.classList.add('no-scroll');
 }
 
-function closeModal() {
-    document.getElementById('museoModal').style.display = 'none';
-    document.body.classList.remove('no-scroll');
-}
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('museoModal').addEventListener('click', function(e) {
-        if (e.target === this) closeModal();
-    });
-});
-
-
-// ── SUBMIT ────────────────────────────────────────────────────────────────────
+// ── SUBMIT (aggiunta o modifica) ────────────────────────────────────────
 
 async function submitForm(e) {
     e.preventDefault();
-    const body = {
-        nome:              document.getElementById('fNome').value,
-        citta:             document.getElementById('fCitta').value,
-        indirizzo:         document.getElementById('fIndirizzo').value,
-        codiceIsil:        document.getElementById('fCodiceIsil').value,
-        immagineCopertina: document.getElementById('fImmagine').value,
-        descrizioneBreve:  document.getElementById('fDescrizione').value,
-        curatoreId:        document.getElementById('fCuratoreId').value,
-    };
+
     const editIsil = document.getElementById('editIsil').value;
+
+    const body = {
+        nome:              document.getElementById(editIsil ? 'mfNome' : 'fNome').value,
+        citta:             document.getElementById(editIsil ? 'mfCitta' : 'fCitta').value,
+        indirizzo:         document.getElementById(editIsil ? 'mfIndirizzo' : 'fIndirizzo').value,
+        codiceIsil:        document.getElementById(editIsil ? 'mfCodiceIsil' : 'fCodiceIsil').value,
+        immagineCopertina: document.getElementById(editIsil ? 'mfImmagine' : 'fImmagine').value,
+        descrizioneBreve:  document.getElementById(editIsil ? 'mfDescrizione' : 'fDescrizione').value,
+        curatoreId:        currentUserId,
+    };
 
     try {
         const response = editIsil
-            ? await fetch(`${API}/${editIsil}`, { method: 'PUT',  headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
-            : await fetch(API,                   { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+            ? await fetch(`${API}/${editIsil}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              })
+            : await fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+              });
 
         const result = await response.json();
-        if (result.ok) { closeModal(); showStatus(editIsil ? 'Museo aggiornato.' : 'Museo creato.'); loadMusei(); }
-        else showStatus('Errore: ' + result.error);
+
+        if (result.ok) {
+            showStatus(editIsil ? 'Museo aggiornato.' : 'Museo creato.');
+            // Torna alla lista musei
+            if (typeof switchSection === 'function') {
+                switchSection('musei');
+            }
+            loadMusei();
+        } else {
+            showStatus('Errore: ' + result.error);
+        }
     } catch (err) {
         showStatus('Impossibile contattare il server.');
     }
 }
 
 
-// ── DELETE ────────────────────────────────────────────────────────────────────
+// ── DELETE ────────────────────────────────────────────────────────────────
 
 async function deleteMuseo(codiceIsil, nome) {
     if (!confirm(`Eliminare "${nome}"?`)) return;
@@ -202,8 +203,17 @@ async function deleteMuseo(codiceIsil, nome) {
 }
 
 
-// ── STATUS ────────────────────────────────────────────────────────────────────
+// ── STATUS ────────────────────────────────────────────────────────────────
 
 function showStatus(msg) {
     alert(msg);
+}
+
+
+// ── VAI ALL'EDITOR (OPERE) ───────────────────────────────────────
+
+function vaiAllEditor() {
+    const codiceIsil = document.getElementById('editIsil').value;
+    if (!codiceIsil) return;
+    window.location.href = `/Editor-Marketplace/Frontend/opere.html?museo=${encodeURIComponent(codiceIsil)}`;
 }

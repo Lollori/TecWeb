@@ -4,196 +4,177 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Visite - ArtAround</title>
-    
-    <!-- Bootstrap 5.2.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
-    <!-- JS di Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous" defer></script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="/css/marketplace.css">
 
     <style>
-        :root {
-            --brand-green: #1b3a27;
-            --hover-green: #2d5a3d;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f5;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            min-height: 100vh;
-            background-color: var(--brand-green);
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.75);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 4px 0;
-            font-weight: 500;
-        }
-
-        .sidebar .nav-link:hover {
-            color: white;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .sidebar .nav-link.active {
-            color: white;
-            background-color: var(--hover-green);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        .main-wrapper {
-            margin-left: 16.666667%; /* col-md-2 */
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { position: static; min-height: auto; }
-            .main-wrapper { margin-left: 0; }
-        }
-
         .items-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 1.5rem;
         }
+
+        .item-card-custom {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .item-card-custom:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 24px rgba(255, 0, 127, 0.12);
+        }
+
+        .item-card-body {
+            padding: 20px;
+        }
+
+        .item-card-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .text-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .border-dashed {
+            border-style: dashed !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="row">
-        
-        <!-- SIDEBAR -->
-        <nav class="col-md-2 d-none d-md-block sidebar p-3">
-            <div class="mb-5 px-2">
-                <h2 class="h4 fw-bold mb-0" style="font-family: 'Playfair Display', serif;">ArtAround</h2>
-                <small class="opacity-50">Editor Percorsi</small>
-            </div>
+<div class="admin-layout">
 
-            <ul class="nav flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="musei.html" class="nav-link">
-                        <i class="fa-solid fa-arrow-left me-2"></i> Torna ai Musei
-                    </a>
-                </li>
-                <hr class="text-white-50">
-                <li class="nav-item">
-                    <a href="opere.html" class="nav-link">
-                        <i class="fa-solid fa-palette me-2"></i> Opere
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link active">
-                        <i class="fa-solid fa-map me-2"></i> Visite
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="marketplace.html" class="nav-link">
-                        <i class="fa-solid fa-store me-2"></i> Marketplace
-                    </a>
-                </li>
-            </ul>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+             <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
+            <p class="admin-badge">Editor Percorsi</p>
+        </div>
 
-            <div class="mt-5 pt-5 border-top border-secondary border-opacity-25">
-                <div id="nav-profile-placeholder"></div>
-            </div>
+        <nav class="sidebar-menu">
+            <a href="musei.html" class="menu-link">
+                <i class="fa-solid fa-arrow-left"></i> Musei
+            </a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+            <a href="opere.html" class="menu-link">
+                <i class="fa-solid fa-palette"></i> Opere
+            </a>
+            <a href="visite.html" class="menu-link active">
+                <i class="fa-solid fa-map"></i> Visite
+            </a>
+            <a href="marketplace.html" class="menu-link">
+                <i class="fa-solid fa-store"></i> Marketplace
+            </a>
         </nav>
 
-        <!-- MAIN CONTENT -->
-        <main class="col-md-10 main-wrapper p-4 p-md-5">
-            
-            <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-center mb-5">
-                <div>
-                    <h1 class="fw-bold text-dark">Gestione delle Visite</h1>
-                    <p class="text-muted mb-0" id="museoSubtitle">Cerca, modifica o crea un nuovo percorso per i visitatori.</p>
+        <div class="sidebar-footer">
+            <div class="user-pill-mini">
+                <div class="avatar-sm">V</div>
+                <div class="user-info-mini">
+                    <span class="name">Editor Visite</span>
+                    <span class="role">Curatore</span>
                 </div>
-                <button onclick="openModal()" class="btn btn-success shadow-sm px-4 py-2">
-                    <i class="fa-solid fa-plus me-2"></i>Nuova Visita
-                </button>
+                <a href="/index.html" class="ms-auto logout-icon" title="Logout">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
             </div>
+        </div>
+    </aside>
 
-            <!-- Toolbar: Search -->
-            <div class="row mb-4">
-                <div class="col-md-6 col-lg-5">
-                    <div class="input-group shadow-sm">
-                        <span class="input-group-text bg-white border-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
-                        <input type="text" id="searchVisite" class="form-control border-0" placeholder="Cerca visita per nome..." oninput="filterVisite()">
-                    </div>
-                </div>
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-center mb-5">
+            <div>
+                <h1 class="page-title">Gestione delle Visite</h1>
+                <p class="text-muted mb-0">Cerca, modifica o crea un nuovo percorso per i visitatori</p>
             </div>
+            <button onclick="openModal()" class="btn-magenta">
+                <i class="fa-solid fa-plus me-2"></i>Nuova Visita
+            </button>
+        </div>
 
-            <!-- Contenitore Dinamico Visite -->
-            <div id="visiteContainer" class="items-grid">
-                <!-- Verrà riempito dinamicamente da visite.js -->
+        <!-- Toolbar: Search -->
+        <div class="toolbar-section mb-4">
+            <div class="search-box-container">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchVisite" class="search-input" placeholder="Cerca visita per nome..." oninput="filterVisite()">
             </div>
+        </div>
 
-        </main>
-    </div>
+        <!-- Contenitore Dinamico Visite -->
+        <div id="visiteContainer" class="items-grid">
+            <!-- Verrà riempito dinamicamente da visite.js -->
+        </div>
+
+    </main>
 </div>
 
 <!-- MODAL: DETTAGLI VISITA (Bootstrap Version) -->
 <div class="modal fade" id="visitaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header border-0 bg-light">
-                <h5 class="modal-title fw-bold">Dettagli <span class="text-success">Visita</span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeModal()"></button>
+        <div class="custom-modal">
+            <div class="modal-header">
+                <h5 class="modal-title">Dettagli <span class="text-magenta">Visita</span></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" onclick="closeModal()"></button>
             </div>
             <div class="modal-body p-4">
                 <form id="visitaForm">
                     <div class="row g-3">
                         <div class="col-md-7">
-                            <label class="form-label fw-bold">Nome della Visita *</label>
-                            <input type="text" id="nomeVisita" class="form-control" placeholder="Es: Capolavori del Rinascimento" required>
+                            <label class="custom-label">Nome della Visita *</label>
+                            <input type="text" id="nomeVisita" class="custom-input" placeholder="Es: Capolavori del Rinascimento" required>
                         </div>
                         <div class="col-md-5">
-                            <label class="form-label fw-bold">Nome Mnemonico</label>
-                            <input type="text" id="nomeMnemonico" class="form-control" placeholder="Es: Fenice rossa">
+                            <label class="custom-label">Nome Mnemonico</label>
+                            <input type="text" id="nomeMnemonico" class="custom-input" placeholder="Es: Fenice rossa">
                         </div>
                         <div class="col-12">
-                            <label class="form-label fw-bold">Indicazioni Logistiche *</label>
-                            <textarea id="logistica" class="form-control" rows="3" placeholder="Es. L'entrata del museo è da via Garibaldi 2..." required></textarea>
+                            <label class="custom-label">Indicazioni Logistiche *</label>
+                            <textarea id="logistica" class="custom-input" rows="3" placeholder="Es: L'entrata del museo è da via Garibaldi 2..." required></textarea>
                         </div>
-                        
+
                         <!-- Sequenza Opere -->
                         <div class="col-12 mt-4">
-                            <label class="form-label fw-bold d-block mb-2">Sequenza Opere</label>
-                            <div id="lista-opere" class="bg-light p-3 rounded-3 border border-dashed mb-2" style="border-style: dashed !important;">
+                            <label class="custom-label d-block mb-2">Sequenza Opere</label>
+                            <div id="lista-opere" class="bg-light p-3 rounded-3 border border-dashed mb-2">
                                 <!-- Elementi aggiunti da aggiungiOpera() -->
                             </div>
-                            <button type="button" class="btn btn-outline-success btn-sm mt-2" onclick="aggiungiOpera()">
+                            <button type="button" class="btn-outline-custom btn-sm mt-2" onclick="aggiungiOpera()">
                                 <i class="fa-solid fa-plus me-1"></i> Aggiungi Opera
                             </button>
                         </div>
 
                         <!-- Quiz Section -->
                         <div class="col-12 mt-4">
-                            <div class="p-3 bg-light rounded-3 border border-info border-opacity-25 text-info text-dark">
-                                <label class="form-label fw-bold"><i class="fa-solid fa-lightbulb me-2"></i>Quiz Finale (Estensione 18-27)</label>
-                                <input type="text" id="quizDomanda" class="form-control" placeholder="Inserisci qui la domanda del quiz finale...">
+                            <div class="p-3 bg-light rounded-3 border border-info border-opacity-25">
+                                <label class="custom-label"><i class="fa-solid fa-lightbulb me-2"></i>Quiz Finale (Estensione 18-27)</label>
+                                <input type="text" id="quizDomanda" class="custom-input" placeholder="Inserisci qui la domanda del quiz finale...">
                             </div>
                         </div>
                     </div>
 
-                    <div class="d-flex gap-2 mt-5 justify-content-end">
-                        <button type="button" class="btn btn-light px-4" onclick="closeModal()">Annulla</button>
-                        <button type="submit" class="btn btn-success px-4 shadow-sm">Salva Visita</button>
+                    <div class="modal-actions">
+                        <button type="button" class="btn-outline-custom" onclick="closeModal()">Annulla</button>
+                        <button type="submit" class="btn-magenta">Salva Visita</button>
                     </div>
                 </form>
             </div>
@@ -201,11 +182,11 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="visite.js"></script>
 <script src="/js/profile.js"></script>
 
 <script>
-    // Integrazione JS per la modale Bootstrap 5
     function openModal() {
         const modal = new bootstrap.Modal(document.getElementById('visitaModal'));
         modal.show();

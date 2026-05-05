@@ -6,73 +6,22 @@
     <title>Marketplace — ArtAround</title>
 
     <!-- Bootstrap 5.2.3 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- JS di Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous" defer></script>
-    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" defer></script>
+
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="/css/marketplace.css">
 
     <style>
-        :root {
-            --brand-green: #1b3a27;
-            --hover-green: #2d5a3d;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f4f7f5;
-        }
-
-        /* Sidebar Styling */
-        .sidebar {
-            min-height: 100vh;
-            background-color: var(--brand-green);
-            color: white;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 100;
-        }
-
-        .sidebar .nav-link {
-            color: rgba(255,255,255,0.75);
-            padding: 12px 20px;
-            border-radius: 8px;
-            margin: 4px 0;
-            font-weight: 500;
-        }
-
-        .sidebar .nav-link:hover {
-            color: white;
-            background-color: rgba(255,255,255,0.1);
-        }
-
-        .sidebar .nav-link.active {
-            color: white;
-            background-color: var(--hover-green);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* Main Content Adjustment */
-        .main-wrapper {
-            margin-left: 16.666667%; /* Coincide con col-md-2 */
-        }
-
-        @media (max-width: 768px) {
-            .sidebar { position: static; min-height: auto; }
-            .main-wrapper { margin-left: 0; }
-        }
-
-        /* Card dynamic styles per marketplace.js */
         .card-opera-img {
             width: 100%;
-            height: 150px;
+            height: 180px;
             object-fit: cover;
-            border-radius: 8px;
+            border-radius: 12px 12px 0 0;
         }
 
         .logistica-clamp {
@@ -81,105 +30,121 @@
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
+
+        .tab-active {
+            background: rgba(255, 0, 127, 0.15) !important;
+            color: var(--magenta) !important;
+        }
     </style>
 </head>
 <body>
 
-<div class="container-fluid">
-    <div class="row">
-        
-        <!-- SIDEBAR -->
-        <nav class="col-md-2 d-none d-md-block sidebar p-3">
-            <div class="mb-5 px-2">
-                <h2 class="h4 fw-bold mb-0" style="font-family: 'Playfair Display', serif;">ArtAround</h2>
-                <small class="opacity-50">Marketplace</small>
-            </div>
+<div class="admin-layout">
 
-            <ul class="nav flex-column mb-auto">
-                <li class="nav-item">
-                    <a href="/Editor-Marketplace/Frontend/dashboard.html" class="nav-link">
-                        <i class="fa-solid fa-house me-2"></i> Dashboard
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" id="tabBtnOpere" class="nav-link active" onclick="setTab('opere', this)">
-                        <i class="fa-solid fa-palette me-2"></i> Opere
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" id="tabBtnVisite" class="nav-link" onclick="setTab('visite', this)">
-                        <i class="fa-solid fa-map me-2"></i> Visite
-                    </a>
-                </li>
-            </ul>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+             <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
+            <p class="admin-badge">Marketplace</p>
+        </div>
 
-            <div class="mt-5 pt-5 border-top border-secondary border-opacity-25">
-                <div id="nav-profile-placeholder"></div>
-            </div>
+        <nav class="sidebar-menu">
+            <a href="dashboard.html" class="menu-link">
+                <i class="fa-solid fa-chart-pie"></i> Dashboard
+            </a>
+            <a href="musei.html" class="menu-link">
+                <i class="fa-solid fa-museum"></i> Musei
+            </a>
+            <a href="utenti.html" class="menu-link">
+                <i class="fa-solid fa-users-gear"></i> Utenti
+            </a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+            <a href="opere.html" class="menu-link" id="tabBtnOpere" onclick="setTab('opere', this)">
+                <i class="fa-solid fa-palette"></i> Opere
+            </a>
+            <a href="visite.html" class="menu-link" id="tabBtnVisite" onclick="setTab('visite', this)">
+                <i class="fa-solid fa-map"></i> Visite
+            </a>
+            <a href="marketplace.html" class="menu-link active">
+                <i class="fa-solid fa-store"></i> Marketplace
+            </a>
         </nav>
 
-        <!-- MAIN CONTENT -->
-        <main class="col-md-10 main-wrapper p-4 p-md-5">
-            
-            <!-- Page Header -->
-            <div class="d-flex justify-content-between align-items-end mb-5">
-                <div>
-                    <h1 class="fw-bold text-dark">Marketplace</h1>
-                    <p class="text-muted mb-0">Gestisci la vendita e l'adozione dei tuoi contenuti.</p>
+        <div class="sidebar-footer">
+            <div class="user-pill-mini">
+                <div class="avatar-sm">M</div>
+                <div class="user-info-mini">
+                    <span class="name">Marketplace</span>
+                    <span class="role">Curatore</span>
                 </div>
+                <a href="/index.html" class="ms-auto logout-icon" title="Logout">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
             </div>
+        </div>
+    </aside>
 
-            <!-- Filtro Museo -->
-            <div class="row mb-4">
-                <div class="col-md-6 col-lg-4">
-                    <div class="card border-0 shadow-sm p-3">
-                        <label for="museoFilter" class="form-label small fw-bold text-uppercase text-muted">
-                            <i class="fa-solid fa-building-columns me-1"></i> Filtra per museo
-                        </label>
-                        <select id="museoFilter" class="form-select border-0 bg-light" onchange="applyFilter()">
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- Page Header -->
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <h1 class="page-title">Marketplace</h1>
+                <p class="text-muted mb-0">Gestisci la vendita e l'adozione dei tuoi contenuti.</p>
+            </div>
+        </div>
+
+        <!-- Filtro Museo -->
+        <div class="toolbar-section mb-4">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="search-box-container">
+                        <i class="fa-solid fa-building-columns search-icon"></i>
+                        <select id="museoFilter" class="search-input" onchange="applyFilter()">
                             <option value="">Tutti i musei</option>
                         </select>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <!-- Tab Opere -->
-            <div id="tabOpere" class="row g-4">
-                <!-- Verrà riempito da marketplace.js -->
-            </div>
+        <!-- Tab Opere -->
+        <div id="tabOpere" class="items-grid">
+            <!-- Riempito da marketplace.js -->
+        </div>
 
-            <!-- Tab Visite -->
-            <div id="tabVisite" class="row g-4" style="display:none">
-                <!-- Verrà riempito da marketplace.js -->
-            </div>
+        <!-- Tab Visite -->
+        <div id="tabVisite" class="items-grid" style="display:none">
+            <!-- Riempito da marketplace.js -->
+        </div>
 
-        </main>
-    </div>
+    </main>
 </div>
 
-<!-- MODAL: METTI IN VENDITA (Bootstrap Style) -->
-<div class="modal fade" id="vendidaModal" tabindex="-1" aria-hidden="true">
+<!-- MODAL: METTI IN VENDITA -->
+<div class="modal fade" id="vendiModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg">
-            <div class="modal-header border-0 bg-light">
-                <h5 class="modal-title fw-bold" id="vendidaTitle">Metti in <span class="text-success">Vendita</span></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="closeVendidaModal()"></button>
+        <div class="custom-modal">
+            <div class="modal-header">
+                <h5 class="modal-title">Metti in <span class="text-magenta">Vendita</span></h5>
+                <button type="button" class="btn-close btn-close-white" onclick="closeVendiModal()"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="vendidaForm">
+                <form id="vendiForm">
                     <div class="mb-3">
-                        <label class="form-label fw-bold">Prezzo (€)</label>
-                        <input type="number" id="vfPrezzo" class="form-control" min="0" step="0.01" value="0">
-                        <div class="form-text">Inserisci 0 per renderlo gratuito.</div>
+                        <label class="custom-label">Prezzo (€)</label>
+                        <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="0">
+                        <div class="form-text mt-1" style="font-size: 0.85rem; color: var(--text-muted);">Inserisci 0 per renderlo gratuito.</div>
                     </div>
                     <div class="mb-4 d-flex align-items-center gap-2">
                         <input type="checkbox" id="vfPubblica" class="form-check-input mt-0">
-                        <label for="vfPubblica" class="form-check-label small">Rendi pubblicamente disponibile</label>
+                        <label for="vfPubblica" class="form-check-label" style="font-size: 0.9rem;">Rendi pubblicamente disponibile</label>
                     </div>
-                    
-                    <div class="d-flex gap-2 mt-4">
-                        <button type="button" class="btn btn-light flex-grow-1" onclick="closeVendidaModal()">Annulla</button>
-                        <button type="submit" class="btn btn-success flex-grow-1">
+
+                    <div class="modal-actions">
+                        <button type="button" class="btn-outline-custom" onclick="closeVendiModal()">Annulla</button>
+                        <button type="submit" class="btn-magenta">
                             <i class="fa-solid fa-tag me-1"></i> Conferma
                         </button>
                     </div>
@@ -193,20 +158,16 @@
 <script src="/js/profile.js"></script>
 
 <script>
-    // Piccola funzione helper per gestire lo stato della sidebar
     function setTab(type, el) {
-        // Rimuovi active da tutti
-        document.querySelectorAll('.sidebar .nav-link').forEach(nav => nav.classList.remove('active'));
-        // Aggiungi active a quello cliccato
+        document.querySelectorAll('.sidebar .menu-link').forEach(nav => nav.classList.remove('active'));
         el.classList.add('active');
-        
-        // Logica originale per mostrare i div
+
         if(type === 'opere') {
-            document.getElementById('tabOpere').style.display = 'flex';
+            document.getElementById('tabOpere').style.display = 'grid';
             document.getElementById('tabVisite').style.display = 'none';
         } else {
             document.getElementById('tabOpere').style.display = 'none';
-            document.getElementById('tabVisite').style.display = 'flex';
+            document.getElementById('tabVisite').style.display = 'grid';
         }
     }
 </script>

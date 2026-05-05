@@ -1,16 +1,9 @@
 /*
 File: musei.js
 Gestione musei con Mongoose.
-Segue lo stesso pattern di mongoDB.js del professore.
 */
 
-console.log('[musei.js] modulo caricato');
 const mongoose = require("mongoose");
-console.log('[musei.js] mongoose importato');
-
-// ── SCHEMA ──────────────────────────────────────────────────────────────────
-// Lo Schema descrive la "forma" di un documento museo in MongoDB.
-// Mongoose controlla che i dati rispettino questa struttura prima di salvarli.
 
 const museoSchema = new mongoose.Schema({
     nome:             { type: String, required: true },
@@ -22,85 +15,68 @@ const museoSchema = new mongoose.Schema({
     curatoreId:       { type: String, required: false },
 });
 
-// Il "Model" è la classe che usiamo per interagire con la collection "museos" in MongoDB.
-// Mongoose crea automaticamente la collection al plurale del nome ("Museo" → "museos").
 const Museo = mongoose.model("Museo", museoSchema);
-console.log('[musei.js] schema e model definiti');
-
 mongoose.set("strictQuery", false);
 
+// ── HELPER: connessione ──────────────────────────────────────────────
 
-// ── HELPER: connessione ──────────────────────────────────────────────────────
-// Funzione interna riutilizzata da tutte le operazioni CRUD.
-// Costruisce la URI di connessione dal formato usato dal professore.
 async function connect(credentials) {
-    if (mongoose.connection.readyState === 1) return; // Se già connesso, non riconnettere
-    const isLocal = process.env.MONGO_LOCAL === 'true';
-    const mongouri = isLocal
-        ? 'mongodb://localhost:27017/artaround'
-        : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-    
+    if (mongoose.connection.readyState === 1) {
+        console.log('[musei.js] Già connesso a MongoDB.');
+        return;
+    }
+
+    const isLocal = credentials.site === 'localhost' ||
+                    process.env.NODE_ENV !== 'production' ||
+                    process.env.MONGO_LOCAL === 'true';
+
+    let mongouri;
+    if (isLocal) {
+        mongouri = 'mongodb://localhost:27017/artaround';
+        console.log('[musei.js] Connessione locale a MongoDB (senza auth)...');
+    } else {
+        mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
+        console.log('[musei.js] Connessione a production con credenziali...');
+    }
+
     try {
         await mongoose.connect(mongouri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
+            serverSelectionTimeoutMS: 5000,
         });
+        console.log('[musei.js] Connessione a MongoDB riuscita.');
     } catch(e) {
-        console.error("Errore di connessione a MongoDB:", e.message);
+        console.error("[musei.js] Errore di connessione:", e.message);
+        throw e;
     }
 }
 
-async function disconnect() {
-    // DISATTIVATO: Mongoose Connection Pooling richiede che la connessione rimanga aperta. 
-    // Chiudere brutalmente su ogni richiesta distrugge il driver MongoDB (TopologyClosed) in caso di richieste multiple!
-    // await mongoose.connection.close(); 
-}
+// ── SEED ─────────────────────────────────────────────────────────────
 
-
-// ── SEED: carica il JSON nel DB ──────────────────────────────────────────────
-// Chiamata da GET /api/musei/seed
-// Legge musei.json, svuota la collection, reinserisce tutto.
-// Utile per inizializzare o resettare i dati.
 exports.seed = async (credentials) => {
-    console.log('[musei.js] seed() chiamato');
     const fs = require("fs").promises;
-    let debug = [];
     try {
-        console.log('[musei.js] tentativo connessione MongoDB...');
         await connect(credentials);
-        debug.push("Connesso a MongoDB.");
-
         const raw = await fs.readFile(global.rootDir + "/public/data/musei.json", "utf8");
         const data = JSON.parse(raw);
-        debug.push(`Letti ${data.length} musei dal file JSON.`);
-
-        const cleared = await Museo.deleteMany({});
-        debug.push(`Eliminati ${cleared.deletedCount} documenti esistenti.`);
-
+        await Museo.deleteMany({});
         await Museo.insertMany(data);
-        debug.push(`Inseriti ${data.length} nuovi musei.`);
-
-        await disconnect();
-        return { ok: true, message: `Seed completato: ${data.length} musei inseriti.`, debug };
+        return { ok: true, message: `Seed completato: ${data.length} musei inseriti.` };
     } catch (e) {
         console.error(e);
-        return { ok: false, error: e.message, debug };
+        return { ok: false, error: e.message };
     }
 };
 
+// ── GET ALL ──────────────────────────────────────────────────────────
 
-// ── READ: tutti i musei ──────────────────────────────────────────────────────
-// Chiamata da GET /api/musei
-// Supporta filtro opzionale per città: GET /api/musei?citta=Torino
 exports.getAll = async (credentials, query) => {
-    let filter = {};
-    if (query.citta)       filter.citta       = { $regex: new RegExp(query.citta, "i") };
-    if (query.nome)        filter.nome        = { $regex: new RegExp(query.nome, "i") };
-    if (query.curatoreId)  filter.curatoreId  = query.curatoreId;
     try {
         await connect(credentials);
-        const musei = await Museo.find(filter, { __v: 0 }); // esclude il campo interno __v
-        await disconnect();
+        let filter = {};
+        if (query.citta)       filter.citta       = { $regex: new RegExp(query.citta, "i") };
+        if (query.nome)        filter.nome        = { $regex: new RegExp(query.nome, "i") };
+        if (query.curatoreId)  filter.curatoreId  = query.curatoreId;
+        const musei = await Museo.find(filter, { __v: 0 });
         return { ok: true, data: musei };
     } catch (e) {
         console.error(e);
@@ -108,14 +84,12 @@ exports.getAll = async (credentials, query) => {
     }
 };
 
+// ── GET ONE ─────────────────────────────────────────────────────────
 
-// ── READ: singolo museo per codiceIsil ──────────────────────────────────────
-// Chiamata da GET /api/musei/:codiceIsil
 exports.getOne = async (credentials, codiceIsil) => {
     try {
         await connect(credentials);
         const museo = await Museo.findOne({ codiceIsil }, { __v: 0 });
-        await disconnect();
         if (!museo) return { ok: false, error: "Museo non trovato." };
         return { ok: true, data: museo };
     } catch (e) {
@@ -124,16 +98,13 @@ exports.getOne = async (credentials, codiceIsil) => {
     }
 };
 
+// ── CREATE ──────────────────────────────────────────────────────────
 
-// ── CREATE: aggiunge un museo ────────────────────────────────────────────────
-// Chiamata da POST /api/musei
-// Il body della richiesta deve contenere i campi del museo.
 exports.create = async (credentials, body) => {
     try {
         await connect(credentials);
         const museo = new Museo(body);
         await museo.save();
-        await disconnect();
         return { ok: true, data: museo };
     } catch (e) {
         console.error(e);
@@ -141,9 +112,8 @@ exports.create = async (credentials, body) => {
     }
 };
 
+// ── UPDATE ──────────────────────────────────────────────────────────
 
-// ── UPDATE: modifica un museo ────────────────────────────────────────────────
-// Chiamata da PUT /api/musei/:codiceIsil
 exports.update = async (credentials, codiceIsil, body) => {
     try {
         await connect(credentials);
@@ -152,7 +122,6 @@ exports.update = async (credentials, codiceIsil, body) => {
             body,
             { new: true, runValidators: true, projection: { __v: 0 } }
         );
-        await disconnect();
         if (!updated) return { ok: false, error: "Museo non trovato." };
         return { ok: true, data: updated };
     } catch (e) {
@@ -161,14 +130,12 @@ exports.update = async (credentials, codiceIsil, body) => {
     }
 };
 
+// ── DELETE ──────────────────────────────────────────────────────────
 
-// ── DELETE: elimina un museo ─────────────────────────────────────────────────
-// Chiamata da DELETE /api/musei/:codiceIsil
 exports.remove = async (credentials, codiceIsil) => {
     try {
         await connect(credentials);
         const deleted = await Museo.findOneAndDelete({ codiceIsil });
-        await disconnect();
         if (!deleted) return { ok: false, error: "Museo non trovato." };
         return { ok: true, message: `Museo "${deleted.nome}" eliminato.` };
     } catch (e) {
