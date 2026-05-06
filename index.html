@@ -8,6 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/profile.css">
 </head>
 <body>
 
@@ -16,7 +17,8 @@
         <div class="container">
             <a class="navbar-brand fw-900" href="#">ArtAround<span class="text-magenta">.</span></a>
             <div class="ms-auto d-flex align-items-center gap-3">
-                <a href="/login/login.html" class="btn btn-magenta px-4 fw-bold">ACCEDI</a>
+                <a href="/login/login.html" id="loginBtn" class="btn btn-magenta px-4 fw-bold">ACCEDI</a>
+                <div id="nav-profile-placeholder"></div>
             </div>
         </div>
     </nav>
@@ -129,7 +131,7 @@
                             <li><i class="fa-solid fa-check text-magenta"></i> Contenuti AI adattivi</li>
                             <li><i class="fa-solid fa-check text-magenta"></i> Audio guide sintetiche</li>
                         </ul>
-                        <a href="/navigator/index.html" class="btn btn-light w-100 fw-bold mt-auto">AVVIA VISITA</a>
+                        <a href="#" onclick="requireAuth(event, '/navigator/index.html')" class="btn btn-light w-100 fw-bold mt-auto">AVVIA VISITA</a>
                     </div>
                 </div>
                 <div class="col-lg-5 col-md-6">
@@ -144,7 +146,7 @@
                             <li><i class="fa-solid fa-check text-white"></i> Gestione vendite</li>
                             <li><i class="fa-solid fa-check text-white"></i> Analytics avanzate</li>
                         </ul>
-                        <a href="/Editor-Marketplace/Frontend/musei.html" class="btn btn-outline-light w-100 fw-bold mt-auto">GESTISCI TOUR</a>
+                        <a href="#" onclick="requireAuth(event, '/Editor-Marketplace/Frontend/musei.html')" class="btn btn-outline-light w-100 fw-bold mt-auto">GESTISCI TOUR</a>
                     </div>
                 </div>
             </div>
@@ -173,5 +175,59 @@
         </div>
     </footer>
 
+    <script>
+    (function () {
+        const userUsername = localStorage.getItem('userUsername');
+        const userRole = localStorage.getItem('userRole') || '';
+        const userId = localStorage.getItem('userId') || '';
+        const loginBtn = document.getElementById('loginBtn');
+        const placeholder = document.getElementById('nav-profile-placeholder');
+
+        if (userUsername) {
+            if (loginBtn) loginBtn.style.display = 'none';
+            const roleMap = {
+                curatore:   { letter: 'C', color: '#6366f1' },
+                visitatore: { letter: 'V', color: '#FF007F' },
+                autore:     { letter: 'A', color: '#05070A' }
+            };
+            const cfg = roleMap[userRole] || { letter: '?', color: '#888' };
+            if (placeholder) {
+                placeholder.innerHTML = `
+                    <div class="nav-profile-container" id="navProfileContainer">
+                        <div class="nav-avatar" style="background-color:${cfg.color}">${cfg.letter}</div>
+                        <div class="profile-dropdown">
+                            <span id="userEmailDisplay">${userUsername}</span>
+                            <a href="/Editor-Marketplace/Frontend/visite.html?autore=${encodeURIComponent(userId)}">Le mie visite</a>
+                            <a href="#" class="logout-link" onclick="logout(event)">Logout</a>
+                        </div>
+                    </div>`;
+                const container = document.getElementById('navProfileContainer');
+                container.addEventListener('click', (e) => {
+                    if (!e.target.closest('a')) container.classList.toggle('open');
+                });
+                document.addEventListener('click', (e) => {
+                    if (!container.contains(e.target)) container.classList.remove('open');
+                });
+            }
+        }
+    })();
+
+    function requireAuth(event, destination) {
+        event.preventDefault();
+        if (localStorage.getItem('userUsername')) {
+            window.location.href = destination;
+        } else {
+            window.location.href = '/login/login.html?redirect=' + encodeURIComponent(destination);
+        }
+    }
+
+    function logout(event) {
+        if (event) event.preventDefault();
+        if (confirm('Sei sicuro di voler uscire?')) {
+            localStorage.clear();
+            window.location.href = '/';
+        }
+    }
+    </script>
 </body>
 </html>

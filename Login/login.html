@@ -277,25 +277,8 @@
             switchPanel('registerPanel', 'loginPanel');
         });
 
-        /* ===================== FORM SUBMIT (placeholder) ===================== */
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            // Collegare alla logica login esistente in /login/login.js
-        });
-
-        document.getElementById('registerForm').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const pwd = document.getElementById('regPassword').value;
-            const confirm = document.getElementById('regPasswordConfirm').value;
-            if (pwd !== confirm) {
-                alert('Le password non coincidono.');
-                return;
-            }
-            // Collegare alla logica di registrazione
-        });
     </script>
 
-    <!-- Script esistente (se gestisce logica aggiuntiva) -->
-    <!-- <script src="/login/login.js"></script> -->
+    <script src="/login/login.js"></script>
 </body>
 </html>
