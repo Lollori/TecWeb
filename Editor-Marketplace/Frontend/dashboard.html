@@ -3,137 +3,261 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard — ArtAround Admin</title>
-
-    <!-- Bootstrap 5.2.3 CSS -->
+    <title>Dashboard — ArtAround</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-    <!-- CSS Unificato Marketplace/Admin -->
     <link rel="stylesheet" href="/css/marketplace.css">
+    <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;})();</script>
 </head>
 <body>
 
 <div class="admin-layout">
-    
-    <!-- SIDEBAR AGGIORNATA -->
+
+    <!-- SIDEBAR -->
     <aside class="sidebar">
         <div class="sidebar-top">
-            <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
-            <p class="admin-badge" id="sidebarRole">Dashboard</p>
+            <a href="/" style="text-decoration:none;"><h2 class="logo-brand">ArtAround.</h2></a>
+            <p class="admin-badge" id="sidebarRole">—</p>
         </div>
 
-        <nav class="sidebar-menu">
-            <a href="dashboard.html" class="menu-link active">
-                <i class="fa-solid fa-chart-pie"></i> Dashboard
-            </a>
-            <a href="musei.html" class="menu-link">
-                <i class="fa-solid fa-museum"></i> Musei
-            </a>
-            <a href="utenti.html" class="menu-link">
-                <i class="fa-solid fa-users-gear"></i> Utenti
-            </a>
+        <nav class="sidebar-menu" id="sidebarNav">
+            <!-- Popolato da buildSidebar() in base al ruolo -->
         </nav>
 
-        <!-- FOOTER SIDEBAR STATICO (Addio vecchio menu verde) -->
         <div class="sidebar-footer">
+            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
+                <span class="toggle-label">Modalità scura</span>
+                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
+            </button>
             <div class="user-pill-mini">
-                <div class="avatar-sm">V</div>
+                <div class="avatar-sm" id="avatarInitial">?</div>
                 <div class="user-info-mini">
-                    <span class="name">V. Locale</span>
-                    <span class="role" id="headerRoleLabel">Administrator</span>
+                    <span class="name" id="footerUsername">—</span>
+                    <span class="role" id="headerRoleLabel">—</span>
                 </div>
-                <a href="/logout" class="ms-auto logout-icon" title="Logout">
+                <a href="/" class="ms-auto logout-icon" title="Logout"
+                   onclick="localStorage.clear()">
                     <i class="fa-solid fa-power-off"></i>
                 </a>
             </div>
         </div>
     </aside>
 
-    <!-- MAIN CONTENT AREA -->
+    <!-- MAIN CONTENT -->
     <main class="main-content">
-        
-        <!-- HEADER DINAMICO -->
+
         <header class="content-header d-flex justify-content-between align-items-end mb-5">
             <div>
-                <h1 class="page-title">Pannello di Controllo</h1>
-                <p class="text-muted mb-0">Benvenuto nell'area di gestione globale.</p>
+                <h1 class="page-title" id="pageTitle">Pannello di Controllo</h1>
+                <p class="text-muted mb-0" id="pageSubtitle">Benvenuto nell'area di gestione.</p>
             </div>
             <div class="quick-stats d-flex gap-4">
                 <div class="stat-item text-end">
-                    <span id="museiAttiviCount" class="d-block fw-bold h4 mb-0 text-magenta">...</span>
-                    <small class="text-muted">Musei Attivi</small>
+                    <span id="museiAttiviCount" class="d-block fw-bold h4 mb-0 text-magenta">…</span>
+                    <small class="text-muted" id="museiCountLabel">I tuoi Musei</small>
                 </div>
             </div>
         </header>
 
-        <!-- SEZIONE: GESTIONE RAPIDA (Eredita lo stile card dal CSS) -->
-        <section id="section-musei" class="dashboard-section mb-5">
+        <!-- ════════════════════════════════════════
+             CURATORE — MUSEI
+             ════════════════════════════════════════ -->
+        <section id="section-musei" class="dashboard-section mb-5" style="display:none">
             <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
                 <h3 class="fw-bold h4 mb-0">I tuoi Musei</h3>
-                <div class="d-flex gap-2">
-                    <div class="search-box-container shadow-sm py-1 px-3" style="max-width: 300px;">
-                        <i class="fa-solid fa-magnifying-glass search-icon" style="font-size: 0.9rem;"></i>
-                        <input type="text" id="searchMuseiDash" class="search-input py-2" placeholder="Cerca..." oninput="filterMuseiDash()">
-                    </div>
-                    <button class="btn-magenta" onclick="switchSection('aggiungi-museo')">
-                        <i class="fa-solid fa-plus"></i>
-                    </button>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:300px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchMuseiDash" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterMuseiDash()">
                 </div>
             </div>
-            
-            <div id="museiView" class="items-grid">
-                <!-- Popolato da dashboard.js -->
-            </div>
+            <div id="museiView" class="items-grid"></div>
         </section>
 
-        <!-- SEZIONE: MODIFICA MUSEO (Stile Custom Modal in pagina) -->
+        <!-- ════════════════════════════════════════
+             CURATORE — MODIFICA MUSEO
+             ════════════════════════════════════════ -->
         <section id="section-modifica-museo" class="dashboard-section mb-5" style="display:none">
-            <div class="custom-card-bg p-4 shadow-sm">
-                <h3 class="mb-4 h4 fw-bold text-navy">Modifica Istituzione</h3>
+            <div class="mb-5">
+                <h1 class="page-title">Modifica Museo</h1>
+                <p class="text-muted mb-0">Seleziona un museo per modificarne i dati.</p>
+            </div>
+            <div class="glass-card p-5">
                 <div class="mb-4">
                     <label class="custom-label">Seleziona Museo</label>
-                    <select id="selectModifica" class="form-control custom-input bg-white">
+                    <select id="selectModifica" class="custom-input">
                         <option value="">— Seleziona —</option>
                     </select>
                 </div>
-
                 <form id="modificaForm" style="display:none" class="row g-4">
                     <div class="col-md-6">
-                        <label class="custom-label">Nome</label>
-                        <input type="text" id="mfNome" class="form-control custom-input" required>
+                        <label class="custom-label">Nome *</label>
+                        <input type="text" id="mfNome" class="custom-input" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Città</label>
-                        <input type="text" id="mfCitta" class="form-control custom-input" required>
+                        <label class="custom-label">Città *</label>
+                        <input type="text" id="mfCitta" class="custom-input" required>
                     </div>
                     <div class="col-12">
                         <label class="custom-label">Indirizzo</label>
-                        <input type="text" id="mfIndirizzo" class="form-control custom-input">
+                        <input type="text" id="mfIndirizzo" class="custom-input">
                     </div>
                     <div class="col-md-4">
                         <label class="custom-label">Codice ISIL</label>
-                        <input type="text" id="mfCodiceIsil" class="form-control custom-input">
+                        <input type="text" id="mfCodiceIsil" class="custom-input">
                     </div>
                     <div class="col-md-8">
                         <label class="custom-label">URL Copertina</label>
-                        <input type="url" id="mfImmagine" class="form-control custom-input">
+                        <input type="url" id="mfImmagine" class="custom-input">
                     </div>
                     <div class="col-12">
                         <label class="custom-label">Descrizione</label>
-                        <textarea id="mfDescrizione" class="form-control custom-input" rows="3"></textarea>
+                        <textarea id="mfDescrizione" class="custom-input" rows="3"></textarea>
                     </div>
-                    <div class="col-12 mt-4 text-end">
+                    <div class="col-12 text-end">
                         <button type="submit" class="btn-magenta px-5">Aggiorna Dati</button>
                     </div>
                 </form>
             </div>
         </section>
 
-        <!-- SEZIONE: AGGIUNGI NUOVO MUSEO -->
+        <!-- ════════════════════════════════════════
+             CURATORE — AGGIUNGI OPERA
+             ════════════════════════════════════════ -->
+        <section id="section-aggiungi-opere" class="dashboard-section mb-5" style="display:none">
+            <div class="mb-5">
+                <h1 class="page-title">Aggiungi Opera</h1>
+                <p class="text-muted mb-0">Aggiungi una nuova opera a uno dei tuoi musei.</p>
+            </div>
+            <div class="glass-card p-5">
+                <div class="mb-4">
+                    <label class="custom-label">Museo *</label>
+                    <select id="selectOpereMuseo" class="custom-input">
+                        <option value="">— Seleziona museo —</option>
+                    </select>
+                </div>
+                <form id="operaForm" class="row g-4">
+                    <!-- Titolo + Tipo -->
+                    <div class="col-md-8">
+                        <label class="custom-label">Titolo / ID Opera *</label>
+                        <input type="text" id="ofTitolo" class="custom-input"
+                               placeholder="es. La Primavera" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Tipo *</label>
+                        <select id="ofTipo" class="custom-input" required>
+                            <option value="">— Seleziona —</option>
+                            <option value="quadro">Quadro</option>
+                            <option value="statua">Statua</option>
+                            <option value="altro">Altro</option>
+                        </select>
+                    </div>
+                    <!-- Autore + Datazione -->
+                    <div class="col-md-6">
+                        <label class="custom-label">Autore</label>
+                        <input type="text" id="ofAutore" class="custom-input"
+                               placeholder="es. Sandro Botticelli">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">Datazione</label>
+                        <input type="text" id="ofDatazione" class="custom-input"
+                               placeholder="es. 1477–1478">
+                    </div>
+                    <!-- Immagine -->
+                    <div class="col-12">
+                        <label class="custom-label">URL Immagine</label>
+                        <input type="url" id="ofImmagine" class="custom-input"
+                               placeholder="https://…">
+                    </div>
+                    <!-- Descrizione -->
+                    <div class="col-12">
+                        <label class="custom-label">Descrizione</label>
+                        <textarea id="ofDescrizione" class="custom-input" rows="3"
+                                  placeholder="Breve descrizione dell'opera…"></textarea>
+                    </div>
+                    <!-- Testo Audioguida -->
+                    <div class="col-12">
+                        <label class="custom-label">Testo Audioguida</label>
+                        <textarea id="ofTesto" class="custom-input" rows="4"
+                                  placeholder="Testo completo per l'audioguida…"></textarea>
+                    </div>
+                    <!-- Linguaggio + Lunghezza + Licenza -->
+                    <div class="col-md-4">
+                        <label class="custom-label">Linguaggio</label>
+                        <select id="ofLinguaggio" class="custom-input">
+                            <option value="semplice">Semplice</option>
+                            <option value="infantile">Infantile</option>
+                            <option value="medio">Medio</option>
+                            <option value="specialistico">Specialistico</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Lunghezza</label>
+                        <select id="ofLunghezza" class="custom-input">
+                            <option value="1min">1 minuto</option>
+                            <option value="15s">15 secondi</option>
+                            <option value="4min">4 minuti</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Licenza</label>
+                        <select id="ofLicenza" class="custom-input">
+                            <option value="gratuita">Gratuita</option>
+                            <option value="premium">Premium</option>
+                        </select>
+                    </div>
+                    <!-- Dimensioni -->
+                    <div class="col-md-4">
+                        <label class="custom-label">Altezza (cm)</label>
+                        <input type="number" id="ofAltezza" class="custom-input" min="0" value="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Larghezza (cm)</label>
+                        <input type="number" id="ofLarghezza" class="custom-input" min="0" value="0">
+                    </div>
+                    <div class="col-md-4">
+                        <label class="custom-label">Profondità (cm)</label>
+                        <input type="number" id="ofProfondita" class="custom-input" min="0" value="0">
+                    </div>
+                    <!-- Tecnica + Materiali -->
+                    <div class="col-md-6">
+                        <label class="custom-label">Tecnica <small style="text-transform:none;color:#94a3b8;">(quadri)</small></label>
+                        <input type="text" id="ofTecnica" class="custom-input"
+                               placeholder="es. Tempera su tavola">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">Materiali <small style="text-transform:none;color:#94a3b8;">(statue)</small></label>
+                        <input type="text" id="ofMateriali" class="custom-input"
+                               placeholder="es. Marmo bianco">
+                    </div>
+                    <!-- Prezzo + Pubblica -->
+                    <div class="col-md-4">
+                        <label class="custom-label">Prezzo (€)</label>
+                        <input type="number" id="ofPrezzo" class="custom-input"
+                               min="0" step="0.01" value="0">
+                    </div>
+                    <div class="col-md-8 d-flex align-items-end pb-1">
+                        <label style="display:flex;align-items:center;gap:10px;cursor:pointer;">
+                            <input type="checkbox" id="ofPubblica"
+                                   style="width:auto;accent-color:var(--magenta,#e91e8c);">
+                            <span class="custom-label" style="margin:0;">Pubblica subito</span>
+                        </label>
+                    </div>
+                    <!-- Azioni -->
+                    <div class="col-12 d-flex justify-content-end gap-3 pt-3"
+                         style="border-top:1px solid #e2e8f0;">
+                        <button type="button" class="btn-outline-custom"
+                                onclick="document.getElementById('operaForm').reset()">Pulisci</button>
+                        <button type="submit" class="btn-magenta">Aggiungi Opera</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- ════════════════════════════════════════
+             CURATORE — AGGIUNGI MUSEO
+             ════════════════════════════════════════ -->
         <section id="section-aggiungi-museo" class="dashboard-section mb-5" style="display:none">
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <div>
@@ -144,47 +268,75 @@
                     <i class="fa-solid fa-arrow-left me-2"></i>Torna ai Musei
                 </button>
             </div>
-
             <div class="glass-card p-5">
-                <form id="nuovoMuseoForm">
-                    <div class="row g-4">
-                        <div class="col-md-6">
-                            <label class="custom-label">Nome Istituzione *</label>
-                            <input type="text" id="nmNome" class="custom-input" placeholder="es. Galleria degli Uffizi" required>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="custom-label">Città *</label>
-                            <input type="text" id="nmCitta" class="custom-input" placeholder="es. Firenze" required>
-                        </div>
-                        <div class="col-12">
-                            <label class="custom-label">Indirizzo Completo</label>
-                            <input type="text" id="nmIndirizzo" class="custom-input" placeholder="Piazzale degli Uffizi, 6, 50122 Firenze FI">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="custom-label">Codice ISIL</label>
-                            <input type="text" id="nmCodiceIsil" class="custom-input" placeholder="IT-FI0001">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="custom-label">Immagine Copertina (URL)</label>
-                            <input type="url" id="nmImmagine" class="custom-input" placeholder="https://images.unsplash.com/...">
-                        </div>
-                        <div class="col-12">
-                            <label class="custom-label">Descrizione</label>
-                            <textarea id="nmDescrizione" class="custom-input" rows="4" placeholder="Breve descrizione del museo..."></textarea>
-                        </div>
+                <form id="nuovoMuseoForm" class="row g-4">
+                    <div class="col-md-6">
+                        <label class="custom-label">Nome Istituzione *</label>
+                        <input type="text" id="nmNome" class="custom-input"
+                               placeholder="es. Galleria degli Uffizi" required>
                     </div>
-                    <div class="d-flex justify-content-end gap-3 mt-5 pt-4" style="border-top: 1px solid #e2e8f0;">
-                        <button type="button" class="btn-outline-custom" onclick="switchSection('musei')">Annulla</button>
+                    <div class="col-md-6">
+                        <label class="custom-label">Città *</label>
+                        <input type="text" id="nmCitta" class="custom-input"
+                               placeholder="es. Firenze" required>
+                    </div>
+                    <div class="col-12">
+                        <label class="custom-label">Indirizzo Completo</label>
+                        <input type="text" id="nmIndirizzo" class="custom-input"
+                               placeholder="Piazzale degli Uffizi, 6, 50122 Firenze FI">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">Codice ISIL *</label>
+                        <input type="text" id="nmCodiceIsil" class="custom-input"
+                               placeholder="IT-FI0001" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="custom-label">Immagine Copertina (URL)</label>
+                        <input type="url" id="nmImmagine" class="custom-input"
+                               placeholder="https://images.unsplash.com/…">
+                    </div>
+                    <div class="col-12">
+                        <label class="custom-label">Descrizione</label>
+                        <textarea id="nmDescrizione" class="custom-input" rows="4"
+                                  placeholder="Breve descrizione del museo…"></textarea>
+                    </div>
+                    <div class="col-12 d-flex justify-content-end gap-3 pt-3"
+                         style="border-top:1px solid #e2e8f0;">
+                        <button type="button" class="btn-outline-custom"
+                                onclick="switchSection('musei')">Annulla</button>
                         <button type="submit" class="btn-magenta">Salva Museo</button>
                     </div>
                 </form>
             </div>
         </section>
 
+        <!-- ════════════════════════════════════════
+             AUTORE — sezioni (contenuto generato da JS)
+             ════════════════════════════════════════ -->
+        <section id="section-autore-musei"           class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-autore-aggiungi-visita" class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-autore-aggiungi-item"   class="dashboard-section mb-5" style="display:none"></section>
+
+        <!-- ════════════════════════════════════════
+             VISITATORE — sezioni (contenuto generato da JS)
+             ════════════════════════════════════════ -->
+        <section id="section-visitatore-musei"  class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-visitatore-opere"  class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-visitatore-visite" class="dashboard-section mb-5" style="display:none"></section>
+
+        <!-- ════════════════════════════════════════
+             ADMIN — sezioni (contenuto generato da JS)
+             ════════════════════════════════════════ -->
+        <section id="section-admin-utenti"    class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-admin-musei"     class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-admin-opere"     class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-admin-visite"    class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-admin-items"     class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-admin-analytics" class="dashboard-section mb-5" style="display:none"></section>
+
     </main>
 </div>
 
 <script src="dashboard.js"></script>
-<script src="/js/profile.js"></script>
 </body>
 </html>

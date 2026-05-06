@@ -16,6 +16,7 @@
 
     <!-- Nuovo CSS Unificato Marketplace/Admin -->
     <link rel="stylesheet" href="/css/marketplace.css">
+    <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;})();</script>
 </head>
 <body>
 
@@ -25,22 +26,24 @@
     <aside class="sidebar">
         <div class="sidebar-top">
             <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
-            <p class="admin-badge">Management Panel</p>
+            <p class="admin-badge">Dashboard Curatore</p>
         </div>
 
         <nav class="sidebar-menu">
             <a href="dashboard.html" class="menu-link">
-                <i class="fa-solid fa-chart-pie"></i> Dashboard
+                <i class="fa-solid fa-building-columns"></i> Musei
             </a>
-            <a href="musei.html" class="menu-link active">
-                <i class="fa-solid fa-museum"></i> Musei
+            <a href="dashboard.html?s=modifica-museo" class="menu-link">
+                <i class="fa-solid fa-pen-to-square"></i> Modifica Museo
             </a>
-            <a href="utenti.html" class="menu-link">
-                <i class="fa-solid fa-users-gear"></i> Utenti
+            <a href="dashboard.html?s=aggiungi-opere" class="menu-link">
+                <i class="fa-solid fa-image"></i> Aggiungi Opera
+            </a>
+            <a href="dashboard.html?s=aggiungi-museo" class="menu-link">
+                <i class="fa-solid fa-plus-circle"></i> Aggiungi Museo
             </a>
         </nav>
 
-        <!-- NUOVO FOOTER SIDEBAR -->
         <div class="sidebar-footer">
             <div class="user-pill-mini">
                 <div class="avatar-sm">M</div>
@@ -48,7 +51,8 @@
                     <span class="name">Admin</span>
                     <span class="role">Administrator</span>
                 </div>
-                <a href="/index.html" class="ms-auto logout-icon" title="Logout">
+                <a href="/login/login.html" class="ms-auto logout-icon" title="Logout"
+                   onclick="localStorage.clear()">
                     <i class="fa-solid fa-power-off"></i>
                 </a>
             </div>

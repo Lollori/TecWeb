@@ -25,10 +25,10 @@ body, html {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100%;
+    min-height: 100%;
     font-family: 'Inter', sans-serif;
     color: white;
-    overflow: hidden;
+    overflow-x: hidden;
 }
 
 /* ========== STATIC GRADIENT BACKGROUND (like home) ========== */
@@ -67,7 +67,7 @@ body, html {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 60px 20px;
     position: relative;
     z-index: 1;
 }
@@ -191,13 +191,8 @@ body, html {
 
 /* ========== SCROLLABLE BODY ========== */
 .auth-scroll-body {
-    max-height: calc(100vh - 160px);
-    overflow-y: auto;
-    scrollbar-width: none;
     padding-right: 2px;
 }
-
-.auth-scroll-body::-webkit-scrollbar { display: none; }
 
 /* ========== BRAND HEADER ========== */
 .brand-header { margin-bottom: 20px; }
