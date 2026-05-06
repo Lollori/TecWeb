@@ -44,8 +44,10 @@ function renderMusei(musei) {
         return;
     }
 
-    grid.innerHTML = musei.map(m => `
-        <div class="item-card museo-card" onclick="apriMuseo(event, '${m.codiceIsil}')">
+    grid.innerHTML = musei.map(m => {
+        const museoKey = m.codiceIsil || m._id;
+        return `
+        <div class="item-card museo-card" onclick="apriMuseo(event, '${museoKey}')">
             ${m.immagineCopertina
                 ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}" onerror="this.style.display='none'">`
                 : `<div class="museo-card-img-placeholder"><i class="fa-solid fa-building-columns"></i></div>`
@@ -75,20 +77,21 @@ function renderMusei(musei) {
                 ${m.curatoreId ? `<span class="tag-bubble"><i class="fa-solid fa-user-tie"></i> ${m.curatoreId}</span>` : ''}
             </div>
         </div>
-    `).join('');
+    `;
+    }).join('');
 }
 
 
 // ── NAVIGAZIONE AL MUSEO ─────────────────────────────────────────────────
 
-function apriMuseo(event, codiceIsil) {
+function apriMuseo(event, museoKey) {
     if (event.target.closest('.icon-btn')) return;
-    if (!codiceIsil) return;
+    if (!museoKey) return;
 
-    // Salva il codiceIsil in sessione
-    sessionStorage.setItem('currentMuseo', codiceIsil);
+    // Salva il museoKey in sessione
+    sessionStorage.setItem('currentMuseo', museoKey);
 
-    window.location.href = `opere.html?museo=${encodeURIComponent(codiceIsil)}`;
+    window.location.href = `opere.html?museo=${encodeURIComponent(museoKey)}`;
 }
 
 

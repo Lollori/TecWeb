@@ -21,7 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const container = document.getElementById('visiteContainer');
     const form = document.getElementById('visitaForm');
-    const modal = document.getElementById('visitaModal');
+    const modalEl = document.getElementById('visitaModal');
+    const bsModal = new bootstrap.Modal(modalEl);
 
     // Mostra banner del museo selezionato in testa alla pagina
     fetch(`/api/musei/${encodeURIComponent(currentMuseo)}`)
@@ -195,37 +196,36 @@ document.addEventListener('DOMContentLoaded', () => {
 
 
     //FUNZIONI DEL MODALE
-    window.openModal = function() { 
-        apriModale(null); 
+    window.openModal = function() {
+        apriModale(null);
     };
 
-    window.closeModal = function() { 
+    window.closeModal = function() {
         closeModale();
     };
 
     function apriModale(visita) {
-        modal.style.display = 'flex';
-        document.body.classList.add('no-scroll');
-        
         if (visita) {
             editingId = visita._id;
             document.getElementById('nomeVisita').value = visita.nomeVisita || '';
             document.getElementById('nomeMnemonico').value = visita.nomeMnemonico || '';
             document.getElementById('logistica').value = visita.logistica || '';
             document.getElementById('quizDomanda').value = visita.quizDomanda || '';
-            document.querySelector('.brand').innerHTML = `Modifica <span>Visita</span>`; 
+            const titleEl = modalEl.querySelector('.modal-title');
+            if (titleEl) titleEl.innerHTML = `Modifica <span class="text-magenta">Visita</span>`;
         } else {
             editingId = null;
             form.reset();
-            document.querySelector('.brand').innerHTML = `Dettagli <span>Visita</span>`;
+            const titleEl = modalEl.querySelector('.modal-title');
+            if (titleEl) titleEl.innerHTML = `Dettagli <span class="text-magenta">Visita</span>`;
         }
+        bsModal.show();
     }
 
     function closeModale() {
-        modal.style.display = 'none';
-        document.body.classList.remove('no-scroll');
+        bsModal.hide();
         form.reset();
-        editingId = null; 
+        editingId = null;
     }
 
     // AVVIO

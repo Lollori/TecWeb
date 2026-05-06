@@ -22,7 +22,8 @@ let vendidaTarget = null;
 document.addEventListener('DOMContentLoaded', async () => {
     await loadAll();
     renderMuseoFilter();
-    setTab('opere');
+    // Show opere tab content by default without changing sidebar highlighting
+    showTabContent('opere');
 
     document.getElementById('vendidaForm').addEventListener('submit', submitVendita);
 
@@ -62,20 +63,22 @@ function renderMuseoFilter() {
     const sel = document.getElementById('museoFilter');
     sel.innerHTML =
         '<option value="">Tutti i musei</option>' +
-        allMusei.map(m => `<option value="${m.codiceIsil}">${m.nome}</option>`).join('');
+        allMusei.map(m => `<option value="${m.codiceIsil || m._id}">${m.nome}</option>`).join('');
 }
 
 function applyFilter() {
-    const codiceIsil = document.getElementById('museoFilter').value;
+    const sel = document.getElementById('museoFilter');
+    const museoSelected = sel.selectedIndex > 0;
+    const filterValue = sel.value;
 
     if (currentTab === 'opere') {
-        const filtered = codiceIsil
-            ? allOpere.filter(o => o.codiceIsil === codiceIsil)
+        const filtered = museoSelected
+            ? allOpere.filter(o => o.codiceIsil === filterValue)
             : allOpere;
         renderOpere(filtered);
     } else {
-        const filtered = codiceIsil
-            ? allVisite.filter(v => v.codiceIsil === codiceIsil)
+        const filtered = museoSelected
+            ? allVisite.filter(v => v.codiceIsil === filterValue)
             : allVisite;
         renderVisite(filtered);
     }
@@ -85,19 +88,25 @@ function applyFilter() {
    TAB SWITCHING
    ============================================================ */
 
-function setTab(tab) {
+// Only shows/hides tab content and renders data — no sidebar changes
+function showTabContent(tab) {
     currentTab = tab;
-
-    const btnOpere  = document.getElementById('tabBtnOpere');
-    const btnVisite = document.getElementById('tabBtnVisite');
-
-    btnOpere.classList.toggle('tab-active',  tab === 'opere');
-    btnVisite.classList.toggle('tab-active', tab === 'visite');
-
     document.getElementById('tabOpere').style.display  = tab === 'opere'  ? '' : 'none';
     document.getElementById('tabVisite').style.display = tab === 'visite' ? '' : 'none';
-
     applyFilter();
+}
+
+// Called on explicit user click: moves sidebar highlight to the selected tab
+function setTab(tab, el) {
+    const btnOpere       = document.getElementById('tabBtnOpere');
+    const btnVisite      = document.getElementById('tabBtnVisite');
+    const btnMarketplace = document.getElementById('tabBtnMarketplace');
+
+    btnOpere.classList.toggle('active',  tab === 'opere');
+    btnVisite.classList.toggle('active', tab === 'visite');
+    if (btnMarketplace) btnMarketplace.classList.remove('active');
+
+    showTabContent(tab);
 }
 
 /* ============================================================

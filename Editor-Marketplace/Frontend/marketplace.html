@@ -59,13 +59,13 @@
                 <i class="fa-solid fa-users-gear"></i> Utenti
             </a>
             <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-            <a href="opere.html" class="menu-link" id="tabBtnOpere" onclick="setTab('opere', this)">
+            <a href="#" class="menu-link" id="tabBtnOpere" onclick="event.preventDefault(); setTab('opere', this)">
                 <i class="fa-solid fa-palette"></i> Opere
             </a>
-            <a href="visite.html" class="menu-link" id="tabBtnVisite" onclick="setTab('visite', this)">
+            <a href="#" class="menu-link" id="tabBtnVisite" onclick="event.preventDefault(); setTab('visite', this)">
                 <i class="fa-solid fa-map"></i> Visite
             </a>
-            <a href="marketplace.html" class="menu-link active">
+            <a href="marketplace.html" class="menu-link active" id="tabBtnMarketplace">
                 <i class="fa-solid fa-store"></i> Marketplace
             </a>
         </nav>
@@ -123,15 +123,15 @@
 </div>
 
 <!-- MODAL: METTI IN VENDITA -->
-<div class="modal fade" id="vendiModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="vendidaModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="custom-modal">
             <div class="modal-header">
-                <h5 class="modal-title">Metti in <span class="text-magenta">Vendita</span></h5>
-                <button type="button" class="btn-close btn-close-white" onclick="closeVendiModal()"></button>
+                <h5 class="modal-title" id="vendidaTitle">Metti in <span class="text-magenta">Vendita</span></h5>
+                <button type="button" class="btn-close btn-close-white" onclick="closeVendidaModal()"></button>
             </div>
             <div class="modal-body p-4">
-                <form id="vendiForm">
+                <form id="vendidaForm">
                     <div class="mb-3">
                         <label class="custom-label">Prezzo (€)</label>
                         <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="0">
@@ -143,7 +143,7 @@
                     </div>
 
                     <div class="modal-actions">
-                        <button type="button" class="btn-outline-custom" onclick="closeVendiModal()">Annulla</button>
+                        <button type="button" class="btn-outline-custom" onclick="closeVendidaModal()">Annulla</button>
                         <button type="submit" class="btn-magenta">
                             <i class="fa-solid fa-tag me-1"></i> Conferma
                         </button>
@@ -157,20 +157,7 @@
 <script src="marketplace.js"></script>
 <script src="/js/profile.js"></script>
 
-<script>
-    function setTab(type, el) {
-        document.querySelectorAll('.sidebar .menu-link').forEach(nav => nav.classList.remove('active'));
-        el.classList.add('active');
 
-        if(type === 'opere') {
-            document.getElementById('tabOpere').style.display = 'grid';
-            document.getElementById('tabVisite').style.display = 'none';
-        } else {
-            document.getElementById('tabOpere').style.display = 'none';
-            document.getElementById('tabVisite').style.display = 'grid';
-        }
-    }
-</script>
 
 </body>
 </html>
