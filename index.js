@@ -67,7 +67,7 @@ app.get('/', (req, res) => {
 const mongoCredentials = {
     user: "site252630",
     pwd: "Tei2xiip",
-    site: (process.env.NODE_ENV === 'production') ? "mongo_site252630" : "localhost"
+    site: __dirname.startsWith('/webapp') ? "mongo_site252630" : "localhost"
 }  
 
 console.log(`Connessione DB impostata su: ${mongoCredentials.site}`);
