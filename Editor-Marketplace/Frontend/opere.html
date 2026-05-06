@@ -4,128 +4,378 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestione Opere - ArtAround</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5.2.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/editor.css">
-    <link rel="stylesheet" href="/css/profile.css">
 
+    <link rel="stylesheet" href="/css/marketplace.css">
 </head>
-<body class="admin-layout">
+<body>
 
-    <header class="app-header">
-        <div class="header-inner">
-        <div style="width: 38px;"></div>
-        <h1 class="logo">
-            <a href="/" class="logo-link">ArtAround</a>
-            <span>Editor</span>
-        </h1>
+<div class="admin-layout">
 
-            <div id="nav-profile-placeholder"></div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-top">
+            <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
+            <p class="admin-badge">Editor Opere</p>
         </div>
-</header>
-    <nav class="top-nav-cards">
-        <div class="nav-inner-glass">
-            <a href="musei.html" class="mini-card back-card"><i class="fa-solid fa-arrow-left"></i><span>Musei</span></a>
-            <a href="opere.html" class="mini-card active"><i class="fa-solid fa-palette"></i><span>Opere</span></a>
-            <a href="visite.html" class="mini-card"><i class="fa-solid fa-map"></i><span>Visite</span></a>
-            <a href="marketplace.html" class="mini-card"><i class="fa-solid fa-store"></i><span>Marketplace</span></a>
-        </div>
-    </nav>
 
- <main class="main-viewport">
-        <header class="content-header">
-            <div class="header-text">
-                <h1>Gestione delle opere</h1>
-                <p id="museoSubtitle">Configura i contenuti multimediali (Item) del catalogo </p>
-            </div>
-            
-            <div class="header-toolbar">
-                <div class="search-box-glass">
-                    <i class="fa-solid fa-magnifying-glass search-icon"></i>
-                    <input type="text" id="searchText" placeholder="Cerca tra i tuoi contenuti..." oninput="applyFilters()">
+        <nav class="sidebar-menu">
+            <a href="musei.html" class="menu-link">
+                <i class="fa-solid fa-arrow-left"></i> Musei
+            </a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+            <a href="opere.html" class="menu-link active">
+                <i class="fa-solid fa-palette"></i> Opere
+            </a>
+            <a href="visite.html" class="menu-link">
+                <i class="fa-solid fa-map"></i> Visite
+            </a>
+            <a href="marketplace.html" class="menu-link">
+                <i class="fa-solid fa-store"></i> Marketplace
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="user-pill-mini">
+                <div class="avatar-sm">O</div>
+                <div class="user-info-mini">
+                    <span class="name">Editor Opere</span>
+                    <span class="role">Curatore</span>
                 </div>
+                <a href="/index.html" class="ms-auto logout-icon" title="Logout">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
 
-                <button onclick="apriModaleItem()" class="btn-primary-glass">
-                    <i class="fa-solid fa-plus"></i> Nuovo Item
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- SEZIONE: LISTA OPERE -->
+        <section id="section-opere">
+            <!-- Page Header -->
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="page-title">Gestione delle Opere</h1>
+                    <p class="text-muted mb-0">Configura i contenuti multimediali del catalogo</p>
+                </div>
+                <button onclick="switchSection('aggiungi-opera')" class="btn-magenta">
+                    <i class="fa-solid fa-plus me-2"></i>Nuova Opera
                 </button>
             </div>
-        </header>
 
-        <div id="statsDashboard" class="stats-sidebar">
-            <div class="mini-stat-card">
-                <div class="stat-ring-container" id="ringAdozioni"></div>
-                <div class="stat-texts">
-                    <small>Adozioni</small>
-                    <strong id="valAdozioni">0</strong>
-                </div>
-            </div>
-            <div class="mini-stat-card">
-                <div class="stat-texts">
-                    <small>Stato Sistema</small>
-                    <strong style="color: #4a7c5f;">Online</strong>
-                </div>
-            </div>
-        </div>
-
-        <div id="itemsContainer" class="items-grid"></div>
-    </main>
-
-    <div id="itemModal" class="modal-overlay" style="display:none;">
-        <div class="modal-glass-card">
-            <div class="modal-glass-header">
-                <div class="brand">ArtAround <span>Editor</span></div>
-                <button class="modal-close-btn" onclick="closeModal()">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            
-            <div class="modal-content">
-                <form id="itemForm">
-                    <div class="form-grid">
-                        <label>Titolo dell'Opera / Oggetto *
-                            <input type="text" id="operaId" placeholder="Es: Il Cenacolo" required>
-                        </label>
-                        
-                        <label>Identificatore (es. Wikidata ID)
-                            <input type="text" id="wikidataId" placeholder="Es: Q12345">
-                        </label>
-
-                        <label>Lunghezza *
-                            <select id="lunghezza" required>
-                                <option value="15s">15 secondi </option>
-                                <option value="1min">1 minuto </option>
-                                <option value="4min">4 minuti </option>
-                            </select>
-                        </label>
-
-                        <label>Linguaggio *
-                            <select id="linguaggio" required>
-                                <option value="infantile">Infantile [cite: 2, 3]</option>
-                                <option value="medio">Medio / Divulgativo [cite: 2, 3]</option>
-                                <option value="specialistico">Specialistico [cite: 2, 3]</option>
-                            </select>
-                        </label>
-
-                        <label class="full-width">Testo per Audioguida *
-                            <textarea id="testo" rows="6" placeholder="Inserisci il testo per l'App Navigator..." required></textarea>
-                        </label>
+            <!-- Search Bar with Tipo Filter -->
+            <div class="toolbar-section mb-4">
+                <div class="d-flex gap-3 align-items-center">
+                    <div class="search-box-container" style="flex: 1; max-width: 100%; min-height: 50px;">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="searchText" class="search-input" style="font-size: 1rem; padding: 10px 0;" placeholder="Cerca tra le opere..." oninput="applyFilters()">
                     </div>
-                    
-                    <div class="modal-actions">
-                        <button type="button" class="btn-cancel" onclick="closeModal()">Annulla</button>
-                        <button type="submit" class="btn-submit">Salva Contenuto</button>
+                    <select id="filterTipo" class="custom-input" style="min-width: 130px; max-width: 150px;" onchange="applyFilters()">
+                        <option value="">Tutti</option>
+                        <option value="quadro">Quadri</option>
+                        <option value="statua">Statue</option>
+                        <option value="altro">Altro</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Contenitore Dinamico Opere -->
+            <div id="itemsContainer" class="items-grid">
+                <!-- Riempito da item.js -->
+            </div>
+        </section>
+
+        <!-- SEZIONE: AGGIUNGI NUOVA OPERA -->
+        <section id="section-aggiungi-opera" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="page-title">Nuova Opera</h1>
+                    <p class="text-muted mb-0">Inserisci i dettagli dell'opera d'arte.</p>
+                </div>
+                <button onclick="switchSection('opere')" class="btn-outline-custom">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Torna alle Opere
+                </button>
+            </div>
+
+            <div class="glass-card p-5">
+                <form id="itemForm">
+                    <input type="hidden" id="editId">
+
+                    <div class="row g-4">
+                        <!-- Titolo -->
+                        <div class="col-md-8">
+                            <label class="custom-label">Titolo dell'Opera *</label>
+                            <input type="text" id="operaId" class="custom-input" placeholder="Es: Il Cenacolo" required>
+                        </div>
+
+                        <!-- Autore -->
+                        <div class="col-md-4">
+                            <label class="custom-label">Autore *</label>
+                            <input type="text" id="autore" class="custom-input" placeholder="Es: Leonardo da Vinci" required>
+                        </div>
+
+                        <!-- Tipo di Opera -->
+                        <div class="col-md-6">
+                            <label class="custom-label">Tipo di Opera *</label>
+                            <select id="tipo" class="custom-input" required onchange="toggleFields('add')">
+                                <option value="">Seleziona tipo...</option>
+                                <option value="quadro">Quadro/Dipinto</option>
+                                <option value="statua">Statua</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+
+                        <!-- Datazione -->
+                        <div class="col-md-6">
+                            <label class="custom-label">Datazione</label>
+                            <input type="text" id="datazione" class="custom-input" placeholder="Es: 1495-1498">
+                        </div>
+
+                        <!-- Altezza -->
+                        <div class="col-md-4">
+                            <label class="custom-label">Altezza (cm)</label>
+                            <input type="number" id="altezza" class="custom-input" placeholder="Es: 100" min="0" step="0.1">
+                        </div>
+
+                        <!-- Larghezza -->
+                        <div class="col-md-4">
+                            <label class="custom-label">Larghezza (cm)</label>
+                            <input type="number" id="larghezza" class="custom-input" placeholder="Es: 80" min="0" step="0.1">
+                        </div>
+
+                        <!-- Profondità (solo per non-quadri) -->
+                        <div class="col-md-4" id="addProfonditaContainer">
+                            <label class="custom-label">Profondità (cm)</label>
+                            <input type="number" id="profondita" class="custom-input" placeholder="Es: 50" min="0" step="0.1">
+                        </div>
+
+                        <!-- Tecnica (solo per quadri) -->
+                        <div class="col-md-6" id="addTecnicaContainer" style="display:none;">
+                            <label class="custom-label">Tecnica usata</label>
+                            <input type="text" id="tecnica" class="custom-input" placeholder="Es: Olio su tela">
+                        </div>
+
+                        <!-- Materiali (per statue/altro) -->
+                        <div class="col-md-6" id="addMaterialiContainer">
+                            <label class="custom-label">Materiali usati</label>
+                            <input type="text" id="materiali" class="custom-input" placeholder="Es: Marmo, Bronzo">
+                        </div>
+
+                        <!-- Identificatore (Wikidata ID) -->
+                        <div class="col-md-6">
+                            <label class="custom-label">Identificatore (Wikidata ID)</label>
+                            <input type="text" id="wikidataId" class="custom-input" placeholder="Es: Q12345">
+                        </div>
+
+                        <!-- Immagine/Foto URL -->
+                        <div class="col-md-12">
+                            <label class="custom-label">Immagine Copertina (URL)</label>
+                            <input type="url" id="immagine" class="custom-input" placeholder="https://images.unsplash.com/...">
+                            <div class="form-text mt-1" style="font-size: 0.85rem; color: var(--text-muted);">Inserisci l'URL di un'immagine per la copertina dell'opera</div>
+                        </div>
+
+                        <!-- Descrizione -->
+                        <div class="col-12">
+                            <label class="custom-label">Descrizione</label>
+                            <textarea id="descrizione" class="custom-input" rows="4" placeholder="Breve descrizione dell'opera..."></textarea>
+                        </div>
+
+                        <!-- Linguaggio -->
+                        <div class="col-md-6">
+                            <label class="custom-label">Linguaggio *</label>
+                            <select id="linguaggio" class="custom-input" required>
+                                <option value="infantile">Infantile</option>
+                                <option value="semplice">Semplice</option>
+                                <option value="medio">Medio / Divulgativo</option>
+                                <option value="specialistico">Specialistico</option>
+                            </select>
+                        </div>
+
+                        <!-- Lunghezza -->
+                        <div class="col-md-6">
+                            <label class="custom-label">Lunghezza *</label>
+                            <select id="lunghezza" class="custom-input" required>
+                                <option value="15s">15 secondi</option>
+                                <option value="1min">1 minuto</option>
+                                <option value="4min">4 minuti</option>
+                            </select>
+                        </div>
+
+                        <!-- Testo per Audioguida -->
+                        <div class="col-12">
+                            <label class="custom-label">Testo per Audioguida *</label>
+                            <textarea id="testo" class="custom-input" rows="6" placeholder="Inserisci il testo per l'App Navigator..." required></textarea>
+                        </div>
+                    </div>
+
+                    <!-- Pulsanti Azione -->
+                    <div class="d-flex justify-content-end gap-3 mt-5 pt-4" style="border-top: 1px solid #e2e8f0;">
+                        <button type="button" class="btn-outline-custom" onclick="switchSection('opere')">Annulla</button>
+                        <button type="submit" class="btn-magenta" id="submitBtn">Salva Opera</button>
                     </div>
                 </form>
             </div>
-        </div>
-    </div>
+        </section>
 
+        <!-- SEZIONE: MODIFICA OPERA -->
+        <section id="section-modifica-opera" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="page-title">Modifica Opera</h1>
+                    <p class="text-muted mb-0">Aggiorna i dettagli dell'opera.</p>
+                </div>
+                <button onclick="switchSection('opere')" class="btn-outline-custom">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Torna alle Opere
+                </button>
+            </div>
 
+            <div class="glass-card p-5">
+                <form id="modificaForm">
+                    <input type="hidden" id="meditId">
+
+                    <div class="row g-4">
+                        <div class="col-md-8">
+                            <label class="custom-label">Titolo dell'Opera *</label>
+                            <input type="text" id="moperaId" class="custom-input" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="custom-label">Autore *</label>
+                            <input type="text" id="mautore" class="custom-input" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Tipo di Opera *</label>
+                            <select id="mtipo" class="custom-input" required onchange="toggleFields('edit')">
+                                <option value="">Seleziona tipo...</option>
+                                <option value="quadro">Quadro/Dipinto</option>
+                                <option value="statua">Statua</option>
+                                <option value="altro">Altro</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Datazione</label>
+                            <input type="text" id="mdatazione" class="custom-input">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="custom-label">Altezza (cm)</label>
+                            <input type="number" id="maltezza" class="custom-input" min="0" step="0.1">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="custom-label">Larghezza (cm)</label>
+                            <input type="number" id="mlarghezza" class="custom-input" min="0" step="0.1">
+                        </div>
+                        <div class="col-md-4" id="editProfonditaContainer">
+                            <label class="custom-label">Profondità (cm)</label>
+                            <input type="number" id="mprofondita" class="custom-input" min="0" step="0.1">
+                        </div>
+                        <div class="col-md-6" id="editTecnicaContainer" style="display:none;">
+                            <label class="custom-label">Tecnica usata</label>
+                            <input type="text" id="mtecnica" class="custom-input">
+                        </div>
+                        <div class="col-md-6" id="editMaterialiContainer">
+                            <label class="custom-label">Materiali usati</label>
+                            <input type="text" id="mmateriali" class="custom-input">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Identificatore (Wikidata ID)</label>
+                            <input type="text" id="mwikidataId" class="custom-input">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="custom-label">Immagine Copertina (URL)</label>
+                            <input type="url" id="mimmagine" class="custom-input">
+                        </div>
+                        <div class="col-12">
+                            <label class="custom-label">Descrizione</label>
+                            <textarea id="mdescrizione" class="custom-input" rows="3"></textarea>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Linguaggio *</label>
+                            <select id="mlinguaggio" class="custom-input" required>
+                                <option value="infantile">Infantile</option>
+                                <option value="semplice">Semplice</option>
+                                <option value="medio">Medio / Divulgativo</option>
+                                <option value="specialistico">Specialistico</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Lunghezza *</label>
+                            <select id="mlunghezza" class="custom-input" required>
+                                <option value="15s">15 secondi</option>
+                                <option value="1min">1 minuto</option>
+                                <option value="4min">4 minuti</option>
+                            </select>
+                        </div>
+                        <div class="col-12">
+                            <label class="custom-label">Testo per Audioguida *</label>
+                            <textarea id="mtesto" class="custom-input" rows="4" required></textarea>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-3 mt-5 pt-4" style="border-top: 1px solid #e2e8f0;">
+                        <button type="button" class="btn-outline-custom" onclick="switchSection('opere')">Annulla</button>
+                        <button type="submit" class="btn-magenta px-5">Aggiorna Opera</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+    </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="item.js"></script>
 <script src="/js/profile.js"></script>
+
+<script>
+    function toggleFields(formType) {
+        var tipo = formType === 'edit' ? document.getElementById('mtipo').value : document.getElementById('tipo').value;
+        if (formType === 'add') {
+            document.getElementById('addProfonditaContainer').style.display = tipo === 'quadro' ? 'none' : 'block';
+            document.getElementById('addTecnicaContainer').style.display = tipo === 'quadro' ? 'block' : 'none';
+            document.getElementById('addMaterialiContainer').style.display = tipo === 'quadro' ? 'none' : 'block';
+            if (tipo === 'quadro') {
+                document.getElementById('profondita').value = '';
+            }
+        } else {
+            document.getElementById('editProfonditaContainer').style.display = tipo === 'quadro' ? 'none' : 'block';
+            document.getElementById('editTecnicaContainer').style.display = tipo === 'quadro' ? 'block' : 'none';
+            document.getElementById('editMaterialiContainer').style.display = tipo === 'quadro' ? 'none' : 'block';
+            if (tipo === 'quadro') {
+                document.getElementById('mprofondita').value = '';
+            }
+        }
+    }
+
+    function switchSection(section) {
+        document.getElementById('section-opere').style.display = 'none';
+        document.getElementById('section-aggiungi-opera').style.display = 'none';
+        document.getElementById('section-modifica-opera').style.display = 'none';
+
+        if (section === 'opere') {
+            document.getElementById('section-opere').style.display = 'block';
+            if (typeof loadOpere === 'function') loadOpere();
+        } else if (section === 'aggiungi-opera') {
+            document.getElementById('section-aggiungi-opera').style.display = 'block';
+            document.getElementById('itemForm').reset();
+            document.getElementById('editId').value = '';
+            document.getElementById('submitBtn').textContent = 'Salva Opera';
+            toggleFields('add');
+        } else if (section === 'modifica-opera') {
+            document.getElementById('section-modifica-opera').style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        switchSection('opere');
+    });
+</script>
 
 </body>
 </html>

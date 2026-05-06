@@ -12,20 +12,18 @@ const itemSchema = new mongoose.Schema({
 
 const Item = mongoose.models.Item || mongoose.model("Item", itemSchema);
 
-const MONGO_URI = (credentials) => {
-    const isLocal = process.env.MONGO_LOCAL === 'true';
-    return isLocal
-        ? 'mongodb://localhost:27017/artaround'
-        : `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-};
-
 async function connect(credentials) {
-    const state = mongoose.connection.readyState;
-    if (state === 1 || state === 2) return;
-    if (state === 3) {
-        await new Promise(resolve => mongoose.connection.once('close', resolve));
+    if (mongoose.connection.readyState === 1) return;
+
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
+
+    try {
+        await mongoose.connect(mongouri, { serverSelectionTimeoutMS: 5000 });
+        console.log(`[items.js] Connesso a MongoDB (${credentials.site}).`);
+    } catch(e) {
+        console.error("[items.js] Errore di connessione:", e.message);
+        throw e;
     }
-    await mongoose.connect(MONGO_URI(credentials));
 }
 
 exports.seed = async (credentials) => {
@@ -37,7 +35,10 @@ exports.seed = async (credentials) => {
         const cleared = await Item.deleteMany({});
         await Item.insertMany(data);
         return { ok: true, message: `Seed completato: ${data.length} items inseriti.` };
-    } catch (e) { return { ok: false, error: e.message }; }
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };
 
 exports.getAll = async (credentials, query) => {
@@ -49,7 +50,10 @@ exports.getAll = async (credentials, query) => {
         if (query.authorId) filter.authorId = query.authorId;
         const data = await Item.find(filter, { __v: 0 });
         return { ok: true, data };
-    } catch (e) { return { ok: false, error: e.message }; }
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };
 
 exports.getOne = async (credentials, id) => {
@@ -58,7 +62,10 @@ exports.getOne = async (credentials, id) => {
         const item = await Item.findById(id, { __v: 0 });
         if (!item) return { ok: false, error: "Item non trovato." };
         return { ok: true, data: item };
-    } catch (e) { return { ok: false, error: e.message }; }
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };
 
 exports.create = async (credentials, body) => {
@@ -67,16 +74,22 @@ exports.create = async (credentials, body) => {
         const item = new Item(body);
         await item.save();
         return { ok: true, data: item };
-    } catch (e) { return { ok: false, error: e.message }; }
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };
 
 exports.update = async (credentials, id, body) => {
     try {
         await connect(credentials);
-        const updated = await Item.findByIdAndUpdate(id, body, { new: true, runValidators: true });
+        const updated = await Item.findByIdAndUpdate(id, body, { new: true, runValidators: true, projection: { __v: 0 } });
         if (!updated) return { ok: false, error: "Item non trovato." };
         return { ok: true, data: updated };
-    } catch (e) { return { ok: false, error: e.message }; }
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };
 
 exports.remove = async (credentials, id) => {
@@ -84,6 +97,9 @@ exports.remove = async (credentials, id) => {
         await connect(credentials);
         const deleted = await Item.findByIdAndDelete(id);
         if (!deleted) return { ok: false, error: "Item non trovato." };
-        return { ok: true, message: "Item eliminato." };
-    } catch (e) { return { ok: false, error: e.message }; }
+        return { ok: true, message: "Item rimosso correttamente" };
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
 };

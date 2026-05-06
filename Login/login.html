@@ -4,77 +4,280 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ArtAround | Accesso Portale</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/auth.css">
 </head>
 <body>
 
+    <!-- HERO BACKGROUND -->
+    <div class="auth-hero-bg"></div>
+
     <div class="auth-wrapper">
-        <div class="auth-card">
-            <div class="auth-body">
-                
-                <div class="brand-icon-container">
-                    <div class="brand-icon">✦</div>
-                </div>
 
-                <h2 id="authTitle">Bentornato!</h2>
-                <p id="authSubtitle">Accedi per esplorare la tua collezione.</p>
+        <!-- ===================== LOGIN PANEL ===================== -->
+        <div class="auth-scene" id="loginPanel">
 
-                <form id="authForm">
-                    <div class="form-grid">
-                        
-                        <div id="roleField" class="role-section">
-                            <label>Tipo di Account</label>
-                            <div class="role-input-group">
-                                <div class="auth-avatar-container">
-                                    <img id="userAvatar" src="" alt="Avatar Profilo">
-                                </div>
-                                <select id="userRole">
-                                    <option value="visitatore" selected>Visitatore</option>
-                                    <option value="curatore">Curatore</option>
-                                    <option value="autore">Autore</option>
-                                </select>
+            <!-- Avatar badge -->
+            <div class="auth-avatar-badge" id="loginBadge">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="auth-card entering" id="loginCard">
+                <div class="auth-body text-center">
+
+                    <div class="brand-header">
+                        <h1 class="logo-text">ArtAround.</h1>
+                        <div class="brand-accent"></div>
+                    </div>
+
+                    <h2 class="mb-1">Bentornato!</h2>
+                    <p class="auth-subtitle">Accedi per esplorare la tua collezione.</p>
+
+                    <form id="loginForm" class="text-start">
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <div class="input-group-custom">
+                                <span class="prefix">@</span>
+                                <input type="text" id="loginUsername" placeholder="es. visitatore1" required>
                             </div>
                         </div>
 
-                        <label>Username</label>
-                        <div class="input-group-email">
-                            <span id="emailPrefix"></span>
-                            <input type="text" id="email" placeholder="es. visitatore1"
-                            autocomplete="one-time-code" readonly
-                            onfocus="this.removeAttribute('readonly');" required>
+                        <!-- Password -->
+                        <div class="mb-4">
+                            <label class="form-label">Password</label>
+                            <div class="input-group-custom">
+                                <input type="password" id="loginPassword" placeholder="••••••••" required>
+                                <button type="button" class="toggle-btn" onclick="togglePwd('loginPassword', this)">
+                                    <i class="fa-regular fa-eye"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <label>Password</label>
-                        <div class="input-group-password">
-                            <input type="password" id="password" placeholder="••••••••"
-                            autocomplete="new-password" readonly
-                            onfocus="this.removeAttribute('readonly');" required>
-                            <button type="button" id="togglePassword" tabindex="-1">
-                                <i class="fa-regular fa-eye" id="togglePasswordIcon"></i>
-                            </button>
-                        </div>
-                    </div>
+                        <button type="submit" class="btn-magenta-submit">LOGIN</button>
 
-                    <button type="submit" class="btn-submit">
-                        <span id="submitBtnText">Accedi</span>
-                    </button>
-                    
-                    <p class="toggle-text">
-                        <a href="/" class="back-home-link"><i class="fa-solid fa-arrow-left"></i> Torna alla home</a>
-                    </p>
-                    <p class="toggle-text">
-                        <span id="questionText">Non hai un account?</span> 
-                        <a href="#" id="toggleAuthLink">Registrati ora</a>
-                    </p>
-                </form>
+                        <div class="auth-divider"></div>
+
+                        <div class="text-center footer-links">
+                            <p class="mb-2">
+                                <a href="/"><i class="fa-solid fa-arrow-left me-1"></i> Torna alla home</a>
+                            </p>
+                            <p class="small mb-0">
+                                <span style="color: rgba(255,255,255,0.45); font-size: 0.82rem;">Non hai un account?</span>
+                                <a href="#" class="text-magenta fw-bold ms-1" id="goToRegister">Registrati ora</a>
+                            </p>
+                        </div>
+
+                    </form>
+                </div>
             </div>
         </div>
+
+        <!-- ===================== REGISTER PANEL ===================== -->
+        <div class="auth-scene" id="registerPanel" style="display: none;">
+
+            <!-- Avatar badge -->
+            <div class="auth-avatar-badge" id="registerBadge">
+                <i class="fa-solid fa-user-pen"></i>
+            </div>
+
+            <div class="auth-card" id="registerCard">
+                <div class="auth-scroll-body">
+                    <div class="auth-body text-center">
+
+                        <div class="brand-header">
+                            <h1 class="logo-text">ArtAround.</h1>
+                            <div class="brand-accent"></div>
+                        </div>
+
+                        <h2 class="mb-1">Crea il tuo account</h2>
+                        <p class="auth-subtitle">Unisciti alla comunità di ArtAround.</p>
+
+                        <form id="registerForm" class="text-start">
+
+                            <!-- Tipo di account con avatar -->
+                            <div class="mb-4">
+                                <label class="form-label">Tipo di Account</label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="auth-avatar-badge bg-visitatore" id="regAvatarBadge">
+                                        <i class="fa-solid fa-user" id="regAvatarIcon"></i>
+                                    </div>
+                                    <select id="regUserRole" class="select-dark-navy" onchange="updateRegAvatar(this)">
+                                        <option value="visitatore" selected>Visitatore</option>
+                                        <option value="curatore">Curatore</option>
+                                        <option value="autore">Autore</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Nome e Cognome affiancati -->
+                            <div class="row g-2 mb-3">
+                                <div class="col-6">
+                                    <label class="form-label">Nome</label>
+                                    <div class="input-group-custom">
+                                        <input type="text" id="regNome" placeholder="Mario" required>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Cognome</label>
+                                    <div class="input-group-custom">
+                                        <input type="text" id="regCognome" placeholder="Rossi" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="mb-3">
+                                <label class="form-label">Username</label>
+                                <div class="input-group-custom">
+                                    <span class="prefix">@</span>
+                                    <input type="text" id="regUsername" placeholder="il_tuo_username" required>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <div class="input-group-custom">
+                                    <input type="email" id="regEmail" placeholder="mario@email.com" required>
+                                </div>
+                            </div>
+
+                            <!-- Password -->
+                            <div class="mb-1">
+                                <label class="form-label">Password</label>
+                                <div class="input-group-custom">
+                                    <input type="password" id="regPassword" placeholder="••••••••" required
+                                           oninput="checkStrength(this.value)">
+                                    <button type="button" class="toggle-btn" onclick="togglePwd('regPassword', this)">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                                <div class="strength-bar-wrap">
+                                    <div class="strength-bar" id="strengthBar"></div>
+                                </div>
+                                <div class="strength-label" id="strengthLabel"></div>
+                            </div>
+
+                            <!-- Conferma Password -->
+                            <div class="mb-4">
+                                <label class="form-label">Conferma Password</label>
+                                <div class="input-group-custom">
+                                    <input type="password" id="regPasswordConfirm" placeholder="••••••••" required>
+                                    <button type="button" class="toggle-btn" onclick="togglePwd('regPasswordConfirm', this)">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-magenta-submit">CREA ACCOUNT</button>
+
+                            <div class="auth-divider"></div>
+
+                            <div class="text-center footer-links">
+                                <p class="mb-2">
+                                    <a href="/"><i class="fa-solid fa-arrow-left me-1"></i> Torna alla home</a>
+                                </p>
+                                <p class="small mb-0">
+                                    <span style="color: rgba(255,255,255,0.45); font-size: 0.82rem;">Hai già un account?</span>
+                                    <a href="#" class="text-magenta fw-bold ms-1" id="goToLogin">Accedi ora</a>
+                                </p>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
+
+    <script>
+        /* ===================== TOGGLE PASSWORD ===================== */
+        function togglePwd(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        }
+
+        /* ===================== AVATAR RUOLO (registrazione) ===================== */
+        const roleConfig = {
+            visitatore: { icon: 'fa-user', cls: 'bg-visitatore' },
+            curatore:   { icon: 'fa-user-gear', cls: 'bg-curatore' },
+            autore:     { icon: 'fa-user-pen', cls: 'bg-autore' }
+        };
+
+        function updateRegAvatar(select) {
+            const cfg = roleConfig[select.value];
+            const badge = document.getElementById('regAvatarBadge');
+            const icon = document.getElementById('regAvatarIcon');
+            badge.className = 'auth-avatar-badge ' + cfg.cls;
+            icon.className = 'fa-solid ' + cfg.icon;
+        }
+
+        /* ===================== PASSWORD STRENGTH ===================== */
+        function checkStrength(pwd) {
+            const bar = document.getElementById('strengthBar');
+            const label = document.getElementById('strengthLabel');
+            let score = 0;
+            if (pwd.length >= 8) score++;
+            if (/[A-Z]/.test(pwd)) score++;
+            if (/[0-9]/.test(pwd)) score++;
+            if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+            const levels = [
+                { w: '0%',   color: 'transparent',          text: '' },
+                { w: '25%',  color: '#ff4444',               text: 'Debole' },
+                { w: '50%',  color: '#ffaa00',               text: 'Discreta' },
+                { w: '75%',  color: '#88cc00',               text: 'Buona' },
+                { w: '100%', color: 'var(--magenta-light)',  text: 'Ottima' },
+            ];
+
+            const lv = levels[score];
+            bar.style.width = lv.w;
+            bar.style.background = lv.color;
+            label.textContent = lv.text;
+            label.style.color = lv.color;
+        }
+
+        /* ===================== TRANSIZIONE LOGIN → REGISTRAZIONE ===================== */
+        function switchPanel(fromId, toId) {
+            const from = document.getElementById(fromId);
+            const toPanel = document.getElementById(toId);
+            const fromCard = from.querySelector('.auth-card');
+
+            fromCard.classList.add('exiting');
+            setTimeout(() => {
+                from.style.display = 'none';
+                fromCard.classList.remove('exiting');
+                toPanel.style.display = 'flex';
+                const toCard = toPanel.querySelector('.auth-card');
+                toCard.classList.add('entering');
+                setTimeout(() => toCard.classList.remove('entering'), 600);
+            }, 350);
+        }
+
+        document.getElementById('goToRegister').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchPanel('loginPanel', 'registerPanel');
+        });
+
+        document.getElementById('goToLogin').addEventListener('click', (e) => {
+            e.preventDefault();
+            switchPanel('registerPanel', 'loginPanel');
+        });
+
+    </script>
 
     <script src="/login/login.js"></script>
 </body>

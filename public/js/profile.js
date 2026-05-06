@@ -1,72 +1,63 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Recupero dati dal LocalStorage
+    // 1. Recupera dati dal LocalStorage
     const userUsername = localStorage.getItem('userUsername');
-    const userRole = localStorage.getItem('userRole'); // "CUR" o "VIS"
+    const userRole = localStorage.getItem('userRole') || '';
+    const userId = localStorage.getItem('userId') || '';
 
-    // 2. Elementi del DOM
-    const loginBtn = document.getElementById('loginBtn');
-    const placeholder = document.getElementById('nav-profile-placeholder');
+    // 2. Mappa ruoli
+    const roleMap = {
+        curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
+        visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
+        autore:     { letter: 'A', color: '#05070A', label: 'Autore' }
+    };
+    const cfg = roleMap[userRole] || { letter: '?', color: '#888', label: 'Utente' };
 
-    // 3. LOGICA DI VISUALIZZAZIONE
-    if (userUsername && placeholder) {
-        // --- UTENTE LOGGATO ---
-        if (loginBtn) loginBtn.style.display = 'none';
+    // 3. Aggiorna la sidebar se presente
+    const avatarEl = document.querySelector('.sidebar-footer .avatar-sm');
+    const nameEl = document.querySelector('.sidebar-footer .user-info-mini .name');
+    const roleEl = document.querySelector('.sidebar-footer .user-info-mini .role');
+    const logoutEl = document.querySelector('.sidebar-footer .logout-icon');
 
-        placeholder.innerHTML = `
-            <div class="nav-profile-container" id="navProfileContainer">
-                <div class="nav-avatar" id="navAvatar">?</div>
-                <div class="profile-dropdown">
-                    <span id="userEmailDisplay">${userUsername}</span>
-                    <a href="/Editor-Marketplace/Frontend/visite.html?autore=${encodeURIComponent(localStorage.getItem('userId') || '')}" class="dropdown-item">Le mie visite</a>
-                    <a href="/docs/profile.html" class="dropdown-item">Gestisci Profilo</a>
-                    <a href="#" class="dropdown-item logout-link" onclick="logout(event)">Logout</a>
-                </div>
-            </div>
-        `;
+    if (avatarEl) {
+        avatarEl.textContent = cfg.letter;
+        avatarEl.style.backgroundColor = cfg.color;
+    }
+    if (nameEl) {
+        nameEl.textContent = userUsername ? userUsername.charAt(0).toUpperCase() + userUsername.slice(1) : 'Ospite';
+    }
+    if (roleEl) {
+        roleEl.textContent = cfg.label;
+    }
 
-        // Toggle click sul container
-        const container = document.getElementById('navProfileContainer');
-        container.addEventListener('click', (e) => {
-            if (!e.target.closest('a')) container.classList.toggle('open');
+    // 4. Gestione logout
+    if (logoutEl) {
+        logoutEl.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm("Sei sicuro di voler uscire?")) {
+                localStorage.clear();
+                window.location.href = "/";
+            }
         });
-        document.addEventListener('click', (e) => {
-            if (!container.contains(e.target)) container.classList.remove('open');
-        });
+    }
 
-        // Configuriamo l'avatar (Lettera e Colore)
-        const avatar = document.getElementById('navAvatar');
-        if (avatar && userRole) {
-            const roleMap = {
-                curatore:   { letter: 'C', color: '#1a3a2a' },
-                visitatore: { letter: 'V', color: '#4a7c5f' },
-                autore:     { letter: 'A', color: '#7c4a1a' }
-            };
-            const cfg = roleMap[userRole] || { letter: '?', color: '#888' };
-            avatar.innerText = cfg.letter;
-            avatar.style.backgroundColor = cfg.color;
-        }
-
-    } else {
-        // --- UTENTE NON LOGGATO ---
-        if (loginBtn) loginBtn.style.display = 'block';
-        
-        // Svuotiamo il placeholder se per caso era rimasto qualcosa
-        if (placeholder) placeholder.innerHTML = '';
+    // 5. Aggiorna anche l'header della dashboard se presente
+    const headerRoleLabel = document.getElementById('headerRoleLabel');
+    if (headerRoleLabel) {
+        headerRoleLabel.textContent = cfg.label;
+    }
+    const sidebarRole = document.getElementById('sidebarRole');
+    if (sidebarRole) {
+        sidebarRole.textContent = cfg.label;
     }
 });
 
 /**
- * Funzione di Logout
- * Cancella i dati e rimanda alla home o al login
+ * Funzione di Logout (chiamabile da onclick)
  */
 function logout(event) {
-    if (event) event.preventDefault(); // Evita il salto della pagina
-    
+    if (event) event.preventDefault();
     if (confirm("Sei sicuro di voler uscire?")) {
-        // Pulizia totale dei dati utente
         localStorage.clear();
-        
-        // Reindirizzamento (puoi metterlo a "/" o a "/login/login.html")
-        window.location.href = "/"; 
+        window.location.href = "/";
     }
 }

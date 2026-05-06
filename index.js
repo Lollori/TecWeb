@@ -213,6 +213,12 @@ app.get('/api/opere', async function (req, res) {
     res.json(result);
 });
 
+// Recupera una singola opera per ID
+app.get('/api/opere/:id', async function (req, res) {
+    const result = await opere.getOne(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
 // Crea una nuova opera
 app.post('/api/opere', async function (req, res) {
     const result = await opere.create(mongoCredentials, req.body);
