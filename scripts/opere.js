@@ -5,28 +5,13 @@ const Opera = mymongo.Opera;
 // ── HELPER: connessione ──────────────────────────────────────
 
 async function connect(credentials) {
-    if (mongoose.connection.readyState === 1) {
-        console.log('[opere.js] Già connesso a MongoDB.');
-        return;
-    }
+    if (mongoose.connection.readyState === 1) return;
 
-    const isLocal = credentials.site === 'localhost' ||
-                    process.env.NODE_ENV !== 'production';
-
-    let mongouri;
-    if (isLocal) {
-        mongouri = 'mongodb://localhost:27017/artaround';
-        console.log('[opere.js] Connessione locale a MongoDB (senza auth)...');
-    } else {
-        mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-        console.log('[opere.js] Connessione a production con credenziali...');
-    }
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
 
     try {
-        await mongoose.connect(mongouri, {
-            serverSelectionTimeoutMS: 5000,
-        });
-        console.log('[opere.js] Connessione a MongoDB riuscita.');
+        await mongoose.connect(mongouri, { serverSelectionTimeoutMS: 5000 });
+        console.log(`[opere.js] Connesso a MongoDB (${credentials.site}).`);
     } catch(e) {
         console.error("[opere.js] Errore di connessione:", e.message);
         throw e;

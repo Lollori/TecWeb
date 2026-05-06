@@ -12,34 +12,14 @@ const itemSchema = new mongoose.Schema({
 
 const Item = mongoose.models.Item || mongoose.model("Item", itemSchema);
 
-let isConnected = false;
-
 async function connect(credentials) {
-    if (mongoose.connection.readyState === 1) {
-        console.log('[items.js] Già connesso a MongoDB.');
-        return;
-    }
+    if (mongoose.connection.readyState === 1) return;
 
-    const isLocal = credentials.site === 'localhost' ||
-                    process.env.NODE_ENV !== 'production';
-
-    let mongouri;
-    if (isLocal) {
-        mongouri = 'mongodb://localhost:27017/artaround';
-        console.log('[items.js] Connessione locale a MongoDB (senza auth)...');
-    } else {
-        mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
-        console.log('[items.js] Connessione a production con credenziali...');
-    }
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/artaround?authSource=admin&writeConcern=majority`;
 
     try {
-        await mongoose.connect(mongouri, {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-            serverSelectionTimeoutMS: 5000,
-        });
-        isConnected = true;
-        console.log('[items.js] Connessione a MongoDB riuscita.');
+        await mongoose.connect(mongouri, { serverSelectionTimeoutMS: 5000 });
+        console.log(`[items.js] Connesso a MongoDB (${credentials.site}).`);
     } catch(e) {
         console.error("[items.js] Errore di connessione:", e.message);
         throw e;

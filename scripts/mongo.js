@@ -65,28 +65,13 @@ exports.Opera = Opera;
 // ── HELPER: connessione ──────────────────────────────────────
 
 async function connect(credentials, dbName) {
-    if (mongoose.connection.readyState === 1) {
-        console.log('[mongo.js] Già connesso a MongoDB.');
-        return;
-    }
+    if (mongoose.connection.readyState === 1) return;
 
-    const isLocal = credentials.site === 'localhost' ||
-                    process.env.NODE_ENV !== 'production';
-
-    let mongouri;
-    if (isLocal) {
-        mongouri = `mongodb://localhost:27017/${dbName}`;
-        console.log(`[mongo.js] Connessione locale a ${dbName}...`);
-    } else {
-        mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbName}?authSource=admin&writeConcern=majority`;
-        console.log(`[mongo.js] Connessione a ${credentials.site}...`);
-    }
+    const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbName}?authSource=admin&writeConcern=majority`;
 
     try {
-        await mongoose.connect(mongouri, {
-            serverSelectionTimeoutMS: 5000,
-        });
-        console.log('[mongo.js] Connessione riuscita.');
+        await mongoose.connect(mongouri, { serverSelectionTimeoutMS: 5000 });
+        console.log(`[mongo.js] Connesso a ${dbName} (${credentials.site}).`);
     } catch(e) {
         console.error("[mongo.js] Errore di connessione:", e.message);
         throw e;
