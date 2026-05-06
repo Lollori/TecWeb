@@ -114,22 +114,6 @@
                                 </div>
                             </div>
 
-                            <!-- Nome e Cognome affiancati -->
-                            <div class="row g-2 mb-3">
-                                <div class="col-6">
-                                    <label class="form-label">Nome</label>
-                                    <div class="input-group-custom">
-                                        <input type="text" id="regNome" placeholder="Mario" required>
-                                    </div>
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Cognome</label>
-                                    <div class="input-group-custom">
-                                        <input type="text" id="regCognome" placeholder="Rossi" required>
-                                    </div>
-                                </div>
-                            </div>
-
                             <!-- Username -->
                             <div class="mb-3">
                                 <label class="form-label">Username</label>
@@ -139,19 +123,14 @@
                                 </div>
                             </div>
 
-                            <!-- Email -->
-                            <div class="mb-3">
-                                <label class="form-label">Email</label>
-                                <div class="input-group-custom">
-                                    <input type="email" id="regEmail" placeholder="mario@email.com" required>
-                                </div>
-                            </div>
-
-                            <!-- Password fissa: 12345678 per tutti gli utenti -->
+                            <!-- Password -->
                             <div class="mb-4">
-                                <div class="d-flex align-items-center gap-2" style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">
-                                    <i class="fa-solid fa-lock"></i>
-                                    <span>La password predefinita è <strong style="color: rgba(255,255,255,0.8);">12345678</strong></span>
+                                <label class="form-label">Password</label>
+                                <div class="input-group-custom">
+                                    <input type="password" id="regPassword" placeholder="••••••••" required minlength="8">
+                                    <button type="button" class="toggle-btn" onclick="togglePwd('regPassword', this)">
+                                        <i class="fa-regular fa-eye"></i>
+                                    </button>
                                 </div>
                             </div>
 

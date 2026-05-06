@@ -14,8 +14,6 @@ const capitalSchema = new mongoose.Schema({
     country: { type: String, required: true },
     city: { type: String, required: false }
 });
-const Capital = mongoose.model("Capital", capitalSchema);
-
 // --- SCHEMA PER GLI UTENTI ---
 function generateUserId() {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -28,11 +26,8 @@ const userSchema = new mongoose.Schema({
     userId:   { type: String, unique: true, default: generateUserId },
     username: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    ruolo:    { type: String, enum: ['curatore', 'visitatore', 'autore'], required: true }
+    ruolo:    { type: String, enum: ['curatore', 'visitatore', 'autore', 'admin'], required: true }
 });
-const User = mongoose.model("User", userSchema);
-
-mongoose.set('strictQuery', false);
 
 // --- SCHEMA PER LE OPERE ---
 const operaSchema = new mongoose.Schema({
@@ -62,20 +57,28 @@ const Opera = mongoose.model("Opera", operaSchema);
 
 exports.Opera = Opera;
 
-// ── HELPER: connessione ──────────────────────────────────────
+// ── HELPER: connessione per DB (pool separato per ogni DB) ───
+const connections = {};
 
 async function connect(credentials, dbName) {
-    if (mongoose.connection.readyState === 1) return;
+    const key = `${credentials.site}_${dbName}`;
+    if (connections[key]?.readyState === 1) return connections[key];
 
     const mongouri = `mongodb://${credentials.user}:${credentials.pwd}@${credentials.site}/${dbName}?authSource=admin&writeConcern=majority`;
 
     try {
-        await mongoose.connect(mongouri, { serverSelectionTimeoutMS: 5000 });
+        const conn = await mongoose.createConnection(mongouri, { serverSelectionTimeoutMS: 5000 });
+        connections[key] = conn;
         console.log(`[mongo.js] Connesso a ${dbName} (${credentials.site}).`);
+        return conn;
     } catch(e) {
         console.error("[mongo.js] Errore di connessione:", e.message);
         throw e;
     }
+}
+
+function m(conn, name, schema) {
+    return conn.models[name] || conn.model(name, schema);
 }
 
 // --- FUNZIONI ORIGINALI (Paesi/Capitali) ---
@@ -83,12 +86,13 @@ async function connect(credentials, dbName) {
 exports.create = async (credentials) => {
     let debug = [];
     try {
-        await connect(credentials, dbname);
+        const conn = await connect(credentials, dbname);
         debug.push(`Connected to ${credentials.site}...`);
         let doc = await fs.readFile(global.rootDir + fn, 'utf8');
         let data = JSON.parse(doc);
-        let cleared = await Capital.deleteMany({});
-        await Capital.insertMany(data);
+        const CapModel = m(conn, 'Capital', capitalSchema);
+        let cleared = await CapModel.deleteMany({});
+        await CapModel.insertMany(data);
         let insertedCount = data.length;
         return { message: `Removed ${cleared.deletedCount}, added ${insertedCount} records`, debug: debug };
     } catch (e) { return e; }
@@ -97,8 +101,9 @@ exports.create = async (credentials) => {
 exports.search = async (q, credentials) => {
     let data = { query: q.country, result: null };
     try {
-        await connect(credentials, dbname);
-        const countries = await Capital.find({
+        const conn = await connect(credentials, dbname);
+        const CapModel = m(conn, 'Capital', capitalSchema);
+        const countries = await CapModel.find({
             country: { $regex: new RegExp(q.country, "i") },
         });
         data.result = countries.map(country => {
@@ -115,8 +120,9 @@ const userDB = "users_artaround";
 
 exports.registerUser = async (userData, credentials) => {
     try {
-        await connect(credentials, userDB);
-        const newUser = new User(userData);
+        const conn = await connect(credentials, userDB);
+        const UserModel = m(conn, 'User', userSchema);
+        const newUser = new UserModel(userData);
         await newUser.save();
         return { success: true };
     } catch (e) {
@@ -126,8 +132,9 @@ exports.registerUser = async (userData, credentials) => {
 
 exports.findUser = async (query, credentials) => {
     try {
-        await connect(credentials, userDB);
-        const user = await User.findOne(query, { password: 0, __v: 0 });
+        const conn = await connect(credentials, userDB);
+        const UserModel = m(conn, 'User', userSchema);
+        const user = await UserModel.findOne(query, { password: 0, __v: 0 });
         return user;
     } catch (e) {
         throw e;
@@ -136,8 +143,9 @@ exports.findUser = async (query, credentials) => {
 
 exports.getAllUsers = async (credentials) => {
     try {
-        await connect(credentials, userDB);
-        const users = await User.find({}, { password: 0, __v: 0 });
+        const conn = await connect(credentials, userDB);
+        const UserModel = m(conn, 'User', userSchema);
+        const users = await UserModel.find({}, { password: 0, __v: 0 });
         return { ok: true, data: users };
     } catch (e) {
         return { ok: false, error: e.message };
@@ -147,9 +155,10 @@ exports.getAllUsers = async (credentials) => {
 exports.seedUsers = async (credentials) => {
     try {
         const data = JSON.parse(await fs.readFile(global.rootDir + '/public/data/utenti.json', 'utf8'));
-        await connect(credentials, userDB);
-        await User.deleteMany({});
-        await User.insertMany(data);
+        const conn = await connect(credentials, userDB);
+        const UserModel = m(conn, 'User', userSchema);
+        await UserModel.deleteMany({});
+        await UserModel.insertMany(data);
         return { ok: true, message: `Inseriti ${data.length} utenti.` };
     } catch (e) {
         return { ok: false, error: e.message };
@@ -158,8 +167,9 @@ exports.seedUsers = async (credentials) => {
 
 exports.deleteUser = async (id, credentials) => {
     try {
-        await connect(credentials, userDB);
-        const result = await User.findByIdAndDelete(id);
+        const conn = await connect(credentials, userDB);
+        const UserModel = m(conn, 'User', userSchema);
+        const result = await UserModel.findByIdAndDelete(id);
         if (!result) return { ok: false, error: 'Utente non trovato.' };
         return { ok: true, message: 'Utente eliminato.' };
     } catch (e) {

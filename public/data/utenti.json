@@ -4,5 +4,6 @@
   { "userId": "c5j9n3t8vy", "username": "visitatore1", "password": "12345678", "ruolo": "visitatore" },
   { "userId": "d2l6s4u7ez", "username": "visitatore2", "password": "12345678", "ruolo": "visitatore" },
   { "userId": "e9o1w5g3hk", "username": "autore1",     "password": "12345678", "ruolo": "autore"     },
-  { "userId": "f4q8y2c7mt", "username": "autore2",     "password": "12345678", "ruolo": "autore"     }
+  { "userId": "f4q8y2c7mt", "username": "autore2",     "password": "12345678",    "ruolo": "autore"     },
+  { "userId": "g7R3nX1pQw", "username": "admin",       "password": "admin12345678", "ruolo": "admin"      }
 ]

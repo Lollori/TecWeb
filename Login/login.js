@@ -41,7 +41,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     e.preventDefault();
 
     const username = document.getElementById('regUsername').value.trim();
-    const password = '12345678';
+    const password = document.getElementById('regPassword').value;
     const ruolo = document.getElementById('regUserRole').value;
 
     try {

@@ -95,14 +95,14 @@ app.post('/api/login', async (req, res) => {
         console.log(`[index.js] Login successo per: ${username}`);
         res.json({ success: true, message: "Login effettuato", user: user });
     } catch (error) {
+        console.error('[index.js] Errore login:', error);
         res.status(500).json({ success: false, message: "Errore interno del server" });
     }
 });
 
 /* --- ROTTA REGISTRAZIONE --- */
 app.post('/api/register', async (req, res) => {
-    const { username, ruolo } = req.body;
-    const password = '12345678'; // Password fissa per tutti gli utenti
+    const { username, password, ruolo } = req.body;
     try {
         const check = await mymongo.findUser({ username: username }, mongoCredentials);
         if (check) {
