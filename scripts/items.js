@@ -21,8 +21,7 @@ async function connect(credentials) {
     }
 
     const isLocal = credentials.site === 'localhost' ||
-                    process.env.NODE_ENV !== 'production' ||
-                    process.env.MONGO_LOCAL === 'true';
+                    process.env.NODE_ENV !== 'production';
 
     let mongouri;
     if (isLocal) {
