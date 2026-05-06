@@ -22,7 +22,7 @@
     <!-- SIDEBAR AGGIORNATA -->
     <aside class="sidebar">
         <div class="sidebar-top">
-            <h2 class="logo-brand">ArtAround.</h2>
+            <a href="/" style="text-decoration: none;"><h2 class="logo-brand">ArtAround.</h2></a>
             <p class="admin-badge" id="sidebarRole">Dashboard</p>
         </div>
 
@@ -34,7 +34,7 @@
                 <i class="fa-solid fa-museum"></i> Musei
             </a>
             <a href="utenti.html" class="menu-link">
-                <i class="fa-solid fa-users-gears"></i> Utenti
+                <i class="fa-solid fa-users-gear"></i> Utenti
             </a>
         </nav>
 
@@ -64,7 +64,7 @@
             </div>
             <div class="quick-stats d-flex gap-4">
                 <div class="stat-item text-end">
-                    <span class="d-block fw-bold h4 mb-0 text-magenta">24</span>
+                    <span id="museiAttiviCount" class="d-block fw-bold h4 mb-0 text-magenta">...</span>
                     <small class="text-muted">Musei Attivi</small>
                 </div>
             </div>
@@ -128,6 +128,54 @@
                     </div>
                     <div class="col-12 mt-4 text-end">
                         <button type="submit" class="btn-magenta px-5">Aggiorna Dati</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- SEZIONE: AGGIUNGI NUOVO MUSEO -->
+        <section id="section-aggiungi-museo" class="dashboard-section mb-5" style="display:none">
+            <div class="d-flex justify-content-between align-items-center mb-5">
+                <div>
+                    <h1 class="page-title">Nuovo Museo</h1>
+                    <p class="text-muted mb-0">Inserisci i dettagli della nuova istituzione.</p>
+                </div>
+                <button onclick="switchSection('musei')" class="btn-outline-custom">
+                    <i class="fa-solid fa-arrow-left me-2"></i>Torna ai Musei
+                </button>
+            </div>
+
+            <div class="glass-card p-5">
+                <form id="nuovoMuseoForm">
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="custom-label">Nome Istituzione *</label>
+                            <input type="text" id="nmNome" class="custom-input" placeholder="es. Galleria degli Uffizi" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Città *</label>
+                            <input type="text" id="nmCitta" class="custom-input" placeholder="es. Firenze" required>
+                        </div>
+                        <div class="col-12">
+                            <label class="custom-label">Indirizzo Completo</label>
+                            <input type="text" id="nmIndirizzo" class="custom-input" placeholder="Piazzale degli Uffizi, 6, 50122 Firenze FI">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Codice ISIL</label>
+                            <input type="text" id="nmCodiceIsil" class="custom-input" placeholder="IT-FI0001">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="custom-label">Immagine Copertina (URL)</label>
+                            <input type="url" id="nmImmagine" class="custom-input" placeholder="https://images.unsplash.com/...">
+                        </div>
+                        <div class="col-12">
+                            <label class="custom-label">Descrizione</label>
+                            <textarea id="nmDescrizione" class="custom-input" rows="4" placeholder="Breve descrizione del museo..."></textarea>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-end gap-3 mt-5 pt-4" style="border-top: 1px solid #e2e8f0;">
+                        <button type="button" class="btn-outline-custom" onclick="switchSection('musei')">Annulla</button>
+                        <button type="submit" class="btn-magenta">Salva Museo</button>
                     </div>
                 </form>
             </div>

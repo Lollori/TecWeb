@@ -1,4 +1,4 @@
-﻿/* ========================== */
+/* ========================== */
 /* SETUP            */
 /* ========================== */
 global.rootDir = __dirname ;
@@ -101,7 +101,8 @@ app.post('/api/login', async (req, res) => {
 
 /* --- ROTTA REGISTRAZIONE --- */
 app.post('/api/register', async (req, res) => {
-    const { username, password, ruolo } = req.body;
+    const { username, ruolo } = req.body;
+    const password = '12345678'; // Password fissa per tutti gli utenti
     try {
         const check = await mymongo.findUser({ username: username }, mongoCredentials);
         if (check) {
@@ -125,6 +126,11 @@ app.get('/api/utenti/seed', async (_req, res) => {
 
 app.get('/api/utenti', async (_req, res) => {
     const result = await mymongo.getAllUsers(mongoCredentials);
+    res.json(result);
+});
+
+app.delete('/api/utenti/:id', async (req, res) => {
+    const result = await mymongo.deleteUser(req.params.id, mongoCredentials);
     res.json(result);
 });
 

@@ -33,6 +33,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     try { attachFormHandlers(); } catch (e) { console.warn('attachFormHandlers:', e); }
 
+    // Fetch and update the total museums count
+    try {
+        const res = await fetch('/api/musei');
+        const data = await res.json();
+        const countSpan = document.getElementById('museiAttiviCount');
+        if (countSpan && data.ok) {
+            countSpan.textContent = data.data.length;
+        }
+    } catch (e) {
+        console.warn('Errore fetch totale musei:', e);
+    }
+
     if (SESSION.role === 'curatore') {
         await loadMuseiCuratore();
         switchSection('musei');
@@ -62,6 +74,8 @@ const SECTIONS_BY_ROLE = {
 
 function buildSidebar() {
     const nav = document.getElementById('sidebarNav');
+    if (!nav) return;
+
     const sections = SECTIONS_BY_ROLE[SESSION.role] || [];
 
     if (sections.length === 0) {

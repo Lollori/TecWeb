@@ -86,6 +86,9 @@ body, html {
 .auth-avatar-badge {
     width: 72px;
     height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+    flex-shrink: 0;
     border-radius: 50%;
     background: rgba(255,0,127,0.15);
     backdrop-filter: blur(16px);
@@ -134,6 +137,20 @@ body, html {
 }
 
 .auth-avatar-badge.bg-autore i { color: rgba(255,255,255,0.7); }
+
+/* Avatar inline (dentro il form, accanto al select ruolo) */
+.d-flex > .auth-avatar-badge {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    margin: 0;
+    animation: none;
+}
+
+.d-flex > .auth-avatar-badge i {
+    font-size: 1.2rem;
+}
 
 /* ========== AUTH CARD ========== */
 .auth-card {
@@ -256,7 +273,7 @@ body, html {
 
 /* ========== SELECT DROPDOWN ========== */
 .select-dark-navy {
-    background: rgba(255,255,255,0.08) !important;
+    background-color: rgba(255,255,255,0.08) !important;
     color: white !important;
     border: 1px solid rgba(255,255,255,0.15) !important;
     border-radius: 50px !important;
@@ -267,9 +284,9 @@ body, html {
     appearance: none !important;
     -webkit-appearance: none !important;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e") !important;
-    background-repeat: no-repeat;
-    background-position: right 1rem center;
-    background-size: 12px;
+    background-repeat: no-repeat !important;
+    background-position: right 1rem center !important;
+    background-size: 12px !important;
     cursor: pointer;
     width: 100%;
     transition: var(--transition);
@@ -280,6 +297,12 @@ body, html {
     outline: none;
     border-color: var(--magenta) !important;
     background-color: rgba(255,255,255,0.12) !important;
+}
+
+.select-dark-navy option {
+    background: #1a1a2e;
+    color: #ffffff;
+    padding: 8px 12px;
 }
 
 /* ========== INPUT GROUPS ========== */

@@ -147,30 +147,11 @@
                                 </div>
                             </div>
 
-                            <!-- Password -->
-                            <div class="mb-1">
-                                <label class="form-label">Password</label>
-                                <div class="input-group-custom">
-                                    <input type="password" id="regPassword" placeholder="••••••••" required
-                                           oninput="checkStrength(this.value)">
-                                    <button type="button" class="toggle-btn" onclick="togglePwd('regPassword', this)">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </button>
-                                </div>
-                                <div class="strength-bar-wrap">
-                                    <div class="strength-bar" id="strengthBar"></div>
-                                </div>
-                                <div class="strength-label" id="strengthLabel"></div>
-                            </div>
-
-                            <!-- Conferma Password -->
+                            <!-- Password fissa: 12345678 per tutti gli utenti -->
                             <div class="mb-4">
-                                <label class="form-label">Conferma Password</label>
-                                <div class="input-group-custom">
-                                    <input type="password" id="regPasswordConfirm" placeholder="••••••••" required>
-                                    <button type="button" class="toggle-btn" onclick="togglePwd('regPasswordConfirm', this)">
-                                        <i class="fa-regular fa-eye"></i>
-                                    </button>
+                                <div class="d-flex align-items-center gap-2" style="color: rgba(255,255,255,0.5); font-size: 0.85rem;">
+                                    <i class="fa-solid fa-lock"></i>
+                                    <span>La password predefinita è <strong style="color: rgba(255,255,255,0.8);">12345678</strong></span>
                                 </div>
                             </div>
 

@@ -46,9 +46,10 @@
     animation: slideUp 0.3s ease-out;
 }
 
-/* Se la navbar è in alto (es. Login), la tendina scende */
-.app-header .profile-dropdown {
-    top: 45px;
+/* Se la navbar è in alto (es. index.html), la tendina scende */
+.app-header .profile-dropdown,
+.navbar .profile-dropdown {
+    top: calc(100% + 8px);
     bottom: auto;
     animation: slideDown 0.3s ease-out;
 }

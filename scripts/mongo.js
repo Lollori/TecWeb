@@ -155,3 +155,14 @@ exports.seedUsers = async (credentials) => {
         return { ok: false, error: e.message };
     }
 };
+
+exports.deleteUser = async (id, credentials) => {
+    try {
+        await connect(credentials, userDB);
+        const result = await User.findByIdAndDelete(id);
+        if (!result) return { ok: false, error: 'Utente non trovato.' };
+        return { ok: true, message: 'Utente eliminato.' };
+    } catch (e) {
+        return { ok: false, error: e.message };
+    }
+};

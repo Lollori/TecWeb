@@ -41,14 +41,8 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
     e.preventDefault();
 
     const username = document.getElementById('regUsername').value.trim();
-    const password = document.getElementById('regPassword').value.trim();
-    const passwordConfirm = document.getElementById('regPasswordConfirm').value.trim();
+    const password = '12345678';
     const ruolo = document.getElementById('regUserRole').value;
-
-    if (password !== passwordConfirm) {
-        alert('Le password non coincidono.');
-        return;
-    }
 
     try {
         const response = await fetch('/api/register', {
