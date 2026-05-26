@@ -108,24 +108,29 @@ const SECTIONS_BY_ROLE = {
         { id: 'modifica-museo',  icon: 'fa-pen-to-square',    label: 'Modifica Museo'  },
         { id: 'aggiungi-opere',  icon: 'fa-image',            label: 'Aggiungi Opera'  },
         { id: 'aggiungi-museo',  icon: 'fa-plus-circle',      label: 'Aggiungi Museo'  },
+        { id: 'marketplace',     icon: 'fa-store',            label: 'Marketplace'     },
     ],
     autore: [
         { id: 'autore-musei',           icon: 'fa-building-columns', label: 'Musei'           },
         { id: 'autore-aggiungi-visita', icon: 'fa-route',             label: 'Aggiungi Visita' },
         { id: 'autore-aggiungi-item',   icon: 'fa-layer-group',       label: 'Aggiungi Item'   },
+        { id: 'marketplace',            icon: 'fa-store',             label: 'Marketplace'     },
     ],
     visitatore: [
-        { id: 'visitatore-musei',  icon: 'fa-building-columns', label: 'Musei'  },
-        { id: 'visitatore-opere',  icon: 'fa-image',            label: 'Opere'  },
-        { id: 'visitatore-visite', icon: 'fa-route',            label: 'Visite' },
+        { id: 'visitatore-musei',  icon: 'fa-building-columns', label: 'Musei'       },
+        { id: 'visitatore-opere',  icon: 'fa-image',            label: 'Opere'       },
+        { id: 'visitatore-visite', icon: 'fa-route',            label: 'Visite'      },
+        { id: 'marketplace',       icon: 'fa-store',            label: 'Marketplace' },
     ],
     admin: [
-        { id: 'admin-utenti',    icon: 'fa-users',            label: 'Utenti'    },
-        { id: 'admin-musei',     icon: 'fa-building-columns', label: 'Musei'     },
-        { id: 'admin-opere',     icon: 'fa-image',            label: 'Opere'     },
-        { id: 'admin-visite',    icon: 'fa-route',            label: 'Visite'    },
-        { id: 'admin-items',     icon: 'fa-layer-group',      label: 'Items'     },
-        { id: 'admin-analytics', icon: 'fa-chart-bar',        label: 'Analytics' },
+        { id: 'admin-utenti',    icon: 'fa-users',            label: 'Utenti'      },
+        { id: 'admin-musei',     icon: 'fa-building-columns', label: 'Musei'       },
+        { id: 'admin-opere',     icon: 'fa-image',            label: 'Opere'       },
+        { id: 'admin-visite',    icon: 'fa-route',            label: 'Visite'      },
+        { id: 'admin-items',     icon: 'fa-layer-group',      label: 'Items'       },
+        { id: 'admin-analytics', icon: 'fa-chart-bar',        label: 'Analytics'   },
+        { id: 'admin-navigator', icon: 'fa-satellite-dish',  label: 'Navigator'   },
+        { id: 'marketplace',     icon: 'fa-store',            label: 'Marketplace' },
     ],
 };
 
@@ -182,6 +187,9 @@ function switchSection(id) {
     if (id === 'admin-visite')    initAdminVisite();
     if (id === 'admin-items')     initAdminItems();
     if (id === 'admin-analytics') initAdminAnalytics();
+    if (id === 'admin-navigator') initAdminNavigator();
+
+    if (id === 'marketplace') initMarketplace();
 }
 
 /* ============================================================
@@ -1511,7 +1519,7 @@ function renderVisVisite(lista) {
              style="cursor:pointer;">
             <h3>${v.nomeVisita}</h3>
             ${v.codiceIsil ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${v.codiceIsil}</p>` : ''}
-            ${v.logistica  ? `<p style="margin-top:8px;font-size:0.88rem;color:#475569;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;">${v.logistica}</p>` : ''}
+            ${v.logistica  ? `<p style="margin-top:8px;font-size:0.88rem;color:#475569;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;">${v.logistica}</p>` : ''}
             <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <span class="tag-bubble">
                     <i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere
@@ -1706,7 +1714,13 @@ function renderAdminUtenti(lista) {
                 </div>
             </td>
             <td><span class="badge ${ADMIN_ROLE_BADGE[u.ruolo] || 'bg-secondary'}">${u.ruolo}</span></td>
-            <td><span style="color:#94a3b8;font-family:monospace;">••••••••</span></td>
+            <td>
+                <span id="pwd-${u._id}" style="color:#94a3b8;font-family:monospace;">••••••••</span>
+                <button class="btn btn-link btn-sm p-0 ms-1" title="Mostra/Nascondi"
+                        onclick="togglePwd('${u._id}','${(u.password||'').replace(/'/g,"\\'")}')" style="color:#94a3b8;">
+                    <i class="fa-solid fa-eye" style="font-size:0.75rem;"></i>
+                </button>
+            </td>
             <td>
                 <button class="btn-outline-custom btn-sm" title="Elimina"
                         style="color:#ef4444;border-color:#ef4444;"
@@ -1729,6 +1743,18 @@ window.adminDeleteUtente = async function (id, username) {
             alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
     } catch (e) { alert('Impossibile contattare il server.'); }
+};
+
+window.togglePwd = function (id, pwd) {
+    const span = document.getElementById('pwd-' + id);
+    if (!span) return;
+    if (span.textContent === '••••••••') {
+        span.textContent = pwd;
+        span.style.color = '#334155';
+    } else {
+        span.textContent = '••••••••';
+        span.style.color = '#94a3b8';
+    }
 };
 
 /* ============================================================
@@ -2462,3 +2488,526 @@ async function initAdminAnalytics() {
             '<div class="col-12 text-center text-danger py-4">Errore nel caricamento dei dati.</div>';
     }
 }
+
+/* ============================================================
+   MARKETPLACE — condiviso fra tutti i ruoli
+   ============================================================ */
+
+let allMktItems  = [];
+let allMktVisite = [];
+let allMktMusei  = [];
+let mktTab = 'items';
+
+function getMktPurchases() {
+    try {
+        return JSON.parse(localStorage.getItem('purchases_' + SESSION.userId) || '{"items":[],"visite":[]}');
+    } catch { return { items: [], visite: [] }; }
+}
+
+function saveMktPurchases(p) {
+    localStorage.setItem('purchases_' + SESSION.userId, JSON.stringify(p));
+}
+
+async function initMarketplace() {
+    const section = document.getElementById('section-marketplace');
+    mktTab = 'items';
+
+    section.innerHTML = `
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+            <h3 class="fw-bold h4 mb-0">Marketplace</h3>
+        </div>
+
+        <div class="glass-card p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="custom-label">Museo</label>
+                    <select id="mktFilterMuseo" class="custom-input" onchange="onMktMuseoChange()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-3" id="mktOperaCol">
+                    <label class="custom-label">Opera</label>
+                    <select id="mktFilterOpera" class="custom-input" onchange="applyMktFilter()">
+                        <option value="">Tutte le opere</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="custom-label">Prezzo max (€)</label>
+                    <input type="number" id="mktFilterPrezzo" class="custom-input"
+                           min="0" step="0.01" placeholder="Illimitato" oninput="applyMktFilter()">
+                </div>
+                <div class="col-md-2" id="mktLinguaggioCol" style="display:none">
+                    <label class="custom-label">Linguaggio</label>
+                    <select id="mktFilterLinguaggio" class="custom-input" onchange="applyMktFilter()">
+                        <option value="">Tutti</option>
+                        <option value="semplice">Semplice</option>
+                        <option value="infantile">Infantile</option>
+                        <option value="medio">Medio</option>
+                        <option value="specialistico">Specialistico</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="custom-label">Cerca</label>
+                    <input type="text" id="mktSearch" class="custom-input"
+                           placeholder="Parola chiave…" oninput="applyMktFilter()">
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-tabs mb-4">
+            <button class="tab-btn active" id="mktTabItems"
+                    onclick="setMktTab('items',this)">
+                <i class="fa-solid fa-layer-group me-1"></i> Items
+            </button>
+            <button class="tab-btn" id="mktTabVisite"
+                    onclick="setMktTab('visite',this)">
+                <i class="fa-solid fa-route me-1"></i> Visite
+            </button>
+            <button class="tab-btn" id="mktTabAcquisti"
+                    onclick="setMktTab('acquisti',this)">
+                <i class="fa-solid fa-bag-shopping me-1"></i> I miei acquisti
+            </button>
+        </div>
+
+        <div id="mktContent" class="items-grid">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
+        </div>
+    `;
+
+    try {
+        const [rItems, rVisite, rMusei] = await Promise.all([
+            fetch('/api/items'),
+            fetch('/api/visite'),
+            fetch('/api/musei'),
+        ]);
+        const [dItems, dVisite, dMusei] = await Promise.all([
+            rItems.json(), rVisite.json(), rMusei.json(),
+        ]);
+        allMktItems  = dItems.ok  ? dItems.data  : [];
+        allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica) : [];
+        allMktMusei  = dMusei.ok  ? dMusei.data  : [];
+    } catch (e) {
+        document.getElementById('mktContent').innerHTML =
+            '<p class="empty-msg">Errore nel caricamento dei dati.</p>';
+        return;
+    }
+
+    const museoSel = document.getElementById('mktFilterMuseo');
+    allMktMusei.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m.codiceIsil;
+        opt.textContent = m.nome;
+        museoSel.appendChild(opt);
+    });
+
+    _populateMktOpereSelect('');
+    applyMktFilter();
+}
+
+function _populateMktOpereSelect(codiceIsil) {
+    const sel = document.getElementById('mktFilterOpera');
+    if (!sel) return;
+    const source = codiceIsil
+        ? allMktItems.filter(it => it.museumId === codiceIsil)
+        : allMktItems;
+    const unique = [...new Set(source.map(it => it.operaId))].sort();
+    sel.innerHTML = '<option value="">Tutte le opere</option>' +
+        unique.map(op => `<option value="${op}">${op}</option>`).join('');
+}
+
+window.onMktMuseoChange = function () {
+    const val = document.getElementById('mktFilterMuseo')?.value || '';
+    _populateMktOpereSelect(val);
+    applyMktFilter();
+};
+
+window.setMktTab = function (tab, btn) {
+    mktTab = tab;
+    document.querySelectorAll('#section-marketplace .tab-btn')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const operaCol = document.getElementById('mktOperaCol');
+    const lingCol  = document.getElementById('mktLinguaggioCol');
+    if (operaCol) operaCol.style.display = tab === 'items' ? '' : 'none';
+    if (lingCol)  lingCol.style.display  = tab === 'visite' ? '' : 'none';
+
+    applyMktFilter();
+};
+
+window.applyMktFilter = function () {
+    const museoVal  = document.getElementById('mktFilterMuseo')?.value  || '';
+    const operaVal  = document.getElementById('mktFilterOpera')?.value  || '';
+    const prezzoMax = parseFloat(document.getElementById('mktFilterPrezzo')?.value);
+    const lingVal   = document.getElementById('mktFilterLinguaggio')?.value || '';
+    const q = (document.getElementById('mktSearch')?.value || '').toLowerCase();
+
+    const content = document.getElementById('mktContent');
+    if (!content) return;
+
+    const purchases = getMktPurchases();
+
+    if (mktTab === 'acquisti') {
+        renderMktAcquisti(purchases);
+        return;
+    }
+
+    if (mktTab === 'visite') {
+        let lista = allMktVisite;
+        if (museoVal) lista = lista.filter(v => v.codiceIsil === museoVal);
+        if (!isNaN(prezzoMax)) lista = lista.filter(v => (v.prezzo || 0) <= prezzoMax);
+        if (q) lista = lista.filter(v =>
+            (v.nomeVisita || '').toLowerCase().includes(q) ||
+            (v.logistica  || '').toLowerCase().includes(q));
+        renderMktVisite(lista, purchases.visite);
+    } else {
+        let lista = allMktItems;
+        if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
+        if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
+        if (!isNaN(prezzoMax)) lista = lista.filter(it => (it.metadata?.prezzo || 0) <= prezzoMax);
+        if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
+        if (q) lista = lista.filter(it =>
+            (it.operaId || '').toLowerCase().includes(q) ||
+            (it.contents || []).join(' ').toLowerCase().includes(q));
+        renderMktItems(lista, purchases.items);
+    }
+};
+
+function renderMktItems(lista, purchasedIds) {
+    const content = document.getElementById('mktContent');
+    if (!lista.length) {
+        content.className = '';
+        content.innerHTML = '<p class="empty-msg">Nessun item trovato.</p>';
+        return;
+    }
+    content.className = 'items-grid';
+    content.innerHTML = lista.map(it => {
+        const prezzo = it.metadata?.prezzo || 0;
+        const bought = purchasedIds.includes(it._id);
+        const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
+        return `
+        <div class="item-read-card">
+            ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+            <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+            ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+            <div class="item-contents">
+                ${(it.contents || []).slice(0, 2).map(c => `<p>${c}</p>`).join('')}
+            </div>
+            ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
+            <ul class="item-metadata-list">
+                ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>
+                    `<li><span class="meta-key">${k}:</span> ${v}</li>`
+                ).join('')}
+            </ul>` : ''}
+            <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                ${prezzo > 0
+                    ? `<span class="price-badge">€${prezzo}</span>`
+                    : `<span class="free-badge">Gratis</span>`
+                }
+                ${bought
+                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                           <i class="fa-solid fa-check"></i> Acquistato
+                       </span>`
+                    : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                               onclick="acquistaItem('${it._id}')">
+                           <i class="fa-solid fa-cart-plus me-1"></i>
+                           ${prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
+                       </button>`
+                }
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderMktVisite(lista, purchasedIds) {
+    const content = document.getElementById('mktContent');
+    if (!lista.length) {
+        content.className = '';
+        content.innerHTML = '<p class="empty-msg">Nessuna visita in vendita trovata.</p>';
+        return;
+    }
+    content.className = 'items-grid';
+    content.innerHTML = lista.map(v => {
+        const bought = purchasedIds.includes(v._id);
+        const museo  = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
+        return `
+        <div class="visita-read-card">
+            <h3>${v.nomeVisita}</h3>
+            ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+            ${v.nomeMnemonico ? `<p class="opera-meta" style="font-size:0.8rem;color:#94a3b8;">${v.nomeMnemonico}</p>` : ''}
+            ${v.logistica ? `<p style="font-size:0.88rem;color:#475569;margin-top:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;">${v.logistica}</p>` : ''}
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere</span>
+                <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
+                ${v.prezzo > 0
+                    ? `<span class="price-badge">€${v.prezzo}</span>`
+                    : `<span class="free-badge">Gratis</span>`
+                }
+            </div>
+            <div style="margin-top:12px;">
+                ${bought
+                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                           <i class="fa-solid fa-check"></i> Acquistata
+                       </span>`
+                    : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                               onclick="acquistaVisita('${v._id}')">
+                           <i class="fa-solid fa-cart-plus me-1"></i>
+                           ${v.prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
+                       </button>`
+                }
+            </div>
+        </div>`;
+    }).join('');
+}
+
+function renderMktAcquisti(purchases) {
+    const content = document.getElementById('mktContent');
+    const purchasedItems  = allMktItems.filter(it => purchases.items.includes(it._id));
+    const purchasedVisite = allMktVisite.filter(v  => purchases.visite.includes(v._id));
+
+    if (!purchasedItems.length && !purchasedVisite.length) {
+        content.className = '';
+        content.innerHTML = `
+            <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+                <i class="fa-solid fa-bag-shopping" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                <p>Non hai ancora acquistato nulla.</p>
+                <p style="font-size:0.88rem;">Esplora le tab Items e Visite per trovare contenuti.</p>
+            </div>`;
+        return;
+    }
+
+    content.className = '';
+    let html = '';
+
+    if (purchasedItems.length) {
+        html += `<h3 class="scroll-section-label">Items acquistati</h3>
+                 <div class="items-grid" style="margin-bottom:32px;">`;
+        html += purchasedItems.map(it => {
+            const prezzo = it.metadata?.prezzo || 0;
+            const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
+            return `
+            <div class="item-read-card">
+                ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                <div class="item-contents">
+                    ${(it.contents || []).map(c => `<p>${c}</p>`).join('')}
+                </div>
+                ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
+                <ul class="item-metadata-list">
+                    ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>
+                        `<li><span class="meta-key">${k}:</span> ${v}</li>`
+                    ).join('')}
+                </ul>` : ''}
+                <div style="margin-top:auto;padding-top:12px;">
+                    <span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                        <i class="fa-solid fa-check"></i> Acquistato${prezzo > 0 ? ` — €${prezzo}` : ' (gratis)'}
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    if (purchasedVisite.length) {
+        html += `<h3 class="scroll-section-label" style="margin-top:${purchasedItems.length ? '32px' : '0'};">Visite acquistate</h3>
+                 <div class="items-grid">`;
+        html += purchasedVisite.map(v => {
+            const museo = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
+            return `
+            <div class="visita-read-card">
+                <h3>${v.nomeVisita}</h3>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                ${v.logistica ? `<p style="font-size:0.88rem;color:#475569;margin-top:8px;">${v.logistica}</p>` : ''}
+                <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere</span>
+                    ${v.prezzo > 0
+                        ? `<span class="price-badge">€${v.prezzo}</span>`
+                        : `<span class="free-badge">Gratis</span>`
+                    }
+                </div>
+                <div style="margin-top:12px;">
+                    <span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                        <i class="fa-solid fa-check"></i> Acquistata${v.prezzo > 0 ? ` — €${v.prezzo}` : ' (gratis)'}
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    content.innerHTML = html;
+}
+
+window.acquistaItem = function (id) {
+    const item = allMktItems.find(it => it._id === id);
+    if (!item) return;
+    const prezzo = item.metadata?.prezzo || 0;
+    const msg = prezzo > 0
+        ? `Acquistare questo item per €${prezzo}?`
+        : 'Ottenere questo item gratuitamente?';
+    if (!confirm(msg)) return;
+    const p = getMktPurchases();
+    if (!p.items.includes(id)) p.items.push(id);
+    saveMktPurchases(p);
+    applyMktFilter();
+};
+
+/* ============================================================
+   ADMIN — NAVIGATOR EXPORT
+   ============================================================ */
+
+async function initAdminNavigator() {
+    const section = document.getElementById('section-admin-navigator');
+    section.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3 class="fw-bold h4 mb-0">Esportazione Navigator</h3>
+                <p class="text-muted mb-0" style="font-size:0.9rem;">Seleziona un museo per esportarne i metadati e aprirlo nel Navigator.</p>
+            </div>
+        </div>
+        <div class="glass-card p-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-6">
+                    <label class="custom-label">Museo da esportare</label>
+                    <select id="navMuseoSelect" class="custom-input" onchange="onNavMuseoChange()">
+                        <option value="">— scegli un museo —</option>
+                    </select>
+                </div>
+            </div>
+            <div id="navPreview" class="mt-4"></div>
+        </div>`;
+
+    try {
+        const res  = await fetch('/api/musei');
+        const data = await res.json();
+        const sel  = document.getElementById('navMuseoSelect');
+        (data.data || []).forEach(m => {
+            const opt = document.createElement('option');
+            opt.value       = m.codiceIsil;
+            opt.textContent = `${m.nome} (${m.codiceIsil})`;
+            sel.appendChild(opt);
+        });
+    } catch (_) {}
+}
+
+window.onNavMuseoChange = async function () {
+    const codiceIsil = document.getElementById('navMuseoSelect')?.value;
+    const preview    = document.getElementById('navPreview');
+    if (!preview) return;
+    if (!codiceIsil) { preview.innerHTML = ''; return; }
+
+    preview.innerHTML = `<div class="text-center py-4 text-muted">
+        <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento dati museo…</div>`;
+
+    try {
+        const museoRes = await fetch(`/api/musei/${codiceIsil}`);
+        const museo    = (await museoRes.json()).data;
+        if (!museo) throw new Error('Museo non trovato');
+
+        const [opereRes, visiteRes, itemsRes] = await Promise.all([
+            fetch(`/api/opere?codiceIsil=${codiceIsil}`),
+            fetch(`/api/visite?codiceIsil=${codiceIsil}`),
+            fetch(`/api/items?museumId=${museo._id}`),
+        ]);
+        const opere  = (await opereRes.json()).data  || [];
+        const visite = (await visiteRes.json()).data || [];
+        const items  = (await itemsRes.json()).data  || [];
+
+        preview.innerHTML = `
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <div class="p-3 rounded-3" style="background:rgba(255,0,127,0.06);border:1px solid rgba(255,0,127,0.15);">
+                        <div class="fw-bold mb-1">${museo.nome}</div>
+                        <small class="text-muted">${museo.citta || ''} · ISIL: <code>${museo.codiceIsil}</code></small>
+                        ${museo.descrizioneBreve ? `<p class="mb-0 mt-1" style="font-size:0.85rem;">${museo.descrizioneBreve}</p>` : ''}
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="glass-card p-3 text-center">
+                        <div class="fw-bold" style="font-size:1.8rem;color:var(--magenta)">${opere.length}</div>
+                        <small class="text-muted">Opere</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="glass-card p-3 text-center">
+                        <div class="fw-bold" style="font-size:1.8rem;color:var(--magenta)">${visite.length}</div>
+                        <small class="text-muted">Visite</small>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="glass-card p-3 text-center">
+                        <div class="fw-bold" style="font-size:1.8rem;color:var(--magenta)">${items.length}</div>
+                        <small class="text-muted">Items</small>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex gap-3 flex-wrap">
+                <button class="btn-magenta"
+                        onclick="esportaNavigator('${codiceIsil}')">
+                    <i class="fa-solid fa-file-export me-2"></i>Scarica JSON
+                </button>
+                <a href="/Navigator/index.html?museo=${codiceIsil}" target="_blank"
+                   class="btn-outline-custom" style="text-decoration:none;">
+                    <i class="fa-solid fa-compass me-2"></i>Apri Navigator
+                </a>
+            </div>`;
+    } catch (e) {
+        preview.innerHTML = `<div class="text-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>${e.message}</div>`;
+    }
+};
+
+window.esportaNavigator = async function (codiceIsil) {
+    try {
+        const museoRes = await fetch(`/api/musei/${codiceIsil}`);
+        const museo    = (await museoRes.json()).data;
+        if (!museo) throw new Error('Museo non trovato');
+
+        const [opereRes, visiteRes, itemsRes] = await Promise.all([
+            fetch(`/api/opere?codiceIsil=${codiceIsil}`),
+            fetch(`/api/visite?codiceIsil=${codiceIsil}`),
+            fetch(`/api/items?museumId=${museo._id}`),
+        ]);
+        const bundle = {
+            museo,
+            opere:  (await opereRes.json()).data  || [],
+            visite: (await visiteRes.json()).data || [],
+            items:  (await itemsRes.json()).data  || [],
+            exportedAt: new Date().toISOString(),
+        };
+
+        const blob = new Blob([JSON.stringify(bundle, null, 2)], { type: 'application/json' });
+        const url  = URL.createObjectURL(blob);
+        const a    = document.createElement('a');
+        a.href     = url;
+        a.download = `navigator-${codiceIsil}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    } catch (e) {
+        alert('Errore durante l\'esportazione: ' + e.message);
+    }
+};
+
+window.acquistaVisita = async function (id) {
+    const visita = allMktVisite.find(v => v._id === id);
+    if (!visita) return;
+    const prezzo = visita.prezzo || 0;
+    const msg = prezzo > 0
+        ? `Acquistare "${visita.nomeVisita}" per €${prezzo}?`
+        : `Ottenere "${visita.nomeVisita}" gratuitamente?`;
+    if (!confirm(msg)) return;
+    const p = getMktPurchases();
+    if (!p.visite.includes(id)) {
+        p.visite.push(id);
+        try {
+            await fetch(`/api/visite/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ acquirenti: (visita.acquirenti || 0) + 1 }),
+            });
+            visita.acquirenti = (visita.acquirenti || 0) + 1;
+        } catch (e) { /* silent */ }
+    }
+    saveMktPurchases(p);
+    applyMktFilter();
+};
