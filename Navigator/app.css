@@ -326,6 +326,111 @@ body { background: #f8fafc; color: var(--text); }
 .avvia-btn:hover:not(:disabled) { opacity: 0.87; transform: translateY(-1px); }
 .avvia-btn:disabled { opacity: 0.35; cursor: default; }
 
+/* ── Lobby ── */
+.lobby-root {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+}
+.lobby-root--dark { background: var(--dark); color: #f1f5f9; }
+
+.lobby-body {
+  display: flex; flex-direction: column;
+  max-width: 600px; width: 100%;
+  margin: 0 auto; padding: 40px 32px 80px;
+  gap: 28px;
+}
+.lobby-body--center { align-items: center; text-align: center; }
+
+.lobby-header { display: flex; flex-direction: column; gap: 10px; }
+.lobby-label  { font-size: 0.82rem; font-weight: 600; color: var(--magenta); letter-spacing: 0.06em; text-transform: uppercase; }
+.lobby-title  {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  line-height: 1.2;
+}
+
+.lobby-code-box {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px; padding: 14px 20px;
+}
+.lobby-code-box--sm { padding: 10px 16px; border-radius: 10px; }
+.lobby-code-label { font-size: 0.82rem; color: var(--muted); }
+.lobby-code {
+  font-size: 1.25rem; font-weight: 800; color: var(--magenta);
+  font-family: 'Playfair Display', serif; letter-spacing: 0.02em;
+}
+.lobby-code-box--sm .lobby-code { font-size: 1rem; }
+
+.lobby-panel {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px; padding: 24px;
+}
+.lobby-panel-title {
+  font-size: 1rem; font-weight: 700; color: #e2e8f0;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.lobby-count-badge {
+  background: var(--magenta); color: #fff;
+  border-radius: 20px; padding: 2px 10px;
+  font-size: 0.85rem; font-weight: 700;
+}
+.lobby-empty { color: var(--muted); font-size: 0.9rem; }
+
+.lobby-students-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.lobby-student-item  {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 0.92rem; color: #cbd5e1;
+}
+.lobby-avatar {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,0,127,0.18); color: #ff7fc8;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.88rem; flex-shrink: 0;
+}
+.lobby-avatar--me { background: rgba(255,0,127,0.4); color: #fff; }
+
+.inizia-btn {
+  width: 100%;
+  background: var(--magenta); color: #fff;
+  border: none; border-radius: 16px;
+  font-size: 1.1rem; font-weight: 700; font-family: 'Inter', sans-serif;
+  padding: 20px 32px; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.inizia-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); }
+.inizia-btn:disabled { opacity: 0.3; cursor: default; }
+
+/* Lobby started state */
+.lobby-started {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; text-align: center; padding: 40px 32px;
+}
+.lobby-started-icon  { font-size: 4rem; line-height: 1; }
+.lobby-started-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-family: 'Playfair Display', serif; color: #f1f5f9; }
+.lobby-started-sub   { color: var(--muted); font-size: 1rem; }
+
+/* Student lobby specific */
+.lobby-spinner-wrap { padding: 24px 0 8px; }
+.lobby-spinner { width: 52px; height: 52px; border-width: 4px; }
+.lobby-waiting-title { font-size: clamp(1.1rem, 3vw, 1.4rem); color: #e2e8f0; line-height: 1.4; max-width: 400px; }
+.lobby-you-are { color: var(--muted); font-size: 0.9rem; }
+
+.lobby-avatars-row   { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 8px; }
+.lobby-avatars-label { color: var(--muted); font-size: 0.82rem; }
+.lobby-avatars       { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+/* StudentScreen error */
+.student-code-input--error { border-color: #f87171 !important; }
+.student-join-error {
+  color: #f87171; font-size: 0.88rem; font-weight: 500;
+  background: rgba(248,113,113,0.1); border-radius: 10px;
+  padding: 10px 16px; width: 100%; text-align: center;
+}
+
 /* ── Item contents ── */
 .item-contents { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .content-block { font-size: 0.85rem; color: var(--text); }

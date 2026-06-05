@@ -3,11 +3,10 @@
 function EntryScreen({ onDocente, onStudente }) {
   return (
     <div className="entry-root">
-      <div className="nav-topbar nav-topbar--split">
+      <div className="nav-topbar">
         <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
           ← Marketplace
         </a>
-        <a href="/" className="back-to-marketplace">⌂ Menu</a>
       </div>
       <div className="entry-body">
         <header className="picker-header">
@@ -33,20 +32,35 @@ function EntryScreen({ onDocente, onStudente }) {
 
 /* ── Student Screen ─────────────────────────────────── */
 
-function StudentScreen({ onBack }) {
-  const [code, setCode] = React.useState('');
+function StudentScreen({ onBack, onJoined }) {
+  const [code,      setCode]      = React.useState('');
+  const [joining,   setJoining]   = React.useState(false);
+  const [joinError, setJoinError] = React.useState(null);
 
-  function handleJoin() {
+  async function handleJoin() {
     const trimmed = code.trim();
-    if (!trimmed) return;
-    alert(`Connessione alla stanza: ${trimmed}`);
+    if (!trimmed || joining) return;
+    setJoining(true);
+    setJoinError(null);
+    try {
+      const res  = await fetch(`/api/sessioni/${encodeURIComponent(trimmed)}/join`, { method: 'POST' });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        setJoinError(data.error || 'Codice non trovato. Riprova.');
+      } else {
+        onJoined(trimmed, data.nome);
+      }
+    } catch (_) {
+      setJoinError('Impossibile connettersi al server. Riprova.');
+    } finally {
+      setJoining(false);
+    }
   }
 
   return (
     <div className="student-root">
-      <div className="nav-topbar nav-topbar--split">
+      <div className="nav-topbar">
         <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
-        <a href="/" className="back-to-marketplace">⌂ Menu</a>
       </div>
       <div className="student-body">
         <header className="picker-header">
@@ -58,17 +72,185 @@ function StudentScreen({ onBack }) {
         <div className="student-form">
           <input
             type="text"
-            className="student-code-input"
+            className={`student-code-input${joinError ? ' student-code-input--error' : ''}`}
             placeholder='es. "Fenice rossa"'
             value={code}
-            onChange={e => setCode(e.target.value)}
+            onChange={e => { setCode(e.target.value); setJoinError(null); }}
             onKeyDown={e => e.key === 'Enter' && handleJoin()}
             autoFocus
           />
-          <button className="student-join-btn" onClick={handleJoin} disabled={!code.trim()}>
-            Entra →
+          {joinError && <p className="student-join-error">{joinError}</p>}
+          <button className="student-join-btn" onClick={handleJoin} disabled={!code.trim() || joining}>
+            {joining ? 'Connessione…' : 'Entra →'}
           </button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Lobby Docente ─────────────────────────────────── */
+
+function LobbyDocente({ codice, visitaNome, onClose }) {
+  const [studenti, setStudenti] = React.useState([]);
+  const [stato,    setStato]    = React.useState('attesa');
+  const [avviando, setAvviando] = React.useState(false);
+
+  React.useEffect(() => {
+    const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.tipo === 'stato-iniziale') {
+        setStudenti(data.studenti);
+        setStato(data.stato);
+      } else if (data.tipo === 'studente-connesso') {
+        setStudenti(data.studenti);
+      } else if (data.tipo === 'visita-iniziata') {
+        setStato('iniziata');
+      }
+    };
+    return () => es.close();
+  }, [codice]);
+
+  async function handleAvvia() {
+    setAvviando(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/avvia`, { method: 'POST' });
+    } finally {
+      setAvviando(false);
+    }
+  }
+
+  if (stato === 'iniziata') return (
+    <div className="lobby-root lobby-root--dark">
+      <div className="lobby-started">
+        <span className="lobby-started-icon">✅</span>
+        <h2 className="lobby-started-title">Visita avviata!</h2>
+        <p className="lobby-started-sub">Tutti i {studenti.length} partecipanti sono stati notificati.</p>
+        <button className="back-to-marketplace" onClick={onClose} style={{ marginTop: 28 }}>
+          ← Torna alla lista visite
+        </button>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="lobby-root lobby-root--dark">
+      <div className="nav-topbar">
+        <button onClick={onClose} className="back-to-marketplace">← Annulla sessione</button>
+      </div>
+      <div className="lobby-body">
+        <header className="lobby-header">
+          <p className="lobby-label">Lobby di Attesa · Docente</p>
+          <h1 className="lobby-title">{visitaNome}</h1>
+          <div className="lobby-code-box">
+            <span className="lobby-code-label">Codice da condividere con gli studenti:</span>
+            <span className="lobby-code">{codice}</span>
+          </div>
+        </header>
+
+        <section className="lobby-panel">
+          <h3 className="lobby-panel-title">
+            Studenti connessi
+            <span className="lobby-count-badge">{studenti.length}</span>
+          </h3>
+          {studenti.length === 0
+            ? <p className="lobby-empty">In attesa che gli studenti si connettano…</p>
+            : (
+              <ul className="lobby-students-list">
+                {studenti.map((s, i) => (
+                  <li key={i} className="lobby-student-item">
+                    <span className="lobby-avatar">{s.nome[0]}</span>
+                    {s.nome}
+                  </li>
+                ))}
+              </ul>
+            )
+          }
+        </section>
+
+        <button
+          className="inizia-btn"
+          disabled={studenti.length === 0 || avviando}
+          onClick={handleAvvia}
+        >
+          {avviando
+            ? 'Avvio in corso…'
+            : studenti.length === 0
+              ? 'Inizia Visita (nessuno connesso)'
+              : `Inizia Visita (${studenti.length} stud${studenti.length === 1 ? 'ente' : 'enti'})`
+          }
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Lobby Studente ─────────────────────────────────── */
+
+function LobbyStudente({ codice, nomeAssegnato, onBack }) {
+  const [studenti, setStudenti] = React.useState([]);
+  const [stato,    setStato]    = React.useState('attesa');
+
+  React.useEffect(() => {
+    const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
+    es.onmessage = (e) => {
+      const data = JSON.parse(e.data);
+      if (data.tipo === 'stato-iniziale') {
+        setStudenti(data.studenti);
+        setStato(data.stato);
+      } else if (data.tipo === 'studente-connesso') {
+        setStudenti(data.studenti);
+      } else if (data.tipo === 'visita-iniziata') {
+        setStato('iniziata');
+      }
+    };
+    return () => es.close();
+  }, [codice]);
+
+  if (stato === 'iniziata') return (
+    <div className="lobby-root lobby-root--dark">
+      <div className="lobby-started">
+        <span className="lobby-started-icon">🎉</span>
+        <h2 className="lobby-started-title">La visita è iniziata!</h2>
+        <p className="lobby-started-sub">Buona visita, <strong>{nomeAssegnato}</strong>!</p>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="lobby-root lobby-root--dark">
+      <div className="nav-topbar">
+        <button onClick={onBack} className="back-to-marketplace">← Esci</button>
+      </div>
+      <div className="lobby-body lobby-body--center">
+        <div className="lobby-spinner-wrap">
+          <div className="nav-spinner lobby-spinner" />
+        </div>
+        <h2 className="lobby-waiting-title">In attesa che l'insegnante avvii la visita…</h2>
+        <p className="lobby-you-are">
+          Sei connesso come <strong>{nomeAssegnato}</strong>
+        </p>
+        <div className="lobby-code-box lobby-code-box--sm">
+          <span className="lobby-code-label">Stanza:</span>
+          <span className="lobby-code">{codice}</span>
+        </div>
+        {studenti.length > 0 && (
+          <div className="lobby-avatars-row">
+            <p className="lobby-avatars-label">{studenti.length} in stanza</p>
+            <div className="lobby-avatars">
+              {studenti.map((s, i) => (
+                <span
+                  key={i}
+                  className={`lobby-avatar${s.nome === nomeAssegnato ? ' lobby-avatar--me' : ''}`}
+                  title={s.nome}
+                >
+                  {s.nome[0]}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -155,7 +337,7 @@ function VisiteList({ visite }) {
   );
 }
 
-function DocVisiteList({ visite, museo, mnemonici, onMnemonico }) {
+function DocVisiteList({ visite, museo, mnemonici, onMnemonico, onAvvia }) {
   if (!visite.length) return <p className="nav-empty">Nessuna visita disponibile.</p>;
   return (
     <div className="visite-list">
@@ -190,7 +372,7 @@ function DocVisiteList({ visite, museo, mnemonici, onMnemonico }) {
             <button
               className="avvia-btn"
               disabled={!mnemonici[v._id]?.trim()}
-              onClick={() => alert(`Visita "${v.nomeVisita}" avviata!\nCodice stanza: ${mnemonici[v._id].trim()}`)}
+              onClick={() => onAvvia(v, mnemonici[v._id].trim())}
             >
               Avvia visita →
             </button>
@@ -241,6 +423,7 @@ function ItemsGrid({ items }) {
 
 function App() {
   const [role,      setRole]      = React.useState(null); // null | 'docente' | 'studente'
+  const [lobby,     setLobby]     = React.useState(null); // { codice, visitaNome } | { codice, myName }
   const [musei,     setMusei]     = React.useState(null);
   const [museo,     setMuseo]     = React.useState(null);
   const [opere,     setOpere]     = React.useState([]);
@@ -274,6 +457,7 @@ function App() {
     url.searchParams.delete('museo');
     window.history.pushState({}, '', url);
     setRole(null);
+    setLobby(null);
     setMuseo(null);
     setMusei(null);
     setOpere([]);
@@ -291,7 +475,7 @@ function App() {
       const res  = await fetch('/api/musei');
       const data = await res.json();
       setMusei(data.data || []);
-    } catch (e) {
+    } catch (_) {
       setError('Impossibile caricare la lista dei musei.');
     } finally {
       setLoading(false);
@@ -343,6 +527,24 @@ function App() {
     loadMuseList();
   }
 
+  async function handleAvviaVisita(visita, codice) {
+    try {
+      const res = await fetch('/api/sessioni', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codice, visitaId: visita._id, visitaNome: visita.nomeVisita, museoIsil: museo.codiceIsil }),
+      });
+      const data = await res.json();
+      if (!res.ok || data.error) {
+        alert(data.error || 'Errore nella creazione della sessione.');
+        return;
+      }
+      setLobby({ codice, visitaNome: visita.nomeVisita });
+    } catch (_) {
+      alert('Impossibile creare la sessione. Riprova.');
+    }
+  }
+
   /* ── Rendering ── */
 
   if (!role) return (
@@ -352,7 +554,28 @@ function App() {
     />
   );
 
-  if (role === 'studente') return <StudentScreen onBack={goToEntry} />;
+  if (role === 'studente' && !lobby) return (
+    <StudentScreen
+      onBack={goToEntry}
+      onJoined={(codice, nome) => setLobby({ codice, myName: nome })}
+    />
+  );
+
+  if (role === 'studente' && lobby) return (
+    <LobbyStudente
+      codice={lobby.codice}
+      nomeAssegnato={lobby.myName}
+      onBack={() => setLobby(null)}
+    />
+  );
+
+  if (role === 'docente' && lobby) return (
+    <LobbyDocente
+      codice={lobby.codice}
+      visitaNome={lobby.visitaNome}
+      onClose={() => setLobby(null)}
+    />
+  );
 
   if (loading) return (
     <div className="nav-loading">
@@ -374,10 +597,9 @@ function App() {
     <div className="museo-picker-root">
       <div className="nav-topbar nav-topbar--split">
         <button onClick={goToEntry} className="back-to-marketplace">← Indietro</button>
-        <div style={{ display: 'flex', gap: '16px' }}>
-          <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Marketplace</a>
-          <a href="/" className="back-to-marketplace">⌂ Menu</a>
-        </div>
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
+          ← Marketplace
+        </a>
       </div>
       <header className="picker-header">
         <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
@@ -406,16 +628,17 @@ function App() {
 
   /* Schermata dettaglio museo */
   const tabs = [
-    { key: 'opere',  label: `Opere (${opere.length})`   },
-    { key: 'visite', label: `Visite (${visite.length})`  },
-    { key: 'items',  label: `Items (${items.length})`    },
+    { key: 'opere',  label: `Opere (${opere.length})`  },
+    { key: 'visite', label: `Visite (${visite.length})` },
+    { key: 'items',  label: `Items (${items.length})`   },
   ];
 
   return (
     <div className="navigator-root">
       <div className="museo-back-bar">
-        <a href="/" className="back-to-marketplace">⌂ Menu</a>
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Marketplace</a>
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
+          ← Marketplace
+        </a>
         <button onClick={goBack} className="back-btn">← Tutti i musei</button>
       </div>
       <MuseoHeader museo={museo} opereCount={opere.length} visiteCount={visite.length} itemsCount={items.length} />
@@ -430,7 +653,13 @@ function App() {
         {tab === 'opere'  && <OpereGrid opere={opere} />}
         {tab === 'visite' && (
           role === 'docente'
-            ? <DocVisiteList visite={visite} museo={museo} mnemonici={mnemonici} onMnemonico={handleMnemonico} />
+            ? <DocVisiteList
+                visite={visite}
+                museo={museo}
+                mnemonici={mnemonici}
+                onMnemonico={handleMnemonico}
+                onAvvia={handleAvviaVisita}
+              />
             : <VisiteList visite={visite} />
         )}
         {tab === 'items'  && <ItemsGrid items={items} />}

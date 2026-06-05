@@ -35,6 +35,8 @@ try {
     console.error('[index.js] ERRORE nel caricare scripts/items.js:', e.message);
 }
 
+const sessioni = require(global.rootDir + '/scripts/sessioni.js');
+
 
 const express = require('express');
 const cors = require('cors')
@@ -279,6 +281,56 @@ app.delete('/api/items/:id', async function (req, res) {
     res.json(result);
 });
 
+
+/* ========================== */
+/* API SESSIONI (Navigator)   */
+/* ========================== */
+
+// Crea sessione (docente avvia una visita)
+app.post('/api/sessioni', (req, res) => {
+    const { codice, visitaId, visitaNome, museoIsil } = req.body;
+    if (!codice || !visitaId) return res.status(400).json({ error: 'Parametri mancanti.' });
+    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil);
+    if (result.error) return res.status(409).json(result);
+    res.json(result);
+});
+
+// Stato sessione
+app.get('/api/sessioni/:codice', (req, res) => {
+    const session = sessioni.getSession(req.params.codice);
+    if (!session) return res.status(404).json({ error: 'Sessione non trovata.' });
+    const { clients, ...safeSession } = session;
+    res.json({ ok: true, data: safeSession });
+});
+
+// Studente entra in sessione
+app.post('/api/sessioni/:codice/join', (req, res) => {
+    const result = sessioni.joinSession(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Docente avvia la visita
+app.post('/api/sessioni/:codice/avvia', (req, res) => {
+    const result = sessioni.startSession(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// SSE stream – docente e studenti ricevono aggiornamenti in tempo reale
+app.get('/api/sessioni/:codice/stream', (req, res) => {
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.flushHeaders();
+
+    const added = sessioni.addClient(req.params.codice, res);
+    if (!added) {
+        res.write(`data: ${JSON.stringify({ tipo: 'errore', messaggio: 'Sessione non trovata.' })}\n\n`);
+        res.end();
+    }
+    // cleanup handled inside addClient via 'close' event
+});
 
 /* ========================== */
 /* ACTIVATE NODE SERVER    */
