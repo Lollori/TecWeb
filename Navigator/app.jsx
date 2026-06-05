@@ -3,10 +3,11 @@
 function EntryScreen({ onDocente, onStudente }) {
   return (
     <div className="entry-root">
-      <div className="nav-topbar">
+      <div className="nav-topbar nav-topbar--split">
         <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
           ← Marketplace
         </a>
+        <a href="/" className="back-to-marketplace">⌂ Menu</a>
       </div>
       <div className="entry-body">
         <header className="picker-header">
@@ -43,8 +44,9 @@ function StudentScreen({ onBack }) {
 
   return (
     <div className="student-root">
-      <div className="nav-topbar">
+      <div className="nav-topbar nav-topbar--split">
         <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
+        <a href="/" className="back-to-marketplace">⌂ Menu</a>
       </div>
       <div className="student-body">
         <header className="picker-header">
@@ -372,9 +374,10 @@ function App() {
     <div className="museo-picker-root">
       <div className="nav-topbar nav-topbar--split">
         <button onClick={goToEntry} className="back-to-marketplace">← Indietro</button>
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
-          ← Marketplace
-        </a>
+        <div style={{ display: 'flex', gap: '16px' }}>
+          <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Marketplace</a>
+          <a href="/" className="back-to-marketplace">⌂ Menu</a>
+        </div>
       </div>
       <header className="picker-header">
         <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
@@ -411,9 +414,8 @@ function App() {
   return (
     <div className="navigator-root">
       <div className="museo-back-bar">
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
-          ← Marketplace
-        </a>
+        <a href="/" className="back-to-marketplace">⌂ Menu</a>
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Marketplace</a>
         <button onClick={goBack} className="back-btn">← Tutti i musei</button>
       </div>
       <MuseoHeader museo={museo} opereCount={opere.length} visiteCount={visite.length} itemsCount={items.length} />
