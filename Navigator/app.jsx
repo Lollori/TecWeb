@@ -4,7 +4,7 @@ function EntryScreen({ onDocente, onStudente }) {
   return (
     <div className="entry-root">
       <div className="nav-topbar">
-        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
           ← Marketplace
         </a>
       </div>
@@ -372,7 +372,7 @@ function App() {
     <div className="museo-picker-root">
       <div className="nav-topbar nav-topbar--split">
         <button onClick={goToEntry} className="back-to-marketplace">← Indietro</button>
-        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
           ← Marketplace
         </a>
       </div>
@@ -411,7 +411,7 @@ function App() {
   return (
     <div className="navigator-root">
       <div className="museo-back-bar">
-        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
           ← Marketplace
         </a>
         <button onClick={goBack} className="back-btn">← Tutti i musei</button>
