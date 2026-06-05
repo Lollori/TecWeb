@@ -80,8 +80,23 @@ body { background: #f8fafc; color: var(--text); }
   font-size: 0.75rem; font-weight: 600;
 }
 
+/* ── Back to marketplace ── */
+.nav-topbar {
+  background: var(--dark); padding: 10px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.back-to-marketplace {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--magenta); font-size: 0.85rem; font-weight: 500;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.back-to-marketplace:hover { opacity: 0.75; }
+
 /* ── Back bar ── */
-.museo-back-bar { background: var(--dark); padding: 8px 32px; }
+.museo-back-bar {
+  background: var(--dark); padding: 8px 32px;
+  display: flex; align-items: center; gap: 20px;
+}
 .back-btn {
   background: none; border: none; color: var(--muted);
   font-size: 0.85rem; cursor: pointer; padding: 4px 0; transition: color 0.2s;

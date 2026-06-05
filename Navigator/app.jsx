@@ -211,6 +211,11 @@ function App() {
   /* Schermata selezione museo */
   if (!museo) return (
     <div className="museo-picker-root">
+      <div className="nav-topbar">
+        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+          ← Marketplace
+        </a>
+      </div>
       <header className="picker-header">
         <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
         <p className="picker-subtitle">Scegli un museo per iniziare la tua visita</p>
@@ -246,6 +251,9 @@ function App() {
   return (
     <div className="navigator-root">
       <div className="museo-back-bar">
+        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+          ← Marketplace
+        </a>
         <button onClick={goBack} className="back-btn">← Tutti i musei</button>
       </div>
       <MuseoHeader museo={museo} opereCount={opere.length} visiteCount={visite.length} itemsCount={items.length} />
