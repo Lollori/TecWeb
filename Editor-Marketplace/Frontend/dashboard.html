@@ -12,6 +12,42 @@
 </head>
 <body>
 
+<!-- MOBILE TOPBAR -->
+<div class="mobile-topbar" id="mobileTopbar">
+    <button class="mobile-hamburger" id="mobileHamburger" onclick="toggleMobileMenu()" aria-label="Apri menu">
+        <i class="fa-solid fa-bars" id="hamburgerIcon"></i>
+    </button>
+    <a href="/" class="mobile-topbar-logo">ArtAround.</a>
+    <div class="avatar-sm" id="mobileAvatarTop">?</div>
+</div>
+
+<!-- MOBILE OVERLAY -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
+
+<!-- MOBILE DROPDOWN -->
+<div class="mobile-menu-dropdown" id="mobileMenuDropdown">
+    <div class="mobile-menu-user-row">
+        <div class="avatar-sm" id="mobileAvatarMenu">?</div>
+        <div>
+            <div class="mobile-menu-username" id="mobileMenuUsername">—</div>
+            <div class="mobile-menu-role" id="mobileMenuRole">—</div>
+        </div>
+    </div>
+    <nav class="mobile-nav" id="mobileNav"></nav>
+    <div class="mobile-menu-footer">
+        <a href="/" class="mobile-footer-link">
+            <i class="fa-solid fa-house"></i> Menu principale
+        </a>
+        <button class="mobile-footer-link" onclick="toggleDarkMode()">
+            <i class="fa-solid fa-moon" id="mobileDarkIcon"></i>
+            <span id="mobileDarkLabel">Modalità scura</span>
+        </button>
+        <a href="/" class="mobile-footer-link" onclick="localStorage.clear()">
+            <i class="fa-solid fa-power-off"></i> Logout
+        </a>
+    </div>
+</div>
+
 <div class="admin-layout">
 
     <!-- SIDEBAR -->

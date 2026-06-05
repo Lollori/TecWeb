@@ -55,6 +55,42 @@ function updateDarkToggleIcon() {
     const label  = document.querySelector('#darkToggle .toggle-label');
     if (icon)  icon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
     if (label) label.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
+    const mIcon  = document.getElementById('mobileDarkIcon');
+    const mLabel = document.getElementById('mobileDarkLabel');
+    if (mIcon)  mIcon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (mLabel) mLabel.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
+}
+
+/* ============================================================
+   MOBILE MENU
+   ============================================================ */
+
+function toggleMobileMenu() {
+    const dropdown = document.getElementById('mobileMenuDropdown');
+    const overlay  = document.getElementById('mobileMenuOverlay');
+    const btn      = document.getElementById('mobileHamburger');
+    const icon     = document.getElementById('hamburgerIcon');
+    const isOpen   = dropdown.classList.contains('open');
+    if (isOpen) {
+        dropdown.classList.remove('open');
+        overlay.classList.remove('open');
+        btn.classList.remove('open');
+        icon.className = 'fa-solid fa-bars';
+    } else {
+        dropdown.classList.add('open');
+        overlay.classList.add('open');
+        btn.classList.add('open');
+        icon.className = 'fa-solid fa-xmark';
+    }
+}
+
+function closeMobileMenu() {
+    document.getElementById('mobileMenuDropdown').classList.remove('open');
+    document.getElementById('mobileMenuOverlay').classList.remove('open');
+    const btn  = document.getElementById('mobileHamburger');
+    const icon = document.getElementById('hamburgerIcon');
+    if (btn)  btn.classList.remove('open');
+    if (icon) icon.className = 'fa-solid fa-bars';
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -70,10 +106,21 @@ document.addEventListener('DOMContentLoaded', async () => {
                      : role === 'autore'   ? 'Dashboard Autore'
                      : role === 'admin'    ? 'Dashboard Admin'
                      : role;
-    document.getElementById('sidebarRole').textContent    = badgeLabel;
-    document.getElementById('avatarInitial').textContent  = (SESSION.username[0] || '?').toUpperCase();
-    document.getElementById('footerUsername').textContent = SESSION.username;
+    const initial = (SESSION.username[0] || '?').toUpperCase();
+    document.getElementById('sidebarRole').textContent     = badgeLabel;
+    document.getElementById('avatarInitial').textContent   = initial;
+    document.getElementById('footerUsername').textContent  = SESSION.username;
     document.getElementById('headerRoleLabel').textContent = role;
+
+    // Mobile topbar + dropdown user info
+    const mobileAvatarTop  = document.getElementById('mobileAvatarTop');
+    const mobileAvatarMenu = document.getElementById('mobileAvatarMenu');
+    const mobileUsername   = document.getElementById('mobileMenuUsername');
+    const mobileRole       = document.getElementById('mobileMenuRole');
+    if (mobileAvatarTop)  mobileAvatarTop.textContent  = initial;
+    if (mobileAvatarMenu) mobileAvatarMenu.textContent  = initial;
+    if (mobileUsername)   mobileUsername.textContent    = SESSION.username;
+    if (mobileRole)       mobileRole.textContent        = badgeLabel;
 
     buildSidebar();
     attachFormHandlers();
@@ -135,24 +182,25 @@ const SECTIONS_BY_ROLE = {
 };
 
 function buildSidebar() {
-    const nav = document.getElementById('sidebarNav');
-    if (!nav) return;
+    const nav       = document.getElementById('sidebarNav');
+    const mobileNav = document.getElementById('mobileNav');
 
     const sections = SECTIONS_BY_ROLE[SESSION.role] || [];
+    const html = sections.length
+        ? sections.map(s => `
+            <button class="nav-item" data-section="${s.id}">
+                <i class="fa-solid ${s.icon}"></i> ${s.label}
+            </button>`).join('')
+        : '<p style="padding:12px;color:#6b7280;font-size:0.85rem;">Nessuna sezione disponibile.</p>';
 
-    if (!sections.length) {
-        nav.innerHTML = '<p style="padding:12px;color:#6b7280;font-size:0.85rem;">Nessuna sezione disponibile.</p>';
-        return;
-    }
+    if (nav)       nav.innerHTML       = html;
+    if (mobileNav) mobileNav.innerHTML = html;
 
-    nav.innerHTML = sections.map(s => `
-        <button class="nav-item" data-section="${s.id}">
-            <i class="fa-solid ${s.icon}"></i> ${s.label}
-        </button>
-    `).join('');
-
-    nav.querySelectorAll('.nav-item').forEach(btn => {
-        btn.addEventListener('click', () => switchSection(btn.dataset.section));
+    document.querySelectorAll('.nav-item').forEach(btn => {
+        btn.addEventListener('click', () => {
+            switchSection(btn.dataset.section);
+            closeMobileMenu();
+        });
     });
 }
 
