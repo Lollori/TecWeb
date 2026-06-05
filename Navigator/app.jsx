@@ -529,19 +529,24 @@ function App() {
 
   async function handleAvviaVisita(visita, codice) {
     try {
-      const res = await fetch('/api/sessioni', {
+      const res  = await fetch('/api/sessioni', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ codice, visitaId: visita._id, visitaNome: visita.nomeVisita, museoIsil: museo.codiceIsil }),
       });
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try { data = JSON.parse(text); } catch (_) {
+        alert(`Errore server (${res.status}): il server potrebbe non essere aggiornato. Riavvialo e riprova.`);
+        return;
+      }
       if (!res.ok || data.error) {
-        alert(data.error || 'Errore nella creazione della sessione.');
+        alert(data.error || `Errore ${res.status}`);
         return;
       }
       setLobby({ codice, visitaNome: visita.nomeVisita });
-    } catch (_) {
-      alert('Impossibile creare la sessione. Riprova.');
+    } catch (e) {
+      alert(`Impossibile raggiungere il server: ${e.message}`);
     }
   }
 
