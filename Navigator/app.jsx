@@ -1,3 +1,77 @@
+/* ── Entry Screen ─────────────────────────────────── */
+
+function EntryScreen({ onDocente, onStudente }) {
+  return (
+    <div className="entry-root">
+      <div className="nav-topbar">
+        <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
+          ← Marketplace
+        </a>
+      </div>
+      <div className="entry-body">
+        <header className="picker-header">
+          <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
+          <p className="picker-subtitle">Come vuoi procedere?</p>
+        </header>
+        <div className="entry-cards">
+          <button className="entry-role-card" onClick={onDocente}>
+            <span className="entry-role-icon">🎓</span>
+            <h3 className="entry-role-label">Crea / Avvia una Visita Sincronizzata</h3>
+            <p className="entry-role-hint">Per il Docente</p>
+          </button>
+          <button className="entry-role-card entry-role-card--alt" onClick={onStudente}>
+            <span className="entry-role-icon">🎒</span>
+            <h3 className="entry-role-label">Partecipa a una Visita</h3>
+            <p className="entry-role-hint">Per lo Studente</p>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ── Student Screen ─────────────────────────────────── */
+
+function StudentScreen({ onBack }) {
+  const [code, setCode] = React.useState('');
+
+  function handleJoin() {
+    const trimmed = code.trim();
+    if (!trimmed) return;
+    alert(`Connessione alla stanza: ${trimmed}`);
+  }
+
+  return (
+    <div className="student-root">
+      <div className="nav-topbar">
+        <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
+      </div>
+      <div className="student-body">
+        <header className="picker-header">
+          <h1 className="picker-title" style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)' }}>
+            Partecipa a una Visita
+          </h1>
+          <p className="picker-subtitle">Inserisci il codice stanza fornito dal docente</p>
+        </header>
+        <div className="student-form">
+          <input
+            type="text"
+            className="student-code-input"
+            placeholder='es. "Fenice rossa"'
+            value={code}
+            onChange={e => setCode(e.target.value)}
+            onKeyDown={e => e.key === 'Enter' && handleJoin()}
+            autoFocus
+          />
+          <button className="student-join-btn" onClick={handleJoin} disabled={!code.trim()}>
+            Entra →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 /* ── Componenti ─────────────────────────────────────── */
 
 function MuseoHeader({ museo, opereCount, visiteCount, itemsCount }) {
@@ -79,6 +153,52 @@ function VisiteList({ visite }) {
   );
 }
 
+function DocVisiteList({ visite, museo, mnemonici, onMnemonico }) {
+  if (!visite.length) return <p className="nav-empty">Nessuna visita disponibile.</p>;
+  return (
+    <div className="visite-list">
+      {visite.map(v => (
+        <div key={v._id} className="visita-card visita-card--docente">
+          <div className="visita-docente-top">
+            <div className="visita-docente-cover">
+              {museo.immagineCopertina
+                ? <img src={museo.immagineCopertina} alt={v.nomeVisita} />
+                : <div className="visita-cover-placeholder">{(v.nomeVisita || '?')[0]}</div>
+              }
+            </div>
+            <div className="visita-docente-info">
+              <h3 className="visita-title">{v.nomeVisita}</h3>
+              <div className="visita-docente-pills">
+                {v.opereCount > 0 && <span className="stat-pill">{v.opereCount} opere</span>}
+                {v.prezzo != null && (
+                  <span className="price-pill">{v.prezzo > 0 ? `€${v.prezzo}` : 'Gratuito'}</span>
+                )}
+              </div>
+              {v.logistica && <p className="visita-logistica">{v.logistica}</p>}
+            </div>
+          </div>
+          <div className="visita-docente-launch">
+            <input
+              type="text"
+              className="mnemonic-input"
+              placeholder='Nome mnemonico (es. "Fenice rossa")'
+              value={mnemonici[v._id] || ''}
+              onChange={e => onMnemonico(v._id, e.target.value)}
+            />
+            <button
+              className="avvia-btn"
+              disabled={!mnemonici[v._id]?.trim()}
+              onClick={() => alert(`Visita "${v.nomeVisita}" avviata!\nCodice stanza: ${mnemonici[v._id].trim()}`)}
+            >
+              Avvia visita →
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function ItemsGrid({ items }) {
   if (!items.length) return <p className="nav-empty">Nessun item disponibile.</p>;
   return (
@@ -118,26 +238,53 @@ function ItemsGrid({ items }) {
 /* ── App principale ─────────────────────────────────── */
 
 function App() {
-  const [musei,   setMusei]   = React.useState(null);
-  const [museo,   setMuseo]   = React.useState(null);
-  const [opere,   setOpere]   = React.useState([]);
-  const [visite,  setVisite]  = React.useState([]);
-  const [items,   setItems]   = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [error,   setError]   = React.useState(null);
-  const [tab,     setTab]     = React.useState('opere');
+  const [role,      setRole]      = React.useState(null); // null | 'docente' | 'studente'
+  const [musei,     setMusei]     = React.useState(null);
+  const [museo,     setMuseo]     = React.useState(null);
+  const [opere,     setOpere]     = React.useState([]);
+  const [visite,    setVisite]    = React.useState([]);
+  const [items,     setItems]     = React.useState([]);
+  const [loading,   setLoading]   = React.useState(false);
+  const [error,     setError]     = React.useState(null);
+  const [tab,       setTab]       = React.useState('opere');
+  const [mnemonici, setMnemonici] = React.useState({});
 
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
 
   React.useEffect(() => {
     if (codiceIsil) {
+      setRole('docente');
       loadMuseo(codiceIsil);
-    } else {
-      loadMuseList();
     }
   }, []);
 
+  function handleMnemonico(visitaId, value) {
+    setMnemonici(prev => ({ ...prev, [visitaId]: value }));
+  }
+
+  function selectRole(r) {
+    setRole(r);
+    if (r === 'docente') loadMuseList();
+  }
+
+  function goToEntry() {
+    const url = new URL(window.location.href);
+    url.searchParams.delete('museo');
+    window.history.pushState({}, '', url);
+    setRole(null);
+    setMuseo(null);
+    setMusei(null);
+    setOpere([]);
+    setVisite([]);
+    setItems([]);
+    setTab('opere');
+    setMnemonici({});
+    setError(null);
+  }
+
   async function loadMuseList() {
+    setLoading(true);
+    setError(null);
     try {
       const res  = await fetch('/api/musei');
       const data = await res.json();
@@ -190,8 +337,20 @@ function App() {
     setVisite([]);
     setItems([]);
     setTab('opere');
+    setMnemonici({});
     loadMuseList();
   }
+
+  /* ── Rendering ── */
+
+  if (!role) return (
+    <EntryScreen
+      onDocente={() => selectRole('docente')}
+      onStudente={() => selectRole('studente')}
+    />
+  );
+
+  if (role === 'studente') return <StudentScreen onBack={goToEntry} />;
 
   if (loading) return (
     <div className="nav-loading">
@@ -211,14 +370,15 @@ function App() {
   /* Schermata selezione museo */
   if (!museo) return (
     <div className="museo-picker-root">
-      <div className="nav-topbar">
+      <div className="nav-topbar nav-topbar--split">
+        <button onClick={goToEntry} className="back-to-marketplace">← Indietro</button>
         <a href="/Editor-Marketplace/Frontend/marketplace.html" className="back-to-marketplace">
           ← Marketplace
         </a>
       </div>
       <header className="picker-header">
         <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
-        <p className="picker-subtitle">Scegli un museo per iniziare la tua visita</p>
+        <p className="picker-subtitle">Scegli un museo per iniziare la visita</p>
       </header>
       <div className="picker-grid">
         {(musei || []).map(m => (
@@ -265,9 +425,13 @@ function App() {
         ))}
       </div>
       <main className="nav-main">
-        {tab === 'opere'  && <OpereGrid  opere={opere}   />}
-        {tab === 'visite' && <VisiteList visite={visite} />}
-        {tab === 'items'  && <ItemsGrid  items={items}   />}
+        {tab === 'opere'  && <OpereGrid opere={opere} />}
+        {tab === 'visite' && (
+          role === 'docente'
+            ? <DocVisiteList visite={visite} museo={museo} mnemonici={mnemonici} onMnemonico={handleMnemonico} />
+            : <VisiteList visite={visite} />
+        )}
+        {tab === 'items'  && <ItemsGrid items={items} />}
       </main>
     </div>
   );
