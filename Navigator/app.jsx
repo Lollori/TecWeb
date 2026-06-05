@@ -1,38 +1,6 @@
-/* ── Entry Screen ─────────────────────────────────── */
+/* ── JoinScreen ─────────────────────────────────────── */
 
-function EntryScreen({ onDocente, onStudente }) {
-  return (
-    <div className="entry-root">
-      <div className="nav-topbar">
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
-          ← Marketplace
-        </a>
-      </div>
-      <div className="entry-body">
-        <header className="picker-header">
-          <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
-          <p className="picker-subtitle">Come vuoi procedere?</p>
-        </header>
-        <div className="entry-cards">
-          <button className="entry-role-card" onClick={onDocente}>
-            <span className="entry-role-icon">🎓</span>
-            <h3 className="entry-role-label">Crea / Avvia una Visita Sincronizzata</h3>
-            <p className="entry-role-hint">Per il Docente</p>
-          </button>
-          <button className="entry-role-card entry-role-card--alt" onClick={onStudente}>
-            <span className="entry-role-icon">🎒</span>
-            <h3 className="entry-role-label">Partecipa a una Visita</h3>
-            <p className="entry-role-hint">Per lo Studente</p>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/* ── Student Screen ─────────────────────────────────── */
-
-function StudentScreen({ onBack, onJoined }) {
+function JoinScreen({ onBack, onJoined }) {
   const [code,      setCode]      = React.useState('');
   const [joining,   setJoining]   = React.useState(false);
   const [joinError, setJoinError] = React.useState(null);
@@ -59,13 +27,14 @@ function StudentScreen({ onBack, onJoined }) {
 
   return (
     <div className="student-root">
-      <div className="nav-topbar">
+      <div className="nav-topbar nav-topbar--split">
         <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
+        <a href="/" className="back-to-marketplace">⌂ Menu</a>
       </div>
       <div className="student-body">
         <header className="picker-header">
           <h1 className="picker-title" style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)' }}>
-            Partecipa a una Visita
+            Unisciti a una Visita
           </h1>
           <p className="picker-subtitle">Inserisci il codice stanza fornito dal docente</p>
         </header>
@@ -89,7 +58,7 @@ function StudentScreen({ onBack, onJoined }) {
   );
 }
 
-/* ── Lobby Docente ─────────────────────────────────── */
+/* ── LobbyDocente ─────────────────────────────────────── */
 
 function LobbyDocente({ codice, visitaNome, onClose }) {
   const [studenti, setStudenti] = React.useState([]);
@@ -144,18 +113,18 @@ function LobbyDocente({ codice, visitaNome, onClose }) {
           <p className="lobby-label">Lobby di Attesa · Docente</p>
           <h1 className="lobby-title">{visitaNome}</h1>
           <div className="lobby-code-box">
-            <span className="lobby-code-label">Codice da condividere con gli studenti:</span>
+            <span className="lobby-code-label">Codice da condividere con i partecipanti:</span>
             <span className="lobby-code">{codice}</span>
           </div>
         </header>
 
         <section className="lobby-panel">
           <h3 className="lobby-panel-title">
-            Studenti connessi
+            Partecipanti connessi
             <span className="lobby-count-badge">{studenti.length}</span>
           </h3>
           {studenti.length === 0
-            ? <p className="lobby-empty">In attesa che gli studenti si connettano…</p>
+            ? <p className="lobby-empty">In attesa che i partecipanti si connettano…</p>
             : (
               <ul className="lobby-students-list">
                 {studenti.map((s, i) => (
@@ -178,7 +147,7 @@ function LobbyDocente({ codice, visitaNome, onClose }) {
             ? 'Avvio in corso…'
             : studenti.length === 0
               ? 'Inizia Visita (nessuno connesso)'
-              : `Inizia Visita (${studenti.length} stud${studenti.length === 1 ? 'ente' : 'enti'})`
+              : `Inizia Visita con ${studenti.length} partecipant${studenti.length === 1 ? 'e' : 'i'}`
           }
         </button>
       </div>
@@ -186,7 +155,7 @@ function LobbyDocente({ codice, visitaNome, onClose }) {
   );
 }
 
-/* ── Lobby Studente ─────────────────────────────────── */
+/* ── LobbyStudente ─────────────────────────────────────── */
 
 function LobbyStudente({ codice, nomeAssegnato, onBack }) {
   const [studenti, setStudenti] = React.useState([]);
@@ -256,262 +225,134 @@ function LobbyStudente({ codice, nomeAssegnato, onBack }) {
   );
 }
 
-/* ── Componenti ─────────────────────────────────────── */
+/* ── VisiteScreen ─────────────────────────────────────── */
 
-function MuseoHeader({ museo, opereCount, visiteCount, itemsCount }) {
+function VisiteScreen({ museo, visite, onBack, onAvvia }) {
+  const [selectedId, setSelectedId] = React.useState(null);
+
   return (
-    <header className="museo-header">
-      {museo.immagineCopertina && (
-        <div className="museo-cover">
-          <img src={museo.immagineCopertina} alt={museo.nome} />
-          <div className="museo-cover-overlay" />
-        </div>
-      )}
-      <div className="museo-info">
-        <div className="museo-meta-top">
-          <span className="museo-isil">{museo.codiceIsil}</span>
-          <span className="museo-city">{museo.citta}</span>
-        </div>
-        <h1 className="museo-title">{museo.nome}</h1>
-        {museo.descrizioneBreve && <p className="museo-desc">{museo.descrizioneBreve}</p>}
-        {museo.indirizzo        && <p className="museo-addr">📍 {museo.indirizzo}</p>}
-        <div className="museo-stats">
-          <div className="stat-pill">{opereCount} opere</div>
-          <div className="stat-pill">{visiteCount} visite</div>
-          <div className="stat-pill">{itemsCount} items</div>
+    <div className="visite-screen-root">
+      <div className="museo-back-bar">
+        <a href="/" className="back-to-marketplace">⌂ Menu</a>
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
+        <button onClick={onBack} className="back-btn">← Tutti i musei</button>
+      </div>
+
+      <div className="museo-mini-header">
+        {museo.immagineCopertina && (
+          <div className="museo-mini-cover">
+            <img src={museo.immagineCopertina} alt={museo.nome} />
+          </div>
+        )}
+        <div className="museo-mini-info">
+          <h1 className="museo-mini-title">{museo.nome}</h1>
+          <p className="museo-mini-sub">{museo.citta} · {museo.codiceIsil}</p>
         </div>
       </div>
-    </header>
-  );
-}
 
-function OpereGrid({ opere }) {
-  if (!opere.length) return <p className="nav-empty">Nessuna opera disponibile.</p>;
-  return (
-    <div className="items-grid">
-      {opere.map(op => (
-        <div key={op._id} className="nav-card">
-          {op.immagine && <img src={op.immagine} alt={op.operaId} className="nav-card-img" />}
-          <div className="nav-card-body">
-            <h3 className="nav-card-title">{op.operaId || '—'}</h3>
-            {op.autore    && <p className="nav-card-meta">✍️ {op.autore}</p>}
-            {op.tipologia && <p className="nav-card-meta">🎨 {op.tipologia}</p>}
-            {op.anno      && <p className="nav-card-meta">📅 {op.anno}</p>}
-            {op.licenza   && <p className="nav-card-meta">⚖️ {op.licenza}</p>}
-            {op.descrizione && <p className="nav-card-desc">{op.descrizione}</p>}
-          </div>
-        </div>
-      ))}
+      <main className="nav-main">
+        <p className="visite-section-title">Le mie visite</p>
+        {visite.length === 0
+          ? <p className="nav-empty">Nessuna visita trovata per questo museo.<br/>Crea o acquista visite dalla dashboard.</p>
+          : (
+            <div className="visite-list">
+              {visite.map(v => (
+                <div
+                  key={v._id}
+                  className={`visita-card${selectedId === v._id ? ' visita-card--selected' : ''}`}
+                  onClick={() => setSelectedId(prev => prev === v._id ? null : v._id)}
+                >
+                  <div className="visita-card-head">
+                    <div>
+                      <h3 className="visita-title">{v.nomeVisita}</h3>
+                      {v.nomeMnemonico && <span className="visita-badge">{v.nomeMnemonico}</span>}
+                    </div>
+                    <div className="visita-meta-right">
+                      {v.opereCount > 0 && <span className="stat-pill">{v.opereCount} opere</span>}
+                      {v.prezzo != null && (
+                        <span className="price-pill">{v.prezzo > 0 ? `€${v.prezzo}` : 'Gratuito'}</span>
+                      )}
+                    </div>
+                  </div>
+                  {v.logistica && <p className="visita-logistica">{v.logistica}</p>}
+                  {selectedId === v._id && (
+                    <div className="visita-avvia-row">
+                      <button
+                        className="avvia-btn"
+                        onClick={e => { e.stopPropagation(); onAvvia(v); }}
+                      >
+                        Avvia visita →
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )
+        }
+      </main>
     </div>
   );
 }
 
-function VisiteList({ visite }) {
-  if (!visite.length) return <p className="nav-empty">Nessuna visita disponibile.</p>;
-  return (
-    <div className="visite-list">
-      {visite.map(v => (
-        <div key={v._id} className="visita-card">
-          <div className="visita-card-head">
-            <div>
-              <h3 className="visita-title">{v.nomeVisita}</h3>
-              {v.nomeMnemonico && <span className="visita-badge">{v.nomeMnemonico}</span>}
-            </div>
-            <div className="visita-meta-right">
-              {v.opereCount > 0 && <span className="stat-pill">{v.opereCount} opere</span>}
-              {v.prezzo != null && (
-                <span className="price-pill">{v.prezzo > 0 ? `€${v.prezzo}` : 'Gratuito'}</span>
-              )}
-            </div>
-          </div>
-          {v.logistica    && <p className="visita-logistica">{v.logistica}</p>}
-          {v.quizDomanda  && (
-            <div className="visita-quiz">
-              <span className="quiz-label">💡 Quiz:</span>
-              <span className="quiz-text">{v.quizDomanda}</span>
-            </div>
-          )}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function DocVisiteList({ visite, museo, mnemonici, onMnemonico, onAvvia }) {
-  if (!visite.length) return <p className="nav-empty">Nessuna visita disponibile.</p>;
-  return (
-    <div className="visite-list">
-      {visite.map(v => (
-        <div key={v._id} className="visita-card visita-card--docente">
-          <div className="visita-docente-top">
-            <div className="visita-docente-cover">
-              {museo.immagineCopertina
-                ? <img src={museo.immagineCopertina} alt={v.nomeVisita} />
-                : <div className="visita-cover-placeholder">{(v.nomeVisita || '?')[0]}</div>
-              }
-            </div>
-            <div className="visita-docente-info">
-              <h3 className="visita-title">{v.nomeVisita}</h3>
-              <div className="visita-docente-pills">
-                {v.opereCount > 0 && <span className="stat-pill">{v.opereCount} opere</span>}
-                {v.prezzo != null && (
-                  <span className="price-pill">{v.prezzo > 0 ? `€${v.prezzo}` : 'Gratuito'}</span>
-                )}
-              </div>
-              {v.logistica && <p className="visita-logistica">{v.logistica}</p>}
-            </div>
-          </div>
-          <div className="visita-docente-launch">
-            <input
-              type="text"
-              className="mnemonic-input"
-              placeholder='Nome mnemonico (es. "Fenice rossa")'
-              value={mnemonici[v._id] || ''}
-              onChange={e => onMnemonico(v._id, e.target.value)}
-            />
-            <button
-              className="avvia-btn"
-              disabled={!mnemonici[v._id]?.trim()}
-              onClick={() => onAvvia(v, mnemonici[v._id].trim())}
-            >
-              Avvia visita →
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-function ItemsGrid({ items }) {
-  if (!items.length) return <p className="nav-empty">Nessun item disponibile.</p>;
-  return (
-    <div className="items-grid">
-      {items.map(it => (
-        <div key={it._id} className="nav-card">
-          {it.image && <img src={it.image} alt={it.objectId} className="nav-card-img" />}
-          <div className="nav-card-body">
-            <h3 className="nav-card-title">{it.objectId || it._id}</h3>
-            {it.metadata && Object.entries(it.metadata)
-              .filter(([k]) => k !== 'prezzo')
-              .map(([k, v]) => (
-                <p key={k} className="nav-card-meta"><strong>{k}:</strong> {String(v)}</p>
-              ))
-            }
-            {it.metadata?.prezzo != null && (
-              <span className="price-pill" style={{ marginTop: '8px', display: 'inline-block' }}>
-                {it.metadata.prezzo > 0 ? `€${it.metadata.prezzo}` : 'Gratuito'}
-              </span>
-            )}
-            {Array.isArray(it.contents) && it.contents.map((c, i) => (
-              <div key={i} className="content-block">
-                {c.tipo === 'testo'    && <p>{c.valore}</p>}
-                {c.tipo === 'immagine' && <img src={c.valore} alt="" />}
-                {c.tipo === 'audio'    && <audio controls src={c.valore} />}
-                {c.tipo === 'video'    && <video controls src={c.valore} style={{ width: '100%' }} />}
-                {c.tipo === 'link'     && <a href={c.valore} target="_blank" rel="noreferrer">{c.valore}</a>}
-              </div>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
-/* ── App principale ─────────────────────────────────── */
+/* ── App principale ─────────────────────────────────────── */
 
 function App() {
-  const [role,      setRole]      = React.useState(null); // null | 'docente' | 'studente'
-  const [lobby,     setLobby]     = React.useState(null); // { codice, visitaNome } | { codice, myName }
-  const [musei,     setMusei]     = React.useState(null);
-  const [museo,     setMuseo]     = React.useState(null);
-  const [opere,     setOpere]     = React.useState([]);
-  const [visite,    setVisite]    = React.useState([]);
-  const [items,     setItems]     = React.useState([]);
-  const [loading,   setLoading]   = React.useState(false);
-  const [error,     setError]     = React.useState(null);
-  const [tab,       setTab]       = React.useState('opere');
-  const [mnemonici, setMnemonici] = React.useState({});
+  const [screen,  setScreen]  = React.useState('loading');
+  const [musei,   setMusei]   = React.useState([]);
+  const [museo,   setMuseo]   = React.useState(null);
+  const [visite,  setVisite]  = React.useState([]);
+  const [lobby,   setLobby]   = React.useState(null);
+  const [error,   setError]   = React.useState(null);
 
+  const userId     = localStorage.getItem('userId') || '';
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
 
   React.useEffect(() => {
     if (codiceIsil) {
-      setRole('docente');
-      loadMuseo(codiceIsil);
+      selectMuseo(codiceIsil);
+    } else {
+      loadMusei();
     }
   }, []);
 
-  function handleMnemonico(visitaId, value) {
-    setMnemonici(prev => ({ ...prev, [visitaId]: value }));
-  }
-
-  function selectRole(r) {
-    setRole(r);
-    if (r === 'docente') loadMuseList();
-  }
-
-  function goToEntry() {
-    const url = new URL(window.location.href);
-    url.searchParams.delete('museo');
-    window.history.pushState({}, '', url);
-    setRole(null);
-    setLobby(null);
-    setMuseo(null);
-    setMusei(null);
-    setOpere([]);
-    setVisite([]);
-    setItems([]);
-    setTab('opere');
-    setMnemonici({});
-    setError(null);
-  }
-
-  async function loadMuseList() {
-    setLoading(true);
+  async function loadMusei() {
+    setScreen('loading');
     setError(null);
     try {
       const res  = await fetch('/api/musei');
       const data = await res.json();
       setMusei(data.data || []);
+      setScreen('musei');
     } catch (_) {
       setError('Impossibile caricare la lista dei musei.');
-    } finally {
-      setLoading(false);
+      setScreen('error');
     }
   }
 
-  async function loadMuseo(isil) {
-    setLoading(true);
+  async function selectMuseo(isil) {
+    setScreen('loading');
     setError(null);
-    try {
-      const museoRes  = await fetch(`/api/musei/${isil}`);
-      const museoData = await museoRes.json();
-      if (!museoData.data) throw new Error('Museo non trovato.');
-      const m = museoData.data;
-      setMuseo(m);
-
-      const [opereRes, visiteRes, itemsRes] = await Promise.all([
-        fetch(`/api/opere?codiceIsil=${isil}`),
-        fetch(`/api/visite?codiceIsil=${isil}`),
-        fetch(`/api/items?museumId=${m._id}`),
-      ]);
-      setOpere( (await opereRes.json()).data  || []);
-      setVisite((await visiteRes.json()).data || []);
-      setItems( (await itemsRes.json()).data  || []);
-    } catch (e) {
-      setError(e.message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function selectMuseo(isil) {
     const url = new URL(window.location.href);
     url.searchParams.set('museo', isil);
     window.history.pushState({}, '', url);
-    loadMuseo(isil);
+    try {
+      const params = new URLSearchParams({ codiceIsil: isil });
+      if (userId) params.set('autoreId', userId);
+      const [museoRes, visiteRes] = await Promise.all([
+        fetch(`/api/musei/${isil}`),
+        fetch(`/api/visite?${params}`),
+      ]);
+      const museoData  = await museoRes.json();
+      const visiteData = await visiteRes.json();
+      if (!museoData.data) throw new Error('Museo non trovato.');
+      setMuseo(museoData.data);
+      setVisite(visiteData.data || []);
+      setScreen('visite');
+    } catch (e) {
+      setError(e.message);
+      setScreen('error');
+    }
   }
 
   function goBack() {
@@ -519,77 +360,64 @@ function App() {
     url.searchParams.delete('museo');
     window.history.pushState({}, '', url);
     setMuseo(null);
-    setOpere([]);
     setVisite([]);
-    setItems([]);
-    setTab('opere');
-    setMnemonici({});
-    loadMuseList();
+    setError(null);
+    if (musei.length) {
+      setScreen('musei');
+    } else {
+      loadMusei();
+    }
   }
 
-  async function handleAvviaVisita(visita, codice) {
-    try {
-      const res  = await fetch('/api/sessioni', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ codice, visitaId: visita._id, visitaNome: visita.nomeVisita, museoIsil: museo.codiceIsil }),
-      });
-      const text = await res.text();
-      let data;
-      try { data = JSON.parse(text); } catch (_) {
-        alert(`Errore server (${res.status}): il server potrebbe non essere aggiornato. Riavvialo e riprova.`);
+  function generateCode(visita) {
+    if (visita.nomeMnemonico?.trim()) return visita.nomeMnemonico.trim();
+    const adj  = ['rosso', 'verde', 'dorato', 'argento', 'viola', 'bianco', 'nero'];
+    const noun = ['falco', 'leone', 'aquila', 'fenice', 'drago', 'tigre', 'orso'];
+    return `${adj[Math.floor(Math.random() * adj.length)]} ${noun[Math.floor(Math.random() * noun.length)]}`;
+  }
+
+  async function handleAvvia(visita) {
+    let codice = generateCode(visita);
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        const res  = await fetch('/api/sessioni', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({
+            codice,
+            visitaId:   visita._id,
+            visitaNome: visita.nomeVisita,
+            museoIsil:  museo.codiceIsil,
+          }),
+        });
+        const data = await res.json();
+        if (res.ok && !data.error) {
+          setLobby({ codice, visitaNome: visita.nomeVisita });
+          setScreen('lobby-docente');
+          return;
+        }
+        if (attempt < 2) {
+          codice = generateCode(visita) + ' ' + (Math.floor(Math.random() * 90) + 10);
+        } else {
+          alert(data.error || `Errore ${res.status}`);
+        }
+      } catch (e) {
+        alert(`Impossibile raggiungere il server: ${e.message}`);
         return;
       }
-      if (!res.ok || data.error) {
-        alert(data.error || `Errore ${res.status}`);
-        return;
-      }
-      setLobby({ codice, visitaNome: visita.nomeVisita });
-    } catch (e) {
-      alert(`Impossibile raggiungere il server: ${e.message}`);
     }
   }
 
   /* ── Rendering ── */
 
-  if (!role) return (
-    <EntryScreen
-      onDocente={() => selectRole('docente')}
-      onStudente={() => selectRole('studente')}
-    />
-  );
-
-  if (role === 'studente' && !lobby) return (
-    <StudentScreen
-      onBack={goToEntry}
-      onJoined={(codice, nome) => setLobby({ codice, myName: nome })}
-    />
-  );
-
-  if (role === 'studente' && lobby) return (
-    <LobbyStudente
-      codice={lobby.codice}
-      nomeAssegnato={lobby.myName}
-      onBack={() => setLobby(null)}
-    />
-  );
-
-  if (role === 'docente' && lobby) return (
-    <LobbyDocente
-      codice={lobby.codice}
-      visitaNome={lobby.visitaNome}
-      onClose={() => setLobby(null)}
-    />
-  );
-
-  if (loading) return (
+  if (screen === 'loading') return (
     <div className="nav-loading">
       <div className="nav-spinner" />
       <p>Caricamento…</p>
     </div>
   );
 
-  if (error) return (
+  if (screen === 'error') return (
     <div className="nav-error">
       <span className="nav-error-icon">⚠️</span>
       <p>{error}</p>
@@ -597,21 +425,56 @@ function App() {
     </div>
   );
 
-  /* Schermata selezione museo */
-  if (!museo) return (
+  if (screen === 'join') return (
+    <JoinScreen
+      onBack={() => setScreen('musei')}
+      onJoined={(codice, nome) => { setLobby({ codice, myName: nome }); setScreen('lobby-studente'); }}
+    />
+  );
+
+  if (screen === 'lobby-studente') return (
+    <LobbyStudente
+      codice={lobby.codice}
+      nomeAssegnato={lobby.myName}
+      onBack={() => { setLobby(null); setScreen('musei'); }}
+    />
+  );
+
+  if (screen === 'lobby-docente') return (
+    <LobbyDocente
+      codice={lobby.codice}
+      visitaNome={lobby.visitaNome}
+      onClose={() => { setLobby(null); setScreen('visite'); }}
+    />
+  );
+
+  if (screen === 'visite') return (
+    <VisiteScreen
+      museo={museo}
+      visite={visite}
+      onBack={goBack}
+      onAvvia={handleAvvia}
+    />
+  );
+
+  /* screen === 'musei' */
+  return (
     <div className="museo-picker-root">
       <div className="nav-topbar nav-topbar--split">
-        <button onClick={goToEntry} className="back-to-marketplace">← Indietro</button>
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
-          ← Marketplace
-        </a>
+        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
+        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          <button className="join-code-btn" onClick={() => setScreen('join')}>
+            🔗 Unisciti tramite codice
+          </button>
+          <a href="/" className="back-to-marketplace">⌂ Menu</a>
+        </div>
       </div>
       <header className="picker-header">
         <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
-        <p className="picker-subtitle">Scegli un museo per iniziare la visita</p>
+        <p className="picker-subtitle">Scegli un museo per vedere le tue visite</p>
       </header>
       <div className="picker-grid">
-        {(musei || []).map(m => (
+        {musei.map(m => (
           <button key={m.codiceIsil} className="picker-card" onClick={() => selectMuseo(m.codiceIsil)}>
             {m.immagineCopertina
               ? <img src={m.immagineCopertina} alt={m.nome} className="picker-card-img" />
@@ -624,51 +487,10 @@ function App() {
             </div>
           </button>
         ))}
-        {musei?.length === 0 && (
+        {!musei.length && (
           <p className="nav-empty" style={{ gridColumn: '1/-1' }}>Nessun museo disponibile.</p>
         )}
       </div>
-    </div>
-  );
-
-  /* Schermata dettaglio museo */
-  const tabs = [
-    { key: 'opere',  label: `Opere (${opere.length})`  },
-    { key: 'visite', label: `Visite (${visite.length})` },
-    { key: 'items',  label: `Items (${items.length})`   },
-  ];
-
-  return (
-    <div className="navigator-root">
-      <div className="museo-back-bar">
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">
-          ← Marketplace
-        </a>
-        <button onClick={goBack} className="back-btn">← Tutti i musei</button>
-      </div>
-      <MuseoHeader museo={museo} opereCount={opere.length} visiteCount={visite.length} itemsCount={items.length} />
-      <div className="nav-tabs-bar">
-        {tabs.map(t => (
-          <button key={t.key} className={`nav-tab-btn${tab === t.key ? ' active' : ''}`} onClick={() => setTab(t.key)}>
-            {t.label}
-          </button>
-        ))}
-      </div>
-      <main className="nav-main">
-        {tab === 'opere'  && <OpereGrid opere={opere} />}
-        {tab === 'visite' && (
-          role === 'docente'
-            ? <DocVisiteList
-                visite={visite}
-                museo={museo}
-                mnemonici={mnemonici}
-                onMnemonico={handleMnemonico}
-                onAvvia={handleAvviaVisita}
-              />
-            : <VisiteList visite={visite} />
-        )}
-        {tab === 'items'  && <ItemsGrid items={items} />}
-      </main>
     </div>
   );
 }

@@ -52,6 +52,7 @@ exports.seed = async (credentials) => {
 exports.getAll = async (credentials, query) => {
     let filter = {};
     if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
+    if (query.autoreId)   filter.autoreId   = query.autoreId;
 
     try {
         await connect(credentials);
