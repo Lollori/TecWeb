@@ -29,7 +29,7 @@ function joinSession(codice) {
   const nome = `Studente ${session.studentCount}`;
   session.studenti.push({ nome });
   broadcast(codice, { tipo: 'studente-connesso', studenti: session.studenti });
-  return { ok: true, nome };
+  return { ok: true, nome, museoIsil: session.museoIsil };
 }
 
 function startSession(codice) {
@@ -46,7 +46,7 @@ function addClient(codice, res) {
   session.clients.add(res);
   res.on('close', () => session.clients.delete(res));
   // Send current state immediately on connect
-  res.write(`data: ${JSON.stringify({ tipo: 'stato-iniziale', studenti: session.studenti, stato: session.stato })}\n\n`);
+  res.write(`data: ${JSON.stringify({ tipo: 'stato-iniziale', studenti: session.studenti, stato: session.stato, museoIsil: session.museoIsil })}\n\n`);
   return true;
 }
 

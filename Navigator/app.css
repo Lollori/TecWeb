@@ -561,6 +561,147 @@ body { background: #f8fafc; color: var(--text); }
   border-top: 1px solid var(--border);
 }
 
+/* ── Visita Geo Screen ── */
+.visita-geo-root {
+  min-height: 100vh;
+  background: var(--dark);
+  color: #f1f5f9;
+  display: flex;
+  flex-direction: column;
+}
+
+.geo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+.geo-header-left { display: flex; flex-direction: column; gap: 2px; }
+.geo-eyebrow {
+  font-size: 0.72rem; font-weight: 700;
+  color: var(--magenta);
+  text-transform: uppercase; letter-spacing: 0.08em;
+}
+.geo-museo-nome {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.05rem, 3.5vw, 1.55rem);
+  color: #f1f5f9; margin: 0;
+}
+.geo-you-chip {
+  display: flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 0.82rem; font-weight: 600; color: #cbd5e1;
+  flex-shrink: 0;
+}
+.geo-dot-mini {
+  width: 8px; height: 8px;
+  background: #3b82f6; border-radius: 50%;
+  box-shadow: 0 0 0 3px rgba(59,130,246,0.35);
+  flex-shrink: 0;
+  animation: geo-pulse 1.8s ease-in-out infinite;
+}
+
+.geo-status-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 10px 24px;
+  background: rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  font-size: 0.88rem; color: var(--muted);
+  flex-shrink: 0; min-height: 44px;
+}
+.geo-status-bar--inside {
+  background: rgba(59,130,246,0.09);
+  border-bottom-color: rgba(59,130,246,0.25);
+  color: #93c5fd;
+}
+.geo-status-error { color: #f87171; }
+.geo-accuracy-pill {
+  margin-left: auto;
+  font-size: 0.72rem; font-weight: 600; color: var(--muted);
+  background: rgba(255,255,255,0.06);
+  padding: 2px 10px; border-radius: 20px;
+}
+.geo-spin-sm {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.18);
+  border-top-color: var(--magenta);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+.geo-map-section {
+  flex: 1; display: flex; flex-direction: column;
+  padding-bottom: 12px;
+  overflow-y: auto;
+}
+.geo-piano-tabs {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 14px 16px 0;
+}
+.geo-floorplan-wrap {
+  position: relative;
+  margin: 14px 14px 0;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.45);
+  flex-shrink: 0;
+}
+.geo-floorplan-img {
+  width: 100%; height: auto;
+  display: block;
+}
+.geo-user-dot {
+  position: absolute;
+  width: 20px; height: 20px;
+  background: #3b82f6;
+  border: 3px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  box-shadow: 0 0 0 5px rgba(59,130,246,0.35);
+  animation: geo-pulse 1.8s ease-in-out infinite;
+  z-index: 10;
+  pointer-events: none;
+}
+@keyframes geo-pulse {
+  0%, 100% { box-shadow: 0 0 0 5px rgba(59,130,246,0.35); }
+  50%       { box-shadow: 0 0 0 14px rgba(59,130,246,0.0); }
+}
+.geo-coords-hint {
+  margin: 8px 14px 0;
+  font-size: 0.68rem;
+  color: rgba(255,255,255,0.18);
+  text-align: center;
+  font-family: monospace;
+}
+
+.geo-map-empty {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 16px; color: var(--muted); padding: 40px;
+  text-align: center;
+}
+.geo-exit-btn {
+  display: block;
+  margin: 16px auto 28px;
+  background: none;
+  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--muted);
+  border-radius: 10px;
+  padding: 8px 22px;
+  font-size: 0.82rem; font-weight: 600;
+  font-family: 'Inter', sans-serif;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+  flex-shrink: 0;
+}
+.geo-exit-btn:hover { border-color: rgba(255,255,255,0.3); color: #e2e8f0; }
+
 /* ── Item contents ── */
 .item-contents { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }
 .content-block { font-size: 0.85rem; color: var(--text); }

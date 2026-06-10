@@ -50,12 +50,26 @@ exports.seed = async (credentials) => {
 };
 
 exports.getAll = async (credentials, query) => {
-    let filter = {};
-    if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
-    if (query.autoreId)   filter.autoreId   = query.autoreId;
-
     try {
         await connect(credentials);
+        const filter = {};
+        if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
+
+        const validIds = (query.ids || '')
+            .split(',')
+            .filter(id => id && mongoose.isValidObjectId(id));
+
+        if (query.autoreId && validIds.length) {
+            filter.$or = [
+                { autoreId: query.autoreId },
+                { _id: { $in: validIds } },
+            ];
+        } else if (query.autoreId) {
+            filter.autoreId = query.autoreId;
+        } else if (validIds.length) {
+            filter._id = { $in: validIds };
+        }
+
         const visite = await Visita.find(filter, { __v: 0 });
         return { ok: true, data: visite };
     } catch (e) {
