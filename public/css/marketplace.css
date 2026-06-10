@@ -3,6 +3,83 @@
    PALETTE: MAGENTA + DARK NAVY + LIGHT BG
    ============================================ */
 
+/* ── Dashboard: Map Action Buttons ── */
+.museo-map-actions {
+    display: flex; gap: 10px; flex-wrap: wrap;
+    margin: 14px 0 6px;
+}
+.map-action-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent;
+    border: 1.5px solid #e2e8f0;
+    color: #64748b;
+    border-radius: 8px; padding: 7px 14px;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.map-action-btn:hover {
+    border-color: var(--magenta); color: var(--magenta);
+}
+[data-theme="dark"] .map-action-btn {
+    border-color: rgba(255,255,255,0.15); color: #94a3b8;
+}
+[data-theme="dark"] .map-action-btn:hover {
+    border-color: var(--magenta); color: var(--magenta);
+}
+
+/* ── Dashboard: Map Panel ── */
+.dash-map-panel { margin: 8px 0 16px; }
+.dash-map-section {
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px; overflow: hidden;
+}
+[data-theme="dark"] .dash-map-section {
+    background: #1e293b; border-color: rgba(255,255,255,0.08);
+}
+.dash-map-iframe {
+    width: 100%; height: 280px; border: none; display: block;
+}
+.dash-map-link {
+    display: inline-block; margin: 10px 16px;
+    font-size: 0.8rem; color: var(--magenta);
+    text-decoration: none; font-weight: 500;
+}
+.dash-map-link:hover { text-decoration: underline; }
+
+/* ── Dashboard: Internal Floor Plan ── */
+.dash-map-interna { padding: 16px 20px; }
+.piano-tabs {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+}
+.piano-tab-btn {
+    background: transparent;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 5px 12px;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    color: #64748b; transition: all 0.2s;
+}
+.piano-tab-btn:hover {
+    border-color: var(--magenta); color: var(--magenta);
+}
+.piano-tab-btn.active {
+    background: rgba(255,0,127,0.08);
+    border-color: var(--magenta); color: var(--magenta);
+}
+[data-theme="dark"] .piano-tab-btn {
+    border-color: rgba(255,255,255,0.12); color: #94a3b8;
+}
+[data-theme="dark"] .piano-tab-btn.active {
+    background: rgba(255,0,127,0.15);
+}
+.dash-floor-img {
+    width: 100%; height: auto; border-radius: 8px; display: block;
+    background: #fff;
+}
+.dash-floor-hidden { display: none; }
+
 :root {
     --dark-navy: #05070A;
     --navy-deep: #0B101A;

@@ -13,6 +13,9 @@ const museoSchema = new mongoose.Schema({
     immagineCopertina:{ type: String, required: false },
     descrizioneBreve: { type: String, required: false },
     curatoreId:       { type: String, required: false },
+    mappaEmbed:       { type: String, required: false },
+    mappaLink:        { type: String, required: false },
+    mappaInterna:     [{ piano: { type: String }, url: { type: String } }],
 });
 
 const Museo = mongoose.model("Museo", museoSchema);

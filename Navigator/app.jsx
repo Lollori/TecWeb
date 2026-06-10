@@ -228,7 +228,10 @@ function LobbyStudente({ codice, nomeAssegnato, onBack }) {
 /* ── VisiteScreen ─────────────────────────────────────── */
 
 function VisiteScreen({ museo, visite, onBack, onAvvia }) {
-  const [selectedId, setSelectedId] = React.useState(null);
+  const [selectedId,      setSelectedId]      = React.useState(null);
+  const [showMap,         setShowMap]         = React.useState(false);
+  const [showMapInterna,  setShowMapInterna]  = React.useState(false);
+  const [pianoIdx,        setPianoIdx]        = React.useState(0);
 
   return (
     <div className="visite-screen-root">
@@ -248,7 +251,69 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
           <h1 className="museo-mini-title">{museo.nome}</h1>
           <p className="museo-mini-sub">{museo.citta} · {museo.codiceIsil}</p>
         </div>
+        {museo.mappaEmbed && (
+          <button
+            className={`show-map-btn${showMap ? ' show-map-btn--active' : ''}`}
+            onClick={() => setShowMap(v => !v)}
+          >
+            📍 {showMap ? 'Nascondi mappa' : 'Mappa'}
+          </button>
+        )}
+        {museo.mappaInterna?.length > 0 && (
+          <button
+            className={`show-map-btn${showMapInterna ? ' show-map-btn--active' : ''}`}
+            onClick={() => { setShowMapInterna(v => !v); setPianoIdx(0); }}
+          >
+            🗺️ {showMapInterna ? 'Nascondi planimetria' : 'Planimetria'}
+          </button>
+        )}
       </div>
+
+      {showMapInterna && museo.mappaInterna?.length > 0 && (
+        <div className="museo-map-section museo-map-interna-section">
+          {museo.mappaInterna.length > 1 && (
+            <div className="piano-tabs-nav">
+              {museo.mappaInterna.map((p, i) => (
+                <button
+                  key={i}
+                  className={`piano-tab-btn${pianoIdx === i ? ' active' : ''}`}
+                  onClick={() => setPianoIdx(i)}
+                >
+                  {p.piano}
+                </button>
+              ))}
+            </div>
+          )}
+          <img
+            className="museo-interna-img"
+            src={museo.mappaInterna[pianoIdx].url}
+            alt={museo.mappaInterna[pianoIdx].piano}
+            loading="lazy"
+          />
+        </div>
+      )}
+
+      {showMap && museo.mappaEmbed && (
+        <div className="museo-map-section">
+          <iframe
+            className="museo-map-iframe"
+            src={museo.mappaEmbed}
+            title={`Mappa ${museo.nome}`}
+            loading="lazy"
+            allowFullScreen
+          />
+          {museo.mappaLink && (
+            <a
+              href={museo.mappaLink}
+              target="_blank"
+              rel="noreferrer"
+              className="museo-map-link"
+            >
+              Apri in OpenStreetMap ↗
+            </a>
+          )}
+        </div>
+      )}
 
       <main className="nav-main">
         <p className="visite-section-title">Le mie visite</p>
@@ -290,6 +355,7 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
             </div>
           )
         }
+
       </main>
     </div>
   );

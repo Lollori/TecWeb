@@ -51,6 +51,7 @@ const operaSchema = new mongoose.Schema({
     profondita:  { type: Number, default: 0 },
     tecnica:    { type: String, default: '' },
     materiali:  { type: String, default: '' },
+    sala:       { type: String, default: '' },
 });
 
 const Opera = mongoose.model("Opera", operaSchema);

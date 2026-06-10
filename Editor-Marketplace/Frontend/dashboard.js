@@ -13,6 +13,8 @@ let curMusei = [];
 // index-based lookup avoids JSON serialisation in onclick attrs
 let currentMuseoOpere = [];
 
+let currentViewMuseo = null;
+
 let allMuseiAutore       = [];
 let allVisiteAutore      = [];
 let allOpereAutore       = [];
@@ -241,6 +243,83 @@ function switchSection(id) {
 }
 
 /* ============================================================
+   MAPPE MUSEO — toggle luogo / planimetria interna
+   ============================================================ */
+
+window.dashToggleMap = function (type) {
+    const museo = currentViewMuseo;
+    const panel = document.getElementById('dash-map-panel');
+    if (!museo || !panel) return;
+
+    if (panel.dataset.activeType === type && panel.style.display !== 'none') {
+        panel.innerHTML = '';
+        panel.style.display = 'none';
+        panel.dataset.activeType = '';
+        return;
+    }
+
+    if (type === 'location' && museo.mappaEmbed) {
+        panel.innerHTML = `
+            <div class="dash-map-section">
+                <iframe class="dash-map-iframe" src="${museo.mappaEmbed}"
+                        loading="lazy" allowfullscreen></iframe>
+                ${museo.mappaLink
+                    ? `<a href="${museo.mappaLink}" target="_blank" class="dash-map-link">
+                           Apri in OpenStreetMap ↗
+                       </a>`
+                    : ''}
+            </div>`;
+    } else if (type === 'interna' && museo.mappaInterna?.length) {
+        const piani = museo.mappaInterna;
+        panel.innerHTML = `
+            <div class="dash-map-section dash-map-interna">
+                ${piani.length > 1 ? `
+                    <div class="piano-tabs">
+                        ${piani.map((p, i) => `
+                            <button class="piano-tab-btn${i === 0 ? ' active' : ''}"
+                                    onclick="dashSelectPiano(${i})">
+                                ${p.piano}
+                            </button>`).join('')}
+                    </div>` : ''}
+                ${piani.map((p, i) => `
+                    <img id="dash-floor-img-${i}"
+                         class="dash-floor-img${i > 0 ? ' dash-floor-hidden' : ''}"
+                         src="${p.url}" alt="${p.piano}" loading="lazy">`).join('')}
+            </div>`;
+    }
+
+    panel.dataset.activeType = type;
+    panel.style.display = 'block';
+};
+
+window.dashSelectPiano = function (idx) {
+    document.querySelectorAll('.dash-floor-img').forEach((img, i) => {
+        img.classList.toggle('dash-floor-hidden', i !== idx);
+    });
+    document.querySelectorAll('.piano-tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', i === idx);
+    });
+};
+
+function mapActionsHtml(museo) {
+    if (!museo.mappaEmbed && !museo.mappaInterna?.length) return '';
+    return `
+        <div class="museo-map-actions">
+            ${museo.mappaEmbed
+                ? `<button class="map-action-btn" onclick="dashToggleMap('location')">
+                       <i class="fa-solid fa-location-dot"></i> Mappa luogo
+                   </button>`
+                : ''}
+            ${museo.mappaInterna?.length
+                ? `<button class="map-action-btn" onclick="dashToggleMap('interna')">
+                       <i class="fa-solid fa-map"></i> Planimetria interna
+                   </button>`
+                : ''}
+        </div>
+        <div id="dash-map-panel" class="dash-map-panel" style="display:none;"></div>`;
+}
+
+/* ============================================================
    CARICAMENTO MUSEI DEL CURATORE
    ============================================================ */
 
@@ -308,6 +387,7 @@ function renderMusei(lista) {
 window.showMuseoDetail = async function (codiceIsil) {
     const museo = curMusei.find(m => m.codiceIsil === codiceIsil);
     if (!museo) return;
+    currentViewMuseo = museo;
 
     const view = document.getElementById('museiView');
     view.className = '';
@@ -317,6 +397,7 @@ window.showMuseoDetail = async function (codiceIsil) {
         </button>
         <h2 class="museo-detail-title">${museo.nome}</h2>
         <p class="museo-detail-sub">${museo.citta} · ${museo.codiceIsil}</p>
+        ${mapActionsHtml(museo)}
         <div class="detail-tabs">
             <button class="tab-btn active"
                     onclick="showTab('opere','${codiceIsil}',this)">Opere</button>
@@ -360,12 +441,10 @@ window.showTab = async function (type, codiceIsil, btn) {
                         ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
                         : ''}
                     <h3>${op.operaId}</h3>
-                    ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>` : ''}
                     ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
                     ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
-                    <p class="opera-meta" style="margin-top:auto;color:#94a3b8;font-size:0.8rem;">
-                        <i class="fa-solid fa-layer-group"></i> Vedi items →
-                    </p>
+                    <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${currentViewMuseo?.nome || codiceIsil}</p>
+                    ${op.sala      ? `<p class="opera-meta"><i class="fa-solid fa-location-dot"></i> ${op.sala}</p>` : ''}
                 </div>
             `).join('');
 
@@ -421,7 +500,13 @@ window.showOperaItems = async function (idx, codiceIsil) {
             ${opera.tipo      ? opera.tipo      + ' · ' : ''}
             ${opera.datazione ? opera.datazione         : ''}
         </p>
-        <h3 class="scroll-section-label" style="margin-top:24px;">
+        ${opera.sala ? `<p class="opera-meta" style="margin-top:6px;"><i class="fa-solid fa-location-dot"></i> ${opera.sala}</p>` : ''}
+        ${opera.descrizione ? `
+        <div class="glass-card p-4" style="margin-top:20px;">
+            <p class="custom-label">Descrizione</p>
+            <p style="line-height:1.7;">${opera.descrizione}</p>
+        </div>` : ''}
+        <h3 class="scroll-section-label" style="margin-top:28px;">
             Items in vendita associati
         </h3>
         <div id="operaItemsGrid" style="margin-top:12px;"></div>
@@ -737,6 +822,7 @@ async function initAutoreMusei() {
 window.showAutoreMuseoDetail = async function (codiceIsil) {
     const museo   = allMuseiAutore.find(m => m.codiceIsil === codiceIsil);
     if (!museo) return;
+    currentViewMuseo = museo;
 
     const section = document.getElementById('section-autore-musei');
     section.innerHTML = `
@@ -745,6 +831,7 @@ window.showAutoreMuseoDetail = async function (codiceIsil) {
         </button>
         <h2 class="museo-detail-title">${museo.nome}</h2>
         <p class="museo-detail-sub">${museo.citta} · ${museo.codiceIsil}</p>
+        ${mapActionsHtml(museo)}
         <div class="detail-tabs">
             <button class="tab-btn active"
                     onclick="showAutoreTab('opere','${codiceIsil}',this)">Opere</button>
@@ -786,12 +873,10 @@ window.showAutoreTab = async function (type, codiceIsil, btn) {
                         ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
                         : ''}
                     <h3>${op.operaId}</h3>
-                    ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>` : ''}
                     ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
                     ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
-                    <p class="opera-meta" style="margin-top:auto;color:#94a3b8;font-size:0.8rem;">
-                        <i class="fa-solid fa-layer-group"></i> Vedi items →
-                    </p>
+                    <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${currentViewMuseo?.nome || codiceIsil}</p>
+                    ${op.sala      ? `<p class="opera-meta"><i class="fa-solid fa-location-dot"></i> ${op.sala}</p>` : ''}
                 </div>
             `).join('');
         } else {
@@ -835,7 +920,13 @@ window.showAutoreOperaItemsInMusei = async function (idx, codiceIsil) {
             ${opera.tipo      ? opera.tipo      + ' · ' : ''}
             ${opera.datazione ? opera.datazione          : ''}
         </p>
-        <h3 class="scroll-section-label" style="margin-top:24px;">Items associati</h3>
+        ${opera.sala ? `<p class="opera-meta" style="margin-top:6px;"><i class="fa-solid fa-location-dot"></i> ${opera.sala}</p>` : ''}
+        ${opera.descrizione ? `
+        <div class="glass-card p-4" style="margin-top:20px;">
+            <p class="custom-label">Descrizione</p>
+            <p style="line-height:1.7;">${opera.descrizione}</p>
+        </div>` : ''}
+        <h3 class="scroll-section-label" style="margin-top:28px;">Items associati</h3>
         <div id="autoreOperaItemsGrid" class="items-grid"></div>
     `;
 
@@ -1260,6 +1351,7 @@ function renderVisMusei(lista) {
 window.showVisMuseoDetail = function (codiceIsil) {
     const museo = allVisitatoreCachedMusei.find(m => m.codiceIsil === codiceIsil);
     if (!museo) return;
+    currentViewMuseo = museo;
 
     const section = document.getElementById('section-visitatore-musei');
     section.innerHTML = `
@@ -1268,6 +1360,7 @@ window.showVisMuseoDetail = function (codiceIsil) {
         </button>
         <h2 class="museo-detail-title">${museo.nome}</h2>
         <p class="museo-detail-sub">${museo.citta}${museo.indirizzo ? ' · ' + museo.indirizzo : ''}</p>
+        ${mapActionsHtml(museo)}
         <div class="glass-card p-4" style="margin-top:24px;">
             ${museo.immagineCopertina
                 ? `<img src="${museo.immagineCopertina}" alt="${museo.nome}"
@@ -1376,19 +1469,18 @@ function renderVisOpere(lista) {
     }
     grid.className = 'items-grid';
     grid.innerHTML = lista.map(op => {
-        const idx = currentVisitatoreOpere.indexOf(op);
+        const idx       = currentVisitatoreOpere.indexOf(op);
+        const museoNome = (allVisitatoreCachedMusei || []).find(m => m.codiceIsil === op.codiceIsil)?.nome || op.codiceIsil;
         return `
         <div class="opera-read-card scroll-card-clickable" onclick="showVisOperaDetail(${idx})">
             ${op.immagine
                 ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
                 : ''}
             <h3>${op.operaId}</h3>
-            ${op.tipo      ? `<p class="opera-meta"><i class="fa-solid fa-tag"></i> ${op.tipo}</p>` : ''}
             ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
             ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
-            <p class="opera-meta" style="margin-top:auto;color:#94a3b8;font-size:0.8rem;">
-                <i class="fa-solid fa-info-circle"></i> Vedi dettaglio →
-            </p>
+            <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museoNome}</p>
+            ${op.sala      ? `<p class="opera-meta"><i class="fa-solid fa-location-dot"></i> ${op.sala}</p>` : ''}
         </div>`;
     }).join('');
 }
@@ -1421,6 +1513,11 @@ window.showVisOperaDetail = async function (idx) {
                        onerror="this.style.display='none'">`
                 : ''}
             <div class="row g-3">
+                ${opera.sala ? `
+                <div class="col-12">
+                    <p class="custom-label">Sala</p>
+                    <p><span class="tag-bubble"><i class="fa-solid fa-location-dot"></i> ${opera.sala}</span></p>
+                </div>` : ''}
                 ${opera.descrizione ? `
                 <div class="col-12">
                     <p class="custom-label">Descrizione</p>

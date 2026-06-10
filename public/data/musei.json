@@ -6,7 +6,14 @@
     "codiceIsil": "IT-TO0576",
     "immagineCopertina": "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
     "descrizioneBreve": "Il più antico museo del mondo dedicato interamente alla cultura egizia.",
-    "curatoreId": "a3f7k2m9qz"
+    "curatoreId": "a3f7k2m9qz",
+    "mappaEmbed": "https://www.openstreetmap.org/export/embed.html?bbox=7.681%2C45.066%2C7.692%2C45.070&layer=mapnik&marker=45.0680%2C7.6866",
+    "mappaLink": "https://www.openstreetmap.org/?mlat=45.0680&mlon=7.6866&zoom=17",
+    "mappaInterna": [
+      { "piano": "Piano -1", "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0f/Museo_Egizio_Map_Floor_-1.svg/960px-Museo_Egizio_Map_Floor_-1.svg.png" },
+      { "piano": "Piano 1",  "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/71/Museo_Egizio_Map_Floor_1.svg/1280px-Museo_Egizio_Map_Floor_1.svg.png" },
+      { "piano": "Piano 2",  "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/34/Museo_Egizio_Map_Floor_2.svg/960px-Museo_Egizio_Map_Floor_2.svg.png" }
+    ]
   },
   {
     "nome": "Galleria degli Uffizi",
@@ -15,6 +22,11 @@
     "codiceIsil": "IT-FI0082",
     "immagineCopertina": "https://upload.wikimedia.org/wikipedia/commons/5/56/Donald_Trump_official_portrait.jpg",
     "descrizioneBreve": "Uno dei più importanti musei italiani e tra i più conosciuti al mondo.",
-    "curatoreId": "b8h4p1r6xw"
+    "curatoreId": "b8h4p1r6xw",
+    "mappaEmbed": "https://www.openstreetmap.org/export/embed.html?bbox=11.250%2C43.766%2C11.261%2C43.770&layer=mapnik&marker=43.7677%2C11.2552",
+    "mappaLink": "https://www.openstreetmap.org/?mlat=43.7677&mlon=11.2552&zoom=17",
+    "mappaInterna": [
+      { "piano": "Planimetria", "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Plano_Uffizi.png/1280px-Plano_Uffizi.png" }
+    ]
   }
 ]

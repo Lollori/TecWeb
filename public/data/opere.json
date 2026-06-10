@@ -5,14 +5,18 @@
     "tipo": "Scultura",
     "autore": "Scultori del Nuovo Regno",
     "datazione": "XIII sec. a.C.",
+    "sala": "Sala Colonne (Piano 1)",
+    "descrizione": "Colossale figura in granito nero del faraone Ramesse II seduto in trono, con doppia corona e scettro. Rinvenuta a Karnak, è tra i capolavori dell'arte egizia del Nuovo Regno ed è diventata simbolo del Museo Egizio di Torino.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg/800px-Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg"
   },
   {
     "codiceIsil": "IT-TO0576",
-    "operaId": "Libro dei Morti di Hunefer",
+    "operaId": "Libro dei Morti di Kha",
     "tipo": "Manoscritto",
     "autore": "Anonimo",
-    "datazione": "ca. 1275 a.C.",
+    "datazione": "ca. 1400 a.C.",
+    "sala": "Sala dei Papiri (Piano 1)",
+    "descrizione": "Rotolo di papiro con formule magiche tratte dal Libro dei Morti, corredato da raffinate illustrazioni a colori che descrivono il viaggio dell'anima nell'aldilà egizio e il giudizio di Osiride.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Hunefer.jpg/800px-Hunefer.jpg"
   },
   {
@@ -21,6 +25,8 @@
     "tipo": "Reperto",
     "autore": "Anonimo",
     "datazione": "ca. 1400 a.C.",
+    "sala": "Sala di Kha e Merit (Piano 2)",
+    "descrizione": "Mummia integra dell'architetto reale Kha e di sua moglie Merit, scoperta da Ernesto Schiaparelli nel 1906 nella necropoli di Deir el-Medina. Costituisce uno dei corredi funerari più completi mai rinvenuti.",
     "immagine": ""
   },
   {
@@ -29,6 +35,8 @@
     "tipo": "Pittura",
     "autore": "Sandro Botticelli",
     "datazione": "1484–1486",
+    "sala": "Sala del Botticelli (Sala 10-14)",
+    "descrizione": "Dipinto a tempera su tela di lino raffigurante la dea Venere adulta che emerge dal mare su una grande conchiglia. Opera simbolo del Rinascimento italiano, celebra la bellezza ideale attraverso forme classiche e un'atmosfera di grazia senza tempo.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_046.jpg/800px-Sandro_Botticelli_046.jpg"
   },
   {
@@ -37,6 +45,8 @@
     "tipo": "Pittura",
     "autore": "Sandro Botticelli",
     "datazione": "1477–1478",
+    "sala": "Sala del Botticelli (Sala 10-14)",
+    "descrizione": "Tempera su tavola di pioppo che rappresenta un'allegoria della primavera: Venere al centro, affiancata dalle Tre Grazie danzanti, da Mercurio e da Flora. Una delle composizioni più enigmatiche e studiate dell'arte occidentale.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/800px-Botticelli-primavera.jpg"
   },
   {
@@ -45,6 +55,8 @@
     "tipo": "Pittura",
     "autore": "Leonardo da Vinci",
     "datazione": "1472–1475",
+    "sala": "Sala di Leonardo (Sala 15)",
+    "descrizione": "Olio e tempera su tavola che raffigura l'angelo Gabriele nell'atto di annunciare a Maria la nascita di Gesù, ambientato in un giardino fiorentino rinascimentale. Opera giovanile di Leonardo da Vinci che rivela già il suo straordinario talento per la resa della luce e degli spazi prospettici.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg/800px-Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg"
   }
 ]
