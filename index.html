@@ -18,7 +18,10 @@
             <a class="navbar-brand fw-900" href="#">ArtAround<span class="text-magenta">.</span></a>
             <div class="ms-auto d-flex align-items-center gap-3">
                 <a href="/login/login.html" id="loginBtn" class="btn btn-magenta px-4 fw-bold">ACCEDI</a>
-                <div id="nav-profile-placeholder"></div>
+                <button id="homeThemeToggle" onclick="toggleHomeTheme()" class="nav-theme-icon" title="Cambia tema">
+                    <i id="homeThemeIcon" class="fa-solid fa-moon"></i>
+                </button>
+                <div id="nav-profile-placeholder" class="d-flex align-items-center gap-3"></div>
             </div>
         </div>
     </nav>
@@ -176,6 +179,28 @@
     </footer>
 
     <script>
+    // Inizializza tema prima del render
+    (function () {
+        const theme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.dataset.theme = theme;
+    })();
+
+    function updateHomeThemeBtn() {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        const icon  = document.getElementById('homeThemeIcon');
+        if (icon) icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+    }
+
+    function toggleHomeTheme() {
+        const isDark = document.documentElement.dataset.theme === 'dark';
+        document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
+        localStorage.setItem('theme', isDark ? 'light' : 'dark');
+        updateHomeThemeBtn();
+    }
+
+    // Aggiorna subito il bottone al caricamento
+    document.addEventListener('DOMContentLoaded', updateHomeThemeBtn);
+
     (function () {
         const userUsername = localStorage.getItem('userUsername');
         const userRole = localStorage.getItem('userRole') || '';
@@ -193,21 +218,16 @@
             const cfg = roleMap[userRole] || { letter: '?', color: '#888' };
             if (placeholder) {
                 placeholder.innerHTML = `
-                    <div class="nav-profile-container" id="navProfileContainer">
+                    <div class="d-flex align-items-center gap-2">
                         <div class="nav-avatar" style="background-color:${cfg.color}">${cfg.letter}</div>
-                        <div class="profile-dropdown">
-                            <span id="userEmailDisplay">${userUsername}</span>
-                            <a href="/Editor-Marketplace/Frontend/visite.html?autore=${encodeURIComponent(userId)}">Le mie visite</a>
-                            <a href="#" class="logout-link" onclick="logout(event)">Logout</a>
+                        <div class="nav-user-info">
+                            <div class="nav-user-name">${userUsername}</div>
+                            <div class="nav-user-role">${userRole}</div>
                         </div>
-                    </div>`;
-                const container = document.getElementById('navProfileContainer');
-                container.addEventListener('click', (e) => {
-                    if (!e.target.closest('a')) container.classList.toggle('open');
-                });
-                document.addEventListener('click', (e) => {
-                    if (!container.contains(e.target)) container.classList.remove('open');
-                });
+                    </div>
+                    <button onclick="logout(event)" class="nav-logout-btn">
+                        <i class="fa-solid fa-right-from-bracket"></i> Esci
+                    </button>`;
             }
         }
     })();

@@ -1,112 +1,87 @@
 /* =========================================
-   PROFILO UTENTE (Navbar & Sidebar)
+   PROFILO UTENTE (Navbar)
    ========================================= */
 
-/* Container dell'Avatar */
-.nav-profile-container {
-    position: relative;
-    cursor: pointer;
-    user-select: none;
-}
-
-/* Avatar circolare */
 .nav-avatar {
-    width: 40px;
-    height: 40px;
+    width: 38px;
+    height: 38px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: var(--brand-mid, #2d5a3d);
     color: white;
     font-weight: 600;
     font-size: 0.9rem;
-    border: 2px solid rgba(255,255,255,0.2);
-    transition: all 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.25);
+    flex-shrink: 0;
 }
 
-.nav-avatar:hover {
-    transform: scale(1.05);
-    border-color: rgba(255,255,255,0.5);
+.nav-theme-icon {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1rem;
+    color: rgba(255, 255, 255, 0.55);
+    transition: color 0.2s;
+    line-height: 1;
 }
 
-/* La Tendina (Dropdown) */
-.profile-dropdown {
-    display: none;
-    position: absolute;
-    right: 0;
-    bottom: 50px; /* Posizionata sopra l'avatar se siamo in fondo alla sidebar */
-    background: white;
-    min-width: 200px;
-    border-radius: 14px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-    padding: 8px 0;
-    border: 1px solid rgba(0,0,0,0.05);
-    z-index: 1000;
-    animation: slideUp 0.3s ease-out;
+.nav-theme-icon:hover {
+    color: #FF007F;
 }
 
-/* Se la navbar è in alto (es. index.html), la tendina scende */
-.app-header .profile-dropdown,
-.navbar .profile-dropdown {
-    top: calc(100% + 8px);
-    bottom: auto;
-    animation: slideDown 0.3s ease-out;
+[data-theme="light"] .nav-theme-icon {
+    color: rgba(30, 41, 59, 0.5);
 }
 
-.nav-profile-container.open .profile-dropdown {
-    display: block;
+[data-theme="light"] .nav-theme-icon:hover {
+    color: #CC0066;
 }
 
-/* Info Utente (Email) */
-#userEmailDisplay {
-    padding: 10px 15px;
-    font-size: 0.75rem;
-    color: #6c757d;
-    border-bottom: 1px solid #f8f9fa;
-    margin-bottom: 5px;
-    display: block;
+.nav-user-info {
+    line-height: 1.2;
+}
+
+.nav-user-name {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.92);
+}
+
+.nav-user-role {
+    font-size: 0.68rem;
     font-weight: 500;
+    color: rgba(255, 255, 255, 0.45);
+    text-transform: capitalize;
 }
 
-/* Opzioni del Menu */
-.profile-dropdown a {
-    display: block;
-    padding: 10px 20px;
-    color: #334155;
-    text-decoration: none;
-    font-size: 0.88rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border-left: 3px solid transparent;
+[data-theme="light"] .nav-user-name {
+    color: #1e293b;
 }
 
-.profile-dropdown a:hover {
-    background-color: #f0f7f4;
-    color: #1b3a27;
-    border-left-color: #4a7c5f;
-    padding-left: 25px;
+[data-theme="light"] .nav-user-role {
+    color: #94a3b8;
 }
 
-/* Logout con separatore */
-.logout-link {
-    border-top: 1px solid #f8f9fa;
-    margin-top: 5px;
-    color: #dc3545 !important; /* Manteniamo un tocco di rosso per il logout? O verde se preferisci */
+.nav-logout-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 18px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(255, 255, 255, 0.35);
+    background: transparent;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
 }
 
-.logout-link:hover {
-    background-color: #fff5f5 !important;
-    border-left-color: #dc3545 !important;
-}
-
-/* Animazioni */
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideDown {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+.nav-logout-btn:hover {
+    background: rgba(233, 30, 140, 0.15);
+    border-color: #e91e8c;
+    color: #fff;
 }

@@ -194,14 +194,17 @@ const SECTIONS_BY_ROLE = {
         { id: 'marketplace',       icon: 'fa-store',            label: 'Marketplace' },
     ],
     admin: [
-        { id: 'admin-utenti',    icon: 'fa-users',            label: 'Utenti'      },
+        { divider: 'Piattaforma' },
         { id: 'admin-musei',     icon: 'fa-building-columns', label: 'Musei'       },
         { id: 'admin-opere',     icon: 'fa-image',            label: 'Opere'       },
-        { id: 'admin-visite',    icon: 'fa-route',            label: 'Visite'      },
-        { id: 'admin-items',     icon: 'fa-layer-group',      label: 'Items'       },
-        { id: 'admin-analytics', icon: 'fa-chart-bar',        label: 'Analytics'   },
-        { id: 'admin-navigator', icon: 'fa-satellite-dish',  label: 'Navigator'   },
         { id: 'marketplace',     icon: 'fa-store',            label: 'Marketplace' },
+        { divider: 'Gestione' },
+        { id: 'admin-items',     icon: 'fa-layer-group',      label: 'Items'       },
+        { id: 'admin-visite',    icon: 'fa-route',            label: 'Visite'      },
+        { id: 'admin-navigator', icon: 'fa-satellite-dish',   label: 'Navigator'   },
+        { divider: 'Amministrazione' },
+        { id: 'admin-analytics', icon: 'fa-chart-bar',        label: 'Analytics'   },
+        { id: 'admin-utenti',    icon: 'fa-users',            label: 'Utenti'      },
     ],
 };
 
@@ -211,8 +214,9 @@ function buildSidebar() {
 
     const sections = SECTIONS_BY_ROLE[SESSION.role] || [];
     const html = sections.length
-        ? sections.map(s => `
-            <button class="nav-item" data-section="${s.id}">
+        ? sections.map(s => s.divider
+            ? `<div class="sidebar-divider">${s.divider}</div>`
+            : `<button class="nav-item" data-section="${s.id}">
                 <i class="fa-solid ${s.icon}"></i> ${s.label}
             </button>`).join('')
         : '<p style="padding:12px;color:#6b7280;font-size:0.85rem;">Nessuna sezione disponibile.</p>';
@@ -1973,10 +1977,13 @@ function renderAdminUtenti(lista) {
             </td>
             <td><span class="badge ${ADMIN_ROLE_BADGE[u.ruolo] || 'bg-secondary'}">${u.ruolo}</span></td>
             <td>
-                <span id="pwd-${u._id}" style="color:#94a3b8;font-family:monospace;">••••••••</span>
+                <span id="pwd-${u._id}"
+                      data-pwd="${(u.password||'').replace(/"/g,'&quot;')}"
+                      data-hidden="1"
+                      style="color:#94a3b8;font-family:monospace;display:inline-block;min-width:6rem;">••••••••</span>
                 <button class="btn btn-link btn-sm p-0 ms-1" title="Mostra/Nascondi"
-                        onclick="togglePwd('${u._id}','${(u.password||'').replace(/'/g,"\\'")}')" style="color:#94a3b8;">
-                    <i class="fa-solid fa-eye" style="font-size:0.75rem;"></i>
+                        onclick="togglePwd('${u._id}')" style="color:#94a3b8;">
+                    <i id="pwd-eye-${u._id}" class="fa-solid fa-eye" style="font-size:0.75rem;"></i>
                 </button>
             </td>
             <td>
@@ -2003,15 +2010,22 @@ window.adminDeleteUtente = async function (id, username) {
     } catch (e) { alert('Impossibile contattare il server.'); }
 };
 
-window.togglePwd = function (id, pwd) {
+window.togglePwd = function (id) {
     const span = document.getElementById('pwd-' + id);
+    const eye  = document.getElementById('pwd-eye-' + id);
     if (!span) return;
-    if (span.textContent === '••••••••') {
-        span.textContent = pwd;
-        span.style.color = '#334155';
+    const hidden = span.dataset.hidden === '1';
+    if (hidden) {
+        const pwd = span.dataset.pwd;
+        span.textContent = pwd || '(non disponibile)';
+        span.style.color = pwd ? '#334155' : '#94a3b8';
+        span.dataset.hidden = '0';
+        if (eye) eye.className = 'fa-solid fa-eye-slash';
     } else {
         span.textContent = '••••••••';
         span.style.color = '#94a3b8';
+        span.dataset.hidden = '1';
+        if (eye) eye.className = 'fa-solid fa-eye';
     }
 };
 
@@ -2659,7 +2673,7 @@ async function initAdminAnalytics() {
             <div class="col-md-6">
                 <div class="glass-card p-4">
                     <h5 class="fw-bold mb-3">Distribuzione Visite</h5>
-                    <div id="analyticsVisteChart"></div>
+                    <div id="analyticsVisteChart" class="d-flex justify-content-around align-items-center gap-3"></div>
                 </div>
             </div>
             <div class="col-md-6">
@@ -2685,29 +2699,41 @@ async function initAdminAnalytics() {
         const visite  = dV.ok  ? dV.data  : [];
         const items   = dIt.ok ? dIt.data : [];
 
-        const visPubliche = visite.filter(v => v.pubblica).length;
-        const visGratuite = visite.filter(v => !v.prezzo || v.prezzo === 0).length;
+        const visPubliche     = visite.filter(v => v.pubblica).length;
+        const visGratuite     = visite.filter(v => !v.prezzo || v.prezzo === 0).length;
         const totalAcquirenti = visite.reduce((s, v) => s + (v.acquirenti || 0), 0);
-        const itemsConPrezzo  = items.filter(it => it.metadata?.prezzo > 0).length;
 
         const roleCount = { curatore: 0, autore: 0, visitatore: 0, admin: 0 };
         utenti.forEach(u => { if (roleCount[u.ruolo] !== undefined) roleCount[u.ruolo]++; else roleCount[u.ruolo] = 1; });
 
-        const kpiCard = (val, label, color) => `
+        const kpiCard = (val, label, icon) => `
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="glass-card p-4 text-center">
-                    <span class="d-block fw-bold h3 mb-1" style="color:${color}">${val}</span>
-                    <small class="text-muted">${label}</small>
+                <div class="glass-card p-3 text-center">
+                    <i class="fa-solid ${icon} mb-2 d-block kpi-icon"></i>
+                    <span class="d-block fw-bold h3 mb-1" style="color:#e91e8c;line-height:1;">${val}</span>
+                    <small class="kpi-label">${label}</small>
                 </div>
             </div>`;
 
         document.getElementById('analyticsKpis').innerHTML =
-            kpiCard(utenti.length,      'Utenti',        'var(--magenta,#e91e8c)') +
-            kpiCard(musei.length,       'Musei',         '#6366f1') +
-            kpiCard(opere.length,       'Opere',         '#f59e0b') +
-            kpiCard(visite.length,      'Visite',        '#22c55e') +
-            kpiCard(items.length,       'Items',         '#06b6d4') +
-            kpiCard(totalAcquirenti,    'Acquirenti tot.','#64748b');
+            kpiCard(utenti.length,   'Utenti',         'fa-users') +
+            kpiCard(musei.length,    'Musei',           'fa-building-columns') +
+            kpiCard(opere.length,    'Opere',           'fa-image') +
+            kpiCard(visite.length,   'Visite',          'fa-route') +
+            kpiCard(items.length,    'Items',            'fa-layer-group') +
+            kpiCard(totalAcquirenti, 'Acquirenti tot.', 'fa-ticket');
+
+        document.getElementById('analyticsVisteChart').innerHTML =
+            visite.length
+                ? adminPieDonut([
+                    { label: 'Pubbliche', value: visPubliche,                 color: '#e91e8c' },
+                    { label: 'Private',   value: visite.length - visPubliche, color: '#334155' },
+                  ], 'Stato') +
+                  adminPieDonut([
+                    { label: 'Gratuite',    value: visGratuite,                 color: '#22c55e' },
+                    { label: 'A pagamento', value: visite.length - visGratuite, color: '#f59e0b' },
+                  ], 'Prezzo')
+                : '<p class="text-muted text-center w-100">Nessun dato.</p>';
 
         const barChart = (data, colorFn) => data.map(([label, val, max]) => `
             <div class="mb-3">
@@ -2720,21 +2746,9 @@ async function initAdminAnalytics() {
                 </div>
             </div>`).join('');
 
-        const visiteData = [
-            ['Pubbliche',  visPubliche,                 visite.length],
-            ['Private',    visite.length - visPubliche, visite.length],
-            ['Gratuite',   visGratuite,                 visite.length],
-            ['A pagamento',visite.length - visGratuite, visite.length],
-        ];
-        document.getElementById('analyticsVisteChart').innerHTML =
-            visiteData.length
-                ? barChart(visiteData, () => 'var(--magenta,#e91e8c)')
-                : '<p class="text-muted">Nessun dato.</p>';
-
         const itemCounts = {};
         items.forEach(it => { itemCounts[it.operaId] = (itemCounts[it.operaId] || 0) + 1; });
-        const top5 = Object.entries(itemCounts)
-            .sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const top5 = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
         const maxItems = top5[0]?.[1] || 1;
         document.getElementById('analyticsItemsChart').innerHTML =
             top5.length
@@ -2745,6 +2759,47 @@ async function initAdminAnalytics() {
         document.getElementById('analyticsKpis').innerHTML =
             '<div class="col-12 text-center text-danger py-4">Errore nel caricamento dei dati.</div>';
     }
+}
+
+/* ============================================================
+   ADMIN PIE DONUT — SVG semplice per analytics
+   ============================================================ */
+
+function adminPieDonut(slices, title) {
+    const total = slices.reduce((s, d) => s + d.value, 0);
+    if (!total) return `<div class="text-center text-muted small py-2">${title}<br>Nessun dato</div>`;
+
+    const size = 120, cx = 60, cy = 60, R = 50, r = 30;
+    let angle = -90;
+    const paths = slices.map(d => {
+        const sweep = (d.value / total) * 360;
+        const a1 = angle * Math.PI / 180;
+        const a2 = (angle + sweep - 1.5) * Math.PI / 180;
+        angle += sweep;
+        const large = sweep > 180 ? 1 : 0;
+        const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
+        const x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
+        const xi1 = cx + r * Math.cos(a2), yi1 = cy + r * Math.sin(a2);
+        const xi2 = cx + r * Math.cos(a1), yi2 = cy + r * Math.sin(a1);
+        return `<path d="M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${xi1},${yi1} A${r},${r} 0 ${large} 0 ${xi2},${yi2} Z" fill="${d.color}">
+            <title>${d.label}: ${d.value} (${Math.round(d.value/total*100)}%)</title></path>`;
+    }).join('');
+
+    const legend = slices.map(d => `
+        <div class="d-flex align-items-center gap-1 justify-content-center">
+            <span style="width:7px;height:7px;border-radius:50%;background:${d.color};display:inline-block;flex-shrink:0;"></span>
+            <span class="donut-legend-text">${d.label} <b class="donut-legend-val">${d.value}</b></span>
+        </div>`).join('');
+
+    return `
+        <div class="text-center">
+            <div class="donut-title">${title}</div>
+            <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;margin:0 auto 8px;">
+                ${paths}
+                <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="15" font-weight="700" class="donut-center-val">${total}</text>
+            </svg>
+            <div class="d-flex flex-column gap-1">${legend}</div>
+        </div>`;
 }
 
 /* ============================================================

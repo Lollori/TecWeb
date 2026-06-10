@@ -268,7 +268,7 @@ body {
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 2px;
     flex: 1;
 }
 
@@ -308,9 +308,13 @@ body {
 .home-menu-link:hover { opacity: 1; }
 
 .sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    margin: 8px 16px 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.35);
+    padding: 10px 16px 4px;
+    margin: 0;
 }
 
 .sidebar-footer {
@@ -819,15 +823,15 @@ select.custom-input {
     color: rgba(255, 255, 255, 0.6);
     background: none;
     border: none;
-    padding: 12px 20px;
-    border-radius: 12px;
+    padding: 8px 16px;
+    border-radius: 10px;
     font-weight: 500;
-    font-size: 0.95rem;
+    font-size: 0.93rem;
     font-family: 'Inter', sans-serif;
     transition: var(--transition);
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     width: 100%;
     cursor: pointer;
     text-align: left;
@@ -1519,6 +1523,70 @@ select.custom-input {
     height: 8px;
 }
 
+/* ── KPI card ── */
+.kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
+.kpi-label { font-size: 0.82rem; color: #64748b; }
+
+/* ── Donut chart ── */
+.donut-title        { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.donut-center-val   { fill: #1e293b; }
+.donut-legend-text  { font-size: 0.7rem; color: #64748b; }
+.donut-legend-val   { color: #1e293b; }
+
+/* ── Bar chart inside glass-card ── */
+.glass-card .fw-bold  { color: #1e293b; }
+.glass-card small.text-muted { color: #64748b !important; }
+
+/* ========== PICTOGRAPH ========== */
+.picto-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+.picto-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.picto-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #475569;
+    min-width: 110px;
+    flex-shrink: 0;
+    text-align: right;
+}
+.picto-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+}
+.picto-dot {
+    font-size: 0.82rem;
+    color: #6366f1;
+}
+.picto-count {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #94a3b8;
+    min-width: 20px;
+    text-align: right;
+}
+.picto-key {
+    font-size: 0.7rem;
+    color: #94a3b8;
+    margin-top: 6px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+[data-theme="dark"] .picto-label  { color: #cbd5e1; }
+[data-theme="dark"] .picto-count  { color: #64748b; }
+[data-theme="dark"] .picto-key    { border-top-color: rgba(255,255,255,0.06); }
+
 /* ========== DARK MODE ========== */
 [data-theme="dark"] {
     --light-bg: #0f1623;
@@ -1627,8 +1695,24 @@ select.custom-input {
     border-bottom-color: rgba(255, 255, 255, 0.05);
 }
 
+[data-theme="dark"] .kpi-icon          { color: rgba(255,255,255,0.18); }
+[data-theme="dark"] .kpi-label         { color: #94a3b8; }
+[data-theme="dark"] .donut-title       { color: #64748b; }
+[data-theme="dark"] .donut-center-val  { fill: #e2e8f0; }
+[data-theme="dark"] .donut-legend-text { color: #94a3b8; }
+[data-theme="dark"] .donut-legend-val  { color: #e2e8f0; }
+[data-theme="dark"] .glass-card .fw-bold     { color: #e2e8f0; }
+[data-theme="dark"] .glass-card small.text-muted { color: #94a3b8 !important; }
+
 [data-theme="dark"] .table-hover tbody tr:hover {
     background-color: rgba(255, 255, 255, 0.04);
+}
+[data-theme="dark"] .table-hover tbody tr:hover > *,
+[data-theme="dark"] .table-hover tbody tr:hover td,
+[data-theme="dark"] .table-hover tbody tr:hover .fw-bold,
+[data-theme="dark"] .table-hover tbody tr:hover small,
+[data-theme="dark"] .table-hover tbody tr:hover .text-muted {
+    color: #e8edf5 !important;
 }
 
 [data-theme="dark"] .detail-tabs {
