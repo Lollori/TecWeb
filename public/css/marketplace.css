@@ -1196,47 +1196,53 @@ select.custom-input {
 .search-box-glass input::placeholder { color: #94a3b8; }
 
 /* ========== RESPONSIVE ========== */
-@media (max-width: 991px) {
-    .sidebar {
-        width: 80px;
-        padding: 20px 10px;
-    }
-    .logo-brand,
-    .admin-badge,
-    .menu-link span,
-    .user-pill-mini span,
-    .user-info-mini {
-        display: none;
-    }
-    .menu-link {
-        justify-content: center;
-        padding: 12px;
-    }
-    .menu-link i {
-        margin: 0;
-    }
-    .main-content {
-        margin-left: 80px;
-        padding: 30px;
-    }
-}
 
-@media (max-width: 768px) {
-    .sidebar {
-        display: none;
-    }
+/* Tablet/Mobile: sidebar nascosta, topbar visibile */
+@media (max-width: 991px) {
+    .sidebar       { display: none; }
+    .mobile-topbar { display: flex; }
+
     .main-content {
         margin-left: 0;
-        padding: 80px 16px 24px;
-    }
-    .page-title {
-        font-size: 1.8rem;
+        padding: 80px 24px 32px;
     }
     .content-header {
         flex-direction: column;
         align-items: flex-start;
-        gap: 12px;
+        gap: 10px;
+        margin-bottom: 24px;
     }
+    .quick-stats {
+        gap: 16px;
+    }
+}
+
+/* Tablet stretto */
+@media (max-width: 768px) {
+    .main-content {
+        padding: 76px 16px 24px;
+    }
+    .page-title {
+        font-size: 1.8rem;
+    }
+    .items-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 16px;
+    }
+    .glass-card {
+        padding: 24px !important;
+    }
+}
+
+/* Telefono */
+@media (max-width: 540px) {
+    .mobile-topbar { padding: 0 12px; }
+    .main-content  { padding: 72px 12px 20px; }
+    .page-title    { font-size: 1.5rem; }
+    .items-grid    { grid-template-columns: 1fr; gap: 12px; }
+    .glass-card    { padding: 16px !important; }
+    .quick-stats   { display: none; }
+    .content-header { margin-bottom: 16px; }
 }
 
 /* ========== MOBILE TOPBAR ========== */
@@ -1361,9 +1367,6 @@ select.custom-input {
     color: var(--magenta-light);
 }
 
-@media (max-width: 768px) {
-    .mobile-topbar { display: flex; }
-}
 
 /* ========== DARK MODE TOGGLE BUTTON (in sidebar) ========== */
 .dark-toggle {
