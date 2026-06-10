@@ -54,6 +54,7 @@ app.use('/img' , express.static(global.rootDir +'/public/media'));
 app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
 app.use('/login', express.static(global.rootDir + '/Login'));
 app.use('/Navigator', express.static(global.rootDir + '/Navigator'));
+app.use('/maps',      express.static(global.rootDir + '/public/maps'));
 
 app.use(express.urlencoded({ extended: true })) 
 app.use(express.json())

@@ -42,6 +42,7 @@ exports.getAll = async (credentials, query) => {
         await connect(credentials);
         let filter = {};
         if (query.codiceIsil) filter.codiceIsil = query.codiceIsil;
+        if (query.sala)       filter.sala = query.sala;
         const data = await Opera.find(filter, { __v: 0 });
         return { ok: true, data };
     } catch (e) {

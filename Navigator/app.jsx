@@ -1,3 +1,32 @@
+/* ── Floor-plan overrides ────────────────────────────────
+   Client-side fallback so the GeoJSON overlay works even if
+   the MongoDB database has not been re-seeded after adding
+   geoJsonUrl / imgWidth / imgHeight to musei.json.
+───────────────────────────────────────────────────────── */
+const FLOOR_PLAN_OVERRIDES = {
+  'IT-FI0082': {
+    'Planimetria': {
+      url:        '/maps/uffizi/piantina_uffizi.png',
+      geoJsonUrl: '/maps/uffizi/P2uffizi.geojson',
+      imgWidth:   437,
+      imgHeight:  600
+    }
+  }
+};
+
+function applyFloorPlanOverrides(museo) {
+  if (!museo) return museo;
+  const ovMap = FLOOR_PLAN_OVERRIDES[museo.codiceIsil];
+  if (!ovMap || !museo.mappaInterna) return museo;
+  return {
+    ...museo,
+    mappaInterna: museo.mappaInterna.map(p => {
+      const ov = ovMap[p.piano];
+      return ov ? { ...p, ...ov } : p;
+    })
+  };
+}
+
 /* ── JoinScreen ─────────────────────────────────────── */
 
 function JoinScreen({ onBack, onJoined }) {
@@ -241,7 +270,7 @@ function VisitaGeoScreen({ nomeAssegnato, museoIsil, onBack }) {
     if (!museoIsil) return;
     fetch(`/api/musei/${encodeURIComponent(museoIsil)}`)
       .then(r => r.json())
-      .then(d => setMuseo(d.data || null))
+      .then(d => setMuseo(applyFloorPlanOverrides(d.data || null)))
       .catch(() => {});
   }, [museoIsil]);
 
@@ -343,16 +372,13 @@ function VisitaGeoScreen({ nomeAssegnato, museoIsil, onBack }) {
               ))}
             </div>
           )}
-          <div className="geo-floorplan-wrap">
-            <img className="geo-floorplan-img" src={pianoItem?.url} alt={pianoItem?.piano} />
-            {dot && (
-              <div
-                className="geo-user-dot"
-                style={{ left: `${dot.x}%`, top: `${dot.y}%` }}
-                title={`${nomeAssegnato} · ±${Math.round(pos?.accuracy || 0)}m`}
-              />
-            )}
-          </div>
+
+          <RoomFloorPlan
+            pianoItem={pianoItem}
+            museoIsil={museoIsil}
+            dot={dot}
+          />
+
           {pos && (
             <p className="geo-coords-hint">
               {pos.lat.toFixed(5)}, {pos.lng.toFixed(5)} · ±{Math.round(pos.accuracy)}m
@@ -370,6 +396,123 @@ function VisitaGeoScreen({ nomeAssegnato, museoIsil, onBack }) {
 
       <button className="geo-exit-btn" onClick={onBack}>← Esci dalla visita</button>
     </div>
+  );
+}
+
+/* ── RoomFloorPlan ───────────────────────────────────────
+   Renders a floor-plan image with an interactive GeoJSON
+   polygon overlay. Clicking a room fetches and shows the
+   artworks in that room via a fixed bottom panel.
+───────────────────────────────────────────────────────── */
+function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
+  const [geoJson,      setGeoJson]      = React.useState(null);
+  const [selectedRoom, setSelectedRoom] = React.useState(null);
+  const [roomOpere,    setRoomOpere]    = React.useState(null);
+  const [loadingOpere, setLoadingOpere] = React.useState(false);
+
+  React.useEffect(() => {
+    setGeoJson(null);
+    setSelectedRoom(null);
+    setRoomOpere(null);
+    if (!pianoItem?.geoJsonUrl) return;
+    fetch(pianoItem.geoJsonUrl)
+      .then(r => r.json())
+      .then(d => setGeoJson(d))
+      .catch(() => {});
+  }, [pianoItem?.geoJsonUrl]);
+
+  async function handleRoomClick(roomId) {
+    if (selectedRoom === roomId) { setSelectedRoom(null); setRoomOpere(null); return; }
+    setSelectedRoom(roomId);
+    setLoadingOpere(true);
+    setRoomOpere(null);
+    try {
+      const res  = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(museoIsil)}&sala=${encodeURIComponent(roomId)}`);
+      const data = await res.json();
+      setRoomOpere(data.data || []);
+    } catch (_) {
+      setRoomOpere([]);
+    } finally {
+      setLoadingOpere(false);
+    }
+  }
+
+  const viewBox = `0 0 ${pianoItem?.imgWidth || 437} ${pianoItem?.imgHeight || 600}`;
+
+  return (
+    <>
+      {/* The wrapper sizes itself around the image so the SVG overlay aligns perfectly */}
+      <div className="geo-floorplan-wrap">
+        <img
+          className="geo-floorplan-img"
+          src={pianoItem?.url}
+          alt={pianoItem?.piano || 'Planimetria'}
+        />
+
+        {geoJson && (
+          <svg
+            className="geo-room-overlay"
+            viewBox={viewBox}
+            preserveAspectRatio="none"
+            style={{ pointerEvents: 'all' }}
+          >
+            {geoJson.features.map(f => (
+              <polygon
+                key={f.properties.fid}
+                points={f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' ')}
+                className={`geo-room-polygon${selectedRoom === f.properties.room_id ? ' geo-room-polygon--active' : ''}`}
+                onClick={() => handleRoomClick(f.properties.room_id)}
+              />
+            ))}
+          </svg>
+        )}
+
+        {dot && (
+          <div
+            className="geo-user-dot"
+            style={{ left: `${dot.x}%`, top: `${dot.y}%` }}
+          />
+        )}
+      </div>
+
+      {geoJson && !selectedRoom && (
+        <p className="geo-map-hint">Tocca una stanza per vedere le opere</p>
+      )}
+
+      {/* Fixed bottom panel — always visible regardless of scroll position */}
+      {selectedRoom && (
+        <div className="geo-room-panel">
+          <div className="geo-room-panel-header">
+            <span className="geo-room-panel-title">Sala {selectedRoom}</span>
+            <button
+              className="geo-room-panel-close"
+              onClick={() => { setSelectedRoom(null); setRoomOpere(null); }}
+            >✕</button>
+          </div>
+          {loadingOpere && (
+            <div className="geo-room-loading"><div className="geo-spin-sm" /><span>Caricamento opere…</span></div>
+          )}
+          {roomOpere && roomOpere.length === 0 && (
+            <p className="geo-room-empty">Nessuna opera disponibile per questa sala.</p>
+          )}
+          {roomOpere && roomOpere.length > 0 && (
+            <div className="geo-opera-list">
+              {roomOpere.map(o => (
+                <div key={o._id} className="geo-opera-card">
+                  {o.immagine && <img className="geo-opera-img" src={o.immagine} alt={o.operaId} />}
+                  <div className="geo-opera-body">
+                    <p className="geo-opera-title">{o.operaId}</p>
+                    {o.autore && <p className="geo-opera-meta">{o.autore}{o.datazione ? ` · ${o.datazione}` : ''}</p>}
+                    {o.tipo && <p className="geo-opera-tipo">{o.tipo}</p>}
+                    {o.descrizione && <p className="geo-opera-desc">{o.descrizione}</p>}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+    </>
   );
 }
 
@@ -432,11 +575,9 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
               ))}
             </div>
           )}
-          <img
-            className="museo-interna-img"
-            src={museo.mappaInterna[pianoIdx].url}
-            alt={museo.mappaInterna[pianoIdx].piano}
-            loading="lazy"
+          <RoomFloorPlan
+            pianoItem={museo.mappaInterna[pianoIdx]}
+            museoIsil={museo.codiceIsil}
           />
         </div>
       )}
@@ -566,7 +707,7 @@ function App() {
       const museoData  = await museoRes.json();
       const visiteData = await visiteRes.json();
       if (!museoData.data) throw new Error('Museo non trovato.');
-      setMuseo(museoData.data);
+      setMuseo(applyFloorPlanOverrides(museoData.data));
       setVisite(visiteData.data || []);
       setScreen('visite');
     } catch (e) {

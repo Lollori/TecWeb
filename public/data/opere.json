@@ -58,5 +58,137 @@
     "sala": "Sala di Leonardo (Sala 15)",
     "descrizione": "Olio e tempera su tavola che raffigura l'angelo Gabriele nell'atto di annunciare a Maria la nascita di Gesù, ambientato in un giardino fiorentino rinascimentale. Opera giovanile di Leonardo da Vinci che rivela già il suo straordinario talento per la resa della luce e degli spazi prospettici.",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg/800px-Leonardo_da_Vinci_-_Annunciazione_%281475-80%29.jpg"
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "La Nascita di Venere",
+    "tipo": "Pittura",
+    "autore": "Sandro Botticelli",
+    "datazione": "1484-1486",
+    "sala": "10-14",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/1280px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+    "descrizione": "Celebre opera rinascimentale che raffigura la dea Venere appena nata dal mare, emergente da una conchiglia gigante. Uno dei capolavori assoluti della pittura occidentale.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "La Primavera",
+    "tipo": "Pittura",
+    "autore": "Sandro Botticelli",
+    "datazione": "ca. 1480",
+    "sala": "10-14",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/1280px-Botticelli-primavera.jpg",
+    "descrizione": "Allegoria della primavera con nove figure mitologiche in un bosco di aranci. È una delle opere più celebrate e studiate del Rinascimento italiano.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Pallade e il Centauro",
+    "tipo": "Pittura",
+    "autore": "Sandro Botticelli",
+    "datazione": "ca. 1482",
+    "sala": "10-14",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Botticelli_-_Pallade_e_il_centauro.jpg/800px-Botticelli_-_Pallade_e_il_centauro.jpg",
+    "descrizione": "La dea Pallade Atena afferra per i capelli un centauro, allegoria del trionfo della ragione sulla forza bruta.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Annunciazione",
+    "tipo": "Pittura",
+    "autore": "Leonardo da Vinci",
+    "datazione": "1472-1475",
+    "sala": "15",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Leonardo_da_Vinci_-_Annunciation_%28detail%29_-_WGA12701.jpg/1280px-Leonardo_da_Vinci_-_Annunciation_%28detail%29_-_WGA12701.jpg",
+    "descrizione": "Opera giovanile di Leonardo in cui l'angelo Gabriele annuncia a Maria la nascita di Gesù. Caratterizzata dall'abilità nel rendere l'atmosfera e il paesaggio.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Adorazione dei Magi",
+    "tipo": "Pittura",
+    "autore": "Leonardo da Vinci",
+    "datazione": "1481 (incompiuta)",
+    "sala": "15",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Uffizi.jpg/1024px-Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Uffizi.jpg",
+    "descrizione": "Opera incompiuta di Leonardo che rivoluzionò la composizione pittorica con la sua straordinaria capacità di rappresentare emozioni e movimento.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Tondo Doni",
+    "tipo": "Pittura",
+    "autore": "Michelangelo Buonarroti",
+    "datazione": "1504-1506",
+    "sala": "25",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Michelangelo_Tondo_Doni_01.jpg/800px-Michelangelo_Tondo_Doni_01.jpg",
+    "descrizione": "L'unica pittura su tavola di Michelangelo, raffigura la Sacra Famiglia. La forma circolare (tondo) e le figure in posa contorta anticipano il Manierismo.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "La Venere di Urbino",
+    "tipo": "Pittura",
+    "autore": "Tiziano Vecellio",
+    "datazione": "1538",
+    "sala": "28",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tizian_Venus_of_Urbino.jpg/1280px-Tizian_Venus_of_Urbino.jpg",
+    "descrizione": "Una delle opere più celebri di Tiziano: Venere distesa su un letto, con uno sguardo diretto allo spettatore che ha fatto di questo dipinto un archetipo della pittura erotica occidentale.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Madonna del Cardellino",
+    "tipo": "Pittura",
+    "autore": "Raffaello Sanzio",
+    "datazione": "1506",
+    "sala": "35",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Raphael_-_Madonna_of_the_Goldfinch_-_Uffizi.jpg/800px-Raphael_-_Madonna_of_the_Goldfinch_-_Uffizi.jpg",
+    "descrizione": "Maria con il Bambino Gesù e San Giovannino in un paesaggio aperto. Il cardellino tenuto da San Giovanni è simbolo della Passione di Cristo.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Maestà di Santa Trinita",
+    "tipo": "Pittura",
+    "autore": "Cimabue",
+    "datazione": "1290-1300 ca.",
+    "sala": "2",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg/800px-Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg",
+    "descrizione": "Grande pala d'altare in cui la Madonna è raffigurata in trono con il Bambino e angeli su fondo oro. Rappresenta il vertice della tradizione pittorica byzantine-medievale.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Ritratto di Leone X",
+    "tipo": "Pittura",
+    "autore": "Raffaello Sanzio",
+    "datazione": "1518-1519",
+    "sala": "35",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Raphael_Leo10.jpg/800px-Raphael_Leo10.jpg",
+    "descrizione": "Ritratto di papa Leone X con i cardinali Giulio de' Medici e Luigi de' Rossi. È uno dei più grandi ritratti della storia della pittura per la sua psicologia penetrante.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Autoritratto con collare di pelliccia",
+    "tipo": "Pittura",
+    "autore": "Albrecht Dürer",
+    "datazione": "1500",
+    "sala": "20",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Durer_selfportrait_28.jpg/800px-Durer_selfportrait_28.jpg",
+    "descrizione": "Celebre autoritratto in cui Dürer si rappresenta frontalmente simile a un'icona sacra, sottolineando la dignità e la sacralità dell'artista.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Madonna dell'Cardellino",
+    "tipo": "Pittura",
+    "autore": "Lorenzo Monaco",
+    "datazione": "1409",
+    "sala": "7",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Lorenzo_monaco%2C_incoronazione_della_vergine_con_santi_07.jpg/800px-Lorenzo_monaco%2C_incoronazione_della_vergine_con_santi_07.jpg",
+    "descrizione": "Incoronazione della Vergine con angeli e santi, opera tardogotica di Lorenzo Monaco, monaco camaldolese e grande miniaturista fiorentino.",
+    "pubblica": true
   }
 ]

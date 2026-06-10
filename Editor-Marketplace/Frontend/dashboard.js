@@ -24,6 +24,28 @@ let allVisitatoreCachedMusei = [];
 let currentVisitatoreOpere   = [];
 let currentVisitatoreVisite  = [];
 
+/* ── Floor-plan overrides (client-side bypass for un-seeded DB) ── */
+const DASH_FLOOR_PLAN_OVERRIDES = {
+    'IT-FI0082': {
+        'Planimetria': {
+            url:        '/maps/uffizi/piantina_uffizi.png',
+            geoJsonUrl: '/maps/uffizi/P2uffizi.geojson',
+            imgWidth:   437,
+            imgHeight:  600
+        }
+    }
+};
+
+function applyDashFloorPlanOverrides(museo) {
+    if (!museo?.mappaInterna) return [];
+    const ovMap = DASH_FLOOR_PLAN_OVERRIDES[museo.codiceIsil];
+    if (!ovMap) return museo.mappaInterna;
+    return museo.mappaInterna.map(p => {
+        const ov = ovMap[p.piano];
+        return ov ? { ...p, ...ov } : p;
+    });
+}
+
 /* ============================================================
    INIT
    ============================================================ */
@@ -270,7 +292,8 @@ window.dashToggleMap = function (type) {
                     : ''}
             </div>`;
     } else if (type === 'interna' && museo.mappaInterna?.length) {
-        const piani = museo.mappaInterna;
+        const piani = applyDashFloorPlanOverrides(museo);
+        const isil  = museo.codiceIsil;
         panel.innerHTML = `
             <div class="dash-map-section dash-map-interna">
                 ${piani.length > 1 ? `
@@ -282,10 +305,40 @@ window.dashToggleMap = function (type) {
                             </button>`).join('')}
                     </div>` : ''}
                 ${piani.map((p, i) => `
-                    <img id="dash-floor-img-${i}"
-                         class="dash-floor-img${i > 0 ? ' dash-floor-hidden' : ''}"
-                         src="${p.url}" alt="${p.piano}" loading="lazy">`).join('')}
+                    <div id="dash-floor-wrap-${i}"
+                         class="dash-floor-wrap${i > 0 ? ' dash-floor-hidden' : ''}">
+                        <img id="dash-floor-img-${i}"
+                             class="dash-floor-img"
+                             src="${p.url}" alt="${p.piano}" loading="lazy">
+                        <svg id="dash-floor-svg-${i}"
+                             class="dash-floor-overlay"
+                             viewBox="0 0 ${p.imgWidth || 437} ${p.imgHeight || 600}"
+                             preserveAspectRatio="none">
+                        </svg>
+                    </div>`).join('')}
+                <p class="dash-room-hint" id="dash-room-hint">Tocca una stanza per vedere le opere</p>
+                <div id="dash-room-panel" class="dash-room-panel" style="display:none"></div>
             </div>`;
+
+        piani.forEach((p, i) => {
+            if (!p.geoJsonUrl) return;
+            const svgEl = document.getElementById(`dash-floor-svg-${i}`);
+            if (!svgEl) return;
+            fetch(p.geoJsonUrl)
+                .then(r => r.json())
+                .then(geo => {
+                    geo.features.forEach(f => {
+                        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                        poly.setAttribute('points',
+                            f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' '));
+                        poly.classList.add('dash-room-polygon');
+                        const roomId = f.properties.room_id;
+                        poly.addEventListener('click', () => dashHandleRoomClick(isil, roomId, poly, svgEl));
+                        svgEl.appendChild(poly);
+                    });
+                })
+                .catch(err => console.warn('[dashboard] GeoJSON load failed:', err));
+        });
     }
 
     panel.dataset.activeType = type;
@@ -293,13 +346,73 @@ window.dashToggleMap = function (type) {
 };
 
 window.dashSelectPiano = function (idx) {
-    document.querySelectorAll('.dash-floor-img').forEach((img, i) => {
-        img.classList.toggle('dash-floor-hidden', i !== idx);
+    document.querySelectorAll('.dash-floor-wrap').forEach((wrap, i) => {
+        wrap.classList.toggle('dash-floor-hidden', i !== idx);
     });
     document.querySelectorAll('.piano-tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', i === idx);
     });
+    dashCloseRoomPanel();
 };
+
+window.dashCloseRoomPanel = function () {
+    const panel = document.getElementById('dash-room-panel');
+    if (panel) panel.style.display = 'none';
+    const hint = document.getElementById('dash-room-hint');
+    if (hint) hint.style.display = '';
+    document.querySelectorAll('.dash-room-polygon--active')
+        .forEach(el => el.classList.remove('dash-room-polygon--active'));
+};
+
+async function dashHandleRoomClick(museoIsil, roomId, poly, svgEl) {
+    if (poly.classList.contains('dash-room-polygon--active')) {
+        poly.classList.remove('dash-room-polygon--active');
+        dashCloseRoomPanel();
+        return;
+    }
+    svgEl.querySelectorAll('.dash-room-polygon--active')
+        .forEach(el => el.classList.remove('dash-room-polygon--active'));
+    poly.classList.add('dash-room-polygon--active');
+
+    const hint = document.getElementById('dash-room-hint');
+    if (hint) hint.style.display = 'none';
+
+    const panel = document.getElementById('dash-room-panel');
+    if (!panel) return;
+    panel.style.display = 'block';
+    panel.innerHTML = `<p class="dash-room-loading"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento opere…</p>`;
+
+    try {
+        const res  = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(museoIsil)}&sala=${encodeURIComponent(roomId)}`);
+        const data = await res.json();
+        const opere = data.data || [];
+        const closeBtn = `<button class="dash-room-close" onclick="dashCloseRoomPanel()">✕</button>`;
+        if (opere.length === 0) {
+            panel.innerHTML = `
+                <div class="dash-room-header">
+                    <span>Sala ${roomId}</span>${closeBtn}
+                </div>
+                <p class="dash-room-empty">Nessuna opera disponibile per questa sala.</p>`;
+        } else {
+            panel.innerHTML = `
+                <div class="dash-room-header">
+                    <span>Sala ${roomId} · ${opere.length} oper${opere.length === 1 ? 'a' : 'e'}</span>${closeBtn}
+                </div>
+                <div class="dash-opera-list">
+                    ${opere.map(o => `
+                        <div class="dash-opera-card">
+                            ${o.immagine ? `<img class="dash-opera-img" src="${o.immagine}" alt="" onerror="this.style.display='none'">` : ''}
+                            <div class="dash-opera-body">
+                                <p class="dash-opera-name">${o.operaId}</p>
+                                ${o.autore ? `<p class="dash-opera-meta">${o.autore}${o.datazione ? ' · ' + o.datazione : ''}</p>` : ''}
+                            </div>
+                        </div>`).join('')}
+                </div>`;
+        }
+    } catch (_) {
+        panel.innerHTML = `<p class="dash-room-empty">Errore nel caricamento delle opere.</p>`;
+    }
+}
 
 function mapActionsHtml(museo) {
     if (!museo.mappaEmbed && !museo.mappaInterna?.length) return '';
