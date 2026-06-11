@@ -219,6 +219,7 @@ app.get('/api/opere/seed', async function (_req, res) {
 
 // Recupera le opere (filtrate per codiceIsil se presente in query)
 app.get('/api/opere', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await opere.getAll(mongoCredentials, req.query);
     res.json(result);
 });
