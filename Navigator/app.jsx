@@ -429,7 +429,8 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
     try {
       const res  = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(museoIsil)}&sala=${encodeURIComponent(roomId)}`);
       const data = await res.json();
-      setRoomOpere(data.data || []);
+      const all  = data.data || [];
+      setRoomOpere(all.filter(o => o.sala === roomId));
     } catch (_) {
       setRoomOpere([]);
     } finally {

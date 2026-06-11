@@ -389,7 +389,7 @@ async function dashHandleRoomClick(museoIsil, roomId, poly, svgEl) {
     try {
         const res  = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(museoIsil)}&sala=${encodeURIComponent(roomId)}`);
         const data = await res.json();
-        const opere = data.data || [];
+        const opere = (data.data || []).filter(o => o.sala === roomId);
         const closeBtn = `<button class="dash-room-close" onclick="dashCloseRoomPanel()">✕</button>`;
         if (opere.length === 0) {
             panel.innerHTML = `
