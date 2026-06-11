@@ -28,8 +28,8 @@ let currentVisitatoreVisite  = [];
 const DASH_FLOOR_PLAN_OVERRIDES = {
     'IT-FI0082': {
         'Planimetria': {
-            url:        '/maps/uffizi/piantina_uffizi.png',
-            geoJsonUrl: '/maps/uffizi/P2uffizi.geojson',
+            url:        '/data/maps/uffizi/piantina_uffizi.png',
+            geoJsonUrl: '/data/maps/uffizi/P2uffizi.geojson',
             imgWidth:   437,
             imgHeight:  600
         }
