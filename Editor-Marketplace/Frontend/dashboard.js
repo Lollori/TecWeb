@@ -11,7 +11,9 @@ const SESSION = {
 let curMusei = [];
 
 // index-based lookup avoids JSON serialisation in onclick attrs
-let currentMuseoOpere = [];
+let currentMuseoOpere  = [];
+let currentMuseoVisite = [];
+let currentDetailTab   = 'opere';
 
 let currentViewMuseo = null;
 
@@ -154,6 +156,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('museiAttiviCount').textContent = curMusei.length;
         const sp = new URLSearchParams(window.location.search).get('s');
         switchSection(sp || 'musei');
+        if (!sp || sp === 'musei') {
+            const savedMuseo = sessionStorage.getItem('curatorMuseo');
+            if (savedMuseo && curMusei.find(m => m.codiceIsil === savedMuseo)) {
+                showMuseoDetail(savedMuseo);
+            }
+        }
     } else if (role === 'autore') {
         document.getElementById('museiAttiviCount').textContent = '—';
         document.getElementById('museiCountLabel').textContent  = 'Sezione';
@@ -464,6 +472,12 @@ function filterMuseiDash() {
 
 function renderMusei(lista) {
     if (!lista) lista = curMusei;
+
+    const listHeader    = document.getElementById('museiListHeader');
+    const contentHeader = document.getElementById('contentHeader');
+    if (contentHeader) { contentHeader.style.display = ''; contentHeader.classList.add('d-flex'); }
+    if (listHeader)    { listHeader.style.display = '';    listHeader.classList.add('d-flex'); }
+
     const view = document.getElementById('museiView');
 
     if (!lista.length) {
@@ -506,30 +520,104 @@ window.showMuseoDetail = async function (codiceIsil) {
     if (!museo) return;
     currentViewMuseo = museo;
 
+    const contentHeader = document.getElementById('contentHeader');
+    const listHeader    = document.getElementById('museiListHeader');
+    if (contentHeader) { contentHeader.classList.remove('d-flex'); contentHeader.style.display = 'none'; }
+    if (listHeader)    { listHeader.classList.remove('d-flex');    listHeader.style.display = 'none'; }
+
+    sessionStorage.setItem('curatorMuseo', codiceIsil);
+
     const view = document.getElementById('museiView');
     view.className = '';
     view.innerHTML = `
-        <button class="museo-detail-back" onclick="renderMusei()">
+        <button class="museo-detail-back" onclick="goBackToMusei()">
             <i class="fa-solid fa-arrow-left"></i> Torna ai musei
         </button>
         <h2 class="museo-detail-title">${museo.nome}</h2>
         <p class="museo-detail-sub">${museo.citta} · ${museo.codiceIsil}</p>
         ${mapActionsHtml(museo)}
-        <div class="detail-tabs">
+        <div class="search-box-container shadow-sm py-1 px-3 mt-3" id="opereSearchInViewWrap" style="max-width:320px;">
+            <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+            <input type="text" id="opereSearchInView" class="search-input py-2"
+                   placeholder="Cerca opere..." oninput="filterOpereMuseo()">
+        </div>
+        <div class="detail-tabs mt-3">
             <button class="tab-btn active"
                     onclick="showTab('opere','${codiceIsil}',this)">Opere</button>
             <button class="tab-btn"
                     onclick="showTab('visite','${codiceIsil}',this)">Visite in vendita</button>
         </div>
-        <div id="detailContent" class="items-grid"></div>
+        <div class="detail-scroll-box">
+            <div id="detailContent" class="items-grid"></div>
+        </div>
     `;
 
     showTab('opere', codiceIsil, view.querySelector('.tab-btn.active'));
 };
 
+function _renderOpereDetail(lista) {
+    const content    = document.getElementById('detailContent');
+    const codiceIsil = currentViewMuseo?.codiceIsil || '';
+    if (!lista.length) {
+        content.className = '';
+        content.innerHTML = '<p class="empty-msg">Nessuna opera trovata.</p>';
+        return;
+    }
+    content.className = 'items-grid';
+    content.innerHTML = lista.map(op => {
+        const idx = currentMuseoOpere.indexOf(op);
+        return `
+            <div class="opera-read-card scroll-card-clickable"
+                 onclick="showOperaItems(${idx}, '${codiceIsil}')">
+                ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
+                <h3>${op.operaId}</h3>
+                ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
+                ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
+                <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${currentViewMuseo?.nome || codiceIsil}</p>
+                ${op.sala ? `<p class="opera-meta"><i class="fa-solid fa-location-dot"></i> ${op.sala}</p>` : ''}
+            </div>`;
+    }).join('');
+}
+
+function _renderVisiteDetail(lista) {
+    const content = document.getElementById('detailContent');
+    if (!lista.length) {
+        content.className = '';
+        content.innerHTML = '<p class="empty-msg">Nessuna visita trovata.</p>';
+        return;
+    }
+    content.className = 'items-grid';
+    content.innerHTML = lista.map(v => `
+        <div class="visita-read-card">
+            <h3>${v.nomeVisita}</h3>
+            ${v.logistica ? `<p>${v.logistica}</p>` : ''}
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="tag-bubble">
+                    <i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti
+                </span>
+                ${v.prezzo > 0
+                    ? `<span class="price-badge">€${v.prezzo}</span>`
+                    : `<span class="free-badge">Gratis</span>`
+                }
+                <span class="tag-bubble"
+                      style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                    <i class="fa-solid fa-check"></i> In vendita
+                </span>
+            </div>
+        </div>
+    `).join('');
+}
+
 window.showTab = async function (type, codiceIsil, btn) {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    currentDetailTab = type;
+
+    const searchInput = document.getElementById('opereSearchInView');
+    if (searchInput) {
+        searchInput.value = '';
+        searchInput.placeholder = type === 'opere' ? 'Cerca opere...' : 'Cerca visite...';
+    }
 
     const content = document.getElementById('detailContent');
     content.className = '';
@@ -550,51 +638,38 @@ window.showTab = async function (type, codiceIsil, btn) {
 
         if (type === 'opere') {
             currentMuseoOpere = data.data;
-            content.className = 'items-grid';
-            content.innerHTML = data.data.map((op, i) => `
-                <div class="opera-read-card scroll-card-clickable"
-                     onclick="showOperaItems(${i}, '${codiceIsil}')">
-                    ${op.immagine
-                        ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
-                        : ''}
-                    <h3>${op.operaId}</h3>
-                    ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
-                    ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}
-                    <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${currentViewMuseo?.nome || codiceIsil}</p>
-                    ${op.sala      ? `<p class="opera-meta"><i class="fa-solid fa-location-dot"></i> ${op.sala}</p>` : ''}
-                </div>
-            `).join('');
-
+            _renderOpereDetail(currentMuseoOpere);
         } else {
-            const inVendita = data.data.filter(v => v.pubblica);
-            if (!inVendita.length) {
-                content.innerHTML = '<p class="empty-msg">Nessuna visita in vendita per questo museo.</p>';
-                return;
-            }
-            content.className = 'items-grid';
-            content.innerHTML = inVendita.map(v => `
-                <div class="visita-read-card">
-                    <h3>${v.nomeVisita}</h3>
-                    ${v.logistica ? `<p>${v.logistica}</p>` : ''}
-                    <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                        <span class="tag-bubble">
-                            <i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti
-                        </span>
-                        ${v.prezzo > 0
-                            ? `<span class="price-badge">€${v.prezzo}</span>`
-                            : `<span class="free-badge">Gratis</span>`
-                        }
-                        <span class="tag-bubble"
-                              style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                            <i class="fa-solid fa-check"></i> In vendita
-                        </span>
-                    </div>
-                </div>
-            `).join('');
+            currentMuseoVisite = data.data.filter(v => v.pubblica);
+            _renderVisiteDetail(currentMuseoVisite);
         }
     } catch (e) {
         content.innerHTML = '<p class="empty-msg">Errore nel caricamento dei dati.</p>';
     }
+};
+
+window.filterOpereMuseo = function () {
+    const q = (document.getElementById('opereSearchInView')?.value || '').toLowerCase();
+    if (currentDetailTab === 'visite') {
+        const filtered = q
+            ? currentMuseoVisite.filter(v =>
+                (v.nomeVisita || '').toLowerCase().includes(q) ||
+                (v.logistica  || '').toLowerCase().includes(q))
+            : currentMuseoVisite;
+        _renderVisiteDetail(filtered);
+    } else {
+        const filtered = q
+            ? currentMuseoOpere.filter(op =>
+                (op.operaId || '').toLowerCase().includes(q) ||
+                (op.autore  || '').toLowerCase().includes(q))
+            : currentMuseoOpere;
+        _renderOpereDetail(filtered);
+    }
+};
+
+window.goBackToMusei = function () {
+    sessionStorage.removeItem('curatorMuseo');
+    renderMusei();
 };
 
 /* ============================================================

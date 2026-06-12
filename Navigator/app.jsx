@@ -27,6 +27,32 @@ function applyFloorPlanOverrides(museo) {
   };
 }
 
+/* ── MobileMenu ────────────────────────────────────── */
+
+function MobileMenu({ links }) {
+  const [open, setOpen] = React.useState(false);
+  return (
+    <>
+      <div className="nav-mob-bar">
+        <button className="nav-mob-burger" onClick={() => setOpen(v => !v)} aria-label="Menu">
+          {open ? '✕' : '☰'}
+        </button>
+        <a href="/" className="nav-mob-logo">
+          ArtAround<span className="nav-mob-logo-dot">.</span>
+        </a>
+      </div>
+      {open && <div className="nav-mob-overlay" onClick={() => setOpen(false)} />}
+      <nav className={`nav-mob-dropdown${open ? ' nav-mob-dropdown--open' : ''}`}>
+        {links.map((l, i) =>
+          l.href
+            ? <a key={i} href={l.href} className="nav-mob-link" onClick={() => setOpen(false)}>{l.label}</a>
+            : <button key={i} className="nav-mob-link" onClick={() => { l.onClick(); setOpen(false); }}>{l.label}</button>
+        )}
+      </nav>
+    </>
+  );
+}
+
 /* ── JoinScreen ─────────────────────────────────────── */
 
 function JoinScreen({ onBack, onJoined }) {
@@ -56,6 +82,10 @@ function JoinScreen({ onBack, onJoined }) {
 
   return (
     <div className="student-root">
+      <MobileMenu links={[
+        { label: '← Indietro', onClick: onBack },
+        { label: '⌂ Menu principale', href: '/' },
+      ]} />
       <div className="nav-topbar nav-topbar--split">
         <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
         <a href="/" className="back-to-marketplace">⌂ Menu</a>
@@ -527,37 +557,51 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
 
   return (
     <div className="visite-screen-root">
+      <MobileMenu links={[
+        { label: '⌂ Menu principale', href: '/' },
+        { label: '← Dashboard', href: '/Editor-Marketplace/Frontend/dashboard.html' },
+        { label: '← Tutti i musei', onClick: onBack },
+      ]} />
       <div className="museo-back-bar">
         <a href="/" className="back-to-marketplace">⌂ Menu</a>
         <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
         <button onClick={onBack} className="back-btn">← Tutti i musei</button>
       </div>
 
-      <div className="museo-mini-header">
-        {museo.immagineCopertina && (
-          <div className="museo-mini-cover">
-            <img src={museo.immagineCopertina} alt={museo.nome} />
+      <div
+        className="museo-mini-header"
+        style={(showMap || showMapInterna) ? { borderBottomColor: 'transparent' } : undefined}
+      >
+        <div className="museo-mini-identity">
+          {museo.immagineCopertina && (
+            <div className="museo-mini-cover">
+              <img src={museo.immagineCopertina} alt={museo.nome} />
+            </div>
+          )}
+          <div className="museo-mini-info">
+            <h1 className="museo-mini-title">{museo.nome}</h1>
+            <p className="museo-mini-sub">{museo.citta} · {museo.codiceIsil}</p>
           </div>
-        )}
-        <div className="museo-mini-info">
-          <h1 className="museo-mini-title">{museo.nome}</h1>
-          <p className="museo-mini-sub">{museo.citta} · {museo.codiceIsil}</p>
         </div>
-        {museo.mappaEmbed && (
-          <button
-            className={`show-map-btn${showMap ? ' show-map-btn--active' : ''}`}
-            onClick={() => setShowMap(v => !v)}
-          >
-            📍 {showMap ? 'Nascondi mappa' : 'Mappa'}
-          </button>
-        )}
-        {museo.mappaInterna?.length > 0 && (
-          <button
-            className={`show-map-btn${showMapInterna ? ' show-map-btn--active' : ''}`}
-            onClick={() => { setShowMapInterna(v => !v); setPianoIdx(0); }}
-          >
-            🗺️ {showMapInterna ? 'Nascondi planimetria' : 'Planimetria'}
-          </button>
+        {(museo.mappaEmbed || museo.mappaInterna?.length > 0) && (
+          <div className="museo-mini-actions">
+            {museo.mappaEmbed && (
+              <button
+                className={`show-map-btn${showMap ? ' show-map-btn--active' : ''}`}
+                onClick={() => { const next = !showMap; setShowMap(next); if (next) setShowMapInterna(false); }}
+              >
+                📍 {showMap ? 'Nascondi mappa' : 'Mappa'}
+              </button>
+            )}
+            {museo.mappaInterna?.length > 0 && (
+              <button
+                className={`show-map-btn${showMapInterna ? ' show-map-btn--active' : ''}`}
+                onClick={() => { const next = !showMapInterna; setShowMapInterna(next); setPianoIdx(0); if (next) setShowMap(false); }}
+              >
+                🗺️ {showMapInterna ? 'Nascondi planimetria' : 'Planimetria'}
+              </button>
+            )}
+          </div>
         )}
       </div>
 
@@ -663,6 +707,8 @@ function App() {
 
   const userId   = localStorage.getItem('userId')   || '';
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
+  const museiRef = React.useRef([]);
+  React.useEffect(() => { museiRef.current = musei; }, [musei]);
 
   React.useEffect(() => {
     if (codiceIsil) {
@@ -670,6 +716,24 @@ function App() {
     } else {
       loadMusei();
     }
+
+    function handlePopState() {
+      const isil = new URLSearchParams(window.location.search).get('museo');
+      if (isil) {
+        selectMuseo(isil, { push: false });
+      } else {
+        setMuseo(null);
+        setVisite([]);
+        setError(null);
+        if (museiRef.current.length) {
+          setScreen('musei');
+        } else {
+          loadMusei();
+        }
+      }
+    }
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   async function loadMusei() {
@@ -686,12 +750,14 @@ function App() {
     }
   }
 
-  async function selectMuseo(isil) {
+  async function selectMuseo(isil, { push = true } = {}) {
     setScreen('loading');
     setError(null);
-    const url = new URL(window.location.href);
-    url.searchParams.set('museo', isil);
-    window.history.pushState({}, '', url);
+    if (push) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('museo', isil);
+      window.history.pushState({}, '', url);
+    }
     try {
       const params = new URLSearchParams({ codiceIsil: isil });
       if (userId) {
@@ -823,6 +889,11 @@ function App() {
   /* screen === 'musei' */
   return (
     <div className="museo-picker-root">
+      <MobileMenu links={[
+        { label: '← Dashboard', href: '/Editor-Marketplace/Frontend/dashboard.html' },
+        { label: '🔗 Unisciti tramite codice', onClick: () => setScreen('join') },
+        { label: '⌂ Menu principale', href: '/' },
+      ]} />
       <div className="nav-topbar nav-topbar--split">
         <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>

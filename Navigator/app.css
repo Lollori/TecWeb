@@ -493,25 +493,51 @@ body { background: #f8fafc; color: var(--text); }
 .museo-mini-header {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
   padding: 20px 32px;
   background: var(--dark);
   border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.museo-mini-identity {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+  min-width: 0;
+}
+.museo-mini-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 .museo-mini-cover {
   width: 60px; height: 60px;
   border-radius: 10px; overflow: hidden; flex-shrink: 0;
 }
 .museo-mini-cover img { width: 100%; height: 100%; object-fit: cover; }
+.museo-mini-info { min-width: 0; }
 .museo-mini-title {
   font-size: 1.25rem; font-weight: 700; color: #f1f5f9;
   margin: 0 0 4px; font-family: 'Playfair Display', serif;
 }
 .museo-mini-sub { font-size: 0.82rem; color: var(--muted); margin: 0; }
 
+@media (max-width: 600px) {
+  .museo-mini-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+    gap: 12px;
+  }
+  .museo-mini-identity { width: 100%; }
+  .museo-mini-title { font-size: 1.05rem; }
+  .museo-mini-actions { width: 100%; }
+  .show-map-btn { flex: 1; justify-content: center; text-align: center; }
+}
+
 /* ── Show Map Button ── */
 .show-map-btn {
-  margin-left: auto;
   flex-shrink: 0;
   background: transparent;
   border: 1.5px solid rgba(255, 255, 255, 0.2);
@@ -659,9 +685,9 @@ body { background: #f8fafc; color: var(--text); }
   width: fit-content;
   max-width: calc(100% - 28px);
   margin: 14px auto 0;
+  margin-top: 0;
   border-radius: 12px;
   overflow: hidden;
-  background: #fff;
   box-shadow: 0 8px 32px rgba(0,0,0,0.45);
   flex-shrink: 0;
 }
@@ -888,3 +914,67 @@ body { background: #f8fafc; color: var(--text); }
 .content-block img  { width: 100%; border-radius: 8px; }
 .content-block audio { width: 100%; }
 .content-block a    { color: var(--magenta); word-break: break-all; }
+
+/* ── Mobile Menu Component ── */
+.nav-mob-bar {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; height: 56px;
+  background: var(--dark);
+  z-index: 1100;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-mob-logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 800; font-size: 1.4rem;
+  color: #fff; text-decoration: none; letter-spacing: -0.5px;
+}
+.nav-mob-logo-dot { color: var(--magenta); }
+.nav-mob-burger {
+  background: none; border: none;
+  color: rgba(255,255,255,0.8);
+  font-size: 1.5rem; cursor: pointer;
+  padding: 6px 10px; border-radius: 8px;
+  line-height: 1;
+  transition: background 0.2s, color 0.2s;
+}
+.nav-mob-burger:hover { background: rgba(255,0,127,0.12); color: var(--magenta); }
+.nav-mob-overlay {
+  position: fixed; inset: 0; top: 56px;
+  background: rgba(0,0,0,0.5); z-index: 1090;
+}
+.nav-mob-dropdown {
+  display: none;
+  position: fixed;
+  top: 56px; left: 0; right: 0;
+  background: var(--dark); z-index: 1095;
+  flex-direction: column;
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+}
+.nav-mob-dropdown--open { display: flex; }
+.nav-mob-link {
+  color: rgba(255,255,255,0.75); text-decoration: none;
+  padding: 13px 20px; font-size: 0.9rem; font-weight: 500;
+  border: none; background: none; cursor: pointer;
+  font-family: 'Inter', sans-serif; text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  display: block; width: 100%;
+  transition: color 0.15s, background 0.15s;
+}
+.nav-mob-link:last-child { border-bottom: none; }
+.nav-mob-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
+
+@media (max-width: 640px) {
+  .nav-mob-bar    { display: flex; }
+  .nav-topbar     { display: none; }
+  .museo-back-bar { display: none; }
+  .museo-picker-root  { padding-top: 56px; }
+  .visite-screen-root { padding-top: 56px; }
+  .student-root       { padding-top: 56px; }
+  .lobby-root         { padding-top: 56px; }
+}

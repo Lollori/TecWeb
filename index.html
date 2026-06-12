@@ -248,6 +248,18 @@
             window.location.href = '/';
         }
     }
+
+    (function () {
+        const indicator = document.querySelector('.hero-scroll-indicator');
+        if (!indicator) return;
+        function update() {
+            const opacity = Math.max(0, 1 - window.scrollY / 200);
+            indicator.style.opacity = opacity;
+            indicator.style.pointerEvents = opacity > 0.05 ? 'auto' : 'none';
+        }
+        window.addEventListener('scroll', update, { passive: true });
+        update();
+    })();
     </script>
 </body>
 </html>
