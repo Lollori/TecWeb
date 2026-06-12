@@ -26,23 +26,32 @@
             <p class="admin-badge">Editor Opere</p>
         </div>
 
+        <a href="/" class="menu-link home-menu-link">
+            <i class="fa-solid fa-house"></i> Menu principale
+        </a>
+        <div class="sidebar-divider-line"></div>
+
         <nav class="sidebar-menu">
-            <a href="dashboard.html" class="menu-link">
+            <a href="dashboard.html" class="nav-item">
                 <i class="fa-solid fa-arrow-left"></i> Dashboard
             </a>
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-            <a href="opere.html" class="menu-link active">
+            <div class="sidebar-divider-line"></div>
+            <a href="opere.html" class="nav-item active">
                 <i class="fa-solid fa-palette"></i> Opere
             </a>
-            <a href="visite.html" class="menu-link">
+            <a href="visite.html" class="nav-item">
                 <i class="fa-solid fa-map"></i> Visite
             </a>
-            <a href="marketplace.html" class="menu-link">
+            <a href="marketplace.html" class="nav-item">
                 <i class="fa-solid fa-store"></i> Marketplace
             </a>
         </nav>
 
         <div class="sidebar-footer">
+            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
+                <span class="toggle-label">Modalità scura</span>
+                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
+            </button>
             <div class="user-pill-mini">
                 <div class="avatar-sm">O</div>
                 <div class="user-info-mini">

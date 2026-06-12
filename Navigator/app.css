@@ -1,15 +1,38 @@
 :root {
-  --magenta: #ff007f;
-  --dark:    #0f172a;
-  --card-bg: #ffffff;
-  --border:  #e2e8f0;
-  --text:    #334155;
-  --muted:   #94a3b8;
+  --magenta:  #ff007f;
+  --dark:     #0f172a;
+  --card-bg:  #ffffff;
+  --border:   #e2e8f0;
+  --text:     #334155;
+  --muted:    #94a3b8;
+  --body-bg:  #f8fafc;
   font-family: 'Inter', sans-serif;
 }
 
+[data-theme="dark"] {
+  --card-bg:  #1a2235;
+  --border:   rgba(255,255,255,0.08);
+  --text:     #e8edf5;
+  --body-bg:  #0f172a;
+}
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: #f8fafc; color: var(--text); }
+body { background: var(--body-bg); color: var(--text); line-height: 1.5; }
+button { font-family: inherit; font-size: inherit; line-height: inherit; }
+
+[data-theme="dark"] .nav-card-title,
+[data-theme="dark"] .visita-title { color: #f1f5f9; }
+[data-theme="dark"] .nav-card-desc { color: #cbd5e1; }
+[data-theme="dark"] .visita-logistica { color: #94a3b8; }
+[data-theme="dark"] .mnemonic-input {
+  background: #1e293b;
+  border-color: rgba(255,255,255,0.12);
+  color: #f1f5f9;
+}
+[data-theme="dark"] .visita-docente-launch {
+  background: #0f172a;
+  border-top-color: rgba(255,255,255,0.06);
+}
 
 /* ── Loading / Error ── */
 .nav-loading, .nav-error {
@@ -33,12 +56,12 @@ body { background: #f8fafc; color: var(--text); }
 }
 
 /* ── Museum picker ── */
-.museo-picker-root { min-height: 100vh; background: var(--dark); }
+.museo-picker-root { min-height: 100vh; background: var(--body-bg); }
 .picker-header { text-align: center; padding: 60px 32px 40px; }
 .picker-title {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2rem, 5vw, 3.2rem);
-  color: #fff; margin-bottom: 12px;
+  color: var(--text); margin-bottom: 12px;
 }
 .picker-dot { color: var(--magenta); }
 .picker-subtitle { color: var(--muted); font-size: 1rem; }
@@ -47,21 +70,25 @@ body { background: #f8fafc; color: var(--text); }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 20px;
-  max-width: 1000px; margin: 0 auto;
-  padding: 0 32px 60px;
 }
 .picker-card {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 18px; overflow: hidden;
   text-align: left; cursor: pointer; padding: 0;
   transition: all 0.25s;
 }
 .picker-card:hover {
   border-color: rgba(255,0,127,0.4);
-  background: rgba(255,255,255,0.08);
   transform: translateY(-4px);
   box-shadow: 0 12px 32px rgba(255,0,127,0.15);
+}
+[data-theme="dark"] .picker-card {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.08);
+}
+[data-theme="dark"] .picker-card:hover {
+  background: rgba(255,255,255,0.08);
 }
 .picker-card-img { width: 100%; height: 150px; object-fit: cover; display: block; }
 .picker-card-placeholder {
@@ -72,7 +99,7 @@ body { background: #f8fafc; color: var(--text); }
   color: rgba(255,0,127,0.4); font-weight: 800;
 }
 .picker-card-body { padding: 16px 18px; }
-.picker-card-name { font-weight: 700; font-size: 1rem; color: #f1f5f9; margin-bottom: 4px; }
+.picker-card-name { font-weight: 700; font-size: 1rem; color: var(--text); margin-bottom: 4px; }
 .picker-card-city { color: var(--muted); font-size: 0.82rem; margin-bottom: 8px; }
 .picker-card-isil {
   background: rgba(255,0,127,0.15); color: #ff7fc8;
@@ -241,6 +268,44 @@ body { background: #f8fafc; color: var(--text); }
 .entry-role-hint  { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
 
 /* ── Student Screen ── */
+.join-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  text-align: center;
+}
+.join-wrapper .page-title { margin-bottom: 8px; }
+.join-wrapper p { color: var(--text-muted, #64748b); margin-bottom: 32px; }
+.join-card {
+  width: 100%;
+  max-width: 500px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.join-code-input {
+  width: 100%;
+  background: transparent;
+  border: 2px solid var(--border);
+  border-radius: 16px;
+  color: var(--text);
+  font-size: 1.4rem; font-weight: 600; font-family: 'Inter', sans-serif;
+  padding: 18px 24px;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.join-code-input:focus { border-color: var(--magenta); }
+.join-code-input::placeholder { color: var(--muted); font-weight: 400; font-size: 1.1rem; }
+.join-code-input--error { border-color: #f87171 !important; }
+.join-error { color: #ef4444; font-size: 0.88rem; text-align: center; }
+
 .student-root { min-height: 100vh; background: var(--dark); }
 .student-body { display: flex; flex-direction: column; align-items: center; }
 .student-form {
@@ -306,7 +371,7 @@ body { background: #f8fafc; color: var(--text); }
   display: flex; gap: 12px; align-items: center;
   padding: 14px 18px;
   border-top: 1px solid var(--border);
-  background: #f8fafc;
+  background: var(--body-bg);
 }
 .mnemonic-input {
   flex: 1;
@@ -488,7 +553,7 @@ body { background: #f8fafc; color: var(--text); }
 }
 
 /* ── Visite Screen ── */
-.visite-screen-root { min-height: 100vh; background: #f8fafc; }
+.visite-screen-root { min-height: 100vh; background: var(--body-bg); }
 
 .museo-mini-header {
   display: flex;
@@ -915,66 +980,33 @@ body { background: #f8fafc; color: var(--text); }
 .content-block audio { width: 100%; }
 .content-block a    { color: var(--magenta); word-break: break-all; }
 
-/* ── Mobile Menu Component ── */
-.nav-mob-bar {
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; height: 56px;
-  background: var(--dark);
-  z-index: 1100;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
+/* ── Sidebar divider line (replaces <hr> which needs Bootstrap reset) ── */
+.sidebar-divider-line {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 8px 0;
 }
-.nav-mob-logo {
-  font-family: 'Playfair Display', serif;
-  font-weight: 800; font-size: 1.4rem;
-  color: #fff; text-decoration: none; letter-spacing: -0.5px;
-}
-.nav-mob-logo-dot { color: var(--magenta); }
-.nav-mob-burger {
-  background: none; border: none;
-  color: rgba(255,255,255,0.8);
-  font-size: 1.5rem; cursor: pointer;
-  padding: 6px 10px; border-radius: 8px;
-  line-height: 1;
-  transition: background 0.2s, color 0.2s;
-}
-.nav-mob-burger:hover { background: rgba(255,0,127,0.12); color: var(--magenta); }
-.nav-mob-overlay {
-  position: fixed; inset: 0; top: 56px;
-  background: rgba(0,0,0,0.5); z-index: 1090;
-}
-.nav-mob-dropdown {
-  display: none;
-  position: fixed;
-  top: 56px; left: 0; right: 0;
-  background: var(--dark); z-index: 1095;
-  flex-direction: column;
-  padding: 6px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
-}
-.nav-mob-dropdown--open { display: flex; }
-.nav-mob-link {
-  color: rgba(255,255,255,0.75); text-decoration: none;
-  padding: 13px 20px; font-size: 0.9rem; font-weight: 500;
-  border: none; background: none; cursor: pointer;
-  font-family: 'Inter', sans-serif; text-align: left;
-  border-bottom: 1px solid rgba(255,255,255,0.04);
-  display: block; width: 100%;
-  transition: color 0.15s, background 0.15s;
-}
-.nav-mob-link:last-child { border-bottom: none; }
-.nav-mob-link:hover { color: #fff; background: rgba(255,255,255,0.06); }
 
-@media (max-width: 640px) {
-  .nav-mob-bar    { display: flex; }
+/* ── Picker card max-width so cards don't stretch too wide ── */
+.picker-card { max-width: 380px; }
+
+/* ── Navigator responsive (non-admin-layout screens) ── */
+@media (max-width: 991px) {
   .nav-topbar     { display: none; }
   .museo-back-bar { display: none; }
-  .museo-picker-root  { padding-top: 56px; }
-  .visite-screen-root { padding-top: 56px; }
-  .student-root       { padding-top: 56px; }
-  .lobby-root         { padding-top: 56px; }
+  .visite-screen-root { padding-top: 60px; }
+  .student-root       { padding-top: 60px; }
+  .lobby-root         { padding-top: 60px; }
+}
+
+/* ── Search box dark mode ── */
+[data-theme="dark"] .search-box-container {
+  background: #1a2235;
+  border-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .search-input {
+  color: #e8edf5;
+}
+[data-theme="dark"] .search-input::placeholder {
+  color: #475569;
 }

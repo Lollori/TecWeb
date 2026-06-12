@@ -1,3 +1,23 @@
+function toggleDarkMode() {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+    updateDarkToggleUI();
+}
+
+function updateDarkToggleUI() {
+    const isDark = document.documentElement.dataset.theme === 'dark';
+    const icon  = document.getElementById('darkToggleIcon');
+    const label = document.querySelector('#darkToggle .toggle-label');
+    if (icon)  icon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (label) label.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
+    const mIcon  = document.getElementById('mobileDarkIcon');
+    const mLabel = document.getElementById('mobileDarkLabel');
+    if (mIcon)  mIcon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+    if (mLabel) mLabel.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // 1. Recupera dati dal LocalStorage
     const userUsername = localStorage.getItem('userUsername');
@@ -29,7 +49,10 @@ document.addEventListener('DOMContentLoaded', () => {
         roleEl.textContent = cfg.label;
     }
 
-    // 4. Gestione logout
+    // 4. Aggiorna UI dark-toggle
+    updateDarkToggleUI();
+
+    // 5. Gestione logout
     if (logoutEl) {
         logoutEl.addEventListener('click', (e) => {
             e.preventDefault();
@@ -40,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 5. Aggiorna anche l'header della dashboard se presente
+    // 6. Aggiorna anche l'header della dashboard se presente
     const headerRoleLabel = document.getElementById('headerRoleLabel');
     if (headerRoleLabel) {
         headerRoleLabel.textContent = cfg.label;

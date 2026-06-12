@@ -307,6 +307,14 @@ body {
 }
 .home-menu-link:hover { opacity: 1; }
 
+.sidebar-divider-line {
+    height: 1px;
+    background: rgba(255,255,255,0.06);
+    margin: 8px 0;
+}
+
+a.nav-item { text-decoration: none; }
+
 .sidebar-divider {
     font-size: 0.6rem;
     font-weight: 700;

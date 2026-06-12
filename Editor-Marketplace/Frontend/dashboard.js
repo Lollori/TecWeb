@@ -64,28 +64,7 @@ window.addEventListener('pageshow', () => {
     }
 });
 
-/* ============================================================
-   DARK MODE
-   ============================================================ */
-
-function toggleDarkMode() {
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    document.documentElement.dataset.theme = isDark ? 'light' : 'dark';
-    localStorage.setItem('theme', isDark ? 'light' : 'dark');
-    updateDarkToggleIcon();
-}
-
-function updateDarkToggleIcon() {
-    const isDark = document.documentElement.dataset.theme === 'dark';
-    const icon   = document.getElementById('darkToggleIcon');
-    const label  = document.querySelector('#darkToggle .toggle-label');
-    if (icon)  icon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    if (label) label.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
-    const mIcon  = document.getElementById('mobileDarkIcon');
-    const mLabel = document.getElementById('mobileDarkLabel');
-    if (mIcon)  mIcon.className    = isDark ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    if (mLabel) mLabel.textContent = isDark ? 'Modalità chiara' : 'Modalità scura';
-}
+/* dark mode handled by profile.js */
 
 /* ============================================================
    MOBILE MENU
@@ -120,7 +99,7 @@ function closeMobileMenu() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    updateDarkToggleIcon();
+    updateDarkToggleUI();
 
     if (!SESSION.userId) {
         window.location.href = '/login/login.html?redirect=/Editor-Marketplace/Frontend/dashboard.html';

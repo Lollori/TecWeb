@@ -26,22 +26,31 @@
             <p class="admin-badge">Dashboard Curatore</p>
         </div>
 
+        <a href="/" class="menu-link home-menu-link">
+            <i class="fa-solid fa-house"></i> Menu principale
+        </a>
+        <div class="sidebar-divider-line"></div>
+
         <nav class="sidebar-menu">
-            <a href="dashboard.html" class="menu-link">
+            <a href="dashboard.html" class="nav-item">
                 <i class="fa-solid fa-building-columns"></i> Musei
             </a>
-            <a href="dashboard.html?s=modifica-museo" class="menu-link">
+            <a href="dashboard.html?s=modifica-museo" class="nav-item">
                 <i class="fa-solid fa-pen-to-square"></i> Modifica Museo
             </a>
-            <a href="dashboard.html?s=aggiungi-opere" class="menu-link">
+            <a href="dashboard.html?s=aggiungi-opere" class="nav-item">
                 <i class="fa-solid fa-image"></i> Aggiungi Opera
             </a>
-            <a href="dashboard.html?s=aggiungi-museo" class="menu-link">
+            <a href="dashboard.html?s=aggiungi-museo" class="nav-item">
                 <i class="fa-solid fa-plus-circle"></i> Aggiungi Museo
             </a>
         </nav>
 
         <div class="sidebar-footer">
+            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
+                <span class="toggle-label">Modalità scura</span>
+                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
+            </button>
             <div class="user-pill-mini">
                 <div class="avatar-sm">U</div>
                 <div class="user-info-mini">

@@ -29,33 +29,160 @@ function applyFloorPlanOverrides(museo) {
 
 /* ── MobileMenu ────────────────────────────────────── */
 
-function MobileMenu({ links }) {
-  const [open, setOpen] = React.useState(false);
+function MobileMenu({ links, contextLabel }) {
+  const [open,   setOpen]   = React.useState(false);
+  const [isDark, setIsDark] = React.useState(
+    () => document.documentElement.dataset.theme === 'dark'
+  );
+  const username = localStorage.getItem('userUsername') || '';
+  const role     = localStorage.getItem('userRole')     || '';
+  const roleMap  = {
+    curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
+    visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
+    autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
+  };
+  const cfg = roleMap[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || 'Navigator' };
+
+  function toggleTheme() {
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+    setIsDark(!isDark);
+  }
+
+  function close() { setOpen(false); }
+
   return (
     <>
-      <div className="nav-mob-bar">
-        <button className="nav-mob-burger" onClick={() => setOpen(v => !v)} aria-label="Menu">
-          {open ? '✕' : '☰'}
+      <div className="mobile-topbar">
+        <button
+          className={`mobile-hamburger${open ? ' open' : ''}`}
+          onClick={() => setOpen(v => !v)}
+          aria-label="Menu"
+        >
+          <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-bars'}`} />
         </button>
-        <a href="/" className="nav-mob-logo">
-          ArtAround<span className="nav-mob-logo-dot">.</span>
-        </a>
+        <a href="/" className="mobile-topbar-logo">{contextLabel || 'ArtAround.'}</a>
+        <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
       </div>
-      {open && <div className="nav-mob-overlay" onClick={() => setOpen(false)} />}
-      <nav className={`nav-mob-dropdown${open ? ' nav-mob-dropdown--open' : ''}`}>
-        {links.map((l, i) =>
-          l.href
-            ? <a key={i} href={l.href} className="nav-mob-link" onClick={() => setOpen(false)}>{l.label}</a>
-            : <button key={i} className="nav-mob-link" onClick={() => { l.onClick(); setOpen(false); }}>{l.label}</button>
-        )}
-      </nav>
+
+      <div className={`mobile-menu-overlay${open ? ' open' : ''}`} onClick={close} />
+
+      <div className={`mobile-menu-dropdown${open ? ' open' : ''}`}>
+        <div className="mobile-menu-user-row">
+          <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
+          <div>
+            <div className="mobile-menu-username">{username || '—'}</div>
+            <div className="mobile-menu-role">{cfg.label}</div>
+          </div>
+        </div>
+        <nav className="mobile-nav">
+          {links.map((l, i) => (
+            <button
+              key={i}
+              className="nav-item"
+              onClick={() => {
+                if (l.href) { window.location.href = l.href; }
+                else if (l.onClick) { l.onClick(); }
+                close();
+              }}
+            >
+              {l.icon && <i className={`fa-solid ${l.icon}`} />}
+              {l.label}
+            </button>
+          ))}
+        </nav>
+        <div className="mobile-menu-footer">
+          <a href="/" className="mobile-footer-link">
+            <i className="fa-solid fa-house" />
+            Menu principale
+          </a>
+          <button className="mobile-footer-link" onClick={toggleTheme}>
+            <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
+            {isDark ? 'Modalità chiara' : 'Modalità scura'}
+          </button>
+          <a href="/" className="mobile-footer-link" onClick={() => localStorage.clear()}>
+            <i className="fa-solid fa-power-off" />
+            Logout
+          </a>
+        </div>
+      </div>
     </>
   );
 }
 
-/* ── JoinScreen ─────────────────────────────────────── */
+/* ── Sidebar ─────────────────────────────────────── */
 
-function JoinScreen({ onBack, onJoined }) {
+function Sidebar({ links, contextLabel }) {
+  const [isDark, setIsDark] = React.useState(
+    () => document.documentElement.dataset.theme === 'dark'
+  );
+  const username = localStorage.getItem('userUsername') || '';
+  const role     = localStorage.getItem('userRole')     || '';
+  const roleMap  = {
+    curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
+    visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
+    autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
+  };
+  const cfg = roleMap[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || '—' };
+
+  function toggleTheme() {
+    const next = isDark ? 'light' : 'dark';
+    document.documentElement.dataset.theme = next;
+    localStorage.setItem('theme', next);
+    setIsDark(!isDark);
+  }
+
+  return (
+    <aside className="sidebar">
+      <div className="sidebar-top">
+        <a href="/" style={{ textDecoration: 'none' }}>
+          <h2 className="logo-brand">ArtAround.</h2>
+        </a>
+        <p className="admin-badge">{contextLabel || 'Navigator'}</p>
+      </div>
+
+      <a href="/" className="menu-link home-menu-link">
+        <i className="fa-solid fa-house" /> Menu principale
+      </a>
+      <div className="sidebar-divider-line" />
+
+      <nav className="sidebar-menu">
+        {links.map((l, i) => (
+          <button
+            key={i}
+            className={`nav-item${l.active ? ' active' : ''}`}
+            onClick={l.href ? () => { window.location.href = l.href; } : l.onClick}
+          >
+            {l.icon && <i className={`fa-solid ${l.icon}`} />}
+            {l.label}
+          </button>
+        ))}
+      </nav>
+
+      <div className="sidebar-footer">
+        <button className="dark-toggle" onClick={toggleTheme}>
+          <span className="toggle-label">{isDark ? 'Modalità chiara' : 'Modalità scura'}</span>
+          <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
+        </button>
+        <div className="user-pill-mini">
+          <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
+          <div className="user-info-mini">
+            <span className="name">{username || '—'}</span>
+            <span className="role">{cfg.label}</span>
+          </div>
+          <a href="/" className="logout-icon" style={{ marginLeft: 'auto' }} title="Logout" onClick={() => localStorage.clear()}>
+            <i className="fa-solid fa-power-off" />
+          </a>
+        </div>
+      </div>
+    </aside>
+  );
+}
+
+/* ── JoinContent ─────────────────────────────────────── */
+
+function JoinContent({ onJoined }) {
   const [code,      setCode]      = React.useState('');
   const [joining,   setJoining]   = React.useState(false);
   const [joinError, setJoinError] = React.useState(null);
@@ -81,37 +208,23 @@ function JoinScreen({ onBack, onJoined }) {
   }
 
   return (
-    <div className="student-root">
-      <MobileMenu links={[
-        { label: '← Indietro', onClick: onBack },
-        { label: '⌂ Menu principale', href: '/' },
-      ]} />
-      <div className="nav-topbar nav-topbar--split">
-        <button onClick={onBack} className="back-to-marketplace">← Indietro</button>
-        <a href="/" className="back-to-marketplace">⌂ Menu</a>
-      </div>
-      <div className="student-body">
-        <header className="picker-header">
-          <h1 className="picker-title" style={{ fontSize: 'clamp(1.6rem,4vw,2.4rem)' }}>
-            Unisciti a una Visita
-          </h1>
-          <p className="picker-subtitle">Inserisci il codice stanza fornito dal docente</p>
-        </header>
-        <div className="student-form">
-          <input
-            type="text"
-            className={`student-code-input${joinError ? ' student-code-input--error' : ''}`}
-            placeholder='es. "Fenice rossa"'
-            value={code}
-            onChange={e => { setCode(e.target.value); setJoinError(null); }}
-            onKeyDown={e => e.key === 'Enter' && handleJoin()}
-            autoFocus
-          />
-          {joinError && <p className="student-join-error">{joinError}</p>}
-          <button className="student-join-btn" onClick={handleJoin} disabled={!code.trim() || joining}>
-            {joining ? 'Connessione…' : 'Entra →'}
-          </button>
-        </div>
+    <div className="join-wrapper">
+      <h1 className="page-title">Unisciti a una Visita</h1>
+      <p>Inserisci il codice stanza fornito dal docente</p>
+      <div className="join-card">
+        <input
+          type="text"
+          className={`join-code-input${joinError ? ' join-code-input--error' : ''}`}
+          placeholder='es. "Fenice rossa"'
+          value={code}
+          onChange={e => { setCode(e.target.value); setJoinError(null); }}
+          onKeyDown={e => e.key === 'Enter' && handleJoin()}
+          autoFocus
+        />
+        {joinError && <p className="join-error">{joinError}</p>}
+        <button className="student-join-btn" onClick={handleJoin} disabled={!code.trim() || joining}>
+          {joining ? 'Connessione…' : 'Entra →'}
+        </button>
       </div>
     </div>
   );
@@ -557,10 +670,9 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
 
   return (
     <div className="visite-screen-root">
-      <MobileMenu links={[
-        { label: '⌂ Menu principale', href: '/' },
-        { label: '← Dashboard', href: '/Editor-Marketplace/Frontend/dashboard.html' },
-        { label: '← Tutti i musei', onClick: onBack },
+      <MobileMenu contextLabel={museo.nome} links={[
+        { label: 'Dashboard',     icon: 'fa-gauge',            href: '/Editor-Marketplace/Frontend/dashboard.html' },
+        { label: 'Tutti i musei', icon: 'fa-building-columns', onClick: onBack },
       ]} />
       <div className="museo-back-bar">
         <a href="/" className="back-to-marketplace">⌂ Menu</a>
@@ -704,6 +816,7 @@ function App() {
   const [visite,  setVisite]  = React.useState([]);
   const [lobby,   setLobby]   = React.useState(null);
   const [error,   setError]   = React.useState(null);
+  const [search,  setSearch]  = React.useState('');
 
   const userId   = localStorage.getItem('userId')   || '';
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
@@ -853,13 +966,6 @@ function App() {
     </div>
   );
 
-  if (screen === 'join') return (
-    <JoinScreen
-      onBack={() => setScreen('musei')}
-      onJoined={(codice, nome, museoIsil) => { setLobby({ codice, myName: nome, museoIsil }); setScreen('lobby-studente'); }}
-    />
-  );
-
   if (screen === 'lobby-studente') return (
     <LobbyStudente
       codice={lobby.codice}
@@ -886,45 +992,74 @@ function App() {
     />
   );
 
-  /* screen === 'musei' */
+  /* screen === 'musei' | 'join' */
+  const sidebarLinks = [
+    { label: 'Musei',                   icon: 'fa-museum', active: screen === 'musei', onClick: () => { setSearch(''); setScreen('musei'); } },
+    { label: 'Dashboard',               icon: 'fa-gauge',  href: '/Editor-Marketplace/Frontend/dashboard.html' },
+    { label: 'Unisciti tramite codice', icon: 'fa-link',   active: screen === 'join',  onClick: () => { window.history.pushState({ screen: 'join' }, '', window.location.href); setScreen('join'); } },
+  ];
+
+  const filteredMusei = musei.filter(m =>
+    !search.trim() ||
+    m.nome.toLowerCase().includes(search.toLowerCase()) ||
+    (m.citta || '').toLowerCase().includes(search.toLowerCase())
+  );
+
   return (
-    <div className="museo-picker-root">
-      <MobileMenu links={[
-        { label: '← Dashboard', href: '/Editor-Marketplace/Frontend/dashboard.html' },
-        { label: '🔗 Unisciti tramite codice', onClick: () => setScreen('join') },
-        { label: '⌂ Menu principale', href: '/' },
-      ]} />
-      <div className="nav-topbar nav-topbar--split">
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          <button className="join-code-btn" onClick={() => setScreen('join')}>
-            🔗 Unisciti tramite codice
-          </button>
-          <a href="/" className="back-to-marketplace">⌂ Menu</a>
-        </div>
-      </div>
-      <header className="picker-header">
-        <h1 className="picker-title">ArtAround<span className="picker-dot">.</span></h1>
-        <p className="picker-subtitle">Scegli un museo per vedere le tue visite</p>
-      </header>
-      <div className="picker-grid">
-        {musei.map(m => (
-          <button key={m.codiceIsil} className="picker-card" onClick={() => selectMuseo(m.codiceIsil)}>
-            {m.immagineCopertina
-              ? <img src={m.immagineCopertina} alt={m.nome} className="picker-card-img" />
-              : <div className="picker-card-placeholder"><span>{m.nome[0]}</span></div>
-            }
-            <div className="picker-card-body">
-              <h3 className="picker-card-name">{m.nome}</h3>
-              <p className="picker-card-city">{m.citta}</p>
-              <span className="picker-card-isil">{m.codiceIsil}</span>
+    <div className="admin-layout">
+      <Sidebar contextLabel="Navigator" links={sidebarLinks} />
+      <MobileMenu contextLabel="ArtAround." links={sidebarLinks} />
+
+      <main className="main-content">
+        {screen === 'musei' ? (
+          <>
+            <header className="content-header">
+              <div>
+                <h1 className="page-title">Esplora Musei</h1>
+                <p>Scegli un museo per vedere le tue visite</p>
+              </div>
+            </header>
+
+            <div className="toolbar-section">
+              <div className="search-box-container">
+                <i className="fa-solid fa-magnifying-glass search-icon" />
+                <input
+                  className="search-input"
+                  type="text"
+                  placeholder="Cerca museo o città…"
+                  value={search}
+                  onChange={e => setSearch(e.target.value)}
+                />
+              </div>
             </div>
-          </button>
-        ))}
-        {!musei.length && (
-          <p className="nav-empty" style={{ gridColumn: '1/-1' }}>Nessun museo disponibile.</p>
+
+            <div className="picker-grid">
+              {filteredMusei.map(m => (
+                <button key={m.codiceIsil} className="picker-card" onClick={() => selectMuseo(m.codiceIsil)}>
+                  {m.immagineCopertina
+                    ? <img src={m.immagineCopertina} alt={m.nome} className="picker-card-img" />
+                    : <div className="picker-card-placeholder"><span>{m.nome[0]}</span></div>
+                  }
+                  <div className="picker-card-body">
+                    <h3 className="picker-card-name">{m.nome}</h3>
+                    <p className="picker-card-city">{m.citta}</p>
+                    <span className="picker-card-isil">{m.codiceIsil}</span>
+                  </div>
+                </button>
+              ))}
+              {!filteredMusei.length && (
+                <p className="nav-empty" style={{ gridColumn: '1/-1' }}>
+                  {search.trim() ? 'Nessun museo trovato.' : 'Nessun museo disponibile.'}
+                </p>
+              )}
+            </div>
+          </>
+        ) : (
+          <JoinContent
+            onJoined={(codice, nome, museoIsil) => { setLobby({ codice, myName: nome, museoIsil }); setScreen('lobby-studente'); }}
+          />
         )}
-      </div>
+      </main>
     </div>
   );
 }

@@ -50,23 +50,32 @@
             <p class="admin-badge">Marketplace</p>
         </div>
 
+        <a href="/" class="menu-link home-menu-link">
+            <i class="fa-solid fa-house"></i> Menu principale
+        </a>
+        <div class="sidebar-divider-line"></div>
+
         <nav class="sidebar-menu">
-            <a href="dashboard.html" class="menu-link">
+            <a href="dashboard.html" class="nav-item">
                 <i class="fa-solid fa-arrow-left"></i> Dashboard
             </a>
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
-            <a href="#" class="menu-link" id="tabBtnOpere" onclick="event.preventDefault(); setTab('opere', this)">
+            <div class="sidebar-divider-line"></div>
+            <a href="#" class="nav-item" id="tabBtnOpere" onclick="event.preventDefault(); setTab('opere', this)">
                 <i class="fa-solid fa-palette"></i> Opere
             </a>
-            <a href="#" class="menu-link" id="tabBtnVisite" onclick="event.preventDefault(); setTab('visite', this)">
+            <a href="#" class="nav-item" id="tabBtnVisite" onclick="event.preventDefault(); setTab('visite', this)">
                 <i class="fa-solid fa-map"></i> Visite
             </a>
-            <a href="marketplace.html" class="menu-link active" id="tabBtnMarketplace">
+            <a href="marketplace.html" class="nav-item active" id="tabBtnMarketplace">
                 <i class="fa-solid fa-store"></i> Marketplace
             </a>
         </nav>
 
         <div class="sidebar-footer">
+            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
+                <span class="toggle-label">Modalità scura</span>
+                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
+            </button>
             <div class="user-pill-mini">
                 <div class="avatar-sm">M</div>
                 <div class="user-info-mini">
