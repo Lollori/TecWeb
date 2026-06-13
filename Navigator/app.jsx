@@ -232,7 +232,7 @@ function JoinContent({ onJoined }) {
 
 /* ── LobbyDocente ─────────────────────────────────────── */
 
-function LobbyDocente({ codice, visitaNome, onClose }) {
+function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [studenti, setStudenti] = React.useState([]);
   const [stato,    setStato]    = React.useState('attesa');
   const [avviando, setAvviando] = React.useState(false);
@@ -262,24 +262,49 @@ function LobbyDocente({ codice, visitaNome, onClose }) {
     }
   }
 
-  if (stato === 'iniziata') return (
-    <div className="lobby-root lobby-root--dark">
-      <div className="lobby-started">
-        <span className="lobby-started-icon">✅</span>
-        <h2 className="lobby-started-title">Visita avviata!</h2>
-        <p className="lobby-started-sub">Tutti i {studenti.length} partecipanti sono stati notificati.</p>
-        <button className="back-to-marketplace" onClick={onClose} style={{ marginTop: 28 }}>
-          ← Torna alla lista visite
-        </button>
+  const museoHeader = museo && (
+    <div className="museo-mini-header">
+      <div className="museo-mini-identity">
+        {museo.immagineCopertina && (
+          <div className="museo-mini-cover">
+            <img src={museo.immagineCopertina} alt={museo.nome} />
+          </div>
+        )}
+        <div className="museo-mini-info">
+          <h1 className="museo-mini-title">{museo.nome}</h1>
+          <p className="museo-mini-sub">{museo.citta} · {museo.codiceIsil}</p>
+        </div>
       </div>
     </div>
   );
 
-  return (
-    <div className="lobby-root lobby-root--dark">
-      <div className="nav-topbar">
-        <button onClick={onClose} className="back-to-marketplace">← Annulla sessione</button>
+  const backBar = (
+    <div className="lobby-back-bar">
+      <button className="museo-detail-back" onClick={onClose}>
+        <i className="fa-solid fa-arrow-left" /> Annulla sessione
+      </button>
+    </div>
+  );
+
+  if (stato === 'iniziata') return (
+    <>
+      {museoHeader}
+      {backBar}
+      <div className="lobby-root lobby-root--dark" style={{ flex: 1, minHeight: 0 }}>
+        <div className="lobby-started">
+          <span className="lobby-started-icon">✅</span>
+          <h2 className="lobby-started-title">Visita avviata!</h2>
+          <p className="lobby-started-sub">Tutti i {studenti.length} partecipanti sono stati notificati.</p>
+        </div>
       </div>
+    </>
+  );
+
+  return (
+    <>
+      {museoHeader}
+      {backBar}
+      <div className="lobby-root lobby-root--dark" style={{ flex: 1, minHeight: 0 }}>
       <div className="lobby-body">
         <header className="lobby-header">
           <p className="lobby-label">Lobby di Attesa · Docente</p>
@@ -324,6 +349,7 @@ function LobbyDocente({ codice, visitaNome, onClose }) {
         </button>
       </div>
     </div>
+    </>
   );
 }
 
@@ -669,17 +695,7 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
   const [pianoIdx,        setPianoIdx]        = React.useState(0);
 
   return (
-    <div className="visite-screen-root">
-      <MobileMenu contextLabel={museo.nome} links={[
-        { label: 'Dashboard',     icon: 'fa-gauge',            href: '/Editor-Marketplace/Frontend/dashboard.html' },
-        { label: 'Tutti i musei', icon: 'fa-building-columns', onClick: onBack },
-      ]} />
-      <div className="museo-back-bar">
-        <a href="/" className="back-to-marketplace">⌂ Menu</a>
-        <a href="/Editor-Marketplace/Frontend/dashboard.html" className="back-to-marketplace">← Dashboard</a>
-        <button onClick={onBack} className="back-btn">← Tutti i musei</button>
-      </div>
-
+    <>
       <div
         className="museo-mini-header"
         style={(showMap || showMapInterna) ? { borderBottomColor: 'transparent' } : undefined}
@@ -761,6 +777,12 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
         </div>
       )}
 
+      <div style={{ padding: '20px 32px 0' }}>
+        <button className="museo-detail-back" onClick={onBack}>
+          <i className="fa-solid fa-arrow-left" /> Tutti i musei
+        </button>
+      </div>
+
       <main className="nav-main">
         <p className="visite-section-title">Le mie visite</p>
         {visite.length === 0
@@ -803,7 +825,19 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
         }
 
       </main>
-    </div>
+    </>
+  );
+}
+
+/* ── Marketplace ─────────────────────────────────────────── */
+
+function MarketplaceScreen() {
+  return (
+    <iframe
+      src="/Editor-Marketplace/Frontend/dashboard.html?embed=marketplace"
+      style={{ flex: 1, minHeight: 0, width: '100%', border: 'none', display: 'block' }}
+      title="Marketplace"
+    />
   );
 }
 
@@ -934,6 +968,7 @@ function App() {
         const data = await res.json();
         if (res.ok && !data.error) {
           setLobby({ codice, visitaNome: visita.nomeVisita });
+          window.history.pushState({ screen: 'lobby-docente' }, '', window.location.href);
           setScreen('lobby-docente');
           return;
         }
@@ -975,29 +1010,29 @@ function App() {
     />
   );
 
-  if (screen === 'lobby-docente') return (
-    <LobbyDocente
-      codice={lobby.codice}
-      visitaNome={lobby.visitaNome}
-      onClose={() => { setLobby(null); setScreen('visite'); }}
-    />
-  );
+  /* screen === 'musei' | 'join' | 'visite' | 'lobby-docente' */
+  const closeSession = () => { setLobby(null); setScreen('visite'); };
+  const joinClick    = () => { window.history.pushState({ screen: 'join' }, '', window.location.href); setScreen('join'); };
 
-  if (screen === 'visite') return (
-    <VisiteScreen
-      museo={museo}
-      visite={visite}
-      onBack={goBack}
-      onAvvia={handleAvvia}
-    />
-  );
+  const goMarketplace = () => setScreen('marketplace');
 
-  /* screen === 'musei' | 'join' */
-  const sidebarLinks = [
-    { label: 'Musei',                   icon: 'fa-museum', active: screen === 'musei', onClick: () => { setSearch(''); setScreen('musei'); } },
-    { label: 'Dashboard',               icon: 'fa-gauge',  href: '/Editor-Marketplace/Frontend/dashboard.html' },
-    { label: 'Unisciti tramite codice', icon: 'fa-link',   active: screen === 'join',  onClick: () => { window.history.pushState({ screen: 'join' }, '', window.location.href); setScreen('join'); } },
-  ];
+  const sidebarLinks = screen === 'lobby-docente'
+    ? [
+        { label: 'Musei',                   icon: 'fa-museum', active: true,                    onClick: closeSession },
+        { label: 'Marketplace',             icon: 'fa-store',                                   onClick: goMarketplace },
+        { label: 'Unisciti tramite codice', icon: 'fa-link',                                    onClick: joinClick },
+      ]
+    : screen === 'visite'
+    ? [
+        { label: 'Musei',                   icon: 'fa-museum', active: true,                    onClick: goBack },
+        { label: 'Marketplace',             icon: 'fa-store',                                   onClick: goMarketplace },
+        { label: 'Unisciti tramite codice', icon: 'fa-link',                                    onClick: joinClick },
+      ]
+    : [
+        { label: 'Musei',                   icon: 'fa-museum', active: screen === 'musei',      onClick: () => { setSearch(''); setScreen('musei'); } },
+        { label: 'Marketplace',             icon: 'fa-store',  active: screen === 'marketplace', onClick: goMarketplace },
+        { label: 'Unisciti tramite codice', icon: 'fa-link',   active: screen === 'join',       onClick: joinClick },
+      ];
 
   const filteredMusei = musei.filter(m =>
     !search.trim() ||
@@ -1010,7 +1045,7 @@ function App() {
       <Sidebar contextLabel="Navigator" links={sidebarLinks} />
       <MobileMenu contextLabel="ArtAround." links={sidebarLinks} />
 
-      <main className="main-content">
+      <main className={`main-content${screen === 'visite' ? ' main-content--visite' : screen === 'lobby-docente' || screen === 'marketplace' ? ' main-content--lobby' : ''}`}>
         {screen === 'musei' ? (
           <>
             <header className="content-header">
@@ -1054,6 +1089,12 @@ function App() {
               )}
             </div>
           </>
+        ) : screen === 'visite' ? (
+          <VisiteScreen museo={museo} visite={visite} onBack={goBack} onAvvia={handleAvvia} />
+        ) : screen === 'marketplace' ? (
+          <MarketplaceScreen />
+        ) : screen === 'lobby-docente' ? (
+          <LobbyDocente codice={lobby.codice} visitaNome={lobby.visitaNome} museo={museo} onClose={closeSession} />
         ) : (
           <JoinContent
             onJoined={(codice, nome, museoIsil) => { setLobby({ codice, myName: nome, museoIsil }); setScreen('lobby-studente'); }}

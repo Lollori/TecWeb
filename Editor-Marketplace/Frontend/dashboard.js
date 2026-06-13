@@ -101,6 +101,11 @@ function closeMobileMenu() {
 document.addEventListener('DOMContentLoaded', async () => {
     updateDarkToggleUI();
 
+    if (new URLSearchParams(location.search).get('embed') === 'marketplace') {
+        initMarketplace();
+        return;
+    }
+
     if (!SESSION.userId) {
         window.location.href = '/login/login.html?redirect=/Editor-Marketplace/Frontend/dashboard.html';
         return;
@@ -229,8 +234,7 @@ function switchSection(id) {
     if (target) target.style.display = 'block';
 
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    const activeBtn = document.querySelector(`.nav-item[data-section="${id}"]`);
-    if (activeBtn) activeBtn.classList.add('active');
+    document.querySelectorAll(`.nav-item[data-section="${id}"]`).forEach(b => b.classList.add('active'));
 
     if (id === 'musei')           renderMusei();
     if (id === 'modifica-museo')  initModificaMuseo();

@@ -42,6 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarEl.textContent = cfg.letter;
         avatarEl.style.backgroundColor = cfg.color;
     }
+
+    // Aggiorna avatar mobile (dashboard.html)
+    const mobileAvatarTop  = document.getElementById('mobileAvatarTop');
+    const mobileAvatarMenu = document.getElementById('mobileAvatarMenu');
+    if (mobileAvatarTop)  { mobileAvatarTop.textContent  = cfg.letter; mobileAvatarTop.style.backgroundColor  = cfg.color; }
+    if (mobileAvatarMenu) { mobileAvatarMenu.textContent = cfg.letter; mobileAvatarMenu.style.backgroundColor = cfg.color; }
     if (nameEl) {
         nameEl.textContent = userUsername ? userUsername.charAt(0).toUpperCase() + userUsername.slice(1) : 'Ospite';
     }

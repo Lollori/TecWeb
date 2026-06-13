@@ -19,19 +19,23 @@ let vendidaTarget = null;
    INIT
    ============================================================ */
 
-document.addEventListener('DOMContentLoaded', async () => {
+window.initMarketplace = async function () {
     await loadAll();
     renderMuseoFilter();
-    // Show opere tab content by default without changing sidebar highlighting
     showTabContent('opere');
 
-    document.getElementById('vendidaForm').addEventListener('submit', submitVendita);
-
-    // Chiudi modal cliccando fuori
-    document.getElementById('vendidaModal').addEventListener('click', function (e) {
+    const form  = document.getElementById('vendidaForm');
+    const modal = document.getElementById('vendidaModal');
+    if (form)  form.addEventListener('submit', submitVendita);
+    if (modal) modal.addEventListener('click', function (e) {
         if (e.target === this) closeVendidaModal();
     });
-});
+};
+
+// Per il tab switching dall'esterno (Navigator)
+window.mktShowTab = function (tab) { showTabContent(tab); };
+
+document.addEventListener('DOMContentLoaded', window.initMarketplace);
 
 /* ============================================================
    CARICAMENTO DATI
@@ -61,6 +65,7 @@ async function loadAll() {
 
 function renderMuseoFilter() {
     const sel = document.getElementById('museoFilter');
+    if (!sel) return;
     sel.innerHTML =
         '<option value="">Tutti i musei</option>' +
         allMusei.map(m => `<option value="${m.codiceIsil || m._id}">${m.nome}</option>`).join('');
@@ -68,6 +73,7 @@ function renderMuseoFilter() {
 
 function applyFilter() {
     const sel = document.getElementById('museoFilter');
+    if (!sel) return;
     const museoSelected = sel.selectedIndex > 0;
     const filterValue = sel.value;
 
@@ -88,22 +94,22 @@ function applyFilter() {
    TAB SWITCHING
    ============================================================ */
 
-// Only shows/hides tab content and renders data — no sidebar changes
 function showTabContent(tab) {
     currentTab = tab;
-    document.getElementById('tabOpere').style.display  = tab === 'opere'  ? '' : 'none';
-    document.getElementById('tabVisite').style.display = tab === 'visite' ? '' : 'none';
+    const elO = document.getElementById('tabOpere');
+    const elV = document.getElementById('tabVisite');
+    if (elO) elO.style.display = tab === 'opere'  ? '' : 'none';
+    if (elV) elV.style.display = tab === 'visite' ? '' : 'none';
     applyFilter();
 }
 
-// Called on explicit user click: moves sidebar highlight to the selected tab
 function setTab(tab, el) {
     const btnOpere       = document.getElementById('tabBtnOpere');
     const btnVisite      = document.getElementById('tabBtnVisite');
     const btnMarketplace = document.getElementById('tabBtnMarketplace');
 
-    btnOpere.classList.toggle('active',  tab === 'opere');
-    btnVisite.classList.toggle('active', tab === 'visite');
+    if (btnOpere)  btnOpere.classList.toggle('active',  tab === 'opere');
+    if (btnVisite) btnVisite.classList.toggle('active', tab === 'visite');
     if (btnMarketplace) btnMarketplace.classList.remove('active');
 
     showTabContent(tab);
@@ -115,6 +121,7 @@ function setTab(tab, el) {
 
 function renderOpere(opere) {
     const grid = document.getElementById('tabOpere');
+    if (!grid) return;
 
     if (!opere.length) {
         grid.innerHTML = '<p class="empty-msg">Nessuna opera disponibile per questo museo.</p>';
@@ -146,6 +153,7 @@ function renderOpere(opere) {
 
 function renderVisite(visite) {
     const grid = document.getElementById('tabVisite');
+    if (!grid) return;
 
     if (!visite.length) {
         grid.innerHTML = '<p class="empty-msg">Nessuna visita disponibile per questo museo.</p>';
@@ -209,6 +217,7 @@ function closeVendidaModal() {
     document.body.classList.remove('no-scroll');
     vendidaTarget = null;
 }
+window.closeVendidaModal = closeVendidaModal;
 
 async function submitVendita(e) {
     e.preventDefault();
