@@ -777,7 +777,7 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 .geo-room-panel {
   position: fixed;
   bottom: 0;
-  left: 0;
+  left: 280px; /* sidebar width — overridden to 0 on mobile */
   right: 0;
   z-index: 200;
   background: #1e293b;
@@ -921,6 +921,7 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 @media (max-width: 991px) {
   .nav-topbar  { display: none; }
   .lobby-root  { padding-top: 60px; }
+  .geo-room-panel { left: 0; }
 }
 
 /* ── Search box dark mode ── */
