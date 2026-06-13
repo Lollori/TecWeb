@@ -1799,3 +1799,23 @@ select.custom-input {
 [data-theme="dark"] .analytics-bar-track {
     background: rgba(255, 255, 255, 0.1);
 }
+
+/* ── View-toggle buttons (tabella / griglia) ── */
+.view-toggle-btn {
+    padding: 8px 14px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+}
+.view-toggle-btn.vt-active {
+    background: #FF007F;
+    color: #fff;
+}
+.view-toggle-btn.vt-inactive {
+    background: #f8f9fa;
+    color: #888;
+}
+[data-theme="dark"] .view-toggle-btn.vt-inactive {
+    background: #1a2235;
+    color: #94a3b8;
+}

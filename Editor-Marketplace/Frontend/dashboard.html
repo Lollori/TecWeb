@@ -97,29 +97,27 @@
     <!-- MAIN CONTENT -->
     <main class="main-content">
 
-        <header class="content-header d-flex justify-content-between align-items-end mb-5" id="contentHeader">
-            <div>
-                <h1 class="page-title" id="pageTitle">Pannello di Controllo</h1>
-                <p class="text-muted mb-0" id="pageSubtitle">Benvenuto nell'area di gestione.</p>
-            </div>
-            <div class="quick-stats d-flex gap-4">
-                <div class="stat-item text-end">
-                    <span id="museiAttiviCount" class="d-block fw-bold h4 mb-0 text-magenta">…</span>
-                    <small class="text-muted" id="museiCountLabel">I tuoi Musei</small>
-                </div>
-            </div>
-        </header>
 
         <!-- ════════════════════════════════════════
              CURATORE — MUSEI
              ════════════════════════════════════════ -->
         <section id="section-musei" class="dashboard-section mb-5" style="display:none">
-            <div class="section-header-inline d-flex justify-content-between align-items-center mb-4" id="museiListHeader">
-                <h3 class="fw-bold h4 mb-0">I tuoi Musei</h3>
-                <div class="search-box-container shadow-sm py-1 px-3">
-                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                    <input type="text" id="searchMuseiDash" class="search-input py-2"
-                           placeholder="Cerca…" oninput="filterMuseiDash()">
+            <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3" id="museiListHeader">
+                <div>
+                    <h1 class="page-title">I tuoi Musei</h1>
+                    <p class="text-muted mb-0">Cerca, modifica o esplora le collezioni dei tuoi musei.</p>
+                </div>
+                <div class="d-flex gap-2 align-items-center flex-wrap">
+                    <select id="filterCuratoreMuseiCitta" class="custom-input"
+                            style="min-width:150px;padding:6px 14px;height:42px;"
+                            onchange="filterMuseiDash()">
+                        <option value="">Tutte le città</option>
+                    </select>
+                    <div class="search-box-container shadow-sm py-1 px-3">
+                        <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                        <input type="text" id="searchMuseiDash" class="search-input py-2"
+                               placeholder="Cerca…" oninput="filterMuseiDash()">
+                    </div>
                 </div>
             </div>
 <div id="museiView" class="items-grid"></div>

@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const roleMap = {
         curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
         visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
-        autore:     { letter: 'A', color: '#05070A', label: 'Autore' }
+        autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
+        admin:      { letter: 'Ad', color: '#e11d48', label: 'Admin' }
     };
     const cfg = roleMap[userRole] || { letter: '?', color: '#888', label: 'Utente' };
 

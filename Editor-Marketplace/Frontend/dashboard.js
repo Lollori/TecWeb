@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     if (role === 'curatore') {
         await loadMuseiCuratore();
-        document.getElementById('museiAttiviCount').textContent = curMusei.length;
+        _populateCuratoreMuseiCittaFilter();
         const sp = new URLSearchParams(window.location.search).get('s');
         switchSection(sp || 'musei');
         if (!sp || sp === 'musei') {
@@ -134,16 +134,10 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
         }
     } else if (role === 'autore') {
-        document.getElementById('museiAttiviCount').textContent = '—';
-        document.getElementById('museiCountLabel').textContent  = 'Sezione';
         switchSection('autore-musei');
     } else if (role === 'visitatore') {
-        document.getElementById('museiAttiviCount').textContent = '—';
-        document.getElementById('museiCountLabel').textContent  = 'Sezione';
         switchSection('visitatore-musei');
     } else if (role === 'admin') {
-        document.getElementById('museiAttiviCount').textContent = '—';
-        document.getElementById('museiCountLabel').textContent  = 'Sezione';
         switchSection('admin-utenti');
     }
 });
@@ -174,9 +168,11 @@ const SECTIONS_BY_ROLE = {
         { id: 'marketplace',            icon: 'fa-store',             label: 'Marketplace'     },
     ],
     visitatore: [
+        { divider: 'Esplora' },
         { id: 'visitatore-musei',  icon: 'fa-building-columns', label: 'Musei'       },
         { id: 'visitatore-opere',  icon: 'fa-image',            label: 'Opere'       },
         { id: 'visitatore-visite', icon: 'fa-route',            label: 'Visite'      },
+        { divider: 'Marketplace' },
         { id: 'marketplace',       icon: 'fa-store',            label: 'Marketplace' },
     ],
     admin: [
@@ -442,20 +438,27 @@ async function loadMuseiCuratore() {
    ============================================================ */
 
 function filterMuseiDash() {
-    const q = (document.getElementById('searchMuseiDash')?.value || '').toLowerCase();
-    const filtered = q
-        ? curMusei.filter(m => m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q))
-        : curMusei;
+    const q     = (document.getElementById('searchMuseiDash')?.value         || '').toLowerCase();
+    const citta =  document.getElementById('filterCuratoreMuseiCitta')?.value || '';
+    let filtered = curMusei;
+    if (q)     filtered = filtered.filter(m => m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q));
+    if (citta) filtered = filtered.filter(m => m.citta === citta);
     renderMusei(filtered);
+}
+
+function _populateCuratoreMuseiCittaFilter() {
+    const sel = document.getElementById('filterCuratoreMuseiCitta');
+    if (!sel) return;
+    const citta = [...new Set(curMusei.map(m => m.citta).filter(Boolean))].sort();
+    sel.innerHTML = '<option value="">Tutte le città</option>' +
+        citta.map(c => `<option value="${c}">${c}</option>`).join('');
 }
 
 function renderMusei(lista) {
     if (!lista) lista = curMusei;
 
-    const listHeader    = document.getElementById('museiListHeader');
-    const contentHeader = document.getElementById('contentHeader');
-    if (contentHeader) { contentHeader.style.display = ''; contentHeader.classList.add('d-flex'); }
-    if (listHeader)    { listHeader.style.display = '';    listHeader.classList.add('d-flex'); }
+    const listHeader = document.getElementById('museiListHeader');
+    if (listHeader)  { listHeader.style.display = ''; listHeader.classList.add('d-flex'); }
 
     const view = document.getElementById('museiView');
 
@@ -499,10 +502,8 @@ window.showMuseoDetail = async function (codiceIsil) {
     if (!museo) return;
     currentViewMuseo = museo;
 
-    const contentHeader = document.getElementById('contentHeader');
-    const listHeader    = document.getElementById('museiListHeader');
-    if (contentHeader) { contentHeader.classList.remove('d-flex'); contentHeader.style.display = 'none'; }
-    if (listHeader)    { listHeader.classList.remove('d-flex');    listHeader.style.display = 'none'; }
+    const listHeader = document.getElementById('museiListHeader');
+    if (listHeader)  { listHeader.classList.remove('d-flex'); listHeader.style.display = 'none'; }
 
     sessionStorage.setItem('curatorMuseo', codiceIsil);
 
@@ -860,7 +861,6 @@ function attachFormHandlers() {
                 alert('Museo aggiunto!');
                 nuovoMuseoForm.reset();
                 await loadMuseiCuratore();
-                document.getElementById('museiAttiviCount').textContent = curMusei.length;
                 switchSection('musei');
             } else {
                 alert('Errore: ' + data.error);
@@ -883,10 +883,16 @@ async function initAutoreMusei() {
                 <h1 class="page-title">Musei</h1>
                 <p class="text-muted mb-0">Esplora i musei disponibili.</p>
             </div>
-            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
-                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                <input type="text" id="searchAutoreMusei" class="search-input py-2"
-                       placeholder="Cerca museo…" oninput="filterAutoreMusei()">
+            <div class="d-flex align-items-center gap-3">
+                <button class="btn-magenta" style="white-space:nowrap;"
+                        onclick="document.getElementById('autoreVisiteSection').scrollIntoView({behavior:'smooth',block:'start'})">
+                    <i class="fa-solid fa-ranking-star me-2"></i>Visite Popolari
+                </button>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:240px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAutoreMusei" class="search-input py-2"
+                           placeholder="Cerca museo…" oninput="filterAutoreMusei()">
+                </div>
             </div>
         </div>
 
@@ -894,123 +900,114 @@ async function initAutoreMusei() {
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-7">
-                <div class="glass-card p-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="fw-bold mb-0">
-                            <i class="fa-solid fa-ranking-star me-2" style="color:var(--magenta)"></i>
-                            Top 3 Visite Popolari
-                        </h5>
-                        <button class="btn-outline-custom" style="padding:5px 12px;font-size:0.8rem;"
-                                onclick="switchSection('marketplace')">
-                            Vedi tutte <i class="fa-solid fa-arrow-right ms-1"></i>
-                        </button>
-                    </div>
-                    <div id="autoreVisiteTop3" class="row g-3"></div>
+        <hr style="border:none;border-top:1px solid #e2e8f0;margin:0 0 2rem;">
+
+        <div id="autoreVisiteSection">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <div>
+                    <h1 class="page-title mb-0">Visite più Popolari</h1>
+                    <p class="text-muted mb-0">Le tre visite più acquistate sul marketplace</p>
                 </div>
+                <button class="btn-outline-custom" style="padding:5px 12px;font-size:0.8rem;white-space:nowrap;"
+                        onclick="switchSection('marketplace')">
+                    Vedi tutte <i class="fa-solid fa-arrow-right ms-1"></i>
+                </button>
             </div>
-            <div class="col-lg-5">
-                <div class="glass-card p-4">
-                    <h5 class="fw-bold mb-3">
-                        <i class="fa-solid fa-layer-group me-2" style="color:var(--magenta)"></i>
-                        Opere con più Collezioni
-                    </h5>
-                    <div id="autoreOpereList"></div>
-                </div>
+            <div class="glass-card p-4">
+                <div id="autoreVisiteTop3" style="display:flex;align-items:flex-end;gap:12px;padding:4px 0 0;"></div>
             </div>
         </div>
     `;
 
     try {
-        const [rMusei, rVisite, rItems] = await Promise.all([
-            fetch('/api/musei'), fetch('/api/visite'), fetch('/api/items'),
+        const [rMusei, rVisite] = await Promise.all([
+            fetch('/api/musei'), fetch('/api/visite'),
         ]);
-        const [dMusei, dVisite, dItems] = await Promise.all([
-            rMusei.json(), rVisite.json(), rItems.json(),
+        const [dMusei, dVisite] = await Promise.all([
+            rMusei.json(), rVisite.json(),
         ]);
 
         allMuseiAutore = dMusei.ok ? dMusei.data : [];
         _renderAutoreMuseiGrid(allMuseiAutore);
 
-        // Top 3 visite
+        // Top 3 visite — podio
         const visiteTop3 = document.getElementById('autoreVisiteTop3');
         const museoMap = {};
         allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome; });
 
         if (dVisite.ok && dVisite.data.length) {
-            const top3 = [...dVisite.data]
+            const sorted = [...dVisite.data]
                 .filter(v => v.pubblica)
                 .sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0))
                 .slice(0, 3);
-            const medals = [
-                { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', label: '1°' },
-                { color: '#94a3b8', bg: 'rgba(148,163,184,0.1)', label: '2°' },
-                { color: '#cd7c3a', bg: 'rgba(205,124,58,0.1)',  label: '3°' },
-            ];
-            visiteTop3.innerHTML = top3.length
-                ? top3.map((v, i) => `
-                    <div class="col-12">
-                        <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;
-                                    border-radius:12px;background:${medals[i].bg};
-                                    border:1px solid ${medals[i].color}22;">
-                            <span style="font-size:1.3rem;font-weight:800;color:${medals[i].color};
-                                         min-width:28px;text-align:center;">${medals[i].label}</span>
-                            <div style="flex:1;min-width:0;">
-                                <p style="margin:0;font-weight:700;font-size:0.92rem;
-                                          white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    ${v.nomeVisita}
-                                </p>
-                                <p style="margin:0;font-size:0.78rem;color:#94a3b8;">
-                                    ${museoMap[v.codiceIsil] || v.codiceIsil}
-                                    · <i class="fa-solid fa-users ms-1 me-1"></i>${v.acquirenti || 0}
-                                </p>
-                            </div>
-                            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
-                                ${v.prezzo > 0
-                                    ? `<span class="price-badge">€${v.prezzo}</span>`
-                                    : `<span class="free-badge">Gratis</span>`
-                                }
-                                <button class="btn-magenta" style="padding:4px 10px;font-size:0.75rem;"
-                                        onclick="switchSection('marketplace')">
-                                    Acquista <i class="fa-solid fa-cart-plus ms-1"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>`).join('')
-                : '<div class="col-12"><p class="text-muted" style="font-size:0.88rem;">Nessuna visita pubblica disponibile.</p></div>';
-        } else {
-            visiteTop3.innerHTML = '<div class="col-12"><p class="text-muted" style="font-size:0.88rem;">Nessuna visita disponibile.</p></div>';
-        }
 
-        // Opere con più collezioni (compatto)
-        const opereList = document.getElementById('autoreOpereList');
-        if (dItems.ok && dItems.data.length) {
-            const counts = {};
-            dItems.data.forEach(it => {
-                if (!counts[it.operaId]) counts[it.operaId] = 0;
-                counts[it.operaId]++;
-            });
-            const top = Object.entries(counts)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 6);
-            const maxCount = top[0]?.[1] || 1;
-            opereList.innerHTML = top.map(([operaId, count], i) => `
-                <div style="padding:5px 0;${i < top.length - 1 ? 'border-bottom:1px solid #f1f5f9;' : ''}">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                        <span style="font-size:0.8rem;font-weight:600;
-                                     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%;">
-                            ${operaId}
-                        </span>
-                        <small style="color:#94a3b8;font-size:0.72rem;flex-shrink:0;">${count}</small>
+            const podioMeta = [
+                { rank: 1, color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', emoji: '🥇', baseH: '72px' },
+                { rank: 2, color: '#94a3b8', bg: 'rgba(148,163,184,0.08)', emoji: '🥈', baseH: '48px' },
+                { rank: 3, color: '#cd7c3a', bg: 'rgba(205,124,58,0.08)',  emoji: '🥉', baseH: '28px' },
+            ];
+
+            const podioCard = (v, meta, museoName) => `
+                <div style="flex:1;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
+                            border:2px solid ${meta.color}50;background:${meta.bg};
+                            transition:transform 0.22s ease,box-shadow 0.22s ease;cursor:pointer;"
+                     onmouseenter="this.style.transform='translateY(-10px) scale(1.04)';
+                                   this.style.boxShadow='0 18px 40px rgba(0,0,0,0.13)';"
+                     onmouseleave="this.style.transform='';this.style.boxShadow='';"
+                     onclick="switchSection('marketplace')">
+                    <div style="text-align:center;padding:18px 12px 10px;">
+                        <span style="font-size:2.2rem;line-height:1;">${meta.emoji}</span>
+                        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;
+                                    color:${meta.color};margin-top:4px;text-transform:uppercase;">
+                            ${meta.rank}° posto
+                        </div>
                     </div>
-                    <div style="height:4px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
-                        <div style="height:100%;width:${Math.round(count / maxCount * 100)}%;
-                                    background:var(--magenta);border-radius:3px;"></div>
+                    <div style="padding:0 12px 14px;flex:1;display:flex;flex-direction:column;gap:6px;text-align:center;">
+                        <p style="margin:0;font-weight:700;font-size:0.88rem;
+                                   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
+                                   line-clamp:2;-webkit-box-orient:vertical;">
+                            ${v.nomeVisita}
+                        </p>
+                        <p style="margin:0;font-size:0.74rem;color:#94a3b8;
+                                   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            ${museoName}
+                        </p>
+                        <p style="margin:0;font-size:0.74rem;color:#94a3b8;">
+                            <i class="fa-solid fa-users me-1"></i>${v.acquirenti || 0} acquirenti
+                        </p>
+                        <div style="margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:6px;align-items:center;">
+                            ${v.prezzo > 0
+                                ? `<span class="price-badge">€${v.prezzo}</span>`
+                                : `<span class="free-badge">Gratis</span>`
+                            }
+                            <button class="btn-magenta" style="width:100%;padding:5px 8px;font-size:0.76rem;">
+                                <i class="fa-solid fa-cart-plus me-1"></i>Acquista
+                            </button>
+                        </div>
                     </div>
-                </div>`).join('');
+                    <div style="height:${meta.baseH};background:${meta.color}25;
+                                border-top:3px solid ${meta.color}60;
+                                display:flex;align-items:center;justify-content:center;">
+                        <span style="font-size:1.6rem;font-weight:900;color:${meta.color};">${meta.rank}</span>
+                    </div>
+                </div>`;
+
+            if (!sorted.length) {
+                visiteTop3.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessuna visita pubblica disponibile.</p>';
+            } else {
+                // ordine visivo podio: 2° — 1° — 3°
+                const podioOrder = sorted.length === 1
+                    ? [[sorted[0], podioMeta[0]]]
+                    : sorted.length === 2
+                        ? [[sorted[1], podioMeta[1]], [sorted[0], podioMeta[0]]]
+                        : [[sorted[1], podioMeta[1]], [sorted[0], podioMeta[0]], [sorted[2], podioMeta[2]]];
+
+                visiteTop3.innerHTML = podioOrder
+                    .map(([v, meta]) => podioCard(v, meta, museoMap[v.codiceIsil] || v.codiceIsil))
+                    .join('');
+            }
         } else {
-            opereList.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessun item disponibile.</p>';
+            visiteTop3.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessuna visita disponibile.</p>';
         }
 
     } catch (e) {
@@ -1029,31 +1026,41 @@ function _renderAutoreMuseiGrid(lista) {
         return;
     }
     grid.className = 'items-grid mb-5';
-    grid.style.alignItems = 'stretch';
     grid.innerHTML = lista.map(m => `
         <div class="item-card museo-card scroll-card-clickable"
-             style="cursor:pointer;display:flex;flex-direction:column;"
+             style="height:340px;"
              onclick="showAutoreMuseoDetail('${m.codiceIsil}')">
-            ${m.immagineCopertina
-                ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
-                       style="height:160px;object-fit:cover;width:100%;"
-                       onerror="this.style.display='none'">`
-                : `<div class="museo-card-img-placeholder" style="height:160px;">
-                       <i class="fa fa-building-columns"></i>
-                   </div>`
-            }
-            <div style="display:flex;flex-direction:column;flex:1;padding:14px 16px 16px;">
-                <h3 style="margin:0 0 4px;font-size:1rem;font-weight:700;">${m.nome}</h3>
-                <p class="museum-sub" style="margin:0 0 8px;">
+            <div style="position:relative;flex-shrink:0;height:200px;">
+                ${m.immagineCopertina
+                    ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div class="museo-card-img-placeholder"
+                            style="display:none;position:absolute;inset:0;">
+                           <i class="fa fa-building-columns"></i>
+                       </div>`
+                    : `<div class="museo-card-img-placeholder">
+                           <i class="fa fa-building-columns"></i>
+                       </div>`
+                }
+            </div>
+            <div style="display:flex;flex-direction:column;padding:14px 16px 16px;
+                        flex:1;overflow:hidden;">
+                <h3 style="margin:0 0 3px;font-size:0.97rem;font-weight:700;
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    ${m.nome}
+                </h3>
+                <p class="museum-sub" style="margin:0 0 6px;">
                     <i class="fa-solid fa-location-dot"></i> ${m.citta}
                 </p>
-                <p class="description-text" style="flex:1;margin:0 0 12px;
-                   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
-                   -webkit-box-orient:vertical;overflow:hidden;">
-                    ${m.descrizioneBreve || ''}
+                <p style="margin:0;font-size:0.82rem;color:#64748b;
+                           display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+                           -webkit-box-orient:vertical;overflow:hidden;flex:1;">
+                    ${m.descrizioneBreve || '&nbsp;'}
                 </p>
-                <div style="margin-top:auto;">
-                    <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
+                <div style="margin-top:10px;">
+                    <span class="tag-bubble" style="font-size:0.75rem;">
+                        <i class="fa-solid fa-barcode"></i> ${m.codiceIsil}
+                    </span>
                 </div>
             </div>
         </div>
@@ -1533,12 +1540,22 @@ function populateMuseoSelect(id, musei) {
 async function initVisitatoreMusei() {
     const section = document.getElementById('section-visitatore-musei');
     section.innerHTML = `
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold h4 mb-0">Musei</h3>
-            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:300px;">
-                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                <input type="text" id="searchVisMusei" class="search-input py-2"
-                       placeholder="Cerca…" oninput="filterVisMusei()">
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Musei</h1>
+                <p class="text-muted mb-0">Esplora i musei disponibili sulla piattaforma.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <select id="filterVisMuseiCitta" class="custom-input"
+                        style="min-width:150px;padding:6px 14px;height:42px;"
+                        onchange="filterVisMusei()">
+                    <option value="">Tutte le città</option>
+                </select>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchVisMusei" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterVisMusei()">
+                </div>
             </div>
         </div>
         <div id="visMuseiGrid" class="items-grid">
@@ -1550,6 +1567,10 @@ async function initVisitatoreMusei() {
         const res  = await fetch('/api/musei');
         const data = await res.json();
         allVisitatoreCachedMusei = data.ok ? data.data : [];
+        const citta = [...new Set(allVisitatoreCachedMusei.map(m => m.citta).filter(Boolean))].sort();
+        const sel = document.getElementById('filterVisMuseiCitta');
+        if (sel) sel.innerHTML = '<option value="">Tutte le città</option>' +
+            citta.map(c => `<option value="${c}">${c}</option>`).join('');
         renderVisMusei(allVisitatoreCachedMusei);
     } catch (e) {
         document.getElementById('visMuseiGrid').innerHTML = '<p class="empty-msg">Errore nel caricamento dei musei.</p>';
@@ -1557,11 +1578,11 @@ async function initVisitatoreMusei() {
 }
 
 function filterVisMusei() {
-    const q = (document.getElementById('searchVisMusei')?.value || '').toLowerCase();
-    const filtered = q
-        ? allVisitatoreCachedMusei.filter(m =>
-            m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q))
-        : allVisitatoreCachedMusei;
+    const q     = (document.getElementById('searchVisMusei')?.value      || '').toLowerCase();
+    const citta =  document.getElementById('filterVisMuseiCitta')?.value || '';
+    let filtered = allVisitatoreCachedMusei;
+    if (q)     filtered = filtered.filter(m => m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q));
+    if (citta) filtered = filtered.filter(m => m.citta === citta);
     renderVisMusei(filtered);
 }
 
@@ -1576,23 +1597,39 @@ function renderVisMusei(lista) {
     grid.className = 'items-grid';
     grid.innerHTML = lista.map(m => `
         <div class="item-card museo-card scroll-card-clickable"
+             style="height:340px;"
              onclick="showVisMuseoDetail('${m.codiceIsil}')">
-            ${m.immagineCopertina
-                ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
-                       onerror="this.style.display='none'">`
-                : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
-            }
-            <div class="card-main-header" style="margin-top:14px">
-                <div class="title-group">
-                    <h3>${m.nome}</h3>
-                    <p class="museum-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
+            <div style="position:relative;flex-shrink:0;height:200px;">
+                ${m.immagineCopertina
+                    ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                           onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                       <div class="museo-card-img-placeholder"
+                            style="display:none;position:absolute;inset:0;">
+                           <i class="fa fa-building-columns"></i>
+                       </div>`
+                    : `<div class="museo-card-img-placeholder">
+                           <i class="fa fa-building-columns"></i>
+                       </div>`
+                }
+            </div>
+            <div style="display:flex;flex-direction:column;padding:14px 16px 16px;flex:1;overflow:hidden;">
+                <h3 style="margin:0 0 3px;font-size:0.97rem;font-weight:700;
+                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    ${m.nome}
+                </h3>
+                <p class="museum-sub" style="margin:0 0 6px;">
+                    <i class="fa-solid fa-location-dot"></i> ${m.citta}
+                </p>
+                <p style="margin:0;font-size:0.82rem;color:#64748b;
+                           display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+                           -webkit-box-orient:vertical;overflow:hidden;flex:1;">
+                    ${m.descrizioneBreve || '&nbsp;'}
+                </p>
+                <div style="margin-top:10px;">
+                    <span class="tag-bubble" style="font-size:0.75rem;">
+                        <i class="fa-solid fa-barcode"></i> ${m.codiceIsil}
+                    </span>
                 </div>
-            </div>
-            <div class="card-body">
-                ${m.descrizioneBreve ? `<p class="description-text">${m.descrizioneBreve}</p>` : ''}
-            </div>
-            <div class="card-footer">
-                <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
             </div>
         </div>
     `).join('');
@@ -1650,7 +1687,10 @@ async function initVisitatoreOpere() {
     const section = document.getElementById('section-visitatore-opere');
     section.innerHTML = `
         <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold h4 mb-0">Opere</h3>
+            <div>
+                <h1 class="page-title">Opere</h1>
+                <p class="text-muted mb-0">Sfoglia le opere presenti nei musei.</p>
+            </div>
             <div class="d-flex gap-3 align-items-center flex-wrap">
                 <select id="filterOpereMuseo" class="custom-input" style="min-width:200px;padding:6px 12px;">
                     <option value="">Tutti i musei</option>
@@ -1838,15 +1878,43 @@ window.showVisOperaDetail = async function (idx) {
 async function initVisitatoreVisite() {
     const section = document.getElementById('section-visitatore-visite');
     section.innerHTML = `
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold h4 mb-0">Visite</h3>
-            <div class="d-flex gap-3 align-items-center flex-wrap">
-                <select id="filterVisiteMuseo" class="custom-input" style="min-width:200px;padding:6px 12px;">
+        <style>
+            .vis-range-input{position:absolute;width:100%;height:4px;top:11px;left:0;appearance:none;-webkit-appearance:none;background:transparent;pointer-events:none;outline:none;}
+            .vis-range-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;}
+            .vis-range-input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;}
+        </style>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Visite</h1>
+                <p class="text-muted mb-0">Scopri le visite guidate disponibili nei musei.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <select id="filterVisiteMuseo" class="custom-input" style="min-width:160px;padding:6px 12px;height:42px;">
                     <option value="">Tutti i musei</option>
                 </select>
-                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                <select id="filterVisiteStatoVis" class="custom-input" style="min-width:140px;padding:6px 12px;height:42px;" onchange="filterVisVisite()">
+                    <option value="">Tutti gli stati</option>
+                    <option value="pubblica">In vendita</option>
+                    <option value="privata">Privata</option>
+                </select>
+                <div>
+                    <div style="font-size:0.82rem;font-weight:600;color:#64748b;margin-bottom:6px;white-space:nowrap;">
+                        Prezzo &nbsp;—&nbsp;
+                        <span id="visRangeLabelMin" style="color:#FF007F;">€0</span>
+                        &nbsp;:&nbsp;
+                        <span id="visRangeLabelMax" style="color:#FF007F;">∞</span>
+                    </div>
+                    <div style="position:relative;height:30px;min-width:160px;">
+                        <div style="position:absolute;left:0;right:0;top:13px;height:4px;background:#e2e8f0;border-radius:2px;">
+                            <div id="visRangeFill" style="position:absolute;height:100%;background:#FF007F;border-radius:2px;left:0%;right:0%;"></div>
+                        </div>
+                        <input type="range" id="visRangeMin" class="vis-range-input" min="0" max="200" value="0"   step="1" oninput="onVisVisiteRangeChange()">
+                        <input type="range" id="visRangeMax" class="vis-range-input" min="0" max="200" value="200" step="1" oninput="onVisVisiteRangeChange()">
+                    </div>
+                </div>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:220px;">
                     <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                    <input type="text" id="searchVisVisite" class="search-input py-2" placeholder="Cerca visita…">
+                    <input type="text" id="searchVisVisite" class="search-input py-2" placeholder="Cerca visita…" oninput="filterVisVisite()">
                 </div>
             </div>
         </div>
@@ -1864,10 +1932,26 @@ async function initVisitatoreVisite() {
     await loadVisVisite('');
 
     filterSel.addEventListener('change', () => loadVisVisite(filterSel.value));
-    document.getElementById('searchVisVisite').addEventListener('input', function () {
-        filterVisVisite(this.value);
-    });
 }
+
+window.onVisVisiteRangeChange = function () {
+    const minEl = document.getElementById('visRangeMin');
+    const maxEl = document.getElementById('visRangeMax');
+    if (!minEl || !maxEl) return;
+    let minVal = parseFloat(minEl.value);
+    let maxVal = parseFloat(maxEl.value);
+    const sliderMax = parseFloat(minEl.max);
+    const sliderMin = parseFloat(minEl.min);
+    if (minVal > maxVal) { minEl.value = maxVal; minVal = maxVal; }
+    const pct  = v => ((v - sliderMin) / (sliderMax - sliderMin)) * 100;
+    const fill = document.getElementById('visRangeFill');
+    if (fill) { fill.style.left = pct(minVal) + '%'; fill.style.right = (100 - pct(maxVal)) + '%'; }
+    const lblMin = document.getElementById('visRangeLabelMin');
+    const lblMax = document.getElementById('visRangeLabelMax');
+    if (lblMin) lblMin.textContent = '€' + minVal;
+    if (lblMax) lblMax.textContent = maxVal >= sliderMax ? '∞' : '€' + maxVal;
+    filterVisVisite();
+};
 
 async function loadVisVisite(codiceIsil) {
     const grid = document.getElementById('visVisiteGrid');
@@ -1883,18 +1967,39 @@ async function loadVisVisite(codiceIsil) {
         const res  = await fetch(url);
         const data = await res.json();
         currentVisitatoreVisite = data.ok ? data.data : [];
-        renderVisVisite(currentVisitatoreVisite);
+
+        // Calibra slider sul prezzo massimo reale
+        const prices = currentVisitatoreVisite.map(v => v.prezzo || 0).filter(p => p > 0);
+        const maxP   = prices.length ? Math.ceil(Math.max(...prices)) : 200;
+        const rMin = document.getElementById('visRangeMin');
+        const rMax = document.getElementById('visRangeMax');
+        if (rMin) { rMin.max = maxP; rMin.value = 0; }
+        if (rMax) { rMax.max = maxP; rMax.value = maxP; }
+        onVisVisiteRangeChange();
+
+        filterVisVisite();
     } catch (e) {
         grid.innerHTML = '<p class="empty-msg">Errore nel caricamento delle visite.</p>';
     }
 }
 
-function filterVisVisite(q) {
-    const filtered = q
-        ? currentVisitatoreVisite.filter(v =>
-            (v.nomeVisita || '').toLowerCase().includes(q.toLowerCase()) ||
-            (v.codiceIsil || '').toLowerCase().includes(q.toLowerCase()))
-        : currentVisitatoreVisite;
+function filterVisVisite() {
+    const q      = (document.getElementById('searchVisVisite')?.value        || '').toLowerCase();
+    const stato  =  document.getElementById('filterVisiteStatoVis')?.value   || '';
+    const minEl  =  document.getElementById('visRangeMin');
+    const maxEl  =  document.getElementById('visRangeMax');
+    const prezzoMin = minEl ? parseFloat(minEl.value) : 0;
+    const prezzoMax = maxEl ? parseFloat(maxEl.value) : NaN;
+    const maxIsLimit = maxEl && parseFloat(maxEl.value) < parseFloat(maxEl.max);
+
+    let filtered = currentVisitatoreVisite;
+    if (q)     filtered = filtered.filter(v =>
+        (v.nomeVisita || '').toLowerCase().includes(q) ||
+        (v.codiceIsil || '').toLowerCase().includes(q));
+    if (stato === 'pubblica') filtered = filtered.filter(v =>  v.pubblica);
+    if (stato === 'privata')  filtered = filtered.filter(v => !v.pubblica);
+    if (prezzoMin > 0)    filtered = filtered.filter(v => (v.prezzo || 0) >= prezzoMin);
+    if (maxIsLimit)       filtered = filtered.filter(v => (v.prezzo || 0) <= prezzoMax);
     renderVisVisite(filtered);
 }
 
@@ -2012,11 +2117,13 @@ async function ensureVisMusei() {
    ADMIN — globals
    ============================================================ */
 
-let allAdminUtenti  = [];
-let allAdminMusei   = [];
-let allAdminOpere   = [];
-let allAdminVisite  = [];
-let allAdminItems   = [];
+let allAdminUtenti      = [];
+let allAdminMusei       = [];
+let adminMuseiViewMode  = 'table';
+let allAdminOpere       = [];
+let adminOpereViewMode  = 'table';
+let allAdminVisite      = [];
+let allAdminItems       = [];
 
 const ADMIN_ROLE_BADGE = {
     curatore:   'bg-primary',
@@ -2041,10 +2148,13 @@ function adminActionBtns(editFn, delFn) {
     </div>`;
 }
 
-function adminSearchHeader(title, inputId, onInputFn) {
+function adminSearchHeader(title, inputId, onInputFn, subtitle = '') {
     return `
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold h4 mb-0">${title}</h3>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title">${title}</h1>
+                ${subtitle ? `<p class="text-muted mb-0">${subtitle}</p>` : ''}
+            </div>
             <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
                 <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
                 <input type="text" id="${inputId}" class="search-input py-2"
@@ -2059,12 +2169,34 @@ function adminSearchHeader(title, inputId, onInputFn) {
 
 async function initAdminUtenti() {
     const section = document.getElementById('section-admin-utenti');
-    section.innerHTML = adminSearchHeader('Gestione Utenti', 'searchAdminUtenti', 'filterAdminUtenti') + `
+    section.innerHTML = `
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title">Gestione Utenti</h1>
+                <p class="text-muted mb-0">Visualizza e gestisci gli utenti della piattaforma.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <select id="filterRoleAdminUtenti" class="custom-input"
+                        style="min-width:150px;padding:6px 14px;height:42px;"
+                        onchange="filterAdminUtenti()">
+                    <option value="">Tutti i ruoli</option>
+                    <option value="curatore">Curatore</option>
+                    <option value="autore">Autore</option>
+                    <option value="visitatore">Visitatore</option>
+                    <option value="admin">Admin</option>
+                </select>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAdminUtenti" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterAdminUtenti()">
+                </div>
+            </div>
+        </div>
         <div class="glass-card p-4">
             <table class="table table-hover mb-0">
-                ${adminTableHeader(['Utente', 'Ruolo', 'Password'])}
+                ${adminTableHeader(['Utente', 'Ruolo'])}
                 <tbody id="adminUtentiBody">
-                    <tr><td colspan="4" class="text-center text-muted py-4">
+                    <tr><td colspan="3" class="text-center text-muted py-4">
                         <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
                     </td></tr>
                 </tbody>
@@ -2078,23 +2210,25 @@ async function initAdminUtenti() {
         renderAdminUtenti(allAdminUtenti);
     } catch (e) {
         document.getElementById('adminUtentiBody').innerHTML =
-            '<tr><td colspan="4" class="text-center text-danger py-4">Errore nel caricamento.</td></tr>';
+            '<tr><td colspan="3" class="text-center text-danger py-4">Errore nel caricamento.</td></tr>';
     }
 }
 
 function filterAdminUtenti() {
-    const q = (document.getElementById('searchAdminUtenti')?.value || '').toLowerCase();
-    renderAdminUtenti(q
-        ? allAdminUtenti.filter(u =>
-            u.username.toLowerCase().includes(q) || u.ruolo.toLowerCase().includes(q))
-        : allAdminUtenti);
+    const q    = (document.getElementById('searchAdminUtenti')?.value || '').toLowerCase();
+    const role = (document.getElementById('filterRoleAdminUtenti')?.value || '').toLowerCase();
+    let lista = allAdminUtenti;
+    if (role) lista = lista.filter(u => u.ruolo.toLowerCase() === role);
+    if (q)    lista = lista.filter(u =>
+        u.username.toLowerCase().includes(q) || u.ruolo.toLowerCase().includes(q));
+    renderAdminUtenti(lista);
 }
 
 function renderAdminUtenti(lista) {
     const tbody = document.getElementById('adminUtentiBody');
     if (!tbody) return;
     if (!lista.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-4">Nessun utente trovato.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">Nessun utente trovato.</td></tr>';
         return;
     }
     tbody.innerHTML = lista.map(u => `
@@ -2110,21 +2244,14 @@ function renderAdminUtenti(lista) {
             </td>
             <td><span class="badge ${ADMIN_ROLE_BADGE[u.ruolo] || 'bg-secondary'}">${u.ruolo}</span></td>
             <td>
-                <span id="pwd-${u._id}"
-                      data-pwd="${(u.password||'').replace(/"/g,'&quot;')}"
-                      data-hidden="1"
-                      style="color:#94a3b8;font-family:monospace;display:inline-block;min-width:6rem;">••••••••</span>
-                <button class="btn btn-link btn-sm p-0 ms-1" title="Mostra/Nascondi"
-                        onclick="togglePwd('${u._id}')" style="color:#94a3b8;">
-                    <i id="pwd-eye-${u._id}" class="fa-solid fa-eye" style="font-size:0.75rem;"></i>
-                </button>
-            </td>
-            <td>
+                ${u.ruolo !== 'admin' ? `
                 <button class="btn-outline-custom btn-sm" title="Elimina"
                         style="color:#ef4444;border-color:#ef4444;"
                         onclick="adminDeleteUtente('${u._id}','${u.username}')">
                     <i class="fa-solid fa-trash"></i>
-                </button>
+                </button>` : `<span class="text-muted" style="font-size:0.8rem;" title="Il profilo admin non può essere eliminato">
+                    <i class="fa-solid fa-lock me-1"></i>Protetto
+                </span>`}
             </td>
         </tr>`).join('');
 }
@@ -2143,66 +2270,213 @@ window.adminDeleteUtente = async function (id, username) {
     } catch (e) { alert('Impossibile contattare il server.'); }
 };
 
-window.togglePwd = function (id) {
-    const span = document.getElementById('pwd-' + id);
-    const eye  = document.getElementById('pwd-eye-' + id);
-    if (!span) return;
-    const hidden = span.dataset.hidden === '1';
-    if (hidden) {
-        const pwd = span.dataset.pwd;
-        span.textContent = pwd || '(non disponibile)';
-        span.style.color = pwd ? '#334155' : '#94a3b8';
-        span.dataset.hidden = '0';
-        if (eye) eye.className = 'fa-solid fa-eye-slash';
-    } else {
-        span.textContent = '••••••••';
-        span.style.color = '#94a3b8';
-        span.dataset.hidden = '1';
-        if (eye) eye.className = 'fa-solid fa-eye';
-    }
-};
 
 /* ============================================================
    ADMIN — MUSEI
    ============================================================ */
 
 async function initAdminMusei() {
+    adminMuseiViewMode = 'table';
     const section = document.getElementById('section-admin-musei');
-    section.innerHTML = adminSearchHeader('Gestione Musei', 'searchAdminMusei', 'filterAdminMusei') + `
-        <div class="glass-card p-4">
-            <table class="table table-hover mb-0">
-                ${adminTableHeader(['Nome', 'Città', 'ISIL', 'Curatore'])}
-                <tbody id="adminMuseiBody">
-                    <tr><td colspan="5" class="text-center text-muted py-4">
-                        <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
-                    </td></tr>
-                </tbody>
-            </table>
+    section.innerHTML = `
+        <!-- Header -->
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Gestione Musei</h1>
+                <p class="text-muted mb-0">Modifica e monitora i musei presenti sulla piattaforma.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <!-- Vista toggle -->
+                <div class="d-flex" style="border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <button id="btnAdminMuseiTable" onclick="setAdminMuseiView('table')" title="Vista tabella"
+                            class="view-toggle-btn vt-active">
+                        <i class="fa-solid fa-table-list"></i>
+                    </button>
+                    <button id="btnAdminMuseiCards" onclick="setAdminMuseiView('cards')" title="Vista cards"
+                            class="view-toggle-btn vt-inactive">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                </div>
+                <!-- Filtri toggle -->
+                <button id="btnAdminMuseiFiltri" onclick="toggleAdminMuseiFilters()"
+                        class="btn-outline-custom" style="gap:6px;display:flex;align-items:center;">
+                    <i class="fa-solid fa-sliders"></i> Filtri
+                </button>
+                <!-- Ricerca -->
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAdminMusei" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterAdminMusei()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pannello filtri (collassabile) -->
+        <div id="adminMuseiFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Città</label>
+                    <select id="filterMuseiCitta" class="custom-input" style="padding:7px 12px;" onchange="filterAdminMusei()">
+                        <option value="">Tutte le città</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Codice ISIL</label>
+                    <input type="text" id="filterMuseiIsil" class="custom-input" style="padding:7px 12px;"
+                           placeholder="Es. IT-RM001" oninput="filterAdminMusei()">
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Curatore (ID)</label>
+                    <select id="filterMuseiCuratore" class="custom-input" style="padding:7px 12px;" onchange="filterAdminMusei()">
+                        <option value="">Tutti i curatori</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn-outline-custom btn-sm" onclick="resetAdminMuseiFilters()">
+                        <i class="fa-solid fa-rotate-left me-1"></i>Azzera filtri
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenuto (tabella o cards) -->
+        <div id="adminMuseiContent">
+            <div class="glass-card p-4">
+                <table class="table table-hover mb-0">
+                    ${adminTableHeader(['Nome', 'Città', 'ISIL', 'Curatore'])}
+                    <tbody id="adminMuseiBody">
+                        <tr><td colspan="5" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>`;
 
     try {
         const res  = await fetch('/api/musei');
         const data = await res.json();
         allAdminMusei = data.ok ? data.data : [];
+        _populateAdminMuseiFilters(allAdminMusei);
         renderAdminMusei(allAdminMusei);
     } catch (e) {
-        document.getElementById('adminMuseiBody').innerHTML =
-            '<tr><td colspan="5" class="text-center text-danger py-4">Errore nel caricamento.</td></tr>';
+        document.getElementById('adminMuseiContent').innerHTML =
+            '<div class="glass-card p-4"><p class="text-danger text-center">Errore nel caricamento.</p></div>';
     }
 }
 
+function _populateAdminMuseiFilters(lista) {
+    const citta    = [...new Set(lista.map(m => m.citta).filter(Boolean))].sort();
+    const curatori = [...new Set(lista.map(m => m.curatoreId).filter(Boolean))].sort();
+    const selCitta = document.getElementById('filterMuseiCitta');
+    const selCur   = document.getElementById('filterMuseiCuratore');
+    if (selCitta) selCitta.innerHTML = '<option value="">Tutte le città</option>' +
+        citta.map(c => `<option value="${c}">${c}</option>`).join('');
+    if (selCur)   selCur.innerHTML   = '<option value="">Tutti i curatori</option>' +
+        curatori.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+window.toggleAdminMuseiFilters = function () {
+    const panel = document.getElementById('adminMuseiFilterPanel');
+    const btn   = document.getElementById('btnAdminMuseiFiltri');
+    if (!panel) return;
+    const open = panel.style.display === 'none';
+    panel.style.display = open ? '' : 'none';
+    if (btn) btn.style.background = open ? 'rgba(255,0,127,0.08)' : '';
+};
+
+window.resetAdminMuseiFilters = function () {
+    ['filterMuseiCitta','filterMuseiCuratore'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    const isil = document.getElementById('filterMuseiIsil');
+    if (isil) isil.value = '';
+    filterAdminMusei();
+};
+
+window.setAdminMuseiView = function (mode) {
+    adminMuseiViewMode = mode;
+    const btnTable = document.getElementById('btnAdminMuseiTable');
+    const btnCards = document.getElementById('btnAdminMuseiCards');
+    if (btnTable) { btnTable.className = 'view-toggle-btn ' + (mode === 'table' ? 'vt-active' : 'vt-inactive'); }
+    if (btnCards) { btnCards.className = 'view-toggle-btn ' + (mode === 'cards' ? 'vt-active' : 'vt-inactive'); }
+    filterAdminMusei();
+};
+
 function filterAdminMusei() {
-    const q = (document.getElementById('searchAdminMusei')?.value || '').toLowerCase();
-    renderAdminMusei(q
-        ? allAdminMusei.filter(m =>
-            m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q) ||
-            (m.codiceIsil || '').toLowerCase().includes(q))
-        : allAdminMusei);
+    const q       = (document.getElementById('searchAdminMusei')?.value || '').toLowerCase();
+    const citta   = document.getElementById('filterMuseiCitta')?.value   || '';
+    const isil    = (document.getElementById('filterMuseiIsil')?.value  || '').toLowerCase();
+    const curatore = document.getElementById('filterMuseiCuratore')?.value || '';
+
+    let lista = allAdminMusei;
+    if (q)       lista = lista.filter(m =>
+        m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q) ||
+        (m.codiceIsil || '').toLowerCase().includes(q));
+    if (citta)   lista = lista.filter(m => m.citta === citta);
+    if (isil)    lista = lista.filter(m => (m.codiceIsil || '').toLowerCase().includes(isil));
+    if (curatore) lista = lista.filter(m => m.curatoreId === curatore);
+    renderAdminMusei(lista);
 }
 
 function renderAdminMusei(lista) {
+    const container = document.getElementById('adminMuseiContent');
+    if (!container) return;
+
+    if (adminMuseiViewMode === 'cards') {
+        if (!lista.length) {
+            container.innerHTML = '<p class="text-muted text-center py-5">Nessun museo trovato.</p>';
+            return;
+        }
+        container.innerHTML = `<div class="items-grid">${lista.map(m => {
+            const safeIsil = (m.codiceIsil || '').replace(/'/g, "\\'");
+            const safeName = (m.nome || '').replace(/'/g, "\\'");
+            return `
+            <div class="glass-card" style="display:flex;flex-direction:column;overflow:hidden;">
+                <div style="position:relative;height:200px;flex-shrink:0;background:#f0f0f0;overflow:hidden;">
+                    ${m.immagineCopertina
+                        ? `<img src="${m.immagineCopertina}" alt="${m.nome}"
+                                style="width:100%;height:100%;object-fit:cover;"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                           <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">
+                               <i class="fa-solid fa-building-columns" style="font-size:2.5rem;color:#cbd5e1;"></i>
+                           </div>`
+                        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">
+                               <i class="fa-solid fa-building-columns" style="font-size:2.5rem;color:#cbd5e1;"></i>
+                           </div>`}
+                </div>
+                <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                        <div class="fw-bold" style="font-size:1rem;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.nome}</div>
+                        <small class="text-muted"><i class="fa-solid fa-location-dot me-1"></i>${m.citta}</small><br>
+                        <span class="tag-bubble" style="font-size:0.72rem;margin-top:4px;display:inline-block;">${m.codiceIsil || '—'}</span>
+                    </div>
+                    <div class="d-flex gap-2 mt-2">
+                        <button class="btn-outline-custom btn-sm flex-fill" title="Modifica"
+                                onclick="adminEditMuseo('${safeIsil}')">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Modifica
+                        </button>
+                        <button class="btn-outline-custom btn-sm" title="Elimina"
+                                style="color:#ef4444;border-color:#ef4444;"
+                                onclick="adminDeleteMuseo('${safeIsil}','${safeName}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`; }).join('')}</div>`;
+        return;
+    }
+
+    // — Vista tabella —
+    container.innerHTML = `
+        <div class="glass-card p-4">
+            <table class="table table-hover mb-0">
+                ${adminTableHeader(['Nome', 'Città', 'ISIL', 'Curatore'])}
+                <tbody id="adminMuseiBody"></tbody>
+            </table>
+        </div>`;
     const tbody = document.getElementById('adminMuseiBody');
-    if (!tbody) return;
     if (!lista.length) {
         tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nessun museo trovato.</td></tr>';
         return;
@@ -2211,11 +2485,11 @@ function renderAdminMusei(lista) {
         <tr>
             <td class="fw-bold">${m.nome}</td>
             <td>${m.citta}</td>
-            <td><span class="tag-bubble" style="font-size:0.78rem;">${m.codiceIsil}</span></td>
+            <td><span class="tag-bubble" style="font-size:0.78rem;">${m.codiceIsil || '—'}</span></td>
             <td><small class="text-muted">${m.curatoreId || '—'}</small></td>
             <td>${adminActionBtns(
-                `adminEditMuseo('${m.codiceIsil}')`,
-                `adminDeleteMuseo('${m.codiceIsil}','${m.nome.replace(/'/g, "\\'")}')`
+                `adminEditMuseo('${(m.codiceIsil||'').replace(/'/g,"\\'")}')`,
+                `adminDeleteMuseo('${(m.codiceIsil||'').replace(/'/g,"\\'")}','${m.nome.replace(/'/g,"\\'")}')`
             )}</td>
         </tr>`).join('');
 }
@@ -2306,43 +2580,214 @@ window.adminEditMuseo = function (codiceIsil) {
    ============================================================ */
 
 async function initAdminOpere() {
+    adminOpereViewMode = 'table';
     const section = document.getElementById('section-admin-opere');
-    section.innerHTML = adminSearchHeader('Gestione Opere', 'searchAdminOpere', 'filterAdminOpere') + `
-        <div class="glass-card p-4">
-            <table class="table table-hover mb-0">
-                ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo', 'Licenza'])}
-                <tbody id="adminOpereBody">
-                    <tr><td colspan="6" class="text-center text-muted py-4">
-                        <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
-                    </td></tr>
-                </tbody>
-            </table>
+    section.innerHTML = `
+        <!-- Header -->
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Gestione Opere</h1>
+                <p class="text-muted mb-0">Consulta e modifica le opere presenti nei musei.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <!-- Vista toggle -->
+                <div class="d-flex" style="border:1.5px solid #e2e8f0;border-radius:10px;overflow:hidden;">
+                    <button id="btnAdminOpereTable" onclick="setAdminOpereView('table')" title="Vista tabella"
+                            class="view-toggle-btn vt-active">
+                        <i class="fa-solid fa-table-list"></i>
+                    </button>
+                    <button id="btnAdminOpereCards" onclick="setAdminOpereView('cards')" title="Vista cards"
+                            class="view-toggle-btn vt-inactive">
+                        <i class="fa-solid fa-grip"></i>
+                    </button>
+                </div>
+                <!-- Filtri toggle -->
+                <button id="btnAdminOpereFilters" onclick="toggleAdminOpereFilters()"
+                        class="btn-outline-custom" style="gap:6px;display:flex;align-items:center;">
+                    <i class="fa-solid fa-sliders"></i> Filtri
+                </button>
+                <!-- Ricerca -->
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAdminOpere" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterAdminOpere()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pannello filtri -->
+        <div id="adminOpereFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Tipo</label>
+                    <select id="filterOpereTipo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
+                        <option value="">Tutti i tipi</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ISIL)</label>
+                    <select id="filterOpereMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Licenza</label>
+                    <select id="filterOpereLicenza" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
+                        <option value="">Tutte le licenze</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn-outline-custom btn-sm" onclick="resetAdminOpereFilters()">
+                        <i class="fa-solid fa-rotate-left me-1"></i>Azzera filtri
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contenuto -->
+        <div id="adminOpereContent">
+            <div class="glass-card p-4">
+                <table class="table table-hover mb-0">
+                    ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo', 'Licenza'])}
+                    <tbody id="adminOpereBody">
+                        <tr><td colspan="6" class="text-center text-muted py-4">
+                            <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
+                        </td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>`;
 
     try {
         const res  = await fetch('/api/opere');
         const data = await res.json();
         allAdminOpere = data.ok ? data.data : [];
+        _populateAdminOpereFilters(allAdminOpere);
         renderAdminOpere(allAdminOpere);
     } catch (e) {
-        document.getElementById('adminOpereBody').innerHTML =
-            '<tr><td colspan="6" class="text-center text-danger py-4">Errore nel caricamento.</td></tr>';
+        document.getElementById('adminOpereContent').innerHTML =
+            '<div class="glass-card p-4"><p class="text-danger text-center">Errore nel caricamento.</p></div>';
     }
 }
 
+function _populateAdminOpereFilters(lista) {
+    const tipi    = [...new Set(lista.map(op => op.tipo).filter(Boolean))].sort();
+    const musei   = [...new Set(lista.map(op => op.codiceIsil).filter(Boolean))].sort();
+    const licenze = [...new Set(lista.map(op => op.licenza).filter(Boolean))].sort();
+    const sel = (id, opts, label) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<option value="">${label}</option>` +
+            opts.map(v => `<option value="${v}">${v}</option>`).join('');
+    };
+    sel('filterOpereTipo',    tipi,    'Tutti i tipi');
+    sel('filterOpereMuseo',   musei,   'Tutti i musei');
+    sel('filterOpereLicenza', licenze, 'Tutte le licenze');
+}
+
+window.toggleAdminOpereFilters = function () {
+    const panel = document.getElementById('adminOpereFilterPanel');
+    const btn   = document.getElementById('btnAdminOpereFilters');
+    if (!panel) return;
+    const open = panel.style.display === 'none';
+    panel.style.display = open ? '' : 'none';
+    if (btn) btn.style.background = open ? 'rgba(255,0,127,0.08)' : '';
+};
+
+window.resetAdminOpereFilters = function () {
+    ['filterOpereTipo', 'filterOpereMuseo', 'filterOpereLicenza'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    filterAdminOpere();
+};
+
+window.setAdminOpereView = function (mode) {
+    adminOpereViewMode = mode;
+    const btnT = document.getElementById('btnAdminOpereTable');
+    const btnC = document.getElementById('btnAdminOpereCards');
+    if (btnT) { btnT.className = 'view-toggle-btn ' + (mode === 'table' ? 'vt-active' : 'vt-inactive'); }
+    if (btnC) { btnC.className = 'view-toggle-btn ' + (mode === 'cards' ? 'vt-active' : 'vt-inactive'); }
+    filterAdminOpere();
+};
+
 function filterAdminOpere() {
-    const q = (document.getElementById('searchAdminOpere')?.value || '').toLowerCase();
-    renderAdminOpere(q
-        ? allAdminOpere.filter(op =>
-            (op.operaId || '').toLowerCase().includes(q) ||
-            (op.autore  || '').toLowerCase().includes(q) ||
-            (op.tipo    || '').toLowerCase().includes(q))
-        : allAdminOpere);
+    const q       = (document.getElementById('searchAdminOpere')?.value  || '').toLowerCase();
+    const tipo    =  document.getElementById('filterOpereTipo')?.value    || '';
+    const museo   =  document.getElementById('filterOpereMuseo')?.value   || '';
+    const licenza =  document.getElementById('filterOpereLicenza')?.value || '';
+
+    let lista = allAdminOpere;
+    if (q)       lista = lista.filter(op =>
+        (op.operaId || '').toLowerCase().includes(q) ||
+        (op.autore  || '').toLowerCase().includes(q) ||
+        (op.tipo    || '').toLowerCase().includes(q));
+    if (tipo)    lista = lista.filter(op => op.tipo    === tipo);
+    if (museo)   lista = lista.filter(op => op.codiceIsil === museo);
+    if (licenza) lista = lista.filter(op => op.licenza === licenza);
+    renderAdminOpere(lista);
 }
 
 function renderAdminOpere(lista) {
+    const container = document.getElementById('adminOpereContent');
+    if (!container) return;
+
+    if (adminOpereViewMode === 'cards') {
+        if (!lista.length) {
+            container.innerHTML = '<p class="text-muted text-center py-5">Nessuna opera trovata.</p>';
+            return;
+        }
+        container.innerHTML = `<div class="items-grid">${lista.map(op => {
+            const safeId   = (op._id || '').replace(/'/g, "\\'");
+            const safeName = (op.operaId || '').replace(/'/g, "\\'");
+            return `
+            <div class="glass-card" style="display:flex;flex-direction:column;overflow:hidden;">
+                <div style="height:180px;flex-shrink:0;background:#f0f0f0;overflow:hidden;">
+                    ${op.immagine
+                        ? `<img src="${op.immagine}" alt="${op.operaId}"
+                                style="width:100%;height:100%;object-fit:cover;"
+                                onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                           <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">
+                               <i class="fa-solid fa-palette" style="font-size:2.5rem;color:#cbd5e1;"></i>
+                           </div>`
+                        : `<div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">
+                               <i class="fa-solid fa-palette" style="font-size:2.5rem;color:#cbd5e1;"></i>
+                           </div>`}
+                </div>
+                <div style="padding:14px 16px;flex:1;display:flex;flex-direction:column;justify-content:space-between;">
+                    <div>
+                        <div class="fw-bold" style="font-size:1rem;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${op.operaId}</div>
+                        <small class="text-muted">${op.autore || '—'}</small>
+                        <div class="d-flex flex-wrap gap-1 mt-2">
+                            ${op.tipo    ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.tipo}</span>` : ''}
+                            ${op.licenza ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.licenza}</span>` : ''}
+                            ${op.codiceIsil ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.codiceIsil}</span>` : ''}
+                        </div>
+                    </div>
+                    <div class="d-flex gap-2 mt-3">
+                        <button class="btn-outline-custom btn-sm flex-fill" title="Modifica"
+                                onclick="adminEditOpera('${safeId}')">
+                            <i class="fa-solid fa-pen-to-square me-1"></i>Modifica
+                        </button>
+                        <button class="btn-outline-custom btn-sm" title="Elimina"
+                                style="color:#ef4444;border-color:#ef4444;"
+                                onclick="adminDeleteOpera('${safeId}','${safeName}')">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`; }).join('')}</div>`;
+        return;
+    }
+
+    // — Vista tabella —
+    container.innerHTML = `
+        <div class="glass-card p-4">
+            <table class="table table-hover mb-0">
+                ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo', 'Licenza'])}
+                <tbody id="adminOpereBody"></tbody>
+            </table>
+        </div>`;
     const tbody = document.getElementById('adminOpereBody');
-    if (!tbody) return;
     if (!lista.length) {
         tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Nessuna opera trovata.</td></tr>';
         return;
@@ -2351,7 +2796,7 @@ function renderAdminOpere(lista) {
         <tr>
             <td class="fw-bold">${op.operaId}</td>
             <td>${op.autore || '—'}</td>
-            <td>${op.tipo ? `<span class="tag-bubble" style="font-size:0.78rem;">${op.tipo}</span>` : '—'}</td>
+            <td>${op.tipo    ? `<span class="tag-bubble" style="font-size:0.78rem;">${op.tipo}</span>`    : '—'}</td>
             <td><small class="text-muted">${op.codiceIsil || '—'}</small></td>
             <td>${op.licenza ? `<span class="tag-bubble" style="font-size:0.78rem;">${op.licenza}</span>` : '—'}</td>
             <td>${adminActionBtns(
@@ -2496,7 +2941,60 @@ window.adminEditOpera = function (id) {
 
 async function initAdminVisite() {
     const section = document.getElementById('section-admin-visite');
-    section.innerHTML = adminSearchHeader('Gestione Visite', 'searchAdminVisite', 'filterAdminVisite') + `
+    section.innerHTML = `
+        <!-- Header -->
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Gestione Visite</h1>
+                <p class="text-muted mb-0">Gestisci le visite guidate disponibili sulla piattaforma.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button id="btnAdminVisiteFilters" onclick="toggleAdminVisiteFilters()"
+                        class="btn-outline-custom" style="gap:6px;display:flex;align-items:center;">
+                    <i class="fa-solid fa-sliders"></i> Filtri
+                </button>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAdminVisite" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterAdminVisite()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pannello filtri -->
+        <div id="adminVisiteFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ISIL)</label>
+                    <select id="filterVisiteMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Stato</label>
+                    <select id="filterVisiteStato" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
+                        <option value="">Tutti gli stati</option>
+                        <option value="pubblica">In vendita</option>
+                        <option value="privata">Privata</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Prezzo</label>
+                    <select id="filterVisitePrezzo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
+                        <option value="">Tutti</option>
+                        <option value="gratis">Gratuita</option>
+                        <option value="pagamento">A pagamento</option>
+                    </select>
+                </div>
+                <div class="col-12 d-flex justify-content-end">
+                    <button class="btn-outline-custom btn-sm" onclick="resetAdminVisiteFilters()">
+                        <i class="fa-solid fa-rotate-left me-1"></i>Azzera filtri
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabella -->
         <div class="glass-card p-4">
             <table class="table table-hover mb-0">
                 ${adminTableHeader(['Nome Visita', 'Museo', 'Prezzo', 'Stato', 'Acquirenti'])}
@@ -2512,6 +3010,7 @@ async function initAdminVisite() {
         const res  = await fetch('/api/visite');
         const data = await res.json();
         allAdminVisite = data.ok ? data.data : [];
+        _populateAdminVisiteFilters(allAdminVisite);
         renderAdminVisite(allAdminVisite);
     } catch (e) {
         document.getElementById('adminVisiteBody').innerHTML =
@@ -2519,13 +3018,46 @@ async function initAdminVisite() {
     }
 }
 
+function _populateAdminVisiteFilters(lista) {
+    const musei = [...new Set(lista.map(v => v.codiceIsil).filter(Boolean))].sort();
+    const sel = document.getElementById('filterVisiteMuseo');
+    if (sel) sel.innerHTML = '<option value="">Tutti i musei</option>' +
+        musei.map(m => `<option value="${m}">${m}</option>`).join('');
+}
+
+window.toggleAdminVisiteFilters = function () {
+    const panel = document.getElementById('adminVisiteFilterPanel');
+    const btn   = document.getElementById('btnAdminVisiteFilters');
+    if (!panel) return;
+    const open = panel.style.display === 'none';
+    panel.style.display = open ? '' : 'none';
+    if (btn) btn.style.background = open ? 'rgba(255,0,127,0.08)' : '';
+};
+
+window.resetAdminVisiteFilters = function () {
+    ['filterVisiteMuseo', 'filterVisiteStato', 'filterVisitePrezzo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    filterAdminVisite();
+};
+
 function filterAdminVisite() {
-    const q = (document.getElementById('searchAdminVisite')?.value || '').toLowerCase();
-    renderAdminVisite(q
-        ? allAdminVisite.filter(v =>
-            (v.nomeVisita  || '').toLowerCase().includes(q) ||
-            (v.codiceIsil  || '').toLowerCase().includes(q))
-        : allAdminVisite);
+    const q      = (document.getElementById('searchAdminVisite')?.value   || '').toLowerCase();
+    const museo  =  document.getElementById('filterVisiteMuseo')?.value   || '';
+    const stato  =  document.getElementById('filterVisiteStato')?.value   || '';
+    const prezzo =  document.getElementById('filterVisitePrezzo')?.value  || '';
+
+    let lista = allAdminVisite;
+    if (q)      lista = lista.filter(v =>
+        (v.nomeVisita || '').toLowerCase().includes(q) ||
+        (v.codiceIsil || '').toLowerCase().includes(q));
+    if (museo)  lista = lista.filter(v => v.codiceIsil === museo);
+    if (stato === 'pubblica') lista = lista.filter(v => v.pubblica);
+    if (stato === 'privata')  lista = lista.filter(v => !v.pubblica);
+    if (prezzo === 'gratis')    lista = lista.filter(v => !(v.prezzo > 0));
+    if (prezzo === 'pagamento') lista = lista.filter(v => v.prezzo > 0);
+    renderAdminVisite(lista);
 }
 
 function renderAdminVisite(lista) {
@@ -2649,7 +3181,50 @@ window.adminEditVisita = function (id) {
 
 async function initAdminItems() {
     const section = document.getElementById('section-admin-items');
-    section.innerHTML = adminSearchHeader('Gestione Items', 'searchAdminItems', 'filterAdminItems') + `
+    section.innerHTML = `
+        <!-- Header -->
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-3 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Gestione Items</h1>
+                <p class="text-muted mb-0">Consulta e modifica i contenuti del marketplace.</p>
+            </div>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <button id="btnAdminItemsFilters" onclick="toggleAdminItemsFilters()"
+                        class="btn-outline-custom" style="gap:6px;display:flex;align-items:center;">
+                    <i class="fa-solid fa-sliders"></i> Filtri
+                </button>
+                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                    <input type="text" id="searchAdminItems" class="search-input py-2"
+                           placeholder="Cerca…" oninput="filterAdminItems()">
+                </div>
+            </div>
+        </div>
+
+        <!-- Pannello filtri -->
+        <div id="adminItemsFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-5">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Autore (ID)</label>
+                    <select id="filterItemsAutore" class="custom-input" style="padding:7px 12px;" onchange="filterAdminItems()">
+                        <option value="">Tutti gli autori</option>
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ID)</label>
+                    <select id="filterItemsMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminItems()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button class="btn-outline-custom btn-sm w-100" onclick="resetAdminItemsFilters()">
+                        <i class="fa-solid fa-rotate-left me-1"></i>Azzera
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabella -->
         <div class="glass-card p-4">
             <table class="table table-hover mb-0">
                 ${adminTableHeader(['Opera', 'Museo', 'Contenuto', 'Autore'])}
@@ -2665,6 +3240,7 @@ async function initAdminItems() {
         const res  = await fetch('/api/items');
         const data = await res.json();
         allAdminItems = data.ok ? data.data : [];
+        _populateAdminItemsFilters(allAdminItems);
         renderAdminItems(allAdminItems);
     } catch (e) {
         document.getElementById('adminItemsBody').innerHTML =
@@ -2672,14 +3248,48 @@ async function initAdminItems() {
     }
 }
 
+function _populateAdminItemsFilters(lista) {
+    const autori = [...new Set(lista.map(it => it.authorId).filter(Boolean))].sort();
+    const musei  = [...new Set(lista.map(it => it.museumId).filter(Boolean))].sort();
+    const sel = (id, opts, label) => {
+        const el = document.getElementById(id);
+        if (el) el.innerHTML = `<option value="">${label}</option>` +
+            opts.map(v => `<option value="${v}">${v}</option>`).join('');
+    };
+    sel('filterItemsAutore', autori, 'Tutti gli autori');
+    sel('filterItemsMuseo',  musei,  'Tutti i musei');
+}
+
+window.toggleAdminItemsFilters = function () {
+    const panel = document.getElementById('adminItemsFilterPanel');
+    const btn   = document.getElementById('btnAdminItemsFilters');
+    if (!panel) return;
+    const open = panel.style.display === 'none';
+    panel.style.display = open ? '' : 'none';
+    if (btn) btn.style.background = open ? 'rgba(255,0,127,0.08)' : '';
+};
+
+window.resetAdminItemsFilters = function () {
+    ['filterItemsAutore', 'filterItemsMuseo'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
+    });
+    filterAdminItems();
+};
+
 function filterAdminItems() {
-    const q = (document.getElementById('searchAdminItems')?.value || '').toLowerCase();
-    renderAdminItems(q
-        ? allAdminItems.filter(it =>
-            (it.operaId  || '').toLowerCase().includes(q) ||
-            (it.museumId || '').toLowerCase().includes(q) ||
-            (it.authorId || '').toLowerCase().includes(q))
-        : allAdminItems);
+    const q      = (document.getElementById('searchAdminItems')?.value  || '').toLowerCase();
+    const autore =  document.getElementById('filterItemsAutore')?.value || '';
+    const museo  =  document.getElementById('filterItemsMuseo')?.value  || '';
+
+    let lista = allAdminItems;
+    if (q)      lista = lista.filter(it =>
+        (it.operaId  || '').toLowerCase().includes(q) ||
+        (it.museumId || '').toLowerCase().includes(q) ||
+        (it.authorId || '').toLowerCase().includes(q));
+    if (autore) lista = lista.filter(it => it.authorId === autore);
+    if (museo)  lista = lista.filter(it => it.museumId === museo);
+    renderAdminItems(lista);
 }
 
 function renderAdminItems(lista) {
@@ -2796,7 +3406,8 @@ window.adminEditItem = function (id) {
 async function initAdminAnalytics() {
     const section = document.getElementById('section-admin-analytics');
     section.innerHTML = `
-        <h3 class="fw-bold h4 mb-4">Analytics</h3>
+        <h1 class="page-title">Analytics</h1>
+        <p class="text-muted mb-4">Panoramica delle statistiche della piattaforma.</p>
         <div id="analyticsKpis" class="row g-4 mb-5">
             <div class="col-12 text-center text-muted py-4">
                 <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento dati…
@@ -2959,8 +3570,16 @@ async function initMarketplace() {
     mktTab = 'items';
 
     section.innerHTML = `
+        <style>
+            .mkt-range-input{position:absolute;width:100%;height:4px;top:11px;left:0;appearance:none;-webkit-appearance:none;background:transparent;pointer-events:none;outline:none;}
+            .mkt-range-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;}
+            .mkt-range-input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;border:2px solid #fff;}
+        </style>
         <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <h3 class="fw-bold h4 mb-0">Marketplace</h3>
+            <div>
+                <h1 class="page-title">Marketplace</h1>
+                <p class="text-muted mb-0">Acquista visite e contenuti esclusivi dai nostri autori.</p>
+            </div>
         </div>
 
         <div class="glass-card p-4 mb-4">
@@ -2971,16 +3590,26 @@ async function initMarketplace() {
                         <option value="">Tutti i musei</option>
                     </select>
                 </div>
-                <div class="col-md-3" id="mktOperaCol">
+                <div class="col-md-2" id="mktOperaCol">
                     <label class="custom-label">Opera</label>
                     <select id="mktFilterOpera" class="custom-input" onchange="applyMktFilter()">
                         <option value="">Tutte le opere</option>
                     </select>
                 </div>
-                <div class="col-md-2">
-                    <label class="custom-label">Prezzo max (€)</label>
-                    <input type="number" id="mktFilterPrezzo" class="custom-input"
-                           min="0" step="0.01" placeholder="Illimitato" oninput="applyMktFilter()">
+                <div class="col-md-3">
+                    <label class="custom-label">
+                        Prezzo (€) &nbsp;—&nbsp;
+                        <span id="mktRangeLabelMin" style="color:#FF007F;font-weight:600;">€0</span>
+                        &nbsp;:&nbsp;
+                        <span id="mktRangeLabelMax" style="color:#FF007F;font-weight:600;">∞</span>
+                    </label>
+                    <div style="position:relative;height:30px;margin-top:6px;">
+                        <div style="position:absolute;left:0;right:0;top:13px;height:4px;background:#e2e8f0;border-radius:2px;">
+                            <div id="mktRangeFill" style="position:absolute;height:100%;background:#FF007F;border-radius:2px;left:0%;right:0%;"></div>
+                        </div>
+                        <input type="range" id="mktRangeMin" class="mkt-range-input" min="0" max="200" value="0"  step="1" oninput="onMktRangeChange()">
+                        <input type="range" id="mktRangeMax" class="mkt-range-input" min="0" max="200" value="200" step="1" oninput="onMktRangeChange()">
+                    </div>
                 </div>
                 <div class="col-md-2" id="mktLinguaggioCol" style="display:none">
                     <label class="custom-label">Linguaggio</label>
@@ -3046,6 +3675,18 @@ async function initMarketplace() {
         museoSel.appendChild(opt);
     });
 
+    // Calcola prezzo massimo reale per calibrare lo slider
+    const allPrices = [
+        ...allMktVisite.map(v => v.prezzo || 0),
+        ...allMktItems.map(it => it.metadata?.prezzo || 0),
+    ].filter(p => p > 0);
+    const maxP = allPrices.length ? Math.ceil(Math.max(...allPrices)) : 200;
+    const rMin = document.getElementById('mktRangeMin');
+    const rMax = document.getElementById('mktRangeMax');
+    if (rMin) { rMin.max = maxP; rMin.value = 0; }
+    if (rMax) { rMax.max = maxP; rMax.value = maxP; }
+    onMktRangeChange();
+
     _populateMktOpereSelect('');
     applyMktFilter();
 }
@@ -3067,6 +3708,32 @@ window.onMktMuseoChange = function () {
     applyMktFilter();
 };
 
+window.onMktRangeChange = function () {
+    const minEl = document.getElementById('mktRangeMin');
+    const maxEl = document.getElementById('mktRangeMax');
+    if (!minEl || !maxEl) return;
+    let minVal = parseFloat(minEl.value);
+    let maxVal = parseFloat(maxEl.value);
+    const sliderMax = parseFloat(minEl.max);
+    const sliderMin = parseFloat(minEl.min);
+
+    if (minVal > maxVal) { minEl.value = maxVal; minVal = maxVal; }
+
+    const pct = v => ((v - sliderMin) / (sliderMax - sliderMin)) * 100;
+    const fill = document.getElementById('mktRangeFill');
+    if (fill) {
+        fill.style.left  = pct(minVal) + '%';
+        fill.style.right = (100 - pct(maxVal)) + '%';
+    }
+
+    const lblMin = document.getElementById('mktRangeLabelMin');
+    const lblMax = document.getElementById('mktRangeLabelMax');
+    if (lblMin) lblMin.textContent = minVal > 0 ? '€' + minVal : '€0';
+    if (lblMax) lblMax.textContent = maxVal >= sliderMax ? '∞' : '€' + maxVal;
+
+    applyMktFilter();
+};
+
 window.setMktTab = function (tab, btn) {
     mktTab = tab;
     document.querySelectorAll('#section-marketplace .tab-btn')
@@ -3084,9 +3751,14 @@ window.setMktTab = function (tab, btn) {
 window.applyMktFilter = function () {
     const museoVal  = document.getElementById('mktFilterMuseo')?.value  || '';
     const operaVal  = document.getElementById('mktFilterOpera')?.value  || '';
-    const prezzoMax = parseFloat(document.getElementById('mktFilterPrezzo')?.value);
     const lingVal   = document.getElementById('mktFilterLinguaggio')?.value || '';
-    const q = (document.getElementById('mktSearch')?.value || '').toLowerCase();
+    const q         = (document.getElementById('mktSearch')?.value || '').toLowerCase();
+
+    const minEl = document.getElementById('mktRangeMin');
+    const maxEl = document.getElementById('mktRangeMax');
+    const prezzoMin = minEl ? parseFloat(minEl.value) : 0;
+    const prezzoMax = maxEl ? parseFloat(maxEl.value) : NaN;
+    const maxIsLimit = maxEl && parseFloat(maxEl.value) < parseFloat(maxEl.max);
 
     const content = document.getElementById('mktContent');
     if (!content) return;
@@ -3098,10 +3770,13 @@ window.applyMktFilter = function () {
         return;
     }
 
+    const applyPriceFilter = (price) =>
+        (prezzoMin <= 0 || price >= prezzoMin) && (!maxIsLimit || price <= prezzoMax);
+
     if (mktTab === 'visite') {
         let lista = allMktVisite;
         if (museoVal) lista = lista.filter(v => v.codiceIsil === museoVal);
-        if (!isNaN(prezzoMax)) lista = lista.filter(v => (v.prezzo || 0) <= prezzoMax);
+        lista = lista.filter(v => applyPriceFilter(v.prezzo || 0));
         if (q) lista = lista.filter(v =>
             (v.nomeVisita || '').toLowerCase().includes(q) ||
             (v.logistica  || '').toLowerCase().includes(q));
@@ -3110,7 +3785,7 @@ window.applyMktFilter = function () {
         let lista = allMktItems;
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
-        if (!isNaN(prezzoMax)) lista = lista.filter(it => (it.metadata?.prezzo || 0) <= prezzoMax);
+        lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
         if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
         if (q) lista = lista.filter(it =>
             (it.operaId || '').toLowerCase().includes(q) ||
@@ -3306,10 +3981,10 @@ window.acquistaItem = function (id) {
 async function initAdminNavigator() {
     const section = document.getElementById('section-admin-navigator');
     section.innerHTML = `
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
             <div>
-                <h3 class="fw-bold h4 mb-0">Esportazione Navigator</h3>
-                <p class="text-muted mb-0" style="font-size:0.9rem;">Seleziona un museo per esportarne i metadati e aprirlo nel Navigator.</p>
+                <h1 class="page-title">Esportazione Navigator</h1>
+                <p class="text-muted mb-0">Seleziona un museo per esportarne i metadati e aprirlo nel Navigator.</p>
             </div>
         </div>
         <div class="glass-card p-4">
