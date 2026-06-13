@@ -154,16 +154,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 const SECTIONS_BY_ROLE = {
     curatore: [
-        { id: 'musei',           icon: 'fa-building-columns', label: 'Musei'           },
+        { divider: 'Musei' },
+        { id: 'musei',           icon: 'fa-building-columns', label: 'I tuoi Musei'    },
         { id: 'modifica-museo',  icon: 'fa-pen-to-square',    label: 'Modifica Museo'  },
-        { id: 'aggiungi-opere',  icon: 'fa-image',            label: 'Aggiungi Opera'  },
         { id: 'aggiungi-museo',  icon: 'fa-plus-circle',      label: 'Aggiungi Museo'  },
+        { divider: 'Opere' },
+        { id: 'aggiungi-opere',  icon: 'fa-image',            label: 'Aggiungi Opera'  },
+        { divider: 'Marketplace' },
         { id: 'marketplace',     icon: 'fa-store',            label: 'Marketplace'     },
     ],
     autore: [
         { id: 'autore-musei',           icon: 'fa-building-columns', label: 'Musei'           },
+        { divider: 'Strumenti di Aggiunta' },
         { id: 'autore-aggiungi-visita', icon: 'fa-route',             label: 'Aggiungi Visita' },
         { id: 'autore-aggiungi-item',   icon: 'fa-layer-group',       label: 'Aggiungi Item'   },
+        { divider: 'Strumenti Docente' },
+        { id: 'curatore-quiz',          icon: 'fa-lightbulb',         label: 'Gestione Quiz'   },
+        { divider: 'Marketplace' },
         { id: 'marketplace',            icon: 'fa-store',             label: 'Marketplace'     },
     ],
     visitatore: [
@@ -242,6 +249,8 @@ function switchSection(id) {
     if (id === 'admin-items')     initAdminItems();
     if (id === 'admin-analytics') initAdminAnalytics();
     if (id === 'admin-navigator') initAdminNavigator();
+
+    if (id === 'curatore-quiz') initCuratoreQuiz();
 
     if (id === 'marketplace') initMarketplace();
 }
@@ -869,27 +878,49 @@ function attachFormHandlers() {
 async function initAutoreMusei() {
     const section = document.getElementById('section-autore-musei');
     section.innerHTML = `
-        <div class="section-header">
-            <h2>Musei</h2>
-            <p>Esplora i musei disponibili e scopri le visite più popolari.</p>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title">Musei</h1>
+                <p class="text-muted mb-0">Esplora i musei disponibili.</p>
+            </div>
+            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
+                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                <input type="text" id="searchAutoreMusei" class="search-input py-2"
+                       placeholder="Cerca museo…" oninput="filterAutoreMusei()">
+            </div>
         </div>
-        <h3 class="scroll-section-label">Tutti i Musei</h3>
-        <div class="scroll-row" id="autoreMuseiRow">
+
+        <div id="autoreMuseiGrid" class="items-grid mb-5" style="align-items:stretch;">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
-        <h3 class="scroll-section-label" style="margin-top:36px;">Visite più Popolari</h3>
-        <div class="scroll-row" id="autoreVisitePopRow">
-            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
-        </div>
-        <h3 class="scroll-section-label" style="margin-top:36px;">Opere con più Collezioni</h3>
-        <div class="scroll-row" id="autoreOpereItemsRow">
-            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
+
+        <div class="row g-4">
+            <div class="col-lg-7">
+                <div class="glass-card p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">
+                            <i class="fa-solid fa-ranking-star me-2" style="color:var(--magenta)"></i>
+                            Top 3 Visite Popolari
+                        </h5>
+                        <button class="btn-outline-custom" style="padding:5px 12px;font-size:0.8rem;"
+                                onclick="switchSection('marketplace')">
+                            Vedi tutte <i class="fa-solid fa-arrow-right ms-1"></i>
+                        </button>
+                    </div>
+                    <div id="autoreVisiteTop3" class="row g-3"></div>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="fa-solid fa-layer-group me-2" style="color:var(--magenta)"></i>
+                        Opere con più Collezioni
+                    </h5>
+                    <div id="autoreOpereList"></div>
+                </div>
+            </div>
         </div>
     `;
-
-    const museiRow     = document.getElementById('autoreMuseiRow');
-    const visiteRow    = document.getElementById('autoreVisitePopRow');
-    const opereItemRow = document.getElementById('autoreOpereItemsRow');
 
     try {
         const [rMusei, rVisite, rItems] = await Promise.all([
@@ -900,86 +931,143 @@ async function initAutoreMusei() {
         ]);
 
         allMuseiAutore = dMusei.ok ? dMusei.data : [];
+        _renderAutoreMuseiGrid(allMuseiAutore);
 
-        if (dMusei.ok && dMusei.data.length) {
-            museiRow.innerHTML = dMusei.data.map(m => `
-                <div class="scroll-card scroll-card-clickable"
-                     onclick="showAutoreMuseoDetail('${m.codiceIsil}')">
-                    ${m.immagineCopertina
-                        ? `<img class="scroll-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
-                               onerror="this.style.display='none'">`
-                        : `<div class="scroll-card-img scroll-card-img-placeholder">
-                               <i class="fa fa-building-columns"></i>
-                           </div>`
-                    }
-                    <h3>${m.nome}</h3>
-                    <p class="scroll-card-sub"><i class="fa-solid fa-location-dot"></i> ${m.citta}</p>
-                    <span class="tag-bubble" style="margin-top:auto">
-                        <i class="fa-solid fa-barcode"></i> ${m.codiceIsil}
-                    </span>
-                </div>
-            `).join('');
-        } else {
-            museiRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessun museo disponibile.</p>';
-        }
+        // Top 3 visite
+        const visiteTop3 = document.getElementById('autoreVisiteTop3');
+        const museoMap = {};
+        allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome; });
 
         if (dVisite.ok && dVisite.data.length) {
-            const sorted = [...dVisite.data].sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0));
-            visiteRow.innerHTML = sorted.map(v => `
-                <div class="scroll-card">
-                    <h3>${v.nomeVisita}</h3>
-                    <p class="scroll-card-sub"><i class="fa-solid fa-barcode"></i> ${v.codiceIsil}</p>
-                    <p class="scroll-card-buyers">
-                        <i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti
-                    </p>
-                    ${v.prezzo > 0
-                        ? `<span class="price-badge" style="margin-top:auto">€${v.prezzo}</span>`
-                        : `<span class="free-badge" style="margin-top:auto">Gratis</span>`
-                    }
-                </div>
-            `).join('');
+            const top3 = [...dVisite.data]
+                .filter(v => v.pubblica)
+                .sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0))
+                .slice(0, 3);
+            const medals = [
+                { color: '#f59e0b', bg: 'rgba(245,158,11,0.1)', label: '1°' },
+                { color: '#94a3b8', bg: 'rgba(148,163,184,0.1)', label: '2°' },
+                { color: '#cd7c3a', bg: 'rgba(205,124,58,0.1)',  label: '3°' },
+            ];
+            visiteTop3.innerHTML = top3.length
+                ? top3.map((v, i) => `
+                    <div class="col-12">
+                        <div style="display:flex;align-items:center;gap:14px;padding:12px 14px;
+                                    border-radius:12px;background:${medals[i].bg};
+                                    border:1px solid ${medals[i].color}22;">
+                            <span style="font-size:1.3rem;font-weight:800;color:${medals[i].color};
+                                         min-width:28px;text-align:center;">${medals[i].label}</span>
+                            <div style="flex:1;min-width:0;">
+                                <p style="margin:0;font-weight:700;font-size:0.92rem;
+                                          white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${v.nomeVisita}
+                                </p>
+                                <p style="margin:0;font-size:0.78rem;color:#94a3b8;">
+                                    ${museoMap[v.codiceIsil] || v.codiceIsil}
+                                    · <i class="fa-solid fa-users ms-1 me-1"></i>${v.acquirenti || 0}
+                                </p>
+                            </div>
+                            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex-shrink:0;">
+                                ${v.prezzo > 0
+                                    ? `<span class="price-badge">€${v.prezzo}</span>`
+                                    : `<span class="free-badge">Gratis</span>`
+                                }
+                                <button class="btn-magenta" style="padding:4px 10px;font-size:0.75rem;"
+                                        onclick="switchSection('marketplace')">
+                                    Acquista <i class="fa-solid fa-cart-plus ms-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>`).join('')
+                : '<div class="col-12"><p class="text-muted" style="font-size:0.88rem;">Nessuna visita pubblica disponibile.</p></div>';
         } else {
-            visiteRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessuna visita disponibile.</p>';
+            visiteTop3.innerHTML = '<div class="col-12"><p class="text-muted" style="font-size:0.88rem;">Nessuna visita disponibile.</p></div>';
         }
 
+        // Opere con più collezioni (compatto)
+        const opereList = document.getElementById('autoreOpereList');
         if (dItems.ok && dItems.data.length) {
-            const museoMap = {};
-            allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome; });
             const counts = {};
             dItems.data.forEach(it => {
-                if (!counts[it.operaId]) counts[it.operaId] = { count: 0, museumId: it.museumId, img: it.image || '' };
-                counts[it.operaId].count++;
-                if (!counts[it.operaId].img && it.image) counts[it.operaId].img = it.image;
+                if (!counts[it.operaId]) counts[it.operaId] = 0;
+                counts[it.operaId]++;
             });
-            const ranked = Object.entries(counts).sort((a, b) => b[1].count - a[1].count);
-            opereItemRow.innerHTML = ranked.map(([operaId, info]) => `
-                <div class="scroll-card">
-                    ${info.img
-                        ? `<img class="scroll-card-img" src="${info.img}" alt="${operaId}"
-                               onerror="this.style.display='none'">`
-                        : `<div class="scroll-card-img scroll-card-img-placeholder">
-                               <i class="fa fa-image"></i>
-                           </div>`
-                    }
-                    <h3>${operaId}</h3>
-                    <p class="scroll-card-sub">
-                        <i class="fa-solid fa-building-columns"></i>
-                        ${museoMap[info.museumId] || info.museumId}
-                    </p>
-                    <p class="scroll-card-buyers" style="margin-top:auto">
-                        <i class="fa-solid fa-layer-group"></i> ${info.count} collezioni
-                    </p>
-                </div>
-            `).join('');
+            const top = Object.entries(counts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 6);
+            const maxCount = top[0]?.[1] || 1;
+            opereList.innerHTML = top.map(([operaId, count], i) => `
+                <div style="padding:5px 0;${i < top.length - 1 ? 'border-bottom:1px solid #f1f5f9;' : ''}">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                        <span style="font-size:0.8rem;font-weight:600;
+                                     white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:75%;">
+                            ${operaId}
+                        </span>
+                        <small style="color:#94a3b8;font-size:0.72rem;flex-shrink:0;">${count}</small>
+                    </div>
+                    <div style="height:4px;background:#f1f5f9;border-radius:3px;overflow:hidden;">
+                        <div style="height:100%;width:${Math.round(count / maxCount * 100)}%;
+                                    background:var(--magenta);border-radius:3px;"></div>
+                    </div>
+                </div>`).join('');
         } else {
-            opereItemRow.innerHTML = '<p style="color:#6b7280;font-size:0.88rem;padding:12px 0;">Nessun item disponibile.</p>';
+            opereList.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessun item disponibile.</p>';
         }
+
     } catch (e) {
         console.error('Errore autore-musei:', e);
-        museiRow.innerHTML = visiteRow.innerHTML = opereItemRow.innerHTML =
-            '<p style="color:#e74c3c;font-size:0.88rem;padding:12px 0;">Errore nel caricamento.</p>';
+        document.getElementById('autoreMuseiGrid').innerHTML =
+            '<p class="empty-msg">Errore nel caricamento.</p>';
     }
 }
+
+function _renderAutoreMuseiGrid(lista) {
+    const grid = document.getElementById('autoreMuseiGrid');
+    if (!grid) return;
+    if (!lista.length) {
+        grid.className = '';
+        grid.innerHTML = '<p class="empty-msg">Nessun museo disponibile.</p>';
+        return;
+    }
+    grid.className = 'items-grid mb-5';
+    grid.style.alignItems = 'stretch';
+    grid.innerHTML = lista.map(m => `
+        <div class="item-card museo-card scroll-card-clickable"
+             style="cursor:pointer;display:flex;flex-direction:column;"
+             onclick="showAutoreMuseoDetail('${m.codiceIsil}')">
+            ${m.immagineCopertina
+                ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                       style="height:160px;object-fit:cover;width:100%;"
+                       onerror="this.style.display='none'">`
+                : `<div class="museo-card-img-placeholder" style="height:160px;">
+                       <i class="fa fa-building-columns"></i>
+                   </div>`
+            }
+            <div style="display:flex;flex-direction:column;flex:1;padding:14px 16px 16px;">
+                <h3 style="margin:0 0 4px;font-size:1rem;font-weight:700;">${m.nome}</h3>
+                <p class="museum-sub" style="margin:0 0 8px;">
+                    <i class="fa-solid fa-location-dot"></i> ${m.citta}
+                </p>
+                <p class="description-text" style="flex:1;margin:0 0 12px;
+                   display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
+                   -webkit-box-orient:vertical;overflow:hidden;">
+                    ${m.descrizioneBreve || ''}
+                </p>
+                <div style="margin-top:auto;">
+                    <span class="tag-bubble"><i class="fa-solid fa-barcode"></i> ${m.codiceIsil}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
+window.filterAutoreMusei = function () {
+    const q = (document.getElementById('searchAutoreMusei')?.value || '').toLowerCase();
+    const filtered = q
+        ? allMuseiAutore.filter(m =>
+            m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q))
+        : allMuseiAutore;
+    _renderAutoreMuseiGrid(filtered);
+};
 
 window.showAutoreMuseoDetail = async function (codiceIsil) {
     const museo   = allMuseiAutore.find(m => m.codiceIsil === codiceIsil);
@@ -3344,6 +3432,246 @@ window.esportaNavigator = async function (codiceIsil) {
     } catch (e) {
         alert('Errore durante l\'esportazione: ' + e.message);
     }
+};
+
+/* ============================================================
+   CURATORE — GESTIONE QUIZ NAVIGATOR (18-27)
+   ============================================================ */
+
+let quizCurrentVisite   = [];
+let quizCurrentVisitaId = null;
+let quizDomande         = [];
+
+function _quizKey(visitaId) {
+    return `quiz_${SESSION.userId}_${visitaId}`;
+}
+
+function _loadQuiz(visitaId) {
+    try { return JSON.parse(localStorage.getItem(_quizKey(visitaId)) || '[]'); }
+    catch { return []; }
+}
+
+function _saveQuiz(visitaId, domande) {
+    localStorage.setItem(_quizKey(visitaId), JSON.stringify(domande));
+}
+
+async function initCuratoreQuiz() {
+    const section = document.getElementById('section-curatore-quiz');
+    section.innerHTML = `
+        <div class="mb-5">
+            <h1 class="page-title">Gestione Quiz</h1>
+            <p class="text-muted mb-0">Crea domande a scelta multipla per le tue visite Navigator.</p>
+        </div>
+        <div class="glass-card p-5">
+            <div class="mb-4">
+                <label class="custom-label">Seleziona la visita</label>
+                <select id="quizSelectVisita" class="custom-input" onchange="onQuizVisitaChange()">
+                    <option value="">— Seleziona una visita —</option>
+                </select>
+            </div>
+            <div id="quizEditor" style="display:none;"></div>
+        </div>`;
+
+    await ensureMuseiAutore();
+
+    const allVisite = [];
+    await Promise.all(allMuseiAutore.map(async m => {
+        try {
+            const res  = await fetch(`/api/visite?codiceIsil=${encodeURIComponent(m.codiceIsil)}`);
+            const data = await res.json();
+            if (data.ok) allVisite.push(...data.data);
+        } catch {}
+    }));
+    quizCurrentVisite = allVisite;
+
+    const sel = document.getElementById('quizSelectVisita');
+    if (!sel) return;
+    if (!allVisite.length) {
+        sel.innerHTML = '<option value="">Nessuna visita disponibile</option>';
+    } else {
+        sel.innerHTML = '<option value="">— Seleziona una visita —</option>' +
+            allVisite.map(v =>
+                `<option value="${v._id}">${v.nomeVisita}${v.nomeMnemonico ? ' (' + v.nomeMnemonico + ')' : ''}</option>`
+            ).join('');
+    }
+}
+
+window.onQuizVisitaChange = function () {
+    const sel    = document.getElementById('quizSelectVisita');
+    const editor = document.getElementById('quizEditor');
+    if (!sel || !editor) return;
+    quizCurrentVisitaId = sel.value;
+    if (!quizCurrentVisitaId) { editor.style.display = 'none'; return; }
+    quizDomande = _loadQuiz(quizCurrentVisitaId);
+    editor.style.display = 'block';
+    _renderQuizEditor();
+};
+
+function _renderQuizEditor() {
+    const editor = document.getElementById('quizEditor');
+    if (!editor) return;
+
+    const domHtml = quizDomande.length
+        ? quizDomande.map((d, i) => `
+            <div class="glass-card p-4 mb-3">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <span class="custom-label" style="margin:0;">Domanda ${i + 1}</span>
+                    <div class="d-flex gap-2">
+                        <button class="btn-outline-custom" style="padding:4px 10px;font-size:0.8rem;"
+                                onclick="editQuizDomanda(${i})">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <button class="btn-outline-custom"
+                                style="padding:4px 10px;font-size:0.8rem;border-color:#ef4444;color:#ef4444;"
+                                onclick="deleteQuizDomanda(${i})">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                <p style="font-weight:600;margin-bottom:10px;">${d.testo}</p>
+                <div class="row g-2">
+                    ${d.opzioni.map((o, j) => `
+                        <div class="col-md-6">
+                            <div style="padding:8px 12px;border-radius:8px;font-size:0.88rem;
+                                 background:${j === d.corretta ? 'rgba(34,197,94,0.1)' : 'rgba(0,0,0,0.03)'};
+                                 border:1px solid ${j === d.corretta ? 'rgba(34,197,94,0.3)' : '#e2e8f0'};
+                                 color:${j === d.corretta ? '#16a34a' : 'inherit'};">
+                                <i class="fa-solid ${j === d.corretta ? 'fa-check-circle' : 'fa-circle'} me-2"
+                                   style="font-size:0.8rem;"></i>
+                                ${['A','B','C','D'][j]}. ${o}
+                            </div>
+                        </div>`).join('')}
+                </div>
+            </div>`).join('')
+        : '<p class="text-muted" style="padding:16px 0;">Nessuna domanda ancora. Usa il form qui sotto per aggiungerne una.</p>';
+
+    editor.innerHTML = `
+        <div class="mb-2 d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0">
+                <i class="fa-solid fa-list-check me-2" style="color:var(--magenta)"></i>
+                Domande del Quiz
+                <span style="background:var(--magenta);color:#fff;border-radius:20px;
+                             padding:2px 10px;font-size:0.78rem;margin-left:6px;">
+                    ${quizDomande.length}
+                </span>
+            </h5>
+        </div>
+        <div id="quizDomandeList" class="mb-4">${domHtml}</div>
+        <hr style="border-color:#e2e8f0;margin:24px 0;">
+        <h5 class="fw-bold mb-4" id="quizFormTitle">
+            <i class="fa-solid fa-plus-circle me-2" style="color:var(--magenta)"></i>
+            Aggiungi Domanda
+        </h5>
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="custom-label">Testo della domanda *</label>
+                <input type="text" id="qfTesto" class="custom-input"
+                       placeholder="Es: Chi ha dipinto La Primavera?">
+            </div>
+            ${['A','B','C','D'].map((letter, i) => `
+            <div class="col-md-6">
+                <label class="custom-label">Risposta ${letter} *</label>
+                <input type="text" id="qfOpzione${i}" class="custom-input"
+                       placeholder="Opzione ${letter}…">
+            </div>`).join('')}
+            <div class="col-12">
+                <label class="custom-label">Risposta corretta *</label>
+                <div class="d-flex gap-3 flex-wrap mt-1">
+                    ${['A','B','C','D'].map((letter, i) => `
+                    <label style="display:flex;align-items:center;gap:8px;cursor:pointer;
+                                  padding:8px 16px;border:1px solid #e2e8f0;border-radius:8px;
+                                  transition:all .18s;" id="qfCorrettaLabel${i}">
+                        <input type="radio" name="qfCorretta" value="${i}"
+                               style="width:auto;accent-color:var(--magenta,#FF007F);"
+                               onchange="highlightCorrettaLabel()">
+                        <span style="font-weight:600;">${letter}</span>
+                    </label>`).join('')}
+                </div>
+            </div>
+            <input type="hidden" id="qfEditIndex" value="-1">
+            <div class="col-12 d-flex justify-content-end gap-3 pt-3"
+                 style="border-top:1px solid #e2e8f0;">
+                <button type="button" class="btn-outline-custom" onclick="resetQuizForm()">Annulla</button>
+                <button type="button" class="btn-magenta" onclick="salvaQuizDomanda()">
+                    <i class="fa-solid fa-floppy-disk me-2"></i>Salva Domanda
+                </button>
+            </div>
+        </div>`;
+}
+
+window.highlightCorrettaLabel = function () {
+    const val = document.querySelector('input[name="qfCorretta"]:checked')?.value;
+    [0,1,2,3].forEach(i => {
+        const lbl = document.getElementById(`qfCorrettaLabel${i}`);
+        if (!lbl) return;
+        if (String(i) === val) {
+            lbl.style.borderColor = 'var(--magenta,#FF007F)';
+            lbl.style.background  = 'rgba(255,0,127,0.06)';
+        } else {
+            lbl.style.borderColor = '#e2e8f0';
+            lbl.style.background  = '';
+        }
+    });
+};
+
+window.salvaQuizDomanda = function () {
+    const testo = document.getElementById('qfTesto')?.value.trim();
+    if (!testo) { alert('Inserisci il testo della domanda.'); return; }
+
+    const opzioni = [0,1,2,3].map(i => document.getElementById(`qfOpzione${i}`)?.value.trim() || '');
+    if (opzioni.some(o => !o)) { alert('Compila tutte e quattro le risposte.'); return; }
+
+    const correttaEl = document.querySelector('input[name="qfCorretta"]:checked');
+    if (!correttaEl) { alert('Seleziona la risposta corretta.'); return; }
+
+    const editIdx = parseInt(document.getElementById('qfEditIndex')?.value ?? '-1');
+    const domanda = { testo, opzioni, corretta: parseInt(correttaEl.value) };
+
+    if (editIdx >= 0) quizDomande[editIdx] = domanda;
+    else              quizDomande.push(domanda);
+
+    _saveQuiz(quizCurrentVisitaId, quizDomande);
+    _renderQuizEditor();
+};
+
+window.editQuizDomanda = function (i) {
+    const d = quizDomande[i];
+    if (!d) return;
+    document.getElementById('qfTesto').value = d.testo;
+    [0,1,2,3].forEach(j => {
+        const el = document.getElementById(`qfOpzione${j}`);
+        if (el) el.value = d.opzioni[j] || '';
+    });
+    const radio = document.querySelector(`input[name="qfCorretta"][value="${d.corretta}"]`);
+    if (radio) { radio.checked = true; highlightCorrettaLabel(); }
+    document.getElementById('qfEditIndex').value = i;
+    const title = document.getElementById('quizFormTitle');
+    if (title) title.innerHTML =
+        `<i class="fa-solid fa-pen me-2" style="color:var(--magenta)"></i>Modifica Domanda ${i + 1}`;
+    title?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+
+window.deleteQuizDomanda = function (i) {
+    if (!confirm('Eliminare questa domanda?')) return;
+    quizDomande.splice(i, 1);
+    _saveQuiz(quizCurrentVisitaId, quizDomande);
+    _renderQuizEditor();
+};
+
+window.resetQuizForm = function () {
+    const testo = document.getElementById('qfTesto');
+    if (testo) testo.value = '';
+    [0,1,2,3].forEach(i => {
+        const el = document.getElementById(`qfOpzione${i}`);
+        if (el) el.value = '';
+    });
+    document.querySelectorAll('input[name="qfCorretta"]').forEach(r => r.checked = false);
+    highlightCorrettaLabel();
+    const idx = document.getElementById('qfEditIndex');
+    if (idx) idx.value = '-1';
+    const title = document.getElementById('quizFormTitle');
+    if (title) title.innerHTML =
+        '<i class="fa-solid fa-plus-circle me-2" style="color:var(--magenta)"></i>Aggiungi Domanda';
 };
 
 window.acquistaVisita = async function (id) {
