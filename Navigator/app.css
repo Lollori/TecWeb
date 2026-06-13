@@ -56,7 +56,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 }
 
 /* ── Museum picker ── */
-.museo-picker-root { min-height: 100vh; background: var(--body-bg); }
 .picker-header { text-align: center; padding: 60px 32px 40px; }
 .picker-title {
   font-family: 'Playfair Display', serif;
@@ -119,16 +118,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 }
 .back-to-marketplace:hover { opacity: 0.75; }
 
-/* ── Back bar ── */
-.museo-back-bar {
-  background: var(--dark); padding: 8px 32px;
-  display: flex; align-items: center; gap: 20px;
-}
-.back-btn {
-  background: none; border: none; color: var(--muted);
-  font-size: 0.85rem; cursor: pointer; padding: 4px 0; transition: color 0.2s;
-}
-.back-btn:hover { color: #e2e8f0; }
 
 /* ── Museum header ── */
 .navigator-root { min-height: 100vh; }
@@ -167,22 +156,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   border-radius: 20px; padding: 3px 12px; font-size: 0.8rem; font-weight: 700;
 }
 
-/* ── Tabs ── */
-.nav-tabs-bar {
-  display: flex; gap: 4px;
-  padding: 16px 32px 0;
-  background: var(--dark);
-  max-width: 900px; margin: 0 auto;
-}
-.nav-tab-btn {
-  background: transparent; border: none;
-  border-bottom: 3px solid transparent;
-  color: var(--muted); padding: 10px 20px;
-  font-size: 0.9rem; font-weight: 600;
-  cursor: pointer; transition: all 0.2s;
-}
-.nav-tab-btn:hover { color: #e2e8f0; }
-.nav-tab-btn.active { color: var(--magenta); border-bottom-color: var(--magenta); }
 
 /* ── Main content ── */
 .nav-main { max-width: 900px; margin: 0 auto; padding: 32px; }
@@ -235,37 +208,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 }
 .quiz-label { font-weight: 600; color: #3b82f6; flex-shrink: 0; }
 
-/* ── Entry Screen ── */
-.entry-root { min-height: 100vh; background: var(--dark); }
-.entry-body  { display: flex; flex-direction: column; align-items: center; }
-.entry-cards {
-  display: flex; gap: 24px; flex-wrap: wrap;
-  justify-content: center;
-  padding: 0 32px 80px;
-  max-width: 800px; width: 100%;
-}
-.entry-role-card {
-  flex: 1 1 260px; max-width: 340px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 22px; padding: 40px 32px;
-  text-align: center; cursor: pointer;
-  transition: all 0.25s;
-  display: flex; flex-direction: column; align-items: center; gap: 14px;
-}
-.entry-role-card:hover {
-  border-color: rgba(255,0,127,0.5);
-  background: rgba(255,255,255,0.08);
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(255,0,127,0.18);
-}
-.entry-role-card--alt:hover {
-  border-color: rgba(99,179,237,0.5);
-  box-shadow: 0 16px 40px rgba(99,179,237,0.15);
-}
-.entry-role-icon  { font-size: 3rem; line-height: 1; }
-.entry-role-label { font-size: 1.05rem; font-weight: 700; color: #f1f5f9; line-height: 1.35; }
-.entry-role-hint  { font-size: 0.82rem; color: var(--muted); font-weight: 500; }
 
 /* ── Student Screen ── */
 .join-wrapper {
@@ -306,30 +248,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 .join-code-input--error { border-color: #f87171 !important; }
 .join-error { color: #ef4444; font-size: 0.88rem; text-align: center; }
 
-.student-root { min-height: 100vh; background: var(--dark); }
-.student-body { display: flex; flex-direction: column; align-items: center; }
-.student-form {
-  display: flex; flex-direction: column; align-items: center; gap: 16px;
-  width: 100%; max-width: 480px;
-  padding: 0 32px 80px;
-}
-.student-code-input {
-  width: 100%;
-  background: rgba(255,255,255,0.06);
-  border: 2px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  color: #f1f5f9;
-  font-size: 1.6rem; font-weight: 600; font-family: 'Inter', sans-serif;
-  padding: 22px 28px;
-  text-align: center;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s;
-}
-.student-code-input::placeholder { color: rgba(255,255,255,0.2); font-weight: 400; font-size: 1.2rem; }
-.student-code-input:focus {
-  border-color: var(--magenta);
-  background: rgba(255,255,255,0.09);
-}
 .student-join-btn {
   width: 100%;
   background: var(--magenta); color: #fff;
@@ -488,13 +406,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 .lobby-avatars-label { color: var(--muted); font-size: 0.82rem; }
 .lobby-avatars       { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
 
-/* StudentScreen error */
-.student-code-input--error { border-color: #f87171 !important; }
-.student-join-error {
-  color: #f87171; font-size: 0.88rem; font-weight: 500;
-  background: rgba(248,113,113,0.1); border-radius: 10px;
-  padding: 10px 16px; width: 100%; text-align: center;
-}
 
 /* ── Internal Map (Planimetria) ── */
 .museo-map-interna-section {
@@ -528,10 +439,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   background: #fff;
   margin: 0 auto;
 }
-/* Section padding for the interactive floor plan inside VisiteScreen */
-.museo-map-interna-section {
-  padding-bottom: 20px;
-}
 
 /* ── Join Code Button ── */
 .join-code-btn {
@@ -553,7 +460,6 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 }
 
 /* ── Visite Screen (inside admin-layout main-content) ── */
-.visite-screen-root { min-height: 100vh; background: var(--body-bg); }
 .main-content--visite { padding: 0; }
 @media (max-width: 991px) { .main-content--visite { padding-top: 80px; } }
 @media (max-width: 768px) { .main-content--visite { padding-top: 76px; } }
@@ -1013,11 +919,8 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 
 /* ── Navigator responsive (non-admin-layout screens) ── */
 @media (max-width: 991px) {
-  .nav-topbar     { display: none; }
-  .museo-back-bar { display: none; }
-  .visite-screen-root { padding-top: 60px; }
-  .student-root       { padding-top: 60px; }
-  .lobby-root         { padding-top: 60px; }
+  .nav-topbar  { display: none; }
+  .lobby-root  { padding-top: 60px; }
 }
 
 /* ── Search box dark mode ── */

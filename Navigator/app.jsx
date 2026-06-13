@@ -1,19 +1,7 @@
 /* ── Floor-plan overrides ────────────────────────────────
-   Client-side fallback so the GeoJSON overlay works even if
-   the MongoDB database has not been re-seeded after adding
-   geoJsonUrl / imgWidth / imgHeight to musei.json.
+   FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js
+   loaded before this script in index.html.
 ───────────────────────────────────────────────────────── */
-const FLOOR_PLAN_OVERRIDES = {
-  'IT-FI0082': {
-    'Planimetria': {
-      url:        '/data/maps/uffizi/piantina_uffizi.png',
-      geoJsonUrl: '/data/maps/uffizi/P2uffizi.geojson',
-      imgWidth:   437,
-      imgHeight:  600
-    }
-  }
-};
-
 function applyFloorPlanOverrides(museo) {
   if (!museo) return museo;
   const ovMap = FLOOR_PLAN_OVERRIDES[museo.codiceIsil];
@@ -27,6 +15,21 @@ function applyFloorPlanOverrides(museo) {
   };
 }
 
+/* ── Shared role config & theme helper ─────────────── */
+
+const ROLE_MAP = {
+  curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
+  visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
+  autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
+};
+
+function applyTheme(isDark, setIsDark) {
+  const next = isDark ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  localStorage.setItem('theme', next);
+  setIsDark(!isDark);
+}
+
 /* ── MobileMenu ────────────────────────────────────── */
 
 function MobileMenu({ links, contextLabel }) {
@@ -36,19 +39,7 @@ function MobileMenu({ links, contextLabel }) {
   );
   const username = localStorage.getItem('userUsername') || '';
   const role     = localStorage.getItem('userRole')     || '';
-  const roleMap  = {
-    curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
-    visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
-    autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
-  };
-  const cfg = roleMap[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || 'Navigator' };
-
-  function toggleTheme() {
-    const next = isDark ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem('theme', next);
-    setIsDark(!isDark);
-  }
+  const cfg = ROLE_MAP[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || 'Navigator' };
 
   function close() { setOpen(false); }
 
@@ -97,7 +88,7 @@ function MobileMenu({ links, contextLabel }) {
             <i className="fa-solid fa-house" />
             Menu principale
           </a>
-          <button className="mobile-footer-link" onClick={toggleTheme}>
+          <button className="mobile-footer-link" onClick={() => applyTheme(isDark, setIsDark)}>
             <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
             {isDark ? 'Modalità chiara' : 'Modalità scura'}
           </button>
@@ -119,19 +110,7 @@ function Sidebar({ links, contextLabel }) {
   );
   const username = localStorage.getItem('userUsername') || '';
   const role     = localStorage.getItem('userRole')     || '';
-  const roleMap  = {
-    curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
-    visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
-    autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
-  };
-  const cfg = roleMap[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || '—' };
-
-  function toggleTheme() {
-    const next = isDark ? 'light' : 'dark';
-    document.documentElement.dataset.theme = next;
-    localStorage.setItem('theme', next);
-    setIsDark(!isDark);
-  }
+  const cfg = ROLE_MAP[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || '—' };
 
   return (
     <aside className="sidebar">
@@ -161,7 +140,7 @@ function Sidebar({ links, contextLabel }) {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="dark-toggle" onClick={toggleTheme}>
+        <button className="dark-toggle" onClick={() => applyTheme(isDark, setIsDark)}>
           <span className="toggle-label">{isDark ? 'Modalità chiara' : 'Modalità scura'}</span>
           <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
         </button>

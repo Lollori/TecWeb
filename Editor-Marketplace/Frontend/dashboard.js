@@ -17,30 +17,17 @@ let currentDetailTab   = 'opere';
 
 let currentViewMuseo = null;
 
-let allMuseiAutore       = [];
-let allVisiteAutore      = [];
-let allOpereAutore       = [];
+let allMuseiAutore          = [];
 let currentAutoreMuseoOpere = [];
 
 let allVisitatoreCachedMusei = [];
 let currentVisitatoreOpere   = [];
 let currentVisitatoreVisite  = [];
 
-/* ── Floor-plan overrides (client-side bypass for un-seeded DB) ── */
-const DASH_FLOOR_PLAN_OVERRIDES = {
-    'IT-FI0082': {
-        'Planimetria': {
-            url:        '/data/maps/uffizi/piantina_uffizi.png',
-            geoJsonUrl: '/data/maps/uffizi/P2uffizi.geojson',
-            imgWidth:   437,
-            imgHeight:  600
-        }
-    }
-};
-
+/* FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js */
 function applyDashFloorPlanOverrides(museo) {
     if (!museo?.mappaInterna) return [];
-    const ovMap = DASH_FLOOR_PLAN_OVERRIDES[museo.codiceIsil];
+    const ovMap = FLOOR_PLAN_OVERRIDES[museo.codiceIsil];
     if (!ovMap) return museo.mappaInterna;
     return museo.mappaInterna.map(p => {
         const ov = ovMap[p.piano];
