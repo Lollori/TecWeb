@@ -813,7 +813,7 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
 function MarketplaceScreen() {
   return (
     <iframe
-      src="/Editor-Marketplace/Frontend/dashboard.html?embed=marketplace"
+      src="/Editor-Marketplace/dashboard.html?embed=marketplace"
       style={{ flex: 1, minHeight: 0, width: '100%', border: 'none', display: 'block' }}
       title="Marketplace"
     />

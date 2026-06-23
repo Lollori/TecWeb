@@ -218,5 +218,5 @@ function showStatus(msg) {
 function vaiAllEditor() {
     const codiceIsil = document.getElementById('editIsil').value;
     if (!codiceIsil) return;
-    window.location.href = `/Editor-Marketplace/Frontend/opere.html?museo=${encodeURIComponent(codiceIsil)}`;
+    window.location.href = `/Editor-Marketplace/opere.html?museo=${encodeURIComponent(codiceIsil)}`;
 }

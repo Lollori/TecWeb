@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     if (!SESSION.userId) {
-        window.location.href = '/login/login.html?redirect=/Editor-Marketplace/Frontend/dashboard.html';
+        window.location.href = '/login/login.html?redirect=/Editor-Marketplace/dashboard.html';
         return;
     }
 
