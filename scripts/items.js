@@ -8,6 +8,7 @@ const itemSchema = new mongoose.Schema({
     image:    { type: String, default: '' },
     authorId: { type: String, required: true },
     operaId:  { type: String, required: true, index: true },
+    pubblica: { type: Boolean, default: false },
 });
 
 const Item = mongoose.models.Item || mongoose.model("Item", itemSchema);
@@ -48,6 +49,7 @@ exports.getAll = async (credentials, query) => {
         if (query.operaId)  filter.operaId  = query.operaId;
         if (query.museumId) filter.museumId = query.museumId;
         if (query.authorId) filter.authorId = query.authorId;
+        if (query.pubblica !== undefined) filter.pubblica = query.pubblica === 'true';
         const data = await Item.find(filter, { __v: 0 });
         return { ok: true, data };
     } catch (e) {

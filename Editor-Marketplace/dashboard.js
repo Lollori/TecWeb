@@ -24,6 +24,11 @@ let allVisitatoreCachedMusei = [];
 let currentVisitatoreOpere   = [];
 let currentVisitatoreVisite  = [];
 
+let _vfCurrentMuseo    = '';
+let _vfItemTab         = 'miei';
+let _vfMyItems         = [];
+let _vfAcquistatiItems = [];
+
 /* FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js */
 function applyDashFloorPlanOverrides(museo) {
     if (!museo?.mappaInterna) return [];
@@ -1221,14 +1226,10 @@ async function initAutoreAggiungiVisita() {
                         <option value="">— Seleziona museo —</option>
                     </select>
                 </div>
-                <div class="col-md-8">
+                <div class="col-12">
                     <label class="custom-label">Nome Visita *</label>
                     <input type="text" id="vfNomeVisita" class="custom-input"
                            placeholder="es. Rinascimento Fiorentino" required>
-                </div>
-                <div class="col-md-4">
-                    <label class="custom-label">Prezzo (€) <small style="text-transform:none;color:#94a3b8;">(0 = gratis)</small></label>
-                    <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="0">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Nome Mnemonico</label>
@@ -1241,24 +1242,38 @@ async function initAutoreAggiungiVisita() {
                            placeholder="es. In quale anno fu dipinta la Primavera?">
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Logistica</label>
-                    <textarea id="vfLogistica" class="custom-input" rows="3"
-                              placeholder="Descrivi il percorso della visita…"></textarea>
-                </div>
-                <div class="col-12">
-                    <label class="custom-label">Opere incluse nella visita</label>
-                    <div id="opereCheckboxList"
-                         style="margin-top:8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;max-height:300px;overflow-y:auto;padding:2px;">
+                    <label class="custom-label">Items da includere nella visita</label>
+                    <div class="detail-tabs mb-3" style="margin-top:8px;">
+                        <button type="button" class="tab-btn active" id="vfTabMiei"
+                                onclick="setVfItemTab('miei',this)">
+                            <i class="fa-solid fa-user me-1"></i> I miei item
+                        </button>
+                        <button type="button" class="tab-btn" id="vfTabAcquistati"
+                                onclick="setVfItemTab('acquistati',this)">
+                            <i class="fa-solid fa-bag-shopping me-1"></i> Acquistati dal marketplace
+                        </button>
+                    </div>
+                    <div id="itemsCheckboxList"
+                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:320px;overflow-y:auto;padding:2px;">
                         <p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">
-                            Seleziona prima un museo per vedere le opere disponibili.
+                            Seleziona prima un museo per vedere gli items disponibili.
                         </p>
                     </div>
                 </div>
                 <div class="col-12 d-flex align-items-center gap-3">
-                    <input type="checkbox" id="vfPubblica"
-                           style="width:auto;accent-color:var(--magenta,#FF007F);">
-                    <label class="custom-label" for="vfPubblica"
-                           style="margin:0;cursor:pointer;font-size:0.9rem;">Metti in vendita subito</label>
+                    <label class="custom-label" style="margin:0;">Visibilità</label>
+                    <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
+                         onclick="toggleVfVisibilita()">
+                        <div id="vfToggleTrack" style="width:54px;height:28px;border-radius:14px;background:#cbd5e1;position:relative;transition:background .2s;flex-shrink:0;">
+                            <div id="vfToggleThumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:left .2s;"></div>
+                        </div>
+                        <span id="vfToggleLabel" style="font-size:0.92rem;font-weight:600;color:#64748b;">Privata</span>
+                    </div>
+                    <input type="hidden" id="vfPubblica" value="false">
+                </div>
+                <div class="col-md-4" id="vfPrezzoRow" style="display:none;">
+                    <label class="custom-label">Prezzo (€)</label>
+                    <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="0" placeholder="0.00">
                 </div>
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
@@ -1273,36 +1288,98 @@ async function initAutoreAggiungiVisita() {
     await ensureMuseiAutore();
     populateMuseoSelect('vfMuseo', allMuseiAutore);
 
-    document.getElementById('vfMuseo').addEventListener('change', async function () {
-        const codiceIsil = this.value;
-        const container  = document.getElementById('opereCheckboxList');
-        if (!codiceIsil) {
-            container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere le opere disponibili.</p>';
+    window.toggleVfVisibilita = function () {
+        const track     = document.getElementById('vfToggleTrack');
+        const thumb     = document.getElementById('vfToggleThumb');
+        const label     = document.getElementById('vfToggleLabel');
+        const hidden    = document.getElementById('vfPubblica');
+        const prezzoRow = document.getElementById('vfPrezzoRow');
+        const newVal    = hidden.value !== 'true';
+        hidden.value    = String(newVal);
+        if (newVal) {
+            track.style.background = 'var(--magenta,#FF007F)';
+            thumb.style.left       = '29px';
+            label.textContent      = 'Pubblica';
+            label.style.color      = 'var(--magenta,#FF007F)';
+            if (prezzoRow) prezzoRow.style.display = '';
+        } else {
+            track.style.background = '#cbd5e1';
+            thumb.style.left       = '3px';
+            label.textContent      = 'Privata';
+            label.style.color      = '#64748b';
+            if (prezzoRow) prezzoRow.style.display = 'none';
+        }
+    };
+
+    _vfCurrentMuseo    = '';
+    _vfItemTab         = 'miei';
+    _vfMyItems         = [];
+    _vfAcquistatiItems = [];
+
+    window.setVfItemTab = function (tab, btn) {
+        _vfItemTab = tab;
+        document.querySelectorAll('#section-autore-aggiungi-visita .tab-btn')
+            .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        _renderVfItems();
+    };
+
+    function _renderVfItems() {
+        const container = document.getElementById('itemsCheckboxList');
+        if (!container) return;
+        if (!_vfCurrentMuseo) {
+            container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere gli items disponibili.</p>';
             return;
         }
-        container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento opere…</p>';
+        const lista = _vfItemTab === 'miei' ? _vfMyItems : _vfAcquistatiItems;
+        if (!lista.length) {
+            const msg = _vfItemTab === 'miei'
+                ? 'Nessun tuo item disponibile per questo museo. Crea un item dalla sezione "Aggiungi Item".'
+                : 'Nessun item acquistato disponibile per questo museo. Acquistane dal marketplace.';
+            container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">${msg}</p>`;
+            return;
+        }
+        container.innerHTML = lista.map(it => {
+            const preview = (it.contents?.[0] || '').substring(0, 60);
+            return `
+            <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+                          border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;
+                          transition:border-color .18s,background .18s;">
+                <input type="checkbox" name="itemsVisita" value="${it._id}"
+                       style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);"
+                       onchange="this.closest('label').style.borderColor=this.checked?'var(--magenta,#FF007F)':'#e2e8f0';this.closest('label').style.background=this.checked?'rgba(255,0,127,0.05)':'';">
+                <span style="font-size:0.88rem;">
+                    <strong>${it.operaId}</strong>
+                    ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${it.contents[0].length > 60 ? '…' : ''}</span>` : ''}
+                </span>
+            </label>`;
+        }).join('');
+    }
+
+    document.getElementById('vfMuseo').addEventListener('change', async function () {
+        const codiceIsil = this.value;
+        _vfCurrentMuseo  = codiceIsil;
+        const container  = document.getElementById('itemsCheckboxList');
+        if (!codiceIsil) {
+            _vfMyItems = [];
+            _vfAcquistatiItems = [];
+            _renderVfItems();
+            return;
+        }
+        container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
         try {
-            const res  = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(codiceIsil)}`);
-            const data = await res.json();
-            if (!data.ok || !data.data.length) {
-                container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Nessuna opera disponibile per questo museo.</p>';
-                return;
-            }
-            container.innerHTML = data.data.map(op => `
-                <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
-                              border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;
-                              transition:border-color .18s,background .18s;">
-                    <input type="checkbox" name="opereVisita" value="${op.operaId}"
-                           style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);"
-                           onchange="this.closest('label').style.borderColor=this.checked?'var(--magenta,#FF007F)':'#e2e8f0';this.closest('label').style.background=this.checked?'rgba(255,0,127,0.05)':'';">
-                    <span style="font-size:0.88rem;">
-                        <strong>${op.operaId}</strong>
-                        ${op.autore ? `<br><span style="color:#64748b;font-size:0.8rem;">${op.autore}</span>` : ''}
-                    </span>
-                </label>
-            `).join('');
+            const [resOwn, resPublic] = await Promise.all([
+                fetch(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
+                fetch(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
+            ]);
+            const [dOwn, dPublic] = await Promise.all([resOwn.json(), resPublic.json()]);
+            _vfMyItems = dOwn.ok ? dOwn.data : [];
+            const purchases = getMktPurchases();
+            _vfAcquistatiItems = (dPublic.ok ? dPublic.data : [])
+                .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
+            _renderVfItems();
         } catch (e) {
-            container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento delle opere.</p>';
+            container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento degli items.</p>';
         }
     });
 
@@ -1311,17 +1388,18 @@ async function initAutoreAggiungiVisita() {
         const codiceIsil = document.getElementById('vfMuseo').value;
         if (!codiceIsil) { alert('Seleziona un museo.'); return; }
 
-        const selectedOpere = [...document.querySelectorAll('input[name="opereVisita"]:checked')].map(c => c.value);
+        const selectedItems = [...document.querySelectorAll('input[name="itemsVisita"]:checked')].map(c => c.value);
+        const isPubblica = document.getElementById('vfPubblica').value === 'true';
         const body = {
             nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
             nomeMnemonico: document.getElementById('vfNomeMnemonico').value.trim(),
-            logistica:     document.getElementById('vfLogistica').value.trim(),
             quizDomanda:   document.getElementById('vfQuizDomanda').value.trim(),
             codiceIsil,
-            prezzo:        parseFloat(document.getElementById('vfPrezzo').value) || 0,
-            pubblica:      document.getElementById('vfPubblica').checked,
+            prezzo:        isPubblica ? (parseFloat(document.getElementById('vfPrezzo').value) || 0) : 0,
+            pubblica:      isPubblica,
             autoreId:      SESSION.userId,
-            opereCount:    selectedOpere.length,
+            itemIds:       selectedItems,
+            opereCount:    selectedItems.length,
         };
 
         if (!body.nomeVisita) { alert('Inserisci il nome della visita.'); return; }
@@ -1348,8 +1426,21 @@ async function initAutoreAggiungiVisita() {
 window.resetVisitaForm = function () {
     const f = document.getElementById('visitaFormAutore');
     if (f) f.reset();
-    const c = document.getElementById('opereCheckboxList');
-    if (c) c.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere le opere disponibili.</p>';
+    const c = document.getElementById('itemsCheckboxList');
+    if (c) c.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere gli items disponibili.</p>';
+    const track  = document.getElementById('vfToggleTrack');
+    const thumb  = document.getElementById('vfToggleThumb');
+    const label  = document.getElementById('vfToggleLabel');
+    const hidden = document.getElementById('vfPubblica');
+    const row    = document.getElementById('vfPrezzoRow');
+    if (track)  track.style.background = '#cbd5e1';
+    if (thumb)  thumb.style.left = '3px';
+    if (label)  { label.textContent = 'Privata'; label.style.color = '#64748b'; }
+    if (hidden) hidden.value = 'false';
+    if (row)    row.style.display = 'none';
+    _vfCurrentMuseo    = '';
+    _vfMyItems         = [];
+    _vfAcquistatiItems = [];
 };
 
 /* ============================================================
@@ -1381,10 +1472,6 @@ async function initAutoreAggiungiItem() {
                     <label class="custom-label">Descrizione / Contenuto *</label>
                     <textarea id="ifContenuto" class="custom-input" rows="4"
                               placeholder="Inserisci una descrizione, nota critica, approfondimento…" required></textarea>
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Prezzo (€) <small style="text-transform:none;color:#94a3b8;">(0 = gratis)</small></label>
-                    <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="0">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">ID Oggetto</label>
@@ -1420,6 +1507,21 @@ async function initAutoreAggiungiItem() {
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…">
                 </div>
+                <div class="col-12 d-flex align-items-center gap-3">
+                    <label class="custom-label" style="margin:0;">Visibilità</label>
+                    <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
+                         onclick="toggleIfVisibilita()">
+                        <div id="ifToggleTrack" style="width:54px;height:28px;border-radius:14px;background:#cbd5e1;position:relative;transition:background .2s;flex-shrink:0;">
+                            <div id="ifToggleThumb" style="position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:left .2s;"></div>
+                        </div>
+                        <span id="ifToggleLabel" style="font-size:0.92rem;font-weight:600;color:#64748b;">Privata</span>
+                    </div>
+                    <input type="hidden" id="ifPubblica" value="false">
+                </div>
+                <div class="col-md-4" id="ifPrezzoRow" style="display:none;">
+                    <label class="custom-label">Prezzo (€)</label>
+                    <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="0" placeholder="0.00">
+                </div>
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn-outline-custom"
@@ -1432,6 +1534,29 @@ async function initAutoreAggiungiItem() {
 
     await ensureMuseiAutore();
     populateMuseoSelect('ifMuseo', allMuseiAutore);
+
+    window.toggleIfVisibilita = function () {
+        const track     = document.getElementById('ifToggleTrack');
+        const thumb     = document.getElementById('ifToggleThumb');
+        const label     = document.getElementById('ifToggleLabel');
+        const hidden    = document.getElementById('ifPubblica');
+        const prezzoRow = document.getElementById('ifPrezzoRow');
+        const newVal    = hidden.value !== 'true';
+        hidden.value    = String(newVal);
+        if (newVal) {
+            track.style.background = 'var(--magenta,#FF007F)';
+            thumb.style.left       = '29px';
+            label.textContent      = 'Pubblica';
+            label.style.color      = 'var(--magenta,#FF007F)';
+            if (prezzoRow) prezzoRow.style.display = '';
+        } else {
+            track.style.background = '#cbd5e1';
+            thumb.style.left       = '3px';
+            label.textContent      = 'Privata';
+            label.style.color      = '#64748b';
+            if (prezzoRow) prezzoRow.style.display = 'none';
+        }
+    };
 
     document.getElementById('ifMuseo').addEventListener('change', async function () {
         const codiceIsil  = this.value;
@@ -1467,7 +1592,8 @@ async function initAutoreAggiungiItem() {
         if (!operaId)   { alert("Seleziona un'opera."); return; }
         if (!contenuto) { alert('Inserisci almeno una descrizione.'); return; }
 
-        const prezzo   = parseFloat(document.getElementById('ifPrezzo').value) || 0;
+        const isPubblicaItem = document.getElementById('ifPubblica').value === 'true';
+        const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
         const metadata = {};
         if (prezzo > 0) metadata.prezzo = prezzo;
         [['materiale','ifMateriale'],['tecnica','ifTecnica'],['dimensioni','ifDimensioni'],
@@ -1485,6 +1611,7 @@ async function initAutoreAggiungiItem() {
             contents: [contenuto],
             metadata,
             image:    document.getElementById('ifImmagine').value.trim(),
+            pubblica: isPubblicaItem,
         };
 
         try {
@@ -1511,6 +1638,16 @@ window.resetItemForm = function () {
     if (f) f.reset();
     const s = document.getElementById('ifOpera');
     if (s) s.innerHTML = '<option value="">— Prima seleziona un museo —</option>';
+    const track  = document.getElementById('ifToggleTrack');
+    const thumb  = document.getElementById('ifToggleThumb');
+    const label  = document.getElementById('ifToggleLabel');
+    const hidden = document.getElementById('ifPubblica');
+    const row    = document.getElementById('ifPrezzoRow');
+    if (track)  track.style.background = '#cbd5e1';
+    if (thumb)  thumb.style.left = '3px';
+    if (label)  { label.textContent = 'Privata'; label.style.color = '#64748b'; }
+    if (hidden) hidden.value = 'false';
+    if (row)    row.style.display = 'none';
 };
 
 /* ============================================================
@@ -3651,15 +3788,15 @@ async function initMarketplace() {
 
     try {
         const [rItems, rVisite, rMusei] = await Promise.all([
-            fetch('/api/items'),
+            fetch('/api/items?pubblica=true'),
             fetch('/api/visite'),
             fetch('/api/musei'),
         ]);
         const [dItems, dVisite, dMusei] = await Promise.all([
             rItems.json(), rVisite.json(), rMusei.json(),
         ]);
-        allMktItems  = dItems.ok  ? dItems.data  : [];
-        allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica) : [];
+        allMktItems  = dItems.ok  ? dItems.data.filter(it => it.authorId !== SESSION.userId) : [];
+        allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica && v.autoreId !== SESSION.userId) : [];
         allMktMusei  = dMusei.ok  ? dMusei.data  : [];
     } catch (e) {
         document.getElementById('mktContent').innerHTML =

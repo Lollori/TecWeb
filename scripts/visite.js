@@ -15,7 +15,8 @@ const visitaSchema = new mongoose.Schema({
     autoreId:         { type: String, required: false },
     pubblica:         { type: Boolean, default: false },
     prezzo:           { type: Number,  default: 0 },
-    acquirenti:       { type: Number,  default: 0 }
+    acquirenti:       { type: Number,  default: 0 },
+    itemIds:          { type: [String], default: [] },
 });
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
