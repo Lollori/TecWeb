@@ -57,8 +57,8 @@ function navigaItem(codice, direction) {
   const total = session.itemIds.length;
   if (total === 0) return { error: 'Nessun item nella visita.' };
   let newIdx = session.currentItemIdx;
-  if (direction === 'avanti')   newIdx = Math.min(total - 1, newIdx + 1);
-  else if (direction === 'indietro') newIdx = Math.max(0, newIdx - 1);
+  if (direction === 'avanti' || direction === 'next')       newIdx = Math.min(total - 1, newIdx + 1);
+  else if (direction === 'indietro' || direction === 'prev') newIdx = Math.max(0, newIdx - 1);
   if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
   session.currentItemIdx = newIdx;
   const currentItemId = session.itemIds[newIdx];
