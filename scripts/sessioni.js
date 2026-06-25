@@ -13,6 +13,7 @@ function createSession(codice, visitaId, visitaNome, museoIsil, itemIds) {
     stato: 'attesa',      // 'attesa' | 'iniziata'
     clients: new Set(),
     studentCount: 0,
+    messages: [],
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -88,6 +89,26 @@ function addClient(codice, res) {
   return true;
 }
 
+function closeSession(codice) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  broadcast(codice, { tipo: 'visita-chiusa' });
+  sessions.delete(codice);
+  return { ok: true };
+}
+
+function sendMessage(codice, sender, text) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  const trimmed = text?.trim();
+  if (!trimmed) return { error: 'Messaggio vuoto.' };
+  const msg = { sender, text: trimmed, timestamp: Date.now() };
+  session.messages.push(msg);
+  if (session.messages.length > 200) session.messages.shift();
+  broadcast(codice, { tipo: 'nuovo-messaggio', ...msg });
+  return { ok: true };
+}
+
 function broadcast(codice, data) {
   const session = sessions.get(codice);
   if (!session) return;
@@ -97,4 +118,4 @@ function broadcast(codice, data) {
   }
 }
 
-module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem };
+module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem, closeSession, sendMessage };

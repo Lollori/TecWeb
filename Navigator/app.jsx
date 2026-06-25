@@ -217,11 +217,19 @@ const TONI_CONFIG = [
   { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
 ];
 
-function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack }) {
-  const [item,       setItem]       = React.useState(null);
-  const [loading,    setLoading]    = React.useState(false);
-  const [navigating, setNavigating] = React.useState(false);
-  const [tono,       setTono]       = React.useState('medio');
+function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack, messages = [], nomeAssegnato = '' }) {
+  const [item,        setItem]        = React.useState(null);
+  const [loading,     setLoading]     = React.useState(false);
+  const [navigating,  setNavigating]  = React.useState(false);
+  const [tono,        setTono]        = React.useState('medio');
+  const [chatOpen,    setChatOpen]    = React.useState(false);
+  const [composeOpen, setComposeOpen] = React.useState(false);
+  const [msgText,     setMsgText]     = React.useState('');
+  const [sending,     setSending]     = React.useState(false);
+  const [unread,      setUnread]      = React.useState(0);
+  const [terminating, setTerminating] = React.useState(false);
+  const prevLenRef = React.useRef(0);
+  const chatEndRef = React.useRef(null);
 
   React.useEffect(() => {
     if (!itemId) { setItem(null); return; }
@@ -233,18 +241,53 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
       .finally(() => setLoading(false));
   }, [itemId]);
 
+  React.useEffect(() => {
+    const added = messages.length - prevLenRef.current;
+    if (added > 0 && isDocente && !chatOpen) setUnread(u => u + added);
+    prevLenRef.current = messages.length;
+  }, [messages.length]);
+
+  React.useEffect(() => {
+    if (chatOpen) {
+      setUnread(0);
+      if (chatEndRef.current) chatEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatOpen, messages.length]);
+
   async function navigate(direction) {
     if (navigating) return;
     setNavigating(true);
     try {
       await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ direction }),
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ direction }),
       });
+    } finally { setNavigating(false); }
+  }
+
+  async function handleTermina() {
+    if (!window.confirm('Terminare la visita? Tutti i partecipanti verranno disconnessi.')) return;
+    setTerminating(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/chiudi`, { method: 'POST' });
     } finally {
-      setNavigating(false);
+      setTerminating(false);
+      onBack();
     }
+  }
+
+  async function handleSendMsg() {
+    const text = msgText.trim();
+    if (!text || sending) return;
+    setSending(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/messaggio`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ sender: nomeAssegnato || 'Visitatore', text }),
+      });
+      setMsgText('');
+      setComposeOpen(false);
+    } finally { setSending(false); }
   }
 
   const progress = totalItems > 0 ? ((currentIdx + 1) / totalItems) * 100 : 0;
@@ -252,12 +295,24 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
   return (
     <div className="visita-item-root">
       <div className="visita-item-header">
-        <div>
-          <p className="visita-item-eyebrow">
-            {visitaNome ? `${visitaNome} · ` : ''}Item {currentIdx + 1} di {totalItems}
-          </p>
+        <p className="visita-item-eyebrow">
+          {visitaNome ? `${visitaNome} · ` : ''}Item {currentIdx + 1} di {totalItems}
+        </p>
+        <div className="visita-item-header-actions">
+          {isDocente && (
+            <button
+              className={`visita-chat-toggle${chatOpen ? ' visita-chat-toggle--active' : ''}`}
+              onClick={() => setChatOpen(v => !v)}
+              title="Messaggi partecipanti"
+            >
+              <i className="fa-solid fa-comments" />
+              {unread > 0 && <span className="visita-chat-badge">{unread > 9 ? '9+' : unread}</span>}
+            </button>
+          )}
+          {!isDocente && (
+            <button className="visita-item-exit-btn" onClick={onBack}>← Esci</button>
+          )}
         </div>
-        <button className="visita-item-exit-btn" onClick={onBack}>← Esci</button>
       </div>
 
       <div className="visita-item-progress">
@@ -310,18 +365,96 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
             className="visita-nav-btn visita-nav-btn--prev"
             onClick={() => navigate('indietro')}
             disabled={currentIdx === 0 || navigating}
-          >
-            ← Precedente
-          </button>
+          >← Precedente</button>
           <span className="visita-nav-counter">{currentIdx + 1} / {totalItems}</span>
           <button
             className="visita-nav-btn visita-nav-btn--next"
             onClick={() => navigate('avanti')}
             disabled={currentIdx >= totalItems - 1 || navigating}
-          >
-            Prossimo →
+          >Prossimo →</button>
+        </div>
+      )}
+
+      {isDocente && (
+        <div className="visita-termina-bar">
+          <button className="visita-termina-btn" onClick={handleTermina} disabled={terminating}>
+            {terminating ? 'Chiusura…' : '⏹ Termina visita'}
           </button>
         </div>
+      )}
+
+      {/* Chat backdrop */}
+      {isDocente && chatOpen && (
+        <div className="visita-chat-overlay" onClick={() => setChatOpen(false)} />
+      )}
+
+      {/* Chat panel — sempre montato per l'animazione slide */}
+      {isDocente && (
+        <div className={`visita-chat-panel${chatOpen ? ' visita-chat-panel--open' : ''}`}>
+          <div className="visita-chat-panel-header">
+            <span className="visita-chat-panel-title">
+              <i className="fa-solid fa-comments" style={{ marginRight: '8px' }} />
+              Messaggi
+              {messages.length > 0 && <span className="visita-chat-count">{messages.length}</span>}
+            </span>
+            <button className="visita-chat-close" onClick={() => setChatOpen(false)}>✕</button>
+          </div>
+          <div className="visita-chat-msgs">
+            {messages.length === 0 ? (
+              <p className="visita-chat-empty">
+                Nessun messaggio ancora.<br />
+                I partecipanti possono scrivere durante la visita.
+              </p>
+            ) : (
+              messages.map((m, i) => (
+                <div key={i} className="visita-chat-msg">
+                  <div className="visita-chat-msg-top">
+                    <span className="visita-chat-sender">{m.sender}</span>
+                    <span className="visita-chat-time">
+                      {new Date(m.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  <p className="visita-chat-text">{m.text}</p>
+                </div>
+              ))
+            )}
+            <div ref={chatEndRef} />
+          </div>
+        </div>
+      )}
+
+      {/* Compose sheet studente */}
+      {!isDocente && composeOpen && (
+        <div className="visita-compose-sheet">
+          <div className="visita-compose-header">
+            <span>Invia un messaggio</span>
+            <button onClick={() => { setComposeOpen(false); setMsgText(''); }}>✕</button>
+          </div>
+          <div className="visita-compose-body">
+            <textarea
+              className="visita-compose-input"
+              placeholder="Scrivi il tuo messaggio…"
+              value={msgText}
+              onChange={e => setMsgText(e.target.value)}
+              rows={3}
+              maxLength={280}
+              autoFocus
+            />
+            <button
+              className="visita-compose-send"
+              onClick={handleSendMsg}
+              disabled={!msgText.trim() || sending}
+            >
+              {sending ? 'Invio…' : 'Invia →'}
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!isDocente && !composeOpen && (
+        <button className="visita-msg-fab" onClick={() => setComposeOpen(true)} title="Invia messaggio">
+          <i className="fa-solid fa-comment" />
+        </button>
       )}
     </div>
   );
@@ -336,6 +469,8 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [currentItemId,  setCurrentItemId]  = React.useState(null);
   const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
   const [totalItems,     setTotalItems]     = React.useState(0);
+  const [messages,       setMessages]       = React.useState([]);
+  const closedRef = React.useRef(false);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -358,6 +493,10 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
+      } else if (data.tipo === 'nuovo-messaggio') {
+        setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp }]);
+      } else if (data.tipo === 'visita-chiusa') {
+        if (!closedRef.current) { closedRef.current = true; onClose(); }
       }
     };
     return () => es.close();
@@ -405,6 +544,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       codice={codice}
       visitaNome={visitaNome}
       onBack={onClose}
+      messages={messages}
     />
   );
 
@@ -495,6 +635,8 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
+      } else if (data.tipo === 'visita-chiusa') {
+        onBack();
       }
     };
     return () => es.close();
@@ -509,6 +651,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       codice={codice}
       visitaNome={visitaNome}
       onBack={onBack}
+      nomeAssegnato={nomeAssegnato}
     />
   );
 

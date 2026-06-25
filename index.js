@@ -328,6 +328,22 @@ app.post('/api/sessioni/:codice/naviga', (req, res) => {
     res.json(result);
 });
 
+// Docente termina la visita
+app.post('/api/sessioni/:codice/chiudi', (req, res) => {
+    const result = sessioni.closeSession(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Partecipante invia un messaggio
+app.post('/api/sessioni/:codice/messaggio', (req, res) => {
+    const { sender, text } = req.body;
+    if (!text?.trim()) return res.status(400).json({ error: 'Testo mancante.' });
+    const result = sessioni.sendMessage(req.params.codice, sender || 'Visitatore', text);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
 // SSE stream – docente e studenti ricevono aggiornamenti in tempo reale
 app.get('/api/sessioni/:codice/stream', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
