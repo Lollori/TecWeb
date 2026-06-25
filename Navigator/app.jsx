@@ -1233,10 +1233,10 @@ function App() {
   }
 
   function generateCode(visita) {
-    if (visita.nomeMnemonico?.trim()) return visita.nomeMnemonico.trim();
+    if (visita.nomeMnemonico?.trim()) return visita.nomeMnemonico.trim().replace(/\s+/g, '-');
     const adj  = ['rosso', 'verde', 'dorato', 'argento', 'viola', 'bianco', 'nero'];
     const noun = ['falco', 'leone', 'aquila', 'fenice', 'drago', 'tigre', 'orso'];
-    return `${adj[Math.floor(Math.random() * adj.length)]} ${noun[Math.floor(Math.random() * noun.length)]}`;
+    return `${adj[Math.floor(Math.random() * adj.length)]}-${noun[Math.floor(Math.random() * noun.length)]}`;
   }
 
   async function handleAvvia(visita) {
@@ -1262,7 +1262,7 @@ function App() {
           return;
         }
         if (attempt < 2) {
-          codice = generateCode(visita) + ' ' + (Math.floor(Math.random() * 90) + 10);
+          codice = generateCode(visita) + '-' + (Math.floor(Math.random() * 90) + 10);
         } else {
           alert(data.error || `Errore ${res.status}`);
         }
