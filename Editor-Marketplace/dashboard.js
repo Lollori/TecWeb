@@ -28,6 +28,7 @@ let _vfCurrentMuseo    = '';
 let _vfItemTab         = 'miei';
 let _vfMyItems         = [];
 let _vfAcquistatiItems = [];
+let _vfSelectedItemIds = new Set();
 
 /* FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js */
 function applyDashFloorPlanOverrides(museo) {
@@ -1260,6 +1261,13 @@ async function initAutoreAggiungiVisita() {
                         </p>
                     </div>
                 </div>
+                <div class="col-12" id="vfOrderSection" style="display:none;">
+                    <label class="custom-label" style="margin-bottom:4px;">Ordine degli items</label>
+                    <p style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
+                        <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
+                    </p>
+                    <div id="itemsOrderPanel" style="display:flex;flex-direction:column;gap:8px;"></div>
+                </div>
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
@@ -1315,6 +1323,7 @@ async function initAutoreAggiungiVisita() {
     _vfItemTab         = 'miei';
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
+    _vfSelectedItemIds = new Set();
 
     window.setVfItemTab = function (tab, btn) {
         _vfItemTab = tab;
@@ -1340,14 +1349,17 @@ async function initAutoreAggiungiVisita() {
             return;
         }
         container.innerHTML = lista.map(it => {
-            const preview = (it.contents?.[0] || '').substring(0, 60);
+            const preview   = (it.contents?.[0] || '').substring(0, 60);
+            const isChecked = _vfSelectedItemIds.has(it._id);
             return `
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
-                          border:1px solid #e2e8f0;border-radius:10px;cursor:pointer;
-                          transition:border-color .18s,background .18s;">
+                          border:1px solid ${isChecked ? 'var(--magenta,#FF007F)' : '#e2e8f0'};
+                          border-radius:10px;cursor:pointer;transition:border-color .18s,background .18s;
+                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};">
                 <input type="checkbox" name="itemsVisita" value="${it._id}"
+                       ${isChecked ? 'checked' : ''}
                        style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);"
-                       onchange="this.closest('label').style.borderColor=this.checked?'var(--magenta,#FF007F)':'#e2e8f0';this.closest('label').style.background=this.checked?'rgba(255,0,127,0.05)':'';">
+                       onchange="vfToggleItem('${it._id}',this.checked,this);">
                 <span style="font-size:0.88rem;">
                     <strong>${it.operaId}</strong>
                     ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${it.contents[0].length > 60 ? '…' : ''}</span>` : ''}
@@ -1363,9 +1375,12 @@ async function initAutoreAggiungiVisita() {
         if (!codiceIsil) {
             _vfMyItems = [];
             _vfAcquistatiItems = [];
+            _vfSelectedItemIds = new Set();
             _renderVfItems();
+            if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
             return;
         }
+        _vfSelectedItemIds = new Set();
         container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
         try {
             const [resOwn, resPublic] = await Promise.all([
@@ -1378,17 +1393,131 @@ async function initAutoreAggiungiVisita() {
             _vfAcquistatiItems = (dPublic.ok ? dPublic.data : [])
                 .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
             _renderVfItems();
+            if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
         } catch (e) {
             container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento degli items.</p>';
         }
     });
+
+    /* ---- drag-and-drop order panel ---- */
+    let _vfDragSrc = null;
+
+    function _vfRenumberCards() {
+        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach((c, i) => {
+            const n = c.querySelector('[data-num]');
+            if (n) n.textContent = i + 1;
+        });
+    }
+
+    window.vfToggleItem = function (id, checked, checkbox) {
+        if (checked) _vfSelectedItemIds.add(id);
+        else         _vfSelectedItemIds.delete(id);
+        const lbl = checkbox.closest('label');
+        lbl.style.borderColor = checked ? 'var(--magenta,#FF007F)' : '#e2e8f0';
+        lbl.style.background  = checked ? 'rgba(255,0,127,0.05)' : '';
+        window.vfUpdateOrderPanel();
+    };
+
+    window.vfUpdateOrderPanel = function () {
+        const section = document.getElementById('vfOrderSection');
+        const panel   = document.getElementById('itemsOrderPanel');
+        if (!section || !panel) return;
+
+        if (!_vfSelectedItemIds.size) {
+            section.style.display = 'none';
+            panel.innerHTML = '';
+            return;
+        }
+        section.style.display = '';
+
+        const allItems    = [..._vfMyItems, ..._vfAcquistatiItems];
+        const existingIds = [...panel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId);
+        const newOrder = [
+            ...existingIds.filter(id => _vfSelectedItemIds.has(id)),
+            ...[..._vfSelectedItemIds].filter(id => !existingIds.includes(id)),
+        ];
+
+        panel.innerHTML = newOrder.map((id, i) => {
+            const item = allItems.find(it => it._id === id);
+            if (!item) return '';
+            const preview = (item.contents?.[0] || '').substring(0, 70);
+            return `
+            <div class="vf-drag-card" data-item-id="${id}" draggable="true"
+                 style="display:flex;align-items:center;gap:12px;padding:10px 16px;
+                        border:1px solid #e2e8f0;border-radius:10px;cursor:grab;
+                        background:var(--card-bg,white);
+                        transition:box-shadow .15s,border-color .15s,opacity .15s;"
+                 ondragstart="vfDragStart(event,this)"
+                 ondragover="vfDragOver(event,this)"
+                 ondragleave="vfDragLeave(event,this)"
+                 ondrop="vfDrop(event,this)"
+                 ondragend="vfDragEnd(event,this)">
+                <i class="fa-solid fa-grip-vertical" style="color:#cbd5e1;flex-shrink:0;"></i>
+                <span data-num style="min-width:22px;height:22px;border-radius:50%;
+                                       background:var(--magenta,#FF007F);color:#fff;
+                                       display:inline-flex;align-items:center;justify-content:center;
+                                       font-size:0.72rem;font-weight:700;flex-shrink:0;">${i + 1}</span>
+                <div style="flex:1;min-width:0;">
+                    <strong style="font-size:0.88rem;">${item.operaId}</strong>
+                    ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
+                                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
+                </div>
+            </div>`;
+        }).join('');
+    };
+
+    window.vfDragStart = function (e, el) {
+        _vfDragSrc = el;
+        e.dataTransfer.effectAllowed = 'move';
+        setTimeout(() => { el.style.opacity = '0.45'; el.style.cursor = 'grabbing'; }, 0);
+    };
+
+    window.vfDragOver = function (e, el) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        if (el !== _vfDragSrc) {
+            el.style.borderColor = 'var(--magenta,#FF007F)';
+            el.style.boxShadow   = '0 0 0 2px rgba(255,0,127,0.15)';
+        }
+    };
+
+    window.vfDragLeave = function (e, el) {
+        el.style.borderColor = '#e2e8f0';
+        el.style.boxShadow   = '';
+    };
+
+    window.vfDrop = function (e, el) {
+        e.preventDefault();
+        if (!_vfDragSrc || _vfDragSrc === el) return;
+        const panel = document.getElementById('itemsOrderPanel');
+        const cards = [...panel.querySelectorAll('.vf-drag-card')];
+        const srcIdx = cards.indexOf(_vfDragSrc);
+        const dstIdx = cards.indexOf(el);
+        if (srcIdx < dstIdx) el.parentNode.insertBefore(_vfDragSrc, el.nextSibling);
+        else                  el.parentNode.insertBefore(_vfDragSrc, el);
+        el.style.borderColor = '#e2e8f0';
+        el.style.boxShadow   = '';
+        _vfRenumberCards();
+    };
+
+    window.vfDragEnd = function (e, el) {
+        el.style.opacity = '1';
+        el.style.cursor  = 'grab';
+        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach(c => {
+            c.style.borderColor = '#e2e8f0';
+            c.style.boxShadow   = '';
+        });
+    };
 
     document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
         const codiceIsil = document.getElementById('vfMuseo').value;
         if (!codiceIsil) { alert('Seleziona un museo.'); return; }
 
-        const selectedItems = [...document.querySelectorAll('input[name="itemsVisita"]:checked')].map(c => c.value);
+        const orderPanel = document.getElementById('itemsOrderPanel');
+        const selectedItems = (orderPanel && orderPanel.querySelectorAll('.vf-drag-card').length > 0)
+            ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
+            : [..._vfSelectedItemIds];
         const isPubblica = document.getElementById('vfPubblica').value === 'true';
         const body = {
             nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
@@ -1441,6 +1570,11 @@ window.resetVisitaForm = function () {
     _vfCurrentMuseo    = '';
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
+    _vfSelectedItemIds = new Set();
+    const orderSection = document.getElementById('vfOrderSection');
+    const orderPanel   = document.getElementById('itemsOrderPanel');
+    if (orderSection) orderSection.style.display = 'none';
+    if (orderPanel)   orderPanel.innerHTML = '';
 };
 
 /* ============================================================

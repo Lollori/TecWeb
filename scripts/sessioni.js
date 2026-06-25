@@ -1,12 +1,14 @@
 // Sessioni sincronizzate in memoria (ephemeral – no persistence needed)
 const sessions = new Map();
 
-function createSession(codice, visitaId, visitaNome, museoIsil) {
+function createSession(codice, visitaId, visitaNome, museoIsil, itemIds) {
   if (sessions.has(codice)) {
     return { error: 'Codice già in uso. Scegli un nome diverso.' };
   }
   sessions.set(codice, {
     codice, visitaId, visitaNome, museoIsil,
+    itemIds: Array.isArray(itemIds) ? itemIds : [],
+    currentItemIdx: 0,
     studenti: [],
     stato: 'attesa',      // 'attesa' | 'iniziata'
     clients: new Set(),
@@ -36,8 +38,36 @@ function startSession(codice) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   session.stato = 'iniziata';
-  broadcast(codice, { tipo: 'visita-iniziata' });
+  const currentItemId = session.itemIds[session.currentItemIdx] || null;
+  broadcast(codice, {
+    tipo: 'visita-iniziata',
+    museoIsil: session.museoIsil,
+    currentItemId,
+    currentItemIdx: session.currentItemIdx,
+    totalItems: session.itemIds.length,
+  });
   return { ok: true };
+}
+
+function navigaItem(codice, direction) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (session.stato !== 'iniziata') return { error: 'Visita non ancora iniziata.' };
+  const total = session.itemIds.length;
+  if (total === 0) return { error: 'Nessun item nella visita.' };
+  let newIdx = session.currentItemIdx;
+  if (direction === 'avanti')   newIdx = Math.min(total - 1, newIdx + 1);
+  else if (direction === 'indietro') newIdx = Math.max(0, newIdx - 1);
+  if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
+  session.currentItemIdx = newIdx;
+  const currentItemId = session.itemIds[newIdx];
+  broadcast(codice, {
+    tipo: 'item-cambiato',
+    currentItemId,
+    currentItemIdx: newIdx,
+    totalItems: total,
+  });
+  return { ok: true, currentItemIdx: newIdx };
 }
 
 function addClient(codice, res) {
@@ -45,8 +75,16 @@ function addClient(codice, res) {
   if (!session) return false;
   session.clients.add(res);
   res.on('close', () => session.clients.delete(res));
-  // Send current state immediately on connect
-  res.write(`data: ${JSON.stringify({ tipo: 'stato-iniziale', studenti: session.studenti, stato: session.stato, museoIsil: session.museoIsil })}\n\n`);
+  const currentItemId = session.itemIds[session.currentItemIdx] || null;
+  res.write(`data: ${JSON.stringify({
+    tipo: 'stato-iniziale',
+    studenti: session.studenti,
+    stato: session.stato,
+    museoIsil: session.museoIsil,
+    currentItemId,
+    currentItemIdx: session.currentItemIdx,
+    totalItems: session.itemIds.length,
+  })}\n\n`);
   return true;
 }
 
@@ -59,4 +97,4 @@ function broadcast(codice, data) {
   }
 }
 
-module.exports = { createSession, getSession, joinSession, startSession, addClient };
+module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem };

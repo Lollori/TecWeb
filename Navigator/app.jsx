@@ -209,12 +209,112 @@ function JoinContent({ onJoined }) {
   );
 }
 
+/* ── VisitaItemScreen ─────────────────────────────────── */
+
+function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack }) {
+  const [item,       setItem]       = React.useState(null);
+  const [loading,    setLoading]    = React.useState(false);
+  const [navigating, setNavigating] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!itemId) { setItem(null); return; }
+    setLoading(true);
+    fetch(`/api/items/${encodeURIComponent(itemId)}`)
+      .then(r => r.json())
+      .then(d => setItem(d.data || null))
+      .catch(() => setItem(null))
+      .finally(() => setLoading(false));
+  }, [itemId]);
+
+  async function navigate(direction) {
+    if (navigating) return;
+    setNavigating(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ direction }),
+      });
+    } finally {
+      setNavigating(false);
+    }
+  }
+
+  const progress = totalItems > 0 ? ((currentIdx + 1) / totalItems) * 100 : 0;
+
+  return (
+    <div className="visita-item-root">
+      <div className="visita-item-header">
+        <div>
+          <p className="visita-item-eyebrow">
+            {visitaNome ? `${visitaNome} · ` : ''}Item {currentIdx + 1} di {totalItems}
+          </p>
+        </div>
+        <button className="visita-item-exit-btn" onClick={onBack}>← Esci</button>
+      </div>
+
+      <div className="visita-item-progress">
+        <div className="visita-item-progress-fill" style={{ width: `${progress}%` }} />
+      </div>
+
+      <div className="visita-item-content">
+        {loading && (
+          <div className="visita-item-loading">
+            <div className="nav-spinner" />
+            <p>Caricamento item…</p>
+          </div>
+        )}
+        {!loading && !itemId && (
+          <p className="visita-item-empty">La visita non contiene items.</p>
+        )}
+        {!loading && itemId && !item && (
+          <p className="visita-item-empty">Item non trovato.</p>
+        )}
+        {!loading && item && (
+          <div className="visita-item-card">
+            {item.image && (
+              <img className="visita-item-img" src={item.image} alt={item.operaId} />
+            )}
+            <h2 className="visita-item-title">{item.operaId}</h2>
+            {(item.contents || []).map((c, i) => (
+              <p key={i} className="visita-item-text">{c}</p>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {isDocente && (
+        <div className="visita-item-nav">
+          <button
+            className="visita-nav-btn visita-nav-btn--prev"
+            onClick={() => navigate('indietro')}
+            disabled={currentIdx === 0 || navigating}
+          >
+            ← Precedente
+          </button>
+          <span className="visita-nav-counter">{currentIdx + 1} / {totalItems}</span>
+          <button
+            className="visita-nav-btn visita-nav-btn--next"
+            onClick={() => navigate('avanti')}
+            disabled={currentIdx >= totalItems - 1 || navigating}
+          >
+            Prossimo →
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── LobbyDocente ─────────────────────────────────────── */
 
 function LobbyDocente({ codice, visitaNome, museo, onClose }) {
-  const [studenti, setStudenti] = React.useState([]);
-  const [stato,    setStato]    = React.useState('attesa');
-  const [avviando, setAvviando] = React.useState(false);
+  const [studenti,       setStudenti]       = React.useState([]);
+  const [stato,          setStato]          = React.useState('attesa');
+  const [avviando,       setAvviando]       = React.useState(false);
+  const [currentItemId,  setCurrentItemId]  = React.useState(null);
+  const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
+  const [totalItems,     setTotalItems]     = React.useState(0);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -223,10 +323,20 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       if (data.tipo === 'stato-iniziale') {
         setStudenti(data.studenti);
         setStato(data.stato);
+        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
+        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
+        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
+        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+      } else if (data.tipo === 'item-cambiato') {
+        setCurrentItemId(data.currentItemId);
+        setCurrentItemIdx(data.currentItemIdx);
+        setTotalItems(data.totalItems);
       }
     };
     return () => es.close();
@@ -266,17 +376,15 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   );
 
   if (stato === 'iniziata') return (
-    <>
-      {museoHeader}
-      {backBar}
-      <div className="lobby-root lobby-root--dark" style={{ flex: 1, minHeight: 0 }}>
-        <div className="lobby-started">
-          <span className="lobby-started-icon">✅</span>
-          <h2 className="lobby-started-title">Visita avviata!</h2>
-          <p className="lobby-started-sub">Tutti i {studenti.length} partecipanti sono stati notificati.</p>
-        </div>
-      </div>
-    </>
+    <VisitaItemScreen
+      itemId={currentItemId}
+      currentIdx={currentItemIdx}
+      totalItems={totalItems}
+      isDocente={true}
+      codice={codice}
+      visitaNome={visitaNome}
+      onBack={onClose}
+    />
   );
 
   return (
@@ -335,9 +443,13 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
 /* ── LobbyStudente ─────────────────────────────────────── */
 
 function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onBack }) {
-  const [studenti,   setStudenti]   = React.useState([]);
-  const [stato,      setStato]      = React.useState('attesa');
-  const [museoIsil,  setMuseoIsil]  = React.useState(initialMuseoIsil || null);
+  const [studenti,       setStudenti]       = React.useState([]);
+  const [stato,          setStato]          = React.useState('attesa');
+  const [museoIsil,      setMuseoIsil]      = React.useState(initialMuseoIsil || null);
+  const [currentItemId,  setCurrentItemId]  = React.useState(null);
+  const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
+  const [totalItems,     setTotalItems]     = React.useState(0);
+  const [visitaNome,     setVisitaNome]     = React.useState('');
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -346,21 +458,35 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       if (data.tipo === 'stato-iniziale') {
         setStudenti(data.studenti);
         setStato(data.stato);
-        if (data.museoIsil) setMuseoIsil(data.museoIsil);
+        if (data.museoIsil)      setMuseoIsil(data.museoIsil);
+        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
+        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
-        if (data.museoIsil) setMuseoIsil(data.museoIsil);
+        if (data.museoIsil)      setMuseoIsil(data.museoIsil);
+        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
+        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+      } else if (data.tipo === 'item-cambiato') {
+        setCurrentItemId(data.currentItemId);
+        setCurrentItemIdx(data.currentItemIdx);
+        setTotalItems(data.totalItems);
       }
     };
     return () => es.close();
   }, [codice]);
 
   if (stato === 'iniziata') return (
-    <VisitaGeoScreen
-      nomeAssegnato={nomeAssegnato}
-      museoIsil={museoIsil}
+    <VisitaItemScreen
+      itemId={currentItemId}
+      currentIdx={currentItemIdx}
+      totalItems={totalItems}
+      isDocente={false}
+      codice={codice}
+      visitaNome={visitaNome}
       onBack={onBack}
     />
   );
@@ -942,6 +1068,7 @@ function App() {
             visitaId:   visita._id,
             visitaNome: visita.nomeVisita,
             museoIsil:  museo.codiceIsil,
+            itemIds:    visita.itemIds || [],
           }),
         });
         const data = await res.json();

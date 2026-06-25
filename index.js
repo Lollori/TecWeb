@@ -290,9 +290,9 @@ app.delete('/api/items/:id', async function (req, res) {
 
 // Crea sessione (docente avvia una visita)
 app.post('/api/sessioni', (req, res) => {
-    const { codice, visitaId, visitaNome, museoIsil } = req.body;
+    const { codice, visitaId, visitaNome, museoIsil, itemIds } = req.body;
     if (!codice || !visitaId) return res.status(400).json({ error: 'Parametri mancanti.' });
-    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil);
+    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil, itemIds);
     if (result.error) return res.status(409).json(result);
     res.json(result);
 });
@@ -315,6 +315,15 @@ app.post('/api/sessioni/:codice/join', (req, res) => {
 // Docente avvia la visita
 app.post('/api/sessioni/:codice/avvia', (req, res) => {
     const result = sessioni.startSession(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Docente naviga tra gli items
+app.post('/api/sessioni/:codice/naviga', (req, res) => {
+    const { direction } = req.body;
+    if (!direction) return res.status(400).json({ error: 'Parametro direction mancante.' });
+    const result = sessioni.navigaItem(req.params.codice, direction);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });
