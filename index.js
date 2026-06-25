@@ -349,14 +349,21 @@ app.get('/api/sessioni/:codice/stream', (req, res) => {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no'); // disabilita buffering Nginx
     res.flushHeaders();
 
     const added = sessioni.addClient(req.params.codice, res);
     if (!added) {
         res.write(`data: ${JSON.stringify({ tipo: 'errore', messaggio: 'Sessione non trovata.' })}\n\n`);
         res.end();
+        return;
     }
-    // cleanup handled inside addClient via 'close' event
+
+    // Heartbeat ogni 25s: mantiene la connessione viva attraverso proxy con timeout brevi
+    const hb = setInterval(() => {
+        try { res.write(': heartbeat\n\n'); } catch (_) { clearInterval(hb); }
+    }, 25000);
+    req.on('close', () => clearInterval(hb));
 });
 
 /* ========================== */
