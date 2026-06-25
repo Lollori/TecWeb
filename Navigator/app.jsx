@@ -281,12 +281,15 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
     if (!text || sending) return;
     setSending(true);
     try {
-      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/messaggio`, {
+      const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/messaggio`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sender: nomeAssegnato || 'Visitatore', text }),
       });
-      setMsgText('');
-      setComposeOpen(false);
+      if (r.ok) {
+        setMsgText('');
+        setComposeOpen(false);
+      }
+      // Se il POST fallisce il compose rimane aperto — l'utente può riprovare
     } finally { setSending(false); }
   }
 
@@ -501,6 +504,22 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     };
     return () => es.close();
   }, [codice]);
+
+  // Polling di fallback: se SSE non consegna i messaggi (proxy buffering / istanze multiple),
+  // il GET della sessione restituisce comunque l'array messages aggiornato.
+  React.useEffect(() => {
+    if (stato !== 'iniziata') return;
+    const id = setInterval(async () => {
+      try {
+        const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}`);
+        const d = await r.json();
+        if (d.ok && Array.isArray(d.data?.messages)) {
+          setMessages(d.data.messages);
+        }
+      } catch (_) {}
+    }, 2000);
+    return () => clearInterval(id);
+  }, [codice, stato]);
 
   async function handleAvvia() {
     setAvviando(true);
