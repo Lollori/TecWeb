@@ -1084,9 +1084,52 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   font-size: 1.45rem;
   font-weight: 700;
   color: var(--text, #1e293b);
-  margin: 0 0 16px;
+  margin: 0 0 14px;
   font-family: 'Playfair Display', serif;
 }
+
+/* ── Toni selector in Navigator ── */
+.visita-toni-bar {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.visita-tono-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  background: none;
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted, #94a3b8);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.visita-tono-btn:hover {
+  border-color: var(--magenta, #FF007F);
+  color: var(--text, #334155);
+}
+.visita-tono-btn--active {
+  border-color: var(--magenta, #FF007F);
+  color: var(--magenta, #FF007F);
+  background: rgba(255,0,127,0.07);
+}
+
+.visita-tono-dur {
+  font-size: 0.65rem;
+  font-weight: 400;
+  opacity: 0.65;
+}
+
+[data-theme="dark"] .visita-tono-btn { border-color: rgba(255,255,255,0.1); color: #64748b; }
+[data-theme="dark"] .visita-tono-btn--active { background: rgba(255,0,127,0.12); }
 
 .visita-item-text {
   font-size: 0.95rem;

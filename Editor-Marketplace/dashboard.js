@@ -707,15 +707,47 @@ window.showOperaItems = async function (idx, codiceIsil) {
     }
 };
 
+/* ── Helper: render tabbed toni panel ─────────────────── */
+function renderToni(item, uid) {
+    const t = item.toni || {};
+    const livelli = [
+        { key: 'semplice', label: 'Semplice', durata: 3  },
+        { key: 'medio',    label: 'Medio',    durata: 15 },
+        { key: 'avanzato', label: 'Avanzato', durata: 40 },
+    ];
+    const id = uid || item._id || Math.random().toString(36).slice(2);
+    return `
+        <div class="toni-tabs" data-toni-id="${id}">
+            <div class="toni-tab-bar">
+                ${livelli.map((l, i) => `
+                    <button type="button"
+                            class="toni-tab-btn${i === 0 ? ' active' : ''}"
+                            onclick="toniSwitch('${id}','${l.key}')">
+                        ${l.label}
+                        <span class="toni-dur">${l.durata}s</span>
+                    </button>`).join('')}
+            </div>
+            ${livelli.map((l, i) => `
+                <div class="toni-panel${i === 0 ? '' : ' toni-panel--hidden'}" data-toni-key="${l.key}">
+                    <p class="toni-testo">${(t[l.key]?.testo || '').replace(/\n/g, '<br>') || '<em style="color:#94a3b8">Nessun contenuto.</em>'}</p>
+                </div>`).join('')}
+        </div>`;
+}
+
+window.toniSwitch = function (id, key) {
+    const root = document.querySelector(`.toni-tabs[data-toni-id="${id}"]`);
+    if (!root) return;
+    root.querySelectorAll('.toni-tab-btn').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase().startsWith(key)));
+    root.querySelectorAll('.toni-panel').forEach(p => p.classList.toggle('toni-panel--hidden', p.dataset.toniKey !== key));
+};
+
 function renderItemCard(item) {
     return `
         <div class="item-read-card">
             ${item.image
                 ? `<img src="${item.image}" alt="item" onerror="this.style.display='none'">`
                 : ''}
-            <div class="item-contents">
-                ${(item.contents || []).map(c => `<p>${c}</p>`).join('')}
-            </div>
+            ${renderToni(item)}
             ${Object.keys(item.metadata || {}).length ? `
                 <ul class="item-metadata-list">
                     ${Object.entries(item.metadata).map(([k, v]) =>
@@ -1349,7 +1381,7 @@ async function initAutoreAggiungiVisita() {
             return;
         }
         container.innerHTML = lista.map(it => {
-            const preview   = (it.contents?.[0] || '').substring(0, 60);
+            const preview   = (it.toni?.semplice?.testo || '').substring(0, 60);
             const isChecked = _vfSelectedItemIds.has(it._id);
             return `
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
@@ -1362,7 +1394,7 @@ async function initAutoreAggiungiVisita() {
                        onchange="vfToggleItem('${it._id}',this.checked,this);">
                 <span style="font-size:0.88rem;">
                     <strong>${it.operaId}</strong>
-                    ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${it.contents[0].length > 60 ? '…' : ''}</span>` : ''}
+                    ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${preview.length >= 60 ? '…' : ''}</span>` : ''}
                 </span>
             </label>`;
         }).join('');
@@ -1440,7 +1472,7 @@ async function initAutoreAggiungiVisita() {
         panel.innerHTML = newOrder.map((id, i) => {
             const item = allItems.find(it => it._id === id);
             if (!item) return '';
-            const preview = (item.contents?.[0] || '').substring(0, 70);
+            const preview = (item.toni?.semplice?.testo || '').substring(0, 70);
             return `
             <div class="vf-drag-card" data-item-id="${id}" draggable="true"
                  style="display:flex;align-items:center;gap:12px;padding:10px 16px;
@@ -1603,9 +1635,28 @@ async function initAutoreAggiungiItem() {
                     </select>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Descrizione / Contenuto *</label>
-                    <textarea id="ifContenuto" class="custom-input" rows="4"
-                              placeholder="Inserisci una descrizione, nota critica, approfondimento…" required></textarea>
+                    <label class="custom-label">
+                        Tono <strong>Semplice</strong>
+                        <span class="toni-dur-label">~3 s · linguaggio elementare</span>
+                    </label>
+                    <textarea id="ifSemplice" class="custom-input" rows="2"
+                              placeholder="Breve descrizione in parole semplici, adatta a bambini e ragazzi…" required></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">
+                        Tono <strong>Medio</strong>
+                        <span class="toni-dur-label">~15 s · pubblico generale</span>
+                    </label>
+                    <textarea id="ifMedio" class="custom-input" rows="3"
+                              placeholder="Descrizione accessibile con qualche dettaglio storico o tecnico…" required></textarea>
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">
+                        Tono <strong>Avanzato</strong>
+                        <span class="toni-dur-label">~40 s · terminologia tecnica</span>
+                    </label>
+                    <textarea id="ifAvanzato" class="custom-input" rows="5"
+                              placeholder="Analisi approfondita con terminologia specialistica…" required></textarea>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">ID Oggetto</label>
@@ -1718,13 +1769,17 @@ async function initAutoreAggiungiItem() {
 
     document.getElementById('itemFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const museoIsil = document.getElementById('ifMuseo').value;
-        const operaId   = document.getElementById('ifOpera').value;
-        const contenuto = document.getElementById('ifContenuto').value.trim();
+        const museoIsil  = document.getElementById('ifMuseo').value;
+        const operaId    = document.getElementById('ifOpera').value;
+        const testoSem   = document.getElementById('ifSemplice').value.trim();
+        const testoMed   = document.getElementById('ifMedio').value.trim();
+        const testoAdv   = document.getElementById('ifAvanzato').value.trim();
 
         if (!museoIsil) { alert('Seleziona un museo.'); return; }
         if (!operaId)   { alert("Seleziona un'opera."); return; }
-        if (!contenuto) { alert('Inserisci almeno una descrizione.'); return; }
+        if (!testoSem && !testoMed && !testoAdv) {
+            alert('Inserisci almeno un tono di contenuto.'); return;
+        }
 
         const isPubblicaItem = document.getElementById('ifPubblica').value === 'true';
         const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
@@ -1742,7 +1797,11 @@ async function initAutoreAggiungiItem() {
             museumId: museoIsil,
             authorId: SESSION.userId,
             objectId: objectIdVal || (operaId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
-            contents: [contenuto],
+            toni: {
+                semplice: { testo: testoSem, durata: 3  },
+                medio:    { testo: testoMed, durata: 15 },
+                avanzato: { testo: testoAdv, durata: 40 },
+            },
             metadata,
             image:    document.getElementById('ifImmagine').value.trim(),
             pubblica: isPubblicaItem,
@@ -3571,7 +3630,7 @@ function renderAdminItems(lista) {
         return;
     }
     tbody.innerHTML = lista.map(it => {
-        const preview = (it.contents || []).join(' ').slice(0, 60);
+        const preview = (it.toni?.semplice?.testo || '').slice(0, 60);
         return `
         <tr>
             <td class="fw-bold">${it.operaId || '—'}</td>
@@ -3605,7 +3664,7 @@ window.adminEditItem = function (id) {
     if (!it) return;
     const section   = document.getElementById('section-admin-items');
     const metaJson  = JSON.stringify(it.metadata || {}, null, 2);
-    const contentsStr = (it.contents || []).join('\n');
+    const toni      = it.toni || {};
 
     section.innerHTML = `
         <button class="museo-detail-back" onclick="initAdminItems()">
@@ -3616,8 +3675,25 @@ window.adminEditItem = function (id) {
         <div class="glass-card p-5 mt-4">
             <form id="adminItemForm" class="row g-4">
                 <div class="col-12">
-                    <label class="custom-label">Contenuto * <small style="text-transform:none;color:#94a3b8;">(una voce per riga)</small></label>
-                    <textarea id="aiContents" class="custom-input" rows="5" required>${contentsStr}</textarea>
+                    <label class="custom-label">
+                        Tono <strong>Semplice</strong>
+                        <span class="toni-dur-label">~3 s · linguaggio elementare</span>
+                    </label>
+                    <textarea id="aiSemplice" class="custom-input" rows="2">${toni.semplice?.testo || ''}</textarea>
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">
+                        Tono <strong>Medio</strong>
+                        <span class="toni-dur-label">~15 s · pubblico generale</span>
+                    </label>
+                    <textarea id="aiMedio" class="custom-input" rows="3">${toni.medio?.testo || ''}</textarea>
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">
+                        Tono <strong>Avanzato</strong>
+                        <span class="toni-dur-label">~40 s · terminologia tecnica</span>
+                    </label>
+                    <textarea id="aiAvanzato" class="custom-input" rows="5">${toni.avanzato?.testo || ''}</textarea>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Opera (ID)</label>
@@ -3649,8 +3725,11 @@ window.adminEditItem = function (id) {
             return;
         }
         const body = {
-            contents: document.getElementById('aiContents').value
-                .split('\n').map(s => s.trim()).filter(Boolean),
+            toni: {
+                semplice: { testo: document.getElementById('aiSemplice').value.trim(), durata: 3  },
+                medio:    { testo: document.getElementById('aiMedio').value.trim(),    durata: 15 },
+                avanzato: { testo: document.getElementById('aiAvanzato').value.trim(), durata: 40 },
+            },
             image:    document.getElementById('aiImmagine').value.trim(),
             metadata,
             operaId:  it.operaId,
@@ -4058,9 +4137,15 @@ window.applyMktFilter = function () {
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
         lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
         if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
-        if (q) lista = lista.filter(it =>
-            (it.operaId || '').toLowerCase().includes(q) ||
-            (it.contents || []).join(' ').toLowerCase().includes(q));
+        if (q) lista = lista.filter(it => {
+            const allText = [
+                it.operaId || '',
+                it.toni?.semplice?.testo || '',
+                it.toni?.medio?.testo    || '',
+                it.toni?.avanzato?.testo || '',
+            ].join(' ').toLowerCase();
+            return allText.includes(q);
+        });
         renderMktItems(lista, purchases.items);
     }
 };
@@ -4082,9 +4167,7 @@ function renderMktItems(lista, purchasedIds) {
             ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
             <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
             ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
-            <div class="item-contents">
-                ${(it.contents || []).slice(0, 2).map(c => `<p>${c}</p>`).join('')}
-            </div>
+            ${renderToni(it, 'mkt-' + it._id)}
             ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
             <ul class="item-metadata-list">
                 ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>
@@ -4182,9 +4265,7 @@ function renderMktAcquisti(purchases) {
                 ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
                 <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
-                <div class="item-contents">
-                    ${(it.contents || []).map(c => `<p>${c}</p>`).join('')}
-                </div>
+                ${renderToni(it, 'acq-' + it._id)}
                 ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
                 <ul class="item-metadata-list">
                     ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>

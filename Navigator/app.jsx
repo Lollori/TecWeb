@@ -211,10 +211,17 @@ function JoinContent({ onJoined }) {
 
 /* ── VisitaItemScreen ─────────────────────────────────── */
 
+const TONI_CONFIG = [
+  { key: 'semplice', label: 'Semplice', durata: '3 s'  },
+  { key: 'medio',    label: 'Medio',    durata: '15 s' },
+  { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
+];
+
 function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack }) {
   const [item,       setItem]       = React.useState(null);
   const [loading,    setLoading]    = React.useState(false);
   const [navigating, setNavigating] = React.useState(false);
+  const [tono,       setTono]       = React.useState('medio');
 
   React.useEffect(() => {
     if (!itemId) { setItem(null); return; }
@@ -276,9 +283,23 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
               <img className="visita-item-img" src={item.image} alt={item.operaId} />
             )}
             <h2 className="visita-item-title">{item.operaId}</h2>
-            {(item.contents || []).map((c, i) => (
-              <p key={i} className="visita-item-text">{c}</p>
-            ))}
+
+            <div className="visita-toni-bar">
+              {TONI_CONFIG.map(t => (
+                <button
+                  key={t.key}
+                  className={`visita-tono-btn${tono === t.key ? ' visita-tono-btn--active' : ''}`}
+                  onClick={() => setTono(t.key)}
+                >
+                  {t.label}
+                  <span className="visita-tono-dur">{t.durata}</span>
+                </button>
+              ))}
+            </div>
+
+            <p className="visita-item-text">
+              {item.toni?.[tono]?.testo || <em>Nessun contenuto per questo tono.</em>}
+            </p>
           </div>
         )}
       </div>

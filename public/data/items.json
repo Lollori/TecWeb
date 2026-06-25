@@ -3,10 +3,20 @@
     "museumId": "IT-TO0576",
     "operaId": "Statua di Ramesse II",
     "objectId": "ramesse-ii-scheda",
-    "contents": [
-      "La statua è realizzata in granito rosso di Assuan e raffigura il faraone Ramesse II seduto in trono con la doppia corona.",
-      "Scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti, è una delle opere più imponenti dell'intero museo."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Questa statua gigante mostra un antico re d'Egitto chiamato Ramesse II. È fatta di pietra dura e colorata di rosso.",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "La statua raffigura il faraone Ramesse II seduto in trono con la doppia corona. È realizzata in granito rosso di Assuan e fu scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti. Alta 194 cm, è una delle opere più imponenti del museo.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "Esemplare di statuaria regale egizia del Nuovo Regno, la scultura in granito rosso di Assuan raffigura Ramesse II (XIX Dinastia, ca. 1279–1213 a.C.) in posizione frontale e seduta su trono cubiforme, con la doppia corona pschent e i tradizionali attributi del potere faraonico. Scoperta nel 1820 dalla spedizione Drovetti a Tebe (Karnak), costituisce uno dei rari esemplari di scultura monumentale in granito rosso di provenienza tebana. Le sue dimensioni (h. 194 cm) e la qualità d'intaglio del granito ignifugo ne fanno uno dei pezzi di maggiore rilevanza dell'intera collezione egizia torinese, testimonianza del gusto celebrativo della propaganda regia ramesside.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "materiale": "Granito rosso di Assuan",
       "altezza": "194 cm",
@@ -21,10 +31,20 @@
     "museumId": "IT-TO0576",
     "operaId": "Statua di Ramesse II",
     "objectId": "ramesse-ii-iconografia",
-    "contents": [
-      "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto.",
-      "Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Il re porta una corona speciale che unisce due regni: l'Alto e il Basso Egitto. È come avere due corone in una sola!",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto. Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre, che significa 'Ra è potente nella verità, eletto di Ra'.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "Il programma iconografico del manufatto esibisce gli attributi canonici della regalità egizia: la corona pschent (sekhemty), sintesi della hedjet bianca dell'Alto Egitto e della deshret rossa del Basso Egitto, sancisce il ruolo del sovrano come unificatore del Paese a Due Terre (Tawy). Il cartiglio inciso sul pettorale riporta il prenome di Ramesse II, Usermaatre Setepenre ('Ra è potente nella verità, eletto di Ra'), formula adottata sistematicamente per legittimare il potere divino del faraone. La barba posticcia intrecciata e il nemes completano l'apparato regalia tipico della statuaria ramesside.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "soggetto": "Ritratto regale",
       "attributi": "Corona pschent, barba rituale, cartiglio",
@@ -38,10 +58,20 @@
     "museumId": "IT-TO0576",
     "operaId": "Libro dei Morti di Hunefer",
     "objectId": "hunefer-analisi",
-    "contents": [
-      "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di straordinaria qualità.",
-      "La scena più celebre raffigura il giudizio di Osiride: il cuore di Hunefer viene pesato contro la piuma di Maat."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Questo vecchio rotolo di carta speciale racconta cosa succede dopo la morte, con tante figure colorate disegnate a mano.",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di grande qualità. La scena più famosa mostra il giudizio di Osiride: il cuore di Hunefer viene pesato su una bilancia contro la piuma di Maat per capire se ha vissuto bene.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "Il rotolo papiraceo di Hunefer (XIX Dinastia, ca. 1275 a.C.) è tra gli esemplari canonici del Libro dei Morti (pert em hru, 'Libro dell'uscita alla luce del giorno') in scrittura ieratica e geroglifica, con 78 capitoli corredati da vignette policrome in tempera. La scena psicostasica al capitolo 125 rappresenta la pesatura del cuore (ib) sull'astina di una bilancia contrapposta alla piuma di Maat: l'esito negativo comporterebbe la devorazione da parte di Ammit, con la conseguente seconda morte spirituale. Il manufatto esibisce una coerenza compositiva e una resa cromatica raramente conservata in esemplari dello stesso periodo, con pigmenti a base di ocra, lapislazzuli e malachite.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "materiale": "Papiro",
       "lunghezza": "500 cm",
@@ -56,10 +86,20 @@
     "museumId": "IT-TO0576",
     "operaId": "Libro dei Morti di Hunefer",
     "objectId": "hunefer-contesto",
-    "contents": [
-      "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo.",
-      "Il documento fu acquistato dal British Museum nel 1852; questa copia torinese è una delle riproduzioni più fedeli del XIX secolo."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Hunefer era un importante lavoratore del re d'Egitto. Questo rotolo speciale fu fatto apposta per lui quando morì.",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo. Fu trovato nella sua tomba a Tebe e questa copia torinese è una delle riproduzioni più fedeli realizzate nel XIX secolo.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "La committenza del papiro è attribuita a Hunefer, scriba reale (sesh nesu) al servizio di Seti I (XIX Dinastia), come documentato dall'iscrizione dedicatoria nel colophon. La collocazione originaria nella tomba tebana del defunto ne conferma la funzione di corredo funerario personalizzato, redatto secondo le prescrizioni canoniche della tradizione libraria del Nuovo Regno. Il testo, vergato in scrittura ieratica corsiva con titoli in geroglifico, costituisce un riferimento per gli studi di paleografia e per la storia delle raccolte egittologiche europee dell'Ottocento, periodo in cui esemplari analoghi furono sistematicamente acquisiti da istituzioni museali di tutta Europa.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "committente": "Hunefer, scriba reale di Seti I",
       "collocazione_originale": "Tomba di Hunefer, Tebe",
@@ -72,10 +112,20 @@
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
     "objectId": "venere-analisi-tecnica",
-    "contents": [
-      "La dea emerge dal mare su una grande conchiglia di madreperla, simbolo di nascita e purezza neoplatonica.",
-      "I pigmenti includono lapislazzuli per i blu, verderame per i verdi e biacca di piombo per le carnagioni."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Venere è una donna bellissima che esce dal mare su una grande conchiglia. È uno dei quadri più famosi del mondo!",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "La dea Venere emerge dal mare su una grande conchiglia, simbolo di nascita e purezza. Botticelli ha usato colori preziosi come il lapislazzuli per i blu e il verderame per i verdi. Il dipinto è esposto alla Galleria degli Uffizi di Firenze.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "La tavola a tempera (172,5 × 278,9 cm) di Sandro Botticelli (ca. 1484–1486), commissionata da Lorenzo di Pierfrancesco de' Medici per la villa di Castello, esibisce una straordinaria raffinatezza tecnica. L'analisi stratigrafìca ha individuato lapislazzuli ultrafino per le velature azzurre, verderame per i toni verdi e biacca di piombo per le lumeggiature delle carnagioni; la preparazione a gesso fine e colla animale è caratteristica della tradizione fiorentina quattrocentesca. La Venere anadiomene richiama la Venere Pudica di tradizione ellenistica, reinterpretata in chiave neoplatonica mediceo-polizianesca: la nudità non è sensuale ma metafisica, identificando Venere Celeste con la Humanitas.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "tecnica": "Tempera su tavola",
       "dimensioni": "172,5 × 278,9 cm",
@@ -89,10 +139,20 @@
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
     "objectId": "venere-iconografia",
-    "contents": [
-      "Zefiro con la ninfa Clori soffia vento caldo; a destra una delle Ore accoglie Venere con un manto fiorito.",
-      "La posa richiama la Venere Pudica ellenistica, rielaborata in chiave neoplatonica medicea."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "Nella scena c'è il vento che soffia forte e una donna che aspetta Venere con un bellissimo mantello pieno di fiori.",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "Zefiro abbracciato alla ninfa Clori soffia vento caldo per spingere Venere verso riva. A destra, una delle Ore la accoglie con un manto decorato di fiori. La posa di Venere ricorda le antiche statue greche della Venere Pudica.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "La struttura compositiva articola tre gruppi figurativi: Zefiro abbracciato a Clori (o Aura) insuffla il vento primaverile; Venere emerge in equilibrio instabile dalla conchiglia volutiforme; a destra un'Ora porge il manto istoriato con fiordalisi e anemoni. La fonte iconografica primaria è nelle Stanze di Angelo Poliziano (1475–1478). La deformazione anatomica del collo allungato, le proporzioni irrealistiche delle dita e il ritmo astratto delle onde rivelano la persistenza del lessico gotico internazionale nel vocabolario formale di Botticelli, in tensione con il recupero classicista promosso dall'accademia medicea.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "fonti_letterarie": "Stanze di Angelo Poliziano (1475–1478)",
       "stile": "Gotico internazionale, Primo Rinascimento",
@@ -105,10 +165,20 @@
     "museumId": "IT-FI0082",
     "operaId": "La Primavera",
     "objectId": "primavera-botanica",
-    "contents": [
-      "Il giardino contiene oltre 500 specie botaniche identificate dagli studiosi, quasi tutte autoctone della Toscana.",
-      "Al centro Venere presiede la scena; a destra le Tre Grazie danzano e Mercurio disperde le nuvole con il caduceo."
-    ],
+    "toni": {
+      "semplice": {
+        "testo": "In questo quadro ci sono tantissimi fiori e piante veri della Toscana. Al centro si vede Venere, la dea dell'amore.",
+        "durata": 3
+      },
+      "medio": {
+        "testo": "Il giardino dipinto contiene oltre 500 specie botaniche quasi tutte autoctone della Toscana. Al centro Venere presiede la scena. A destra le Tre Grazie danzano, mentre Mercurio disperde le nuvole con il suo caduceo magico.",
+        "durata": 15
+      },
+      "avanzato": {
+        "testo": "La Primavera (ca. 1477–1478, tempera su tavola, 203 × 314 cm) è stata oggetto di un'analisi botanica sistematica che ha portato all'identificazione di oltre 500 specie vegetali, quasi esclusivamente autoctone della flora tosco-appenninica. Il programma iconografico, ispirato alle Stanze di Poliziano e alle Elegie di Claudiano, articola sull'asse verticale il registro divino (Cupido, Venere, Mercurio) e su quello orizzontale i personaggi mitologici stagionali: le Tre Grazie in danza rappresentano Castità, Amore e Bellezza, mentre la sequenza Zefiro–Clori–Flora traduce in forma pittorica la metamorfosi ovidiana (Fasti, V). Il dato botanico eccezionale suggerisce una collaborazione con i naturalisti dell'Orto dei Semplici fiorentino.",
+        "durata": 40
+      }
+    },
     "metadata": {
       "tecnica": "Tempera su tavola",
       "dimensioni": "203 × 314 cm",

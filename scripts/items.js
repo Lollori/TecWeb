@@ -3,7 +3,26 @@ const mongoose = require("mongoose");
 const itemSchema = new mongoose.Schema({
     museumId: { type: String, required: true },
     objectId: { type: String, default: '' },
-    contents: { type: [String], default: [] },
+    /*
+     * toni — tre livelli di contenuto:
+     *   semplice  (~3 s)  linguaggio elementare, utenti giovani
+     *   medio     (~15 s) linguaggio accessibile, pubblico generale
+     *   avanzato  (~40 s) terminologia tecnica, pubblico esperto
+     */
+    toni: {
+        semplice: {
+            testo:  { type: String, default: '' },
+            durata: { type: Number, default: 3  },
+        },
+        medio: {
+            testo:  { type: String, default: '' },
+            durata: { type: Number, default: 15 },
+        },
+        avanzato: {
+            testo:  { type: String, default: '' },
+            durata: { type: Number, default: 40 },
+        },
+    },
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
     image:    { type: String, default: '' },
     authorId: { type: String, required: true },
@@ -85,7 +104,7 @@ exports.create = async (credentials, body) => {
 exports.update = async (credentials, id, body) => {
     try {
         await connect(credentials);
-        const updated = await Item.findByIdAndUpdate(id, body, { new: true, runValidators: true, projection: { __v: 0 } });
+        const updated = await Item.findByIdAndUpdate(id, { $set: body }, { new: true, runValidators: true, projection: { __v: 0 } });
         if (!updated) return { ok: false, error: "Item non trovato." };
         return { ok: true, data: updated };
     } catch (e) {
