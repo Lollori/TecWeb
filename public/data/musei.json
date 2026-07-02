@@ -93,7 +93,7 @@
     "sale": [
       {
         "nome": "Sala del Botticelli (Sala 10-14)",
-        "piano": "Planimetria",
+        "piano": "Piano 2",
         "latMin": 43.767,
         "latMax": 43.7686,
         "lngMin": 11.2533,
@@ -101,7 +101,7 @@
       },
       {
         "nome": "Sala di Leonardo (Sala 15)",
-        "piano": "Planimetria",
+        "piano": "Piano 2",
         "latMin": 43.767,
         "latMax": 43.7686,
         "lngMin": 11.2551,
@@ -110,15 +110,28 @@
     ],
     "mappaInterna": [
       {
-        "piano": "Planimetria",
-        "url": "/maps/uffizi/piantina_uffizi.png",
+        "piano": "Piano 1",
+        "url": "/data/maps/uffizi/piantina_uffizi_piano1.png",
         "gpsBounds": {
           "latMin": 43.767,
           "latMax": 43.7686,
           "lngMin": 11.2533,
           "lngMax": 11.2571
         },
-        "geoJsonUrl": "/maps/uffizi/P2uffizi.geojson",
+        "geoJsonUrl": "/data/maps/uffizi/P1uffizi.geojson",
+        "imgWidth": 437,
+        "imgHeight": 600
+      },
+      {
+        "piano": "Piano 2",
+        "url": "/data/maps/uffizi/piantina_uffizi_piano2.png",
+        "gpsBounds": {
+          "latMin": 43.767,
+          "latMax": 43.7686,
+          "lngMin": 11.2533,
+          "lngMax": 11.2571
+        },
+        "geoJsonUrl": "/data/maps/uffizi/P2uffizi.geojson",
         "imgWidth": 437,
         "imgHeight": 600
       }

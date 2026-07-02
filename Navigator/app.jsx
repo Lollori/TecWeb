@@ -856,10 +856,30 @@ function VisitaGeoScreen({ nomeAssegnato, museoIsil, onBack }) {
   );
 }
 
+/* ── Amenity POIs ─────────────────────────────────────────
+   Some geoJson room_id values mark building amenities rather
+   than exhibition rooms — shown as icon markers, not as
+   clickable "sala" polygons.
+───────────────────────────────────────────────────────── */
+const AMENITY_ICONS = {
+  scale:       { icon: 'fa-stairs',         label: 'Scale' },
+  ascensore:   { icon: 'fa-arrows-up-down', label: 'Ascensore' },
+  bagno:       { icon: 'fa-restroom',       label: 'Bagni' },
+  caffetteria: { icon: 'fa-mug-saucer',     label: 'Caffetteria' },
+};
+
+function ringCentroid(ring) {
+  let sx = 0, sy = 0;
+  ring.forEach(([x, y]) => { sx += x; sy += -y; });
+  return { x: sx / ring.length, y: sy / ring.length };
+}
+
 /* ── RoomFloorPlan ───────────────────────────────────────
    Renders a floor-plan image with an interactive GeoJSON
    polygon overlay. Clicking a room fetches and shows the
-   artworks in that room via a fixed bottom panel.
+   artworks in that room via a fixed bottom panel. Amenity
+   polygons (scale/ascensore/bagno/caffetteria) are shown as
+   icon markers instead, since they have no opere to list.
 ───────────────────────────────────────────────────────── */
 function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
   const [geoJson,      setGeoJson]      = React.useState(null);
@@ -914,16 +934,45 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
             preserveAspectRatio="none"
             style={{ pointerEvents: 'all' }}
           >
-            {geoJson.features.map(f => (
-              <polygon
-                key={f.properties.fid}
-                points={f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' ')}
-                className={`geo-room-polygon${selectedRoom === f.properties.room_id ? ' geo-room-polygon--active' : ''}`}
-                onClick={() => handleRoomClick(f.properties.room_id)}
-              />
-            ))}
+            {geoJson.features.map(f => {
+              const roomId  = f.properties.room_id;
+              const points  = f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' ');
+              const amenity = AMENITY_ICONS[roomId];
+              if (amenity) {
+                return (
+                  <polygon key={f.properties.fid} points={points} className="geo-amenity-polygon">
+                    <title>{amenity.label}</title>
+                  </polygon>
+                );
+              }
+              return (
+                <polygon
+                  key={f.properties.fid}
+                  points={points}
+                  className={`geo-room-polygon${selectedRoom === roomId ? ' geo-room-polygon--active' : ''}`}
+                  onClick={() => handleRoomClick(roomId)}
+                />
+              );
+            })}
           </svg>
         )}
+
+        {geoJson && geoJson.features.filter(f => AMENITY_ICONS[f.properties.room_id]).map(f => {
+          const amenity  = AMENITY_ICONS[f.properties.room_id];
+          const centroid = ringCentroid(f.geometry.coordinates[0]);
+          const left = (centroid.x / (pianoItem?.imgWidth  || 437)) * 100;
+          const top  = (centroid.y / (pianoItem?.imgHeight || 600)) * 100;
+          return (
+            <div
+              key={f.properties.fid}
+              className="geo-amenity-marker"
+              style={{ left: `${left}%`, top: `${top}%` }}
+              title={amenity.label}
+            >
+              <i className={`fa-solid ${amenity.icon}`} />
+            </div>
+          );
+        })}
 
         {dot && (
           <div

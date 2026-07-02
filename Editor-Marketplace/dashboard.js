@@ -30,6 +30,21 @@ let _vfMyItems         = [];
 let _vfAcquistatiItems = [];
 let _vfSelectedItemIds = new Set();
 
+/* Amenity POIs — geoJson room_id values that mark building amenities
+   rather than exhibition rooms (shown as icon markers, not clickable sale). */
+const DASH_AMENITY_ICONS = {
+    scale:       { icon: 'fa-stairs',         label: 'Scale' },
+    ascensore:   { icon: 'fa-arrows-up-down', label: 'Ascensore' },
+    bagno:       { icon: 'fa-restroom',       label: 'Bagni' },
+    caffetteria: { icon: 'fa-mug-saucer',     label: 'Caffetteria' },
+};
+
+function dashRingCentroid(ring) {
+    let sx = 0, sy = 0;
+    ring.forEach(([x, y]) => { sx += x; sy += -y; });
+    return { x: sx / ring.length, y: sy / ring.length };
+}
+
 /* FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js */
 function applyDashFloorPlanOverrides(museo) {
     if (!museo?.mappaInterna) return [];
@@ -316,16 +331,42 @@ window.dashToggleMap = function (type) {
         piani.forEach((p, i) => {
             if (!p.geoJsonUrl) return;
             const svgEl = document.getElementById(`dash-floor-svg-${i}`);
+            const wrapEl = document.getElementById(`dash-floor-wrap-${i}`);
             if (!svgEl) return;
             fetch(p.geoJsonUrl)
                 .then(r => r.json())
                 .then(geo => {
                     geo.features.forEach(f => {
-                        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
-                        poly.setAttribute('points',
-                            f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' '));
-                        poly.classList.add('dash-room-polygon');
                         const roomId = f.properties.room_id;
+                        const ring = f.geometry.coordinates[0];
+                        const points = ring.map(([x, y]) => `${x},${-y}`).join(' ');
+                        const amenity = DASH_AMENITY_ICONS[roomId];
+
+                        if (amenity) {
+                            const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                            poly.setAttribute('points', points);
+                            poly.classList.add('dash-amenity-polygon');
+                            const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                            title.textContent = amenity.label;
+                            poly.appendChild(title);
+                            svgEl.appendChild(poly);
+
+                            if (wrapEl) {
+                                const c = dashRingCentroid(ring);
+                                const marker = document.createElement('div');
+                                marker.className = 'dash-amenity-marker';
+                                marker.style.left = `${(c.x / (p.imgWidth || 437)) * 100}%`;
+                                marker.style.top  = `${(c.y / (p.imgHeight || 600)) * 100}%`;
+                                marker.title = amenity.label;
+                                marker.innerHTML = `<i class="fa-solid ${amenity.icon}"></i>`;
+                                wrapEl.appendChild(marker);
+                            }
+                            return;
+                        }
+
+                        const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+                        poly.setAttribute('points', points);
+                        poly.classList.add('dash-room-polygon');
                         poly.addEventListener('click', () => dashHandleRoomClick(isil, roomId, poly, svgEl));
                         svgEl.appendChild(poly);
                     });

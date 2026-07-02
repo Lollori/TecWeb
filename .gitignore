@@ -3,3 +3,5 @@ node_modules/
 *.log
 .claude/
 scripts/seed-test.js
+graphify-out/
+REVIEW.md
