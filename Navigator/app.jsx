@@ -862,11 +862,21 @@ function VisitaGeoScreen({ nomeAssegnato, museoIsil, onBack }) {
    clickable "sala" polygons.
 ───────────────────────────────────────────────────────── */
 const AMENITY_ICONS = {
-  scale:       { icon: 'fa-stairs',         label: 'Scale' },
-  ascensore:   { icon: 'fa-arrows-up-down', label: 'Ascensore' },
-  bagno:       { icon: 'fa-restroom',       label: 'Bagni' },
-  caffetteria: { icon: 'fa-mug-saucer',     label: 'Caffetteria' },
+  scale:       { icon: 'fa-stairs',           label: 'Scale' },
+  ascensore:   { icon: 'fa-arrows-up-down',   label: 'Ascensore' },
+  bagno:       { icon: 'fa-restroom',         label: 'Bagni' },
+  caffetteria: { icon: 'fa-mug-saucer',       label: 'Caffetteria' },
+  ingresso:    { icon: 'fa-door-open',        label: 'Ingresso' },
+  U:           { icon: 'fa-right-from-bracket', label: 'Uscita' },
 };
+
+/* room_id used for temporary-exhibition rooms — these stay clickable
+   (they can hold opere) but get a marker icon + a friendlier display name. */
+const TEMP_EXHIBIT_ID = 'mostre_temp';
+
+function roomDisplayName(roomId) {
+  return roomId === TEMP_EXHIBIT_ID ? 'Sale per Mostre temporanee' : `Sala ${roomId}`;
+}
 
 function ringCentroid(ring) {
   let sx = 0, sy = 0;
@@ -974,6 +984,22 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
           );
         })}
 
+        {geoJson && geoJson.features.filter(f => f.properties.room_id === TEMP_EXHIBIT_ID).map(f => {
+          const centroid = ringCentroid(f.geometry.coordinates[0]);
+          const left = (centroid.x / (pianoItem?.imgWidth  || 437)) * 100;
+          const top  = (centroid.y / (pianoItem?.imgHeight || 600)) * 100;
+          return (
+            <div
+              key={f.properties.fid}
+              className="geo-temp-exhibit-marker"
+              style={{ left: `${left}%`, top: `${top}%` }}
+              title="Sale per Mostre temporanee"
+            >
+              <i className="fa-solid fa-clock-rotate-left" />
+            </div>
+          );
+        })}
+
         {dot && (
           <div
             className="geo-user-dot"
@@ -986,11 +1012,27 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
         <p className="geo-map-hint">Tocca una stanza per vedere le opere</p>
       )}
 
+      {geoJson && (() => {
+        const presentIds = [...new Set(geoJson.features.map(f => f.properties.room_id))]
+          .filter(id => AMENITY_ICONS[id]);
+        if (!presentIds.length) return null;
+        return (
+          <div className="geo-amenity-legend">
+            {presentIds.map(id => (
+              <span key={id} className="geo-amenity-legend-item">
+                <span className="geo-amenity-legend-icon"><i className={`fa-solid ${AMENITY_ICONS[id].icon}`} /></span>
+                {AMENITY_ICONS[id].label}
+              </span>
+            ))}
+          </div>
+        );
+      })()}
+
       {/* Fixed bottom panel — always visible regardless of scroll position */}
       {selectedRoom && (
         <div className="geo-room-panel">
           <div className="geo-room-panel-header">
-            <span className="geo-room-panel-title">Sala {selectedRoom}</span>
+            <span className="geo-room-panel-title">{roomDisplayName(selectedRoom)}</span>
             <button
               className="geo-room-panel-close"
               onClick={() => { setSelectedRoom(null); setRoomOpere(null); }}

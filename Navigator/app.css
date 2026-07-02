@@ -414,7 +414,7 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   border-bottom: 2px solid rgba(255,255,255,0.06);
 }
 .piano-tabs-nav {
-  display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px;
+  display: flex; gap: 8px; flex-wrap: wrap; margin: 0 4px 16px;
 }
 .piano-tab-btn {
   background: rgba(255,255,255,0.06);
@@ -668,7 +668,7 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 }
 .geo-piano-tabs {
   display: flex; gap: 8px; flex-wrap: wrap;
-  padding: 14px 16px 0;
+  padding: 14px 20px 0;
 }
 .geo-floorplan-wrap {
   position: relative;
@@ -788,12 +788,52 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   pointer-events: none;
 }
 
+/* ── Temporary-exhibition marker (room stays clickable, just flagged) ── */
+.geo-temp-exhibit-marker {
+  position: absolute;
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(245, 158, 11, 0.92);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.62rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  z-index: 7;
+  pointer-events: none;
+}
+
 .geo-map-hint {
   margin: 8px 14px 0;
   font-size: 0.72rem;
   color: rgba(255,255,255,0.28);
   text-align: center;
   font-style: italic;
+}
+
+/* ── Amenity Legend ── */
+.geo-amenity-legend {
+  display: flex; flex-wrap: wrap;
+  gap: 6px 16px;
+  justify-content: center;
+  margin: 10px 16px 0;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.geo-amenity-legend-item {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.55);
+}
+.geo-amenity-legend-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px;
+  background: rgba(99, 102, 241, 0.85);
+  color: #fff;
+  border-radius: 50%;
+  font-size: 0.55rem;
+  flex-shrink: 0;
 }
 
 /* ── Room Panel (fixed overlay at the bottom) ── */

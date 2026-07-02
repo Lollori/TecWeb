@@ -33,11 +33,21 @@ let _vfSelectedItemIds = new Set();
 /* Amenity POIs — geoJson room_id values that mark building amenities
    rather than exhibition rooms (shown as icon markers, not clickable sale). */
 const DASH_AMENITY_ICONS = {
-    scale:       { icon: 'fa-stairs',         label: 'Scale' },
-    ascensore:   { icon: 'fa-arrows-up-down', label: 'Ascensore' },
-    bagno:       { icon: 'fa-restroom',       label: 'Bagni' },
-    caffetteria: { icon: 'fa-mug-saucer',     label: 'Caffetteria' },
+    scale:       { icon: 'fa-stairs',           label: 'Scale' },
+    ascensore:   { icon: 'fa-arrows-up-down',   label: 'Ascensore' },
+    bagno:       { icon: 'fa-restroom',         label: 'Bagni' },
+    caffetteria: { icon: 'fa-mug-saucer',       label: 'Caffetteria' },
+    ingresso:    { icon: 'fa-door-open',        label: 'Ingresso' },
+    U:           { icon: 'fa-right-from-bracket', label: 'Uscita' },
 };
+
+/* room_id used for temporary-exhibition rooms — these stay clickable
+   (they can hold opere) but get a marker icon + a friendlier display name. */
+const DASH_TEMP_EXHIBIT_ID = 'mostre_temp';
+
+function dashRoomDisplayName(roomId) {
+    return roomId === DASH_TEMP_EXHIBIT_ID ? 'Sale per Mostre temporanee' : `Sala ${roomId}`;
+}
 
 function dashRingCentroid(ring) {
     let sx = 0, sy = 0;
@@ -324,9 +334,12 @@ window.dashToggleMap = function (type) {
                              preserveAspectRatio="none">
                         </svg>
                     </div>`).join('')}
+                <div id="dash-amenity-legend" class="dash-amenity-legend"></div>
                 <p class="dash-room-hint" id="dash-room-hint">Tocca una stanza per vedere le opere</p>
                 <div id="dash-room-panel" class="dash-room-panel" style="display:none"></div>
             </div>`;
+
+        window._dashFloorLegends = [];
 
         piani.forEach((p, i) => {
             if (!p.geoJsonUrl) return;
@@ -336,6 +349,8 @@ window.dashToggleMap = function (type) {
             fetch(p.geoJsonUrl)
                 .then(r => r.json())
                 .then(geo => {
+                    const legendMap = new Map();
+
                     geo.features.forEach(f => {
                         const roomId = f.properties.room_id;
                         const ring = f.geometry.coordinates[0];
@@ -350,6 +365,7 @@ window.dashToggleMap = function (type) {
                             title.textContent = amenity.label;
                             poly.appendChild(title);
                             svgEl.appendChild(poly);
+                            legendMap.set(roomId, amenity);
 
                             if (wrapEl) {
                                 const c = dashRingCentroid(ring);
@@ -369,7 +385,29 @@ window.dashToggleMap = function (type) {
                         poly.classList.add('dash-room-polygon');
                         poly.addEventListener('click', () => dashHandleRoomClick(isil, roomId, poly, svgEl));
                         svgEl.appendChild(poly);
+
+                        if (roomId === DASH_TEMP_EXHIBIT_ID && wrapEl) {
+                            const c = dashRingCentroid(ring);
+                            const marker = document.createElement('div');
+                            marker.className = 'dash-temp-exhibit-marker';
+                            marker.style.left = `${(c.x / (p.imgWidth || 437)) * 100}%`;
+                            marker.style.top  = `${(c.y / (p.imgHeight || 600)) * 100}%`;
+                            marker.title = 'Sale per Mostre temporanee';
+                            marker.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i>`;
+                            wrapEl.appendChild(marker);
+                        }
                     });
+
+                    const legendHtml = [...legendMap.values()].map(a => `
+                        <span class="dash-amenity-legend-item">
+                            <span class="dash-amenity-legend-icon"><i class="fa-solid ${a.icon}"></i></span>
+                            ${a.label}
+                        </span>`).join('');
+                    window._dashFloorLegends[i] = legendHtml;
+                    if (i === 0) {
+                        const legendEl = document.getElementById('dash-amenity-legend');
+                        if (legendEl) legendEl.innerHTML = legendHtml;
+                    }
                 })
                 .catch(err => console.warn('[dashboard] GeoJSON load failed:', err));
         });
@@ -386,6 +424,8 @@ window.dashSelectPiano = function (idx) {
     document.querySelectorAll('.piano-tab-btn').forEach((btn, i) => {
         btn.classList.toggle('active', i === idx);
     });
+    const legendEl = document.getElementById('dash-amenity-legend');
+    if (legendEl) legendEl.innerHTML = (window._dashFloorLegends && window._dashFloorLegends[idx]) || '';
     dashCloseRoomPanel();
 };
 
@@ -424,13 +464,13 @@ async function dashHandleRoomClick(museoIsil, roomId, poly, svgEl) {
         if (opere.length === 0) {
             panel.innerHTML = `
                 <div class="dash-room-header">
-                    <span>Sala ${roomId}</span>${closeBtn}
+                    <span>${dashRoomDisplayName(roomId)}</span>${closeBtn}
                 </div>
                 <p class="dash-room-empty">Nessuna opera disponibile per questa sala.</p>`;
         } else {
             panel.innerHTML = `
                 <div class="dash-room-header">
-                    <span>Sala ${roomId} · ${opere.length} oper${opere.length === 1 ? 'a' : 'e'}</span>${closeBtn}
+                    <span>${dashRoomDisplayName(roomId)} · ${opere.length} oper${opere.length === 1 ? 'a' : 'e'}</span>${closeBtn}
                 </div>
                 <div class="dash-opera-list">
                     ${opere.map(o => `

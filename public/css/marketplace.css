@@ -49,9 +49,9 @@
 .dash-map-link:hover { text-decoration: underline; }
 
 /* ── Dashboard: Internal Floor Plan ── */
-.dash-map-interna { padding: 16px 20px; }
+.dash-map-interna { padding: 16px 24px; }
 .piano-tabs {
-    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px;
+    display: flex; gap: 8px; flex-wrap: wrap; margin: 0 4px 14px;
 }
 .piano-tab-btn {
     background: transparent;
@@ -139,12 +139,53 @@
     z-index: 8;
     pointer-events: none;
 }
+/* ── Temporary-exhibition marker (room stays clickable, just flagged) ── */
+.dash-temp-exhibit-marker {
+    position: absolute;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(245,158,11,0.92);
+    color: #fff;
+    border: 2px solid #fff;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.62rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    z-index: 7;
+    pointer-events: none;
+}
 .dash-room-hint {
     margin: 8px 0 0;
     text-align: center;
     font-size: 0.78rem;
     color: #94a3b8;
     font-style: italic;
+}
+/* ── Amenity Legend ── */
+.dash-amenity-legend {
+    display: flex; flex-wrap: wrap;
+    gap: 6px 16px;
+    justify-content: center;
+    margin: 10px 0 0;
+    padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+.dash-amenity-legend:empty { display: none; border-top: none; margin: 0; padding: 0; }
+[data-theme="dark"] .dash-amenity-legend { border-top-color: rgba(255,255,255,0.08); }
+.dash-amenity-legend-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.72rem;
+    color: #64748b;
+}
+[data-theme="dark"] .dash-amenity-legend-item { color: #94a3b8; }
+.dash-amenity-legend-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    background: rgba(99,102,241,0.85);
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.55rem;
+    flex-shrink: 0;
 }
 .dash-room-panel {
     margin-top: 16px;
