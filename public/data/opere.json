@@ -36,7 +36,7 @@
     "autore": "Sandro Botticelli",
     "datazione": "1484-1486",
     "sala": "10-14",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg/1280px-Sandro_Botticelli_-_La_nascita_di_Venere_-_Google_Art_Project_-_edited.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg",
     "descrizione": "Celebre opera rinascimentale che raffigura la dea Venere appena nata dal mare, emergente da una conchiglia gigante. Uno dei capolavori assoluti della pittura occidentale.",
     "pubblica": true
   },
@@ -58,7 +58,7 @@
     "autore": "Sandro Botticelli",
     "datazione": "ca. 1482",
     "sala": "10-14",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Botticelli_-_Pallade_e_il_centauro.jpg/800px-Botticelli_-_Pallade_e_il_centauro.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/f/f0/Botticelli%2C_pallade_e_il_centauro_00.jpg",
     "descrizione": "La dea Pallade Atena afferra per i capelli un centauro, allegoria del trionfo della ragione sulla forza bruta.",
     "pubblica": true
   },
@@ -69,7 +69,7 @@
     "autore": "Leonardo da Vinci",
     "datazione": "1472-1475",
     "sala": "15",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/Leonardo_da_Vinci_-_Annunciation_%28detail%29_-_WGA12701.jpg/1280px-Leonardo_da_Vinci_-_Annunciation_%28detail%29_-_WGA12701.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/9/93/Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg",
     "descrizione": "Opera giovanile di Leonardo in cui l'angelo Gabriele annuncia a Maria la nascita di Gesù. Caratterizzata dall'abilità nel rendere l'atmosfera e il paesaggio.",
     "pubblica": true
   },
@@ -80,7 +80,7 @@
     "autore": "Leonardo da Vinci",
     "datazione": "1481 (incompiuta)",
     "sala": "15",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Uffizi.jpg/1024px-Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Uffizi.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/2/27/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg",
     "descrizione": "Opera incompiuta di Leonardo che rivoluzionò la composizione pittorica con la sua straordinaria capacità di rappresentare emozioni e movimento.",
     "pubblica": true
   },
@@ -91,7 +91,7 @@
     "autore": "Michelangelo Buonarroti",
     "datazione": "1504-1506",
     "sala": "25",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Michelangelo_Tondo_Doni_01.jpg/800px-Michelangelo_Tondo_Doni_01.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/3/37/Tondo_Doni_2021.jpg",
     "descrizione": "L'unica pittura su tavola di Michelangelo, raffigura la Sacra Famiglia. La forma circolare (tondo) e le figure in posa contorta anticipano il Manierismo.",
     "pubblica": true
   },
@@ -102,7 +102,7 @@
     "autore": "Tiziano Vecellio",
     "datazione": "1538",
     "sala": "28",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tizian_Venus_of_Urbino.jpg/1280px-Tizian_Venus_of_Urbino.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/b/bb/Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg",
     "descrizione": "Una delle opere più celebri di Tiziano: Venere distesa su un letto, con uno sguardo diretto allo spettatore che ha fatto di questo dipinto un archetipo della pittura erotica occidentale.",
     "pubblica": true
   },
@@ -113,7 +113,7 @@
     "autore": "Raffaello Sanzio",
     "datazione": "1506",
     "sala": "35",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Raphael_-_Madonna_of_the_Goldfinch_-_Uffizi.jpg/800px-Raphael_-_Madonna_of_the_Goldfinch_-_Uffizi.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/5/57/Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg",
     "descrizione": "Maria con il Bambino Gesù e San Giovannino in un paesaggio aperto. Il cardellino tenuto da San Giovanni è simbolo della Passione di Cristo.",
     "pubblica": true
   },
@@ -152,12 +152,12 @@
   },
   {
     "codiceIsil": "IT-FI0082",
-    "operaId": "Madonna dell'Cardellino",
+    "operaId": "Incoronazione della Vergine",
     "tipo": "Pittura",
     "autore": "Lorenzo Monaco",
     "datazione": "1409",
     "sala": "7",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Lorenzo_monaco%2C_incoronazione_della_vergine_con_santi_07.jpg/800px-Lorenzo_monaco%2C_incoronazione_della_vergine_con_santi_07.jpg",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/7/7e/Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg",
     "descrizione": "Incoronazione della Vergine con angeli e santi, opera tardogotica di Lorenzo Monaco, monaco camaldolese e grande miniaturista fiorentino.",
     "pubblica": true
   },
@@ -236,17 +236,6 @@
     "sala": "7",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg/960px-Domenico_Veneziano_-_Pala_di_Santa_Lucia_dei_Magnoli_-_Google_Art_Project.jpg",
     "descrizione": "Sacra conversazione ambientata in un cortile marmoreo inondato di luce, opera chiave per l'introduzione della tavolozza chiara nella pittura fiorentina del primo Rinascimento.",
-    "pubblica": true
-  },
-  {
-    "codiceIsil": "IT-FI0082",
-    "operaId": "Incoronazione della Vergine",
-    "tipo": "Pittura",
-    "autore": "Filippo Lippi",
-    "datazione": "1441–1447",
-    "sala": "8",
-    "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Fra_Filippo_Lippi_007.jpg/960px-Fra_Filippo_Lippi_007.jpg",
-    "descrizione": "Grande pala che raffigura l'incoronazione di Maria in cielo circondata da una folla di santi e angeli, commissionata per la chiesa di Sant'Ambrogio a Firenze.",
     "pubblica": true
   },
   {
@@ -511,6 +500,105 @@
     "sala": "Piazzale Degli Uffizi",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/49/Galleria_degli_Uffizi--w.jpg/960px-Galleria_degli_Uffizi--w.jpg",
     "descrizione": "Serie di statue collocate nelle nicchie del loggiato esterno, raffiguranti i più illustri fiorentini e toscani della storia, dai Medici agli artisti e scienziati.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Battaglia di San Romano",
+    "tipo": "Pittura",
+    "autore": "Paolo Uccello",
+    "datazione": "1438 ca.",
+    "sala": "7",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/e/e3/Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg",
+    "descrizione": "Pannello centrale del celebre trittico sulla battaglia di San Romano (il disarcionamento di Bernardino della Ciarda), capolavoro assoluto per lo studio della prospettiva geometrica nel primo Rinascimento.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Sant'Anna Metterza",
+    "tipo": "Pittura",
+    "autore": "Masaccio e Masolino da Panicale",
+    "datazione": "1424-1425",
+    "sala": "7",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/c/c1/Masolino%2C_Masaccio%2C_Virgin_and_Child_with_Saint_Anne%2C_c1424-25%2C_Uffizi.jpg",
+    "descrizione": "Tavola cruciale che segna l'avvento del Rinascimento pittorico. Mostra chiaramente la differenza tra lo stile ancora gotico di Masolino (Sant'Anna e angeli) e la rivoluzionaria monumentalità e tridimensionalità di Masaccio (Madonna e Bambino).",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Adorazione dei Magi",
+    "tipo": "Pittura",
+    "autore": "Gentile da Fabriano",
+    "datazione": "1423",
+    "sala": "7",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/c/ce/Adorazione_dei_Magi_by_Gentile_da_Fabriano_-_Predella.jpg",
+    "descrizione": "La pala Strozzi è il capolavoro indiscusso del Gotico Internazionale in Italia: un tripudio di ori, dettagli naturalistici, costumi lussuosi e un favoloso corteo di animali esotici.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Trittico Portinari",
+    "tipo": "Pittura",
+    "autore": "Hugo van der Goes",
+    "datazione": "1477-1478",
+    "sala": "15",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/a/a1/Hugo_van_der_Goes_-_Trittico_Portinari_-_Google_Art_Project.jpg",
+    "descrizione": "Immenso trittico fiammingo giunto a Firenze via mare. Ebbe un impatto sconvolgente sui pittori locali (tra cui Ghirlandaio e Botticelli) per l'incredibile realismo dei volti e l'uso luminoso dei colori ad olio.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Madonna dal collo lungo",
+    "tipo": "Pittura",
+    "autore": "Parmigianino",
+    "datazione": "1534-1540",
+    "sala": "74",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg",
+    "descrizione": "Icona universale del Manierismo, resa indimenticabile dall'elegante allungamento delle proporzioni della Vergine, dalla fluidità delle linee e dalla complessa e asimmetrica composizione.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Trittico degli Uffizi",
+    "tipo": "Pittura",
+    "autore": "Andrea Mantegna",
+    "datazione": "1460 ca.",
+    "sala": "24",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/6/6b/Trittico_degli_uffizi.jpg",
+    "descrizione": "Insieme di tre pannelli (Ascensione, Adorazione dei Magi e Circoncisione) caratterizzati dall'inconfondibile stile mantegnesco: illusionismo prospettico eccezionale e citazioni dall'antichità classica.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Ritratto di Lucrezia Panciatichi",
+    "tipo": "Pittura",
+    "autore": "Agnolo Bronzino",
+    "datazione": "1540 ca.",
+    "sala": "29",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/f/ff/Agnolo_di_Cosimo_Tori_detto_Bronzino_%28Firenze%2C_1503-1572%29_-_Ritratto_di_Lucrezia_Panciatichi_-_736_-_Uffizi_Gallery.jpg",
+    "descrizione": "Esempio eccelso della ritrattistica manierista: l'algida e altera bellezza della nobildonna viene cristallizzata in una superficie quasi smaltata, con un'attenzione minuziosa alla gioielleria e ai tessuti.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Allegoria Sacra",
+    "tipo": "Pittura",
+    "autore": "Giovanni Bellini",
+    "datazione": "1490-1500",
+    "sala": "24",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/6/6f/Giovanni_Bellini_o_Giambellino_-_Allegoria_sacra_-_Google_Art_Project.jpg",
+    "descrizione": "Una delle opere più poetiche ed enigmatiche del Rinascimento veneziano. Rappresenta una misteriosa terrazza affacciata su un lago, popolata da santi e figure il cui significato allegorico è ancora ampiamente dibattuto.",
+    "pubblica": true
+  },
+  {
+    "codiceIsil": "IT-FI0082",
+    "operaId": "Orazione nell'orto",
+    "tipo": "Pittura",
+    "autore": "Perugino",
+    "datazione": "1483-1493",
+    "sala": "19",
+    "immagine": "https://upload.wikimedia.org/wikipedia/commons/c/c3/Perugino%2C_orazione_nell%27orto%2C_1492_circa%2C_dalla_chiesa_degli_ingesuati_01.jpg",
+    "descrizione": "Tavola dipinta per la chiesa del convento di San Giusto alle Mura. Celebre per il paesaggio dolce e sfumato tipico dell'arte umbra, che influenzerà enormemente il giovane Raffaello.",
     "pubblica": true
   }
 ]
