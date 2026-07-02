@@ -385,17 +385,6 @@ window.dashToggleMap = function (type) {
                         poly.classList.add('dash-room-polygon');
                         poly.addEventListener('click', () => dashHandleRoomClick(isil, roomId, poly, svgEl));
                         svgEl.appendChild(poly);
-
-                        if (roomId === DASH_TEMP_EXHIBIT_ID && wrapEl) {
-                            const c = dashRingCentroid(ring);
-                            const marker = document.createElement('div');
-                            marker.className = 'dash-temp-exhibit-marker';
-                            marker.style.left = `${(c.x / (p.imgWidth || 437)) * 100}%`;
-                            marker.style.top  = `${(c.y / (p.imgHeight || 600)) * 100}%`;
-                            marker.title = 'Sale per Mostre temporanee';
-                            marker.innerHTML = `<i class="fa-solid fa-clock-rotate-left"></i>`;
-                            wrapEl.appendChild(marker);
-                        }
                     });
 
                     const legendHtml = [...legendMap.values()].map(a => `

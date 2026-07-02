@@ -984,22 +984,6 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
           );
         })}
 
-        {geoJson && geoJson.features.filter(f => f.properties.room_id === TEMP_EXHIBIT_ID).map(f => {
-          const centroid = ringCentroid(f.geometry.coordinates[0]);
-          const left = (centroid.x / (pianoItem?.imgWidth  || 437)) * 100;
-          const top  = (centroid.y / (pianoItem?.imgHeight || 600)) * 100;
-          return (
-            <div
-              key={f.properties.fid}
-              className="geo-temp-exhibit-marker"
-              style={{ left: `${left}%`, top: `${top}%` }}
-              title="Sale per Mostre temporanee"
-            >
-              <i className="fa-solid fa-clock-rotate-left" />
-            </div>
-          );
-        })}
-
         {dot && (
           <div
             className="geo-user-dot"
