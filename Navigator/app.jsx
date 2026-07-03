@@ -408,6 +408,7 @@ function VisitaItemScreen({
   const [terminating,   setTerminating]   = React.useState(false);
   const [monitorOpen,   setMonitorOpen]   = React.useState(false);
   const [itemsMenuOpen, setItemsMenuOpen] = React.useState(false);
+  const [quizPromptOpen, setQuizPromptOpen] = React.useState(false);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
 
@@ -466,8 +467,7 @@ function VisitaItemScreen({
     } finally { setNavigating(false); setItemsMenuOpen(false); }
   }
 
-  async function handleTermina() {
-    if (!window.confirm('Terminare la visita? Tutti i partecipanti verranno disconnessi.')) return;
+  async function eseguiTermina() {
     setTerminating(true);
     try {
       await fetch(`/api/sessioni/${encodeURIComponent(codice)}/chiudi`, { method: 'POST' });
@@ -475,6 +475,28 @@ function VisitaItemScreen({
       setTerminating(false);
       onBack();
     }
+  }
+
+  function handleTermina() {
+    // Se la visita ha un quiz non ancora avviato, prima di chiudere chiediamo
+    // alla docente se vuole farlo partire.
+    if (hasQuiz && !quiz) {
+      setQuizPromptOpen(true);
+      return;
+    }
+    if (!window.confirm('Terminare la visita? Tutti i partecipanti verranno disconnessi.')) return;
+    eseguiTermina();
+  }
+
+  function handleTerminaSenzaQuiz() {
+    setQuizPromptOpen(false);
+    if (!window.confirm('Terminare la visita senza avviare il quiz? Tutti i partecipanti verranno disconnessi.')) return;
+    eseguiTermina();
+  }
+
+  async function handleAvviaQuizDaPrompt() {
+    setQuizPromptOpen(false);
+    if (onAvviaQuiz) await onAvviaQuiz();
   }
 
   async function handleSendMsg() {
@@ -614,20 +636,36 @@ function VisitaItemScreen({
         </div>
       )}
 
-      {isDocente && hasQuiz && !quiz && currentIdx >= totalItems - 1 && (
-        <div className="visita-quiz-cta-bar">
-          <button className="visita-quiz-cta-btn" onClick={onAvviaQuiz} disabled={quizAvviando}>
-            <i className="fa-solid fa-graduation-cap" />
-            {quizAvviando ? 'Avvio in corso…' : 'Avvia Quiz finale'}
-          </button>
-        </div>
-      )}
-
       {isDocente && (
         <div className="visita-termina-bar">
           <button className="visita-termina-btn" onClick={handleTermina} disabled={terminating}>
             {terminating ? 'Chiusura…' : '⏹ Termina visita'}
           </button>
+        </div>
+      )}
+
+      {/* Prompt: avviare il quiz prima di terminare la visita? */}
+      {isDocente && quizPromptOpen && (
+        <div className="visita-chat-overlay" onClick={() => setQuizPromptOpen(false)} />
+      )}
+      {isDocente && quizPromptOpen && (
+        <div className="quiz-prompt-modal">
+          <h3 className="quiz-prompt-title">Avviare il quiz finale?</h3>
+          <p className="quiz-prompt-text">
+            Questa visita ha un quiz associato. Puoi farlo partire adesso (i partecipanti risponderanno
+            dai loro dispositivi) oppure terminare la visita senza quiz.
+          </p>
+          <div className="quiz-prompt-actions">
+            <button className="quiz-prompt-btn quiz-prompt-btn--ghost" onClick={() => setQuizPromptOpen(false)}>
+              Annulla
+            </button>
+            <button className="quiz-prompt-btn quiz-prompt-btn--danger" onClick={handleTerminaSenzaQuiz}>
+              Termina senza quiz
+            </button>
+            <button className="quiz-prompt-btn quiz-prompt-btn--primary" onClick={handleAvviaQuizDaPrompt} disabled={quizAvviando}>
+              {quizAvviando ? 'Avvio in corso…' : 'Avvia Quiz'}
+            </button>
+          </div>
         </div>
       )}
 
