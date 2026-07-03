@@ -241,7 +241,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     updateDarkToggleUI();
 
     if (new URLSearchParams(location.search).get('embed') === 'marketplace') {
-        initMarketplace();
+        switchSection('marketplace');
         return;
     }
 
@@ -5064,10 +5064,27 @@ async function _saveQuiz(visitaId, domande) {
 
 async function initCuratoreQuiz() {
     const section = document.getElementById('section-curatore-quiz');
+
+    // Solo gli autori possono gestire il quiz — e possono farlo su qualsiasi
+    // visita della piattaforma, non solo sulle proprie.
+    if (SESSION.role !== 'autore') {
+        section.innerHTML = `
+            <div class="mb-5">
+                <h1 class="page-title">Gestione Quiz</h1>
+            </div>
+            <div class="glass-card p-5">
+                <p class="empty-msg">
+                    <i class="fa-solid fa-lock me-2"></i>
+                    Solo gli autori possono creare e gestire i quiz delle visite.
+                </p>
+            </div>`;
+        return;
+    }
+
     section.innerHTML = `
         <div class="mb-5">
             <h1 class="page-title">Gestione Quiz</h1>
-            <p class="text-muted mb-0">Crea domande a scelta multipla per le tue visite Navigator.</p>
+            <p class="text-muted mb-0">Crea domande a scelta multipla per il quiz finale di una visita Navigator — qualsiasi visita, non solo le tue.</p>
         </div>
         <div class="glass-card p-5">
             <div class="mb-4">
@@ -5080,25 +5097,28 @@ async function initCuratoreQuiz() {
         </div>`;
 
     let allVisite = [];
+    let museiMap   = {};
     try {
-        const purchases = getMktPurchases();
-        const params = new URLSearchParams({ autoreId: SESSION.userId });
-        if (purchases.visite?.length) params.set('ids', purchases.visite.join(','));
-        const res  = await fetch(`/api/visite?${params}`);
-        const data = await res.json();
-        if (data.ok) allVisite = data.data;
+        const [rVisite, rMusei] = await Promise.all([
+            fetch('/api/visite'),
+            fetch('/api/musei'),
+        ]);
+        const [dVisite, dMusei] = await Promise.all([rVisite.json(), rMusei.json()]);
+        if (dVisite.ok) allVisite = dVisite.data;
+        if (dMusei.ok) dMusei.data.forEach(m => { museiMap[m.codiceIsil] = m.nome; });
     } catch {}
     quizCurrentVisite = allVisite;
 
     const sel = document.getElementById('quizSelectVisita');
     if (!sel) return;
     if (!allVisite.length) {
-        sel.innerHTML = '<option value="">Nessuna visita disponibile — crea o acquista una visita</option>';
+        sel.innerHTML = '<option value="">Nessuna visita disponibile sulla piattaforma</option>';
     } else {
         sel.innerHTML = '<option value="">— Seleziona una visita —</option>' +
-            allVisite.map(v =>
-                `<option value="${v._id}">${v.nomeVisita}${v.nomeMnemonico ? ' (' + v.nomeMnemonico + ')' : ''}</option>`
-            ).join('');
+            allVisite.map(v => {
+                const museo = museiMap[v.codiceIsil] ? ` — ${museiMap[v.codiceIsil]}` : '';
+                return `<option value="${v._id}">${v.nomeVisita}${v.nomeMnemonico ? ' (' + v.nomeMnemonico + ')' : ''}${museo}</option>`;
+            }).join('');
     }
 }
 
