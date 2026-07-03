@@ -22,13 +22,14 @@ let currentAutoreMuseoOpere = [];
 
 let allVisitatoreCachedMusei = [];
 let currentVisitatoreOpere   = [];
-let currentVisitatoreVisite  = [];
 
 let _vfCurrentMuseo    = '';
 let _vfItemTab         = 'miei';
 let _vfMyItems         = [];
 let _vfAcquistatiItems = [];
 let _vfSelectedItemIds = new Set();
+let _vfOperaSalaMap    = {};
+let _vfRoomGeo         = null;
 
 /* Amenity POIs — geoJson room_id values that mark building amenities
    rather than exhibition rooms (shown as icon markers, not clickable sale). */
@@ -53,6 +54,126 @@ function dashRingCentroid(ring) {
     let sx = 0, sy = 0;
     ring.forEach(([x, y]) => { sx += x; sy += -y; });
     return { x: sx / ring.length, y: sy / ring.length };
+}
+
+/* ============================================================
+   CORRIDOR SPINE — percorso praticabile per l'ordinamento visite
+   Le sale non sono raggiungibili in linea retta (i corridoi sono
+   perimetrali, il centro dell'edificio non è attraversabile): per
+   ordinare gli item di una visita si misura la distanza camminando
+   lungo l'asse dei corridoi ("Corridoio Di Levante/Ponente",
+   "Secondo Corridoio", ecc.), non la distanza euclidea diretta.
+   ============================================================ */
+
+/* Asse principale (centerline) di un poligono corridoio, via PCA:
+   trova la direzione di massima varianza e proietta i vertici su
+   di essa per ottenere i due estremi del segmento. Funziona bene
+   per corridoi stretti e allungati come quelli di una piantina museale. */
+function dashPolygonLongAxis(ring) {
+    const pts = ring.map(([x, y]) => ({ x, y: -y }));
+    const n = pts.length;
+    let mx = 0, my = 0;
+    pts.forEach(p => { mx += p.x; my += p.y; });
+    mx /= n; my /= n;
+    let sxx = 0, syy = 0, sxy = 0;
+    pts.forEach(p => {
+        const dx = p.x - mx, dy = p.y - my;
+        sxx += dx * dx; syy += dy * dy; sxy += dx * dy;
+    });
+    const angle = 0.5 * Math.atan2(2 * sxy, sxx - syy);
+    const dirx  = Math.cos(angle), diry = Math.sin(angle);
+    let tmin = Infinity, tmax = -Infinity;
+    pts.forEach(p => {
+        const t = (p.x - mx) * dirx + (p.y - my) * diry;
+        if (t < tmin) tmin = t;
+        if (t > tmax) tmax = t;
+    });
+    return {
+        p1: { x: mx + tmin * dirx, y: my + tmin * diry },
+        p2: { x: mx + tmax * dirx, y: my + tmax * diry },
+    };
+}
+
+/* Unisce i segmenti-corridoio di un piano in un grafo (nodi = estremi
+   uniti entro una soglia, archi = segmenti) e calcola le distanze
+   minime fra tutti i nodi (Floyd-Warshall — pochi nodi, costo nullo). */
+function dashBuildCorridorSpine(segments) {
+    if (!segments.length) return null;
+    const nodes = [];
+    // Gli estremi degli assi PCA di corridoi adiacenti non coincidono mai
+    // esattamente (l'angolo di raccordo non è un rettangolo perfetto): serve
+    // una soglia abbastanza larga da unire gli angoli reali (~30-35 unità
+    // nella piantina degli Uffizi) senza rischiare di fondere nodi distinti.
+    const mergeThreshold = 60;
+    function nodeIndex(pt) {
+        for (let i = 0; i < nodes.length; i++) {
+            if (Math.hypot(nodes[i].x - pt.x, nodes[i].y - pt.y) < mergeThreshold) return i;
+        }
+        nodes.push({ x: pt.x, y: pt.y });
+        return nodes.length - 1;
+    }
+    const edges = [];
+    segments.forEach(seg => {
+        const a = nodeIndex(seg.p1);
+        const b = nodeIndex(seg.p2);
+        if (a === b) return;
+        edges.push({ a, b, len: Math.hypot(nodes[a].x - nodes[b].x, nodes[a].y - nodes[b].y) });
+    });
+    if (!edges.length) return null;
+
+    const n = nodes.length;
+    const dist = Array.from({ length: n }, () => new Array(n).fill(Infinity));
+    for (let i = 0; i < n; i++) dist[i][i] = 0;
+    edges.forEach(e => {
+        dist[e.a][e.b] = Math.min(dist[e.a][e.b], e.len);
+        dist[e.b][e.a] = Math.min(dist[e.b][e.a], e.len);
+    });
+    for (let k = 0; k < n; k++)
+        for (let i = 0; i < n; i++)
+            for (let j = 0; j < n; j++)
+                if (dist[i][k] + dist[k][j] < dist[i][j]) dist[i][j] = dist[i][k] + dist[k][j];
+
+    return { nodes, edges, allPairs: dist };
+}
+
+/* Proietta un punto sul segmento-corridoio più vicino (parametro t
+   bloccato a [0,1], quindi sempre un punto reale sul tratto praticabile). */
+function dashProjectOntoSpine(spine, pt) {
+    let best = null;
+    spine.edges.forEach((e, idx) => {
+        const a = spine.nodes[e.a], b = spine.nodes[e.b];
+        const abx = b.x - a.x, aby = b.y - a.y;
+        const lenSq = abx * abx + aby * aby;
+        let t = lenSq > 0 ? ((pt.x - a.x) * abx + (pt.y - a.y) * aby) / lenSq : 0;
+        t = Math.max(0, Math.min(1, t));
+        const px = a.x + t * abx, py = a.y + t * aby;
+        const d = Math.hypot(pt.x - px, pt.y - py);
+        if (!best || d < best.d) best = { edgeIdx: idx, t, d };
+    });
+    return best;
+}
+
+/* Distanza "a piedi" fra due punti dello stesso piano, camminando
+   solo lungo il corridoio: proietta entrambi i punti sul tratto più
+   vicino, poi somma la distanza fino ai nodi del grafo più la distanza
+   minima fra quei nodi (o la differenza diretta se sono sullo stesso tratto). */
+function dashSpineDistance(spine, ptA, ptB) {
+    const pa = dashProjectOntoSpine(spine, ptA);
+    const pb = dashProjectOntoSpine(spine, ptB);
+    const ea = spine.edges[pa.edgeIdx], eb = spine.edges[pb.edgeIdx];
+    if (pa.edgeIdx === pb.edgeIdx) {
+        return Math.abs(pa.t - pb.t) * ea.len;
+    }
+    const distA_a = pa.t * ea.len;
+    const distA_b = (1 - pa.t) * ea.len;
+    const distB_a = pb.t * eb.len;
+    const distB_b = (1 - pb.t) * eb.len;
+    return Math.min(
+        distA_a + spine.allPairs[ea.a][eb.a] + distB_a,
+        distA_a + spine.allPairs[ea.a][eb.b] + distB_b,
+        distA_b + spine.allPairs[ea.b][eb.a] + distB_a,
+        distA_b + spine.allPairs[ea.b][eb.b] + distB_b,
+    );
 }
 
 /* FLOOR_PLAN_OVERRIDES is defined in /public/js/floor-plan-overrides.js */
@@ -191,8 +312,8 @@ const SECTIONS_BY_ROLE = {
     autore: [
         { id: 'autore-musei',           icon: 'fa-building-columns', label: 'Musei'           },
         { divider: 'Strumenti di Aggiunta' },
-        { id: 'autore-aggiungi-visita', icon: 'fa-route',             label: 'Aggiungi Visita' },
-        { id: 'autore-aggiungi-item',   icon: 'fa-layer-group',       label: 'Aggiungi Item'   },
+        { id: 'autore-aggiungi-visita', icon: 'fa-route',             label: 'Gestisci Visite' },
+        { id: 'autore-aggiungi-item',   icon: 'fa-layer-group',       label: 'Gestisci Item'   },
         { divider: 'Strumenti Docente' },
         { id: 'curatore-quiz',          icon: 'fa-lightbulb',         label: 'Gestione Quiz'   },
         { divider: 'Marketplace' },
@@ -202,7 +323,9 @@ const SECTIONS_BY_ROLE = {
         { divider: 'Esplora' },
         { id: 'visitatore-musei',  icon: 'fa-building-columns', label: 'Musei'       },
         { id: 'visitatore-opere',  icon: 'fa-image',            label: 'Opere'       },
-        { id: 'visitatore-visite', icon: 'fa-route',            label: 'Visite'      },
+        { divider: 'I miei contenuti' },
+        { id: 'autore-aggiungi-visita', icon: 'fa-route',       label: 'Gestisci Visite' },
+        { id: 'autore-aggiungi-item',   icon: 'fa-layer-group', label: 'Gestisci Item'   },
         { divider: 'Marketplace' },
         { id: 'marketplace',       icon: 'fa-store',            label: 'Marketplace' },
     ],
@@ -267,7 +390,6 @@ function switchSection(id) {
 
     if (id === 'visitatore-musei')  initVisitatoreMusei();
     if (id === 'visitatore-opere')  initVisitatoreOpere();
-    if (id === 'visitatore-visite') initVisitatoreVisite();
 
     if (id === 'admin-utenti')    initAdminUtenti();
     if (id === 'admin-musei')     initAdminMusei();
@@ -1311,38 +1433,120 @@ window.showAutoreOperaItemsInMusei = async function (idx, codiceIsil) {
 };
 
 /* ============================================================
-   AUTORE — AGGIUNGI VISITA
+   AUTORE — LE MIE VISITE (lista, creazione, modifica, eliminazione)
    ============================================================ */
+
+let allAutoreVisite = [];
 
 async function initAutoreAggiungiVisita() {
     const section = document.getElementById('section-autore-aggiungi-visita');
     section.innerHTML = `
-        <div class="mb-5">
-            <h1 class="page-title">Aggiungi Visita</h1>
-            <p class="text-muted mb-0">Crea una nuova visita guidata per un museo.</p>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title mb-0">Gestisci Visite</h1>
+                <p class="text-muted mb-0">Crea, modifica ed elimina le tue visite guidate.</p>
+            </div>
+            <button type="button" class="btn-magenta" onclick="_showAutoreVisitaForm(null)">
+                <i class="fa-solid fa-plus me-2"></i>Nuova Visita
+            </button>
+        </div>
+        <div id="autoreVisiteListGrid" class="items-grid">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
+        </div>
+    `;
+
+    try {
+        const res  = await fetch(`/api/visite?autoreId=${encodeURIComponent(SESSION.userId)}`);
+        const data = await res.json();
+        allAutoreVisite = data.ok ? data.data : [];
+        _renderAutoreVisiteList(allAutoreVisite);
+    } catch (e) {
+        document.getElementById('autoreVisiteListGrid').innerHTML =
+            '<p class="empty-msg">Errore nel caricamento delle visite.</p>';
+    }
+}
+
+function _renderAutoreVisiteList(lista) {
+    const grid = document.getElementById('autoreVisiteListGrid');
+    if (!grid) return;
+    if (!lista.length) {
+        grid.innerHTML = '<p class="empty-msg">Non hai ancora creato nessuna visita. Usa "Nuova Visita" per iniziare.</p>';
+        return;
+    }
+    grid.innerHTML = lista.map(v => `
+        <div class="visita-read-card">
+            <h3>${v.nomeVisita}</h3>
+            <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${v.codiceIsil || '—'}</p>
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${(v.itemIds || []).length || v.opereCount || 0} item</span>
+                <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
+                ${v.prezzo > 0
+                    ? `<span class="price-badge">€${v.prezzo}</span>`
+                    : `<span class="free-badge">Gratis</span>`}
+                ${v.pubblica
+                    ? '<span class="badge bg-success">Pubblica</span>'
+                    : '<span class="badge bg-secondary">Privata</span>'}
+            </div>
+            <div style="margin-top:14px;">
+                ${adminActionBtns(
+                    `_showAutoreVisitaForm('${v._id}')`,
+                    `autoreDeleteVisita('${v._id}','${(v.nomeVisita || '').replace(/'/g, "\\'")}')`
+                )}
+            </div>
+        </div>
+    `).join('');
+}
+
+window.autoreDeleteVisita = async function (id, nome) {
+    if (!confirm(`Eliminare la visita "${nome}"?`)) return;
+    try {
+        const res  = await fetch(`/api/visite/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.ok) {
+            allAutoreVisite = allAutoreVisite.filter(v => v._id !== id);
+            _renderAutoreVisiteList(allAutoreVisite);
+        } else {
+            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+        }
+    } catch (e) { alert('Impossibile contattare il server.'); }
+};
+
+window._showAutoreVisitaForm = async function (visitaId) {
+    const visita = visitaId ? allAutoreVisite.find(v => v._id === visitaId) : null;
+    const isEdit = !!visita;
+
+    const section = document.getElementById('section-autore-aggiungi-visita');
+    section.innerHTML = `
+        <button class="museo-detail-back" onclick="initAutoreAggiungiVisita()">
+            <i class="fa-solid fa-arrow-left"></i> Torna alle mie visite
+        </button>
+        <div class="mb-5 mt-3">
+            <h1 class="page-title">${isEdit ? 'Modifica Visita' : 'Nuova Visita'}</h1>
+            <p class="text-muted mb-0">${isEdit ? 'Aggiorna i dettagli della tua visita guidata.' : 'Crea una nuova visita guidata per un museo.'}</p>
         </div>
         <div class="glass-card p-5">
             <form id="visitaFormAutore" class="row g-4">
                 <div class="col-12">
                     <label class="custom-label">Museo *</label>
-                    <select id="vfMuseo" class="custom-input" required>
+                    <select id="vfMuseo" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Seleziona museo —</option>
                     </select>
+                    ${isEdit ? '<p style="font-size:0.78rem;color:#94a3b8;margin:6px 0 0;">Il museo non è modificabile: crea una nuova visita per cambiarlo.</p>' : ''}
                 </div>
                 <div class="col-12">
                     <label class="custom-label">Nome Visita *</label>
                     <input type="text" id="vfNomeVisita" class="custom-input"
-                           placeholder="es. Rinascimento Fiorentino" required>
+                           placeholder="es. Rinascimento Fiorentino" required value="${(visita?.nomeVisita || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Nome Mnemonico</label>
                     <input type="text" id="vfNomeMnemonico" class="custom-input"
-                           placeholder="es. uffizi_rinascimento">
+                           placeholder="es. uffizi_rinascimento" value="${(visita?.nomeMnemonico || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Domanda Quiz</label>
                     <input type="text" id="vfQuizDomanda" class="custom-input"
-                           placeholder="es. In quale anno fu dipinta la Primavera?">
+                           placeholder="es. In quale anno fu dipinta la Primavera?" value="${(visita?.quizDomanda || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-12">
                     <label class="custom-label">Items da includere nella visita</label>
@@ -1365,11 +1569,12 @@ async function initAutoreAggiungiVisita() {
                 </div>
                 <div class="col-12" id="vfOrderSection" style="display:none;">
                     <label class="custom-label" style="margin-bottom:4px;">Ordine degli items</label>
-                    <p style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
+                    <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
                         <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
                     </p>
                     <div id="itemsOrderPanel" style="display:flex;flex-direction:column;gap:8px;"></div>
                 </div>
+                ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
@@ -1379,17 +1584,22 @@ async function initAutoreAggiungiVisita() {
                         </div>
                         <span id="vfToggleLabel" style="font-size:0.92rem;font-weight:600;color:#64748b;">Privata</span>
                     </div>
-                    <input type="hidden" id="vfPubblica" value="false">
                 </div>
                 <div class="col-md-4" id="vfPrezzoRow" style="display:none;">
                     <label class="custom-label">Prezzo (€)</label>
-                    <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="0" placeholder="0.00">
+                    <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="${visita?.prezzo || 0}" placeholder="0.00">
                 </div>
+                ` : `
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-lock me-1"></i>Le visite create come visitatore restano sempre private e non possono essere messe in vendita sul marketplace.
+                </p>
+                `}
+                <input type="hidden" id="vfPubblica" value="false">
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn-outline-custom"
-                            onclick="resetVisitaForm()">Pulisci</button>
-                    <button type="submit" class="btn-magenta">Crea Visita</button>
+                            onclick="${isEdit ? 'initAutoreAggiungiVisita()' : 'resetVisitaForm()'}">${isEdit ? 'Annulla' : 'Pulisci'}</button>
+                    <button type="submit" class="btn-magenta">${isEdit ? 'Salva Modifiche' : 'Crea Visita'}</button>
                 </div>
             </form>
         </div>
@@ -1397,14 +1607,15 @@ async function initAutoreAggiungiVisita() {
 
     await ensureMuseiAutore();
     populateMuseoSelect('vfMuseo', allMuseiAutore);
+    if (isEdit) document.getElementById('vfMuseo').value = visita.codiceIsil || '';
 
-    window.toggleVfVisibilita = function () {
+    window.toggleVfVisibilita = function (forceValue) {
         const track     = document.getElementById('vfToggleTrack');
         const thumb     = document.getElementById('vfToggleThumb');
         const label     = document.getElementById('vfToggleLabel');
         const hidden    = document.getElementById('vfPubblica');
         const prezzoRow = document.getElementById('vfPrezzoRow');
-        const newVal    = hidden.value !== 'true';
+        const newVal    = typeof forceValue === 'boolean' ? forceValue : hidden.value !== 'true';
         hidden.value    = String(newVal);
         if (newVal) {
             track.style.background = 'var(--magenta,#FF007F)';
@@ -1420,12 +1631,15 @@ async function initAutoreAggiungiVisita() {
             if (prezzoRow) prezzoRow.style.display = 'none';
         }
     };
+    if (isEdit && visita.pubblica && SESSION.role !== 'visitatore') window.toggleVfVisibilita(true);
 
     _vfCurrentMuseo    = '';
     _vfItemTab         = 'miei';
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
-    _vfSelectedItemIds = new Set();
+    _vfSelectedItemIds = new Set(isEdit ? (visita.itemIds || []) : []);
+    _vfOperaSalaMap    = {};
+    _vfRoomGeo         = null;
 
     window.setVfItemTab = function (tab, btn) {
         _vfItemTab = tab;
@@ -1470,19 +1684,20 @@ async function initAutoreAggiungiVisita() {
         }).join('');
     }
 
-    document.getElementById('vfMuseo').addEventListener('change', async function () {
-        const codiceIsil = this.value;
-        _vfCurrentMuseo  = codiceIsil;
-        const container  = document.getElementById('itemsCheckboxList');
+    async function _loadVfItemsForMuseo(codiceIsil, preserveSelection) {
+        const container = document.getElementById('itemsCheckboxList');
+        _vfCurrentMuseo = codiceIsil;
         if (!codiceIsil) {
             _vfMyItems = [];
             _vfAcquistatiItems = [];
-            _vfSelectedItemIds = new Set();
+            _vfOperaSalaMap = {};
+            _vfRoomGeo = null;
+            if (!preserveSelection) _vfSelectedItemIds = new Set();
             _renderVfItems();
             if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
             return;
         }
-        _vfSelectedItemIds = new Set();
+        if (!preserveSelection) _vfSelectedItemIds = new Set();
         container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
         try {
             const [resOwn, resPublic] = await Promise.all([
@@ -1494,12 +1709,117 @@ async function initAutoreAggiungiVisita() {
             const purchases = getMktPurchases();
             _vfAcquistatiItems = (dPublic.ok ? dPublic.data : [])
                 .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
+            await _vfLoadRoomGeo(codiceIsil);
             _renderVfItems();
             if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
         } catch (e) {
             container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento degli items.</p>';
         }
+    }
+
+    /* ---- ordinamento automatico per vicinanza spaziale (geoJson piantina) ---- */
+
+    async function _vfLoadRoomGeo(codiceIsil) {
+        _vfOperaSalaMap = {};
+        _vfRoomGeo = null;
+        try {
+            const resOpere = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(codiceIsil)}`);
+            const dOpere   = await resOpere.json();
+            (dOpere.ok ? dOpere.data : []).forEach(op => {
+                if (op.sala) _vfOperaSalaMap[op.operaId] = op.sala;
+            });
+        } catch (e) { /* silent */ }
+
+        const floorDefs = Object.values((typeof FLOOR_PLAN_OVERRIDES !== 'undefined' && FLOOR_PLAN_OVERRIDES[codiceIsil]) || {});
+        if (!floorDefs.length) return;
+
+        const rooms = new Map();
+        const corridorSegmentsByFloor = new Map();
+        let entrance = null;
+        await Promise.all(floorDefs.map(async (def, floorIdx) => {
+            if (!def.geoJsonUrl) return;
+            try {
+                const res = await fetch(def.geoJsonUrl);
+                const geo = await res.json();
+                (geo.features || []).forEach(f => {
+                    const roomId = f.properties?.room_id;
+                    if (!roomId || f.geometry?.type !== 'Polygon') return;
+                    if (roomId === 'ingresso') {
+                        const c = dashRingCentroid(f.geometry.coordinates[0]);
+                        entrance = { floor: floorIdx, x: c.x, y: c.y };
+                    } else if (/corridoio/i.test(roomId)) {
+                        // segmento di corridoio: usato per costruire il percorso
+                        // praticabile, non è una sala selezionabile per gli item.
+                        if (!corridorSegmentsByFloor.has(floorIdx)) corridorSegmentsByFloor.set(floorIdx, []);
+                        corridorSegmentsByFloor.get(floorIdx).push(dashPolygonLongAxis(f.geometry.coordinates[0]));
+                    } else if (!DASH_AMENITY_ICONS[roomId]) {
+                        const c = dashRingCentroid(f.geometry.coordinates[0]);
+                        rooms.set(String(roomId), { floor: floorIdx, x: c.x, y: c.y });
+                    }
+                });
+            } catch (e) { /* silent */ }
+        }));
+
+        if (!(entrance && rooms.size)) return;
+
+        const spines = new Map();
+        corridorSegmentsByFloor.forEach((segments, floorIdx) => {
+            const spine = dashBuildCorridorSpine(segments);
+            if (spine) spines.set(floorIdx, spine);
+        });
+
+        _vfRoomGeo = { entrance, rooms, spines };
+    }
+
+    /* Cammino ordinato per vicinanza: parte dall'ingresso, poi sceglie ogni volta
+       l'item non ancora inserito la cui sala è più vicina (camminando lungo il
+       corridoio, se la piantina lo permette — altrimenti in linea d'aria) all'ultima
+       aggiunta. Ritorna null se manca il geoJson o nessun item è localizzabile. */
+    function _vfComputeSpatialOrder(selectedIds) {
+        if (!_vfRoomGeo) return null;
+        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
+        const located = [];
+        const unlocated = [];
+        selectedIds.forEach(id => {
+            const item = allItems.find(it => it._id === id);
+            const sala = item ? _vfOperaSalaMap[item.operaId] : undefined;
+            const pos  = sala != null ? _vfRoomGeo.rooms.get(String(sala)) : undefined;
+            if (pos) located.push({ id, pos });
+            else unlocated.push(id);
+        });
+        if (!located.length) return null;
+
+        const ordered = [];
+        let current = _vfRoomGeo.entrance;
+        const remaining = located.slice();
+        while (remaining.length) {
+            let bestIdx = 0, bestDist = Infinity;
+            remaining.forEach((cand, i) => {
+                let d;
+                if (cand.pos.floor !== current.floor) {
+                    d = 1e9 + i;
+                } else {
+                    const spine = _vfRoomGeo.spines.get(current.floor);
+                    d = spine
+                        ? dashSpineDistance(spine, current, cand.pos)
+                        : Math.hypot(cand.pos.x - current.x, cand.pos.y - current.y);
+                }
+                if (d < bestDist) { bestDist = d; bestIdx = i; }
+            });
+            const chosen = remaining.splice(bestIdx, 1)[0];
+            ordered.push(chosen.id);
+            current = chosen.pos;
+        }
+        return [...ordered, ...unlocated];
+    }
+
+    document.getElementById('vfMuseo').addEventListener('change', function () {
+        _loadVfItemsForMuseo(this.value, false);
     });
+
+    if (isEdit && visita.codiceIsil) {
+        await _loadVfItemsForMuseo(visita.codiceIsil, true);
+    }
 
     /* ---- drag-and-drop order panel ---- */
     let _vfDragSrc = null;
@@ -1532,12 +1852,26 @@ async function initAutoreAggiungiVisita() {
         }
         section.style.display = '';
 
-        const allItems    = [..._vfMyItems, ..._vfAcquistatiItems];
-        const existingIds = [...panel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId);
-        const newOrder = [
-            ...existingIds.filter(id => _vfSelectedItemIds.has(id)),
-            ...[..._vfSelectedItemIds].filter(id => !existingIds.includes(id)),
-        ];
+        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
+        const spatialOrder = _vfComputeSpatialOrder([..._vfSelectedItemIds]);
+
+        let newOrder;
+        if (spatialOrder) {
+            newOrder = spatialOrder;
+        } else {
+            const existingIds = [...panel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId);
+            newOrder = [
+                ...existingIds.filter(id => _vfSelectedItemIds.has(id)),
+                ...[..._vfSelectedItemIds].filter(id => !existingIds.includes(id)),
+            ];
+        }
+
+        const hint = document.getElementById('vfOrderHint');
+        if (hint) {
+            hint.innerHTML = spatialOrder
+                ? '<i class="fa-solid fa-route me-1"></i>Ordine suggerito in base alla vicinanza all\'ingresso — puoi comunque trascinare le card per modificarlo.'
+                : '<i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.';
+        }
 
         panel.innerHTML = newOrder.map((id, i) => {
             const item = allItems.find(it => it._id === id);
@@ -1620,7 +1954,7 @@ async function initAutoreAggiungiVisita() {
         const selectedItems = (orderPanel && orderPanel.querySelectorAll('.vf-drag-card').length > 0)
             ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
             : [..._vfSelectedItemIds];
-        const isPubblica = document.getElementById('vfPubblica').value === 'true';
+        const isPubblica = SESSION.role !== 'visitatore' && document.getElementById('vfPubblica').value === 'true';
         const body = {
             nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
             nomeMnemonico: document.getElementById('vfNomeMnemonico').value.trim(),
@@ -1636,23 +1970,29 @@ async function initAutoreAggiungiVisita() {
         if (!body.nomeVisita) { alert('Inserisci il nome della visita.'); return; }
 
         try {
-            const res  = await fetch('/api/visite', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            });
+            const res  = isEdit
+                ? await fetch(`/api/visite/${visita._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ ...body, acquirenti: visita.acquirenti || 0 }),
+                })
+                : await fetch('/api/visite', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
             const data = await res.json();
             if (data.ok) {
-                alert(`Visita "${body.nomeVisita}" creata con successo!`);
-                resetVisitaForm();
+                alert(isEdit ? `Visita "${body.nomeVisita}" aggiornata con successo!` : `Visita "${body.nomeVisita}" creata con successo!`);
+                await initAutoreAggiungiVisita();
             } else {
-                alert('Errore: ' + (data.error || 'Creazione fallita.'));
+                alert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
             alert('Impossibile contattare il server.');
         }
     });
-}
+};
 
 window.resetVisitaForm = function () {
     const f = document.getElementById('visitaFormAutore');
@@ -1673,6 +2013,8 @@ window.resetVisitaForm = function () {
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
     _vfSelectedItemIds = new Set();
+    _vfOperaSalaMap    = {};
+    _vfRoomGeo         = null;
     const orderSection = document.getElementById('vfOrderSection');
     const orderPanel   = document.getElementById('itemsOrderPanel');
     if (orderSection) orderSection.style.display = 'none';
@@ -1680,37 +2022,121 @@ window.resetVisitaForm = function () {
 };
 
 /* ============================================================
-   AUTORE — AGGIUNGI ITEM
+   AUTORE — GESTISCI ITEM (lista, creazione, modifica, eliminazione)
    ============================================================ */
+
+let allAutoreItems = [];
 
 async function initAutoreAggiungiItem() {
     const section = document.getElementById('section-autore-aggiungi-item');
     section.innerHTML = `
-        <div class="mb-5">
-            <h1 class="page-title">Aggiungi Item</h1>
-            <p class="text-muted mb-0">Aggiungi contenuti e informazioni per un'opera specifica.</p>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title mb-0">Gestisci Item</h1>
+                <p class="text-muted mb-0">Crea, modifica ed elimina i tuoi item associati alle opere.</p>
+            </div>
+            <button type="button" class="btn-magenta" onclick="_showAutoreItemForm(null)">
+                <i class="fa-solid fa-plus me-2"></i>Nuovo Item
+            </button>
+        </div>
+        <div id="autoreItemsListGrid" class="items-grid">
+            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
+        </div>
+    `;
+
+    try {
+        const res  = await fetch(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}`);
+        const data = await res.json();
+        allAutoreItems = data.ok ? data.data : [];
+        _renderAutoreItemsList(allAutoreItems);
+    } catch (e) {
+        document.getElementById('autoreItemsListGrid').innerHTML =
+            '<p class="empty-msg">Errore nel caricamento degli items.</p>';
+    }
+}
+
+function _renderAutoreItemsList(lista) {
+    const grid = document.getElementById('autoreItemsListGrid');
+    if (!grid) return;
+    if (!lista.length) {
+        grid.innerHTML = '<p class="empty-msg">Non hai ancora creato nessun item. Usa "Nuovo Item" per iniziare.</p>';
+        return;
+    }
+    grid.innerHTML = lista.map(it => {
+        const preview = (it.toni?.semplice?.testo || '').substring(0, 70);
+        return `
+        <div class="item-read-card">
+            ${it.image
+                ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">`
+                : ''}
+            <h3 style="margin:0 0 4px;">${it.operaId}</h3>
+            <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
+            ${preview ? `<p style="font-size:0.85rem;color:#64748b;margin:6px 0 0;">${preview}${preview.length >= 70 ? '…' : ''}</p>` : ''}
+            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                ${it.pubblica
+                    ? '<span class="badge bg-success">Pubblico</span>'
+                    : '<span class="badge bg-secondary">Privato</span>'}
+                ${it.metadata?.prezzo > 0 ? `<span class="price-badge">€${it.metadata.prezzo}</span>` : ''}
+            </div>
+            <div style="margin-top:14px;">
+                ${adminActionBtns(
+                    `_showAutoreItemForm('${it._id}')`,
+                    `autoreDeleteItem('${it._id}','${(it.operaId || '').replace(/'/g, "\\'")}')`
+                )}
+            </div>
+        </div>`;
+    }).join('');
+}
+
+window.autoreDeleteItem = async function (id, operaId) {
+    if (!confirm(`Eliminare l'item di "${operaId}"?`)) return;
+    try {
+        const res  = await fetch(`/api/items/${id}`, { method: 'DELETE' });
+        const data = await res.json();
+        if (data.ok) {
+            allAutoreItems = allAutoreItems.filter(it => it._id !== id);
+            _renderAutoreItemsList(allAutoreItems);
+        } else {
+            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+        }
+    } catch (e) { alert('Impossibile contattare il server.'); }
+};
+
+window._showAutoreItemForm = async function (itemId) {
+    const item   = itemId ? allAutoreItems.find(it => it._id === itemId) : null;
+    const isEdit = !!item;
+
+    const section = document.getElementById('section-autore-aggiungi-item');
+    section.innerHTML = `
+        <button class="museo-detail-back" onclick="initAutoreAggiungiItem()">
+            <i class="fa-solid fa-arrow-left"></i> Torna ai miei item
+        </button>
+        <div class="mb-5 mt-3">
+            <h1 class="page-title">${isEdit ? 'Modifica Item' : 'Nuovo Item'}</h1>
+            <p class="text-muted mb-0">${isEdit ? "Aggiorna i contenuti dell'item." : "Aggiungi contenuti e informazioni per un'opera specifica."}</p>
         </div>
         <div class="glass-card p-5">
             <form id="itemFormAutore" class="row g-4">
                 <div class="col-md-6">
                     <label class="custom-label">Museo *</label>
-                    <select id="ifMuseo" class="custom-input" required>
+                    <select id="ifMuseo" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Seleziona museo —</option>
                     </select>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Opera *</label>
-                    <select id="ifOpera" class="custom-input" required>
+                    <select id="ifOpera" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Prima seleziona un museo —</option>
                     </select>
                 </div>
+                ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:-14px 0 0;">Museo e opera non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
                 <div class="col-12">
                     <label class="custom-label">
                         Tono <strong>Semplice</strong>
                         <span class="toni-dur-label">~3 s · linguaggio elementare</span>
                     </label>
                     <textarea id="ifSemplice" class="custom-input" rows="2"
-                              placeholder="Breve descrizione in parole semplici, adatta a bambini e ragazzi…" required></textarea>
+                              placeholder="Breve descrizione in parole semplici, adatta a bambini e ragazzi…" required>${item?.toni?.semplice?.testo || ''}</textarea>
                 </div>
                 <div class="col-12">
                     <label class="custom-label">
@@ -1718,7 +2144,7 @@ async function initAutoreAggiungiItem() {
                         <span class="toni-dur-label">~15 s · pubblico generale</span>
                     </label>
                     <textarea id="ifMedio" class="custom-input" rows="3"
-                              placeholder="Descrizione accessibile con qualche dettaglio storico o tecnico…" required></textarea>
+                              placeholder="Descrizione accessibile con qualche dettaglio storico o tecnico…" required>${item?.toni?.medio?.testo || ''}</textarea>
                 </div>
                 <div class="col-12">
                     <label class="custom-label">
@@ -1726,42 +2152,43 @@ async function initAutoreAggiungiItem() {
                         <span class="toni-dur-label">~40 s · terminologia tecnica</span>
                     </label>
                     <textarea id="ifAvanzato" class="custom-input" rows="5"
-                              placeholder="Analisi approfondita con terminologia specialistica…" required></textarea>
+                              placeholder="Analisi approfondita con terminologia specialistica…" required>${item?.toni?.avanzato?.testo || ''}</textarea>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">ID Oggetto</label>
                     <input type="text" id="ifObjectId" class="custom-input"
-                           placeholder="Generato automaticamente se vuoto">
+                           placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Materiale</label>
                     <input type="text" id="ifMateriale" class="custom-input"
-                           placeholder="es. Marmo, Tempera su tavola">
+                           placeholder="es. Marmo, Tempera su tavola" value="${(item?.metadata?.materiale || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Tecnica</label>
                     <input type="text" id="ifTecnica" class="custom-input"
-                           placeholder="es. Scultura, Affresco">
+                           placeholder="es. Scultura, Affresco" value="${(item?.metadata?.tecnica || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Dimensioni</label>
                     <input type="text" id="ifDimensioni" class="custom-input"
-                           placeholder="es. 172 × 278 cm">
+                           placeholder="es. 172 × 278 cm" value="${(item?.metadata?.dimensioni || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Provenienza</label>
                     <input type="text" id="ifProvenienza" class="custom-input"
-                           placeholder="es. Firenze, Uffizi">
+                           placeholder="es. Firenze, Uffizi" value="${(item?.metadata?.provenienza || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">Periodo</label>
                     <input type="text" id="ifPeriodo" class="custom-input"
-                           placeholder="es. 1477–1478">
+                           placeholder="es. 1477–1478" value="${(item?.metadata?.periodo || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
-                    <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…">
+                    <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…" value="${(item?.image || '').replace(/"/g, '&quot;')}">
                 </div>
+                ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
@@ -1771,17 +2198,22 @@ async function initAutoreAggiungiItem() {
                         </div>
                         <span id="ifToggleLabel" style="font-size:0.92rem;font-weight:600;color:#64748b;">Privata</span>
                     </div>
-                    <input type="hidden" id="ifPubblica" value="false">
                 </div>
                 <div class="col-md-4" id="ifPrezzoRow" style="display:none;">
                     <label class="custom-label">Prezzo (€)</label>
-                    <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="0" placeholder="0.00">
+                    <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="${item?.metadata?.prezzo || 0}" placeholder="0.00">
                 </div>
+                ` : `
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-lock me-1"></i>Gli item creati come visitatore restano sempre privati e non possono essere messi in vendita sul marketplace.
+                </p>
+                `}
+                <input type="hidden" id="ifPubblica" value="false">
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn-outline-custom"
-                            onclick="resetItemForm()">Pulisci</button>
-                    <button type="submit" class="btn-magenta">Salva Item</button>
+                            onclick="${isEdit ? 'initAutoreAggiungiItem()' : 'resetItemForm()'}">${isEdit ? 'Annulla' : 'Pulisci'}</button>
+                    <button type="submit" class="btn-magenta">${isEdit ? 'Salva Modifiche' : 'Salva Item'}</button>
                 </div>
             </form>
         </div>
@@ -1790,13 +2222,13 @@ async function initAutoreAggiungiItem() {
     await ensureMuseiAutore();
     populateMuseoSelect('ifMuseo', allMuseiAutore);
 
-    window.toggleIfVisibilita = function () {
+    window.toggleIfVisibilita = function (forceValue) {
         const track     = document.getElementById('ifToggleTrack');
         const thumb     = document.getElementById('ifToggleThumb');
         const label     = document.getElementById('ifToggleLabel');
         const hidden    = document.getElementById('ifPubblica');
         const prezzoRow = document.getElementById('ifPrezzoRow');
-        const newVal    = hidden.value !== 'true';
+        const newVal    = typeof forceValue === 'boolean' ? forceValue : hidden.value !== 'true';
         hidden.value    = String(newVal);
         if (newVal) {
             track.style.background = 'var(--magenta,#FF007F)';
@@ -1812,9 +2244,9 @@ async function initAutoreAggiungiItem() {
             if (prezzoRow) prezzoRow.style.display = 'none';
         }
     };
+    if (isEdit && item.pubblica && SESSION.role !== 'visitatore') window.toggleIfVisibilita(true);
 
-    document.getElementById('ifMuseo').addEventListener('change', async function () {
-        const codiceIsil  = this.value;
+    async function _loadOpereForMuseo(codiceIsil) {
         const operaSelect = document.getElementById('ifOpera');
         if (!codiceIsil) {
             operaSelect.innerHTML = '<option value="">— Prima seleziona un museo —</option>';
@@ -1832,10 +2264,20 @@ async function initAutoreAggiungiItem() {
                 data.data.map(op =>
                     `<option value="${op.operaId}">${op.operaId}${op.autore ? ' — ' + op.autore : ''}</option>`
                 ).join('');
+            if (isEdit) operaSelect.value = item.operaId || '';
         } catch (e) {
             operaSelect.innerHTML = '<option value="">Errore nel caricamento</option>';
         }
+    }
+
+    document.getElementById('ifMuseo').addEventListener('change', function () {
+        _loadOpereForMuseo(this.value);
     });
+
+    if (isEdit) {
+        document.getElementById('ifMuseo').value = item.museumId || '';
+        await _loadOpereForMuseo(item.museumId);
+    }
 
     document.getElementById('itemFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -1851,7 +2293,7 @@ async function initAutoreAggiungiItem() {
             alert('Inserisci almeno un tono di contenuto.'); return;
         }
 
-        const isPubblicaItem = document.getElementById('ifPubblica').value === 'true';
+        const isPubblicaItem = SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
         const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
         const metadata = {};
         if (prezzo > 0) metadata.prezzo = prezzo;
@@ -1878,23 +2320,29 @@ async function initAutoreAggiungiItem() {
         };
 
         try {
-            const res  = await fetch('/api/items', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body),
-            });
+            const res  = isEdit
+                ? await fetch(`/api/items/${item._id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                })
+                : await fetch('/api/items', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body),
+                });
             const data = await res.json();
             if (data.ok) {
-                alert('Item creato con successo!');
-                resetItemForm();
+                alert(isEdit ? 'Item aggiornato con successo!' : 'Item creato con successo!');
+                await initAutoreAggiungiItem();
             } else {
-                alert('Errore: ' + (data.error || 'Creazione fallita.'));
+                alert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
             alert('Impossibile contattare il server.');
         }
     });
-}
+};
 
 window.resetItemForm = function () {
     const f = document.getElementById('itemFormAutore');
@@ -1940,22 +2388,20 @@ function populateMuseoSelect(id, musei) {
 async function initVisitatoreMusei() {
     const section = document.getElementById('section-visitatore-musei');
     section.innerHTML = `
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <h1 class="page-title">Musei</h1>
-                <p class="text-muted mb-0">Esplora i musei disponibili sulla piattaforma.</p>
-            </div>
-            <div class="d-flex gap-2 align-items-center flex-wrap">
-                <select id="filterVisMuseiCitta" class="custom-input"
-                        style="min-width:150px;padding:6px 14px;height:42px;"
-                        onchange="filterVisMusei()">
-                    <option value="">Tutte le città</option>
-                </select>
-                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
-                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                    <input type="text" id="searchVisMusei" class="search-input py-2"
-                           placeholder="Cerca…" oninput="filterVisMusei()">
-                </div>
+        <div class="section-header-inline mb-3">
+            <h1 class="page-title">Musei</h1>
+            <p class="text-muted mb-0">Esplora i musei disponibili sulla piattaforma.</p>
+        </div>
+        <div class="glass-card p-3 mb-4 d-flex gap-2 align-items-center flex-wrap">
+            <select id="filterVisMuseiCitta" class="custom-input"
+                    style="min-width:150px;padding:6px 14px;height:42px;"
+                    onchange="filterVisMusei()">
+                <option value="">Tutte le città</option>
+            </select>
+            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
+                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                <input type="text" id="searchVisMusei" class="search-input py-2"
+                       placeholder="Cerca…" oninput="filterVisMusei()">
             </div>
         </div>
         <div id="visMuseiGrid" class="items-grid">
@@ -2086,19 +2532,17 @@ window.showVisMuseoDetail = function (codiceIsil) {
 async function initVisitatoreOpere() {
     const section = document.getElementById('section-visitatore-opere');
     section.innerHTML = `
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="page-title">Opere</h1>
-                <p class="text-muted mb-0">Sfoglia le opere presenti nei musei.</p>
-            </div>
-            <div class="d-flex gap-3 align-items-center flex-wrap">
-                <select id="filterOpereMuseo" class="custom-input" style="min-width:200px;padding:6px 12px;">
-                    <option value="">Tutti i musei</option>
-                </select>
-                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
-                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                    <input type="text" id="searchVisOpere" class="search-input py-2" placeholder="Cerca opera…">
-                </div>
+        <div class="section-header-inline mb-3">
+            <h1 class="page-title">Opere</h1>
+            <p class="text-muted mb-0">Sfoglia le opere presenti nei musei.</p>
+        </div>
+        <div class="glass-card p-3 mb-4 d-flex gap-3 align-items-center flex-wrap">
+            <select id="filterOpereMuseo" class="custom-input" style="min-width:200px;padding:6px 12px;">
+                <option value="">Tutti i musei</option>
+            </select>
+            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:260px;">
+                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                <input type="text" id="searchVisOpere" class="search-input py-2" placeholder="Cerca opera…">
             </div>
         </div>
         <div id="visOpereGrid" class="items-grid">
@@ -2271,238 +2715,6 @@ window.showVisOperaDetail = async function (idx) {
     }
 };
 
-/* ============================================================
-   VISITATORE — VISITE
-   ============================================================ */
-
-async function initVisitatoreVisite() {
-    const section = document.getElementById('section-visitatore-visite');
-    section.innerHTML = `
-        <style>
-            .vis-range-input{position:absolute;width:100%;height:4px;top:11px;left:0;appearance:none;-webkit-appearance:none;background:transparent;pointer-events:none;outline:none;}
-            .vis-range-input::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;}
-            .vis-range-input::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:#FF007F;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.25);pointer-events:all;cursor:pointer;}
-        </style>
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
-            <div>
-                <h1 class="page-title">Visite</h1>
-                <p class="text-muted mb-0">Scopri le visite guidate disponibili nei musei.</p>
-            </div>
-            <div class="d-flex gap-2 align-items-center flex-wrap">
-                <select id="filterVisiteMuseo" class="custom-input" style="min-width:160px;padding:6px 12px;height:42px;">
-                    <option value="">Tutti i musei</option>
-                </select>
-                <select id="filterVisiteStatoVis" class="custom-input" style="min-width:140px;padding:6px 12px;height:42px;" onchange="filterVisVisite()">
-                    <option value="">Tutti gli stati</option>
-                    <option value="pubblica">In vendita</option>
-                    <option value="privata">Privata</option>
-                </select>
-                <div>
-                    <div style="font-size:0.82rem;font-weight:600;color:#64748b;margin-bottom:6px;white-space:nowrap;">
-                        Prezzo &nbsp;—&nbsp;
-                        <span id="visRangeLabelMin" style="color:#FF007F;">€0</span>
-                        &nbsp;:&nbsp;
-                        <span id="visRangeLabelMax" style="color:#FF007F;">∞</span>
-                    </div>
-                    <div style="position:relative;height:30px;min-width:160px;">
-                        <div style="position:absolute;left:0;right:0;top:13px;height:4px;background:#e2e8f0;border-radius:2px;">
-                            <div id="visRangeFill" style="position:absolute;height:100%;background:#FF007F;border-radius:2px;left:0%;right:0%;"></div>
-                        </div>
-                        <input type="range" id="visRangeMin" class="vis-range-input" min="0" max="200" value="0"   step="1" oninput="onVisVisiteRangeChange()">
-                        <input type="range" id="visRangeMax" class="vis-range-input" min="0" max="200" value="200" step="1" oninput="onVisVisiteRangeChange()">
-                    </div>
-                </div>
-                <div class="search-box-container shadow-sm py-1 px-3" style="max-width:220px;">
-                    <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                    <input type="text" id="searchVisVisite" class="search-input py-2" placeholder="Cerca visita…" oninput="filterVisVisite()">
-                </div>
-            </div>
-        </div>
-        <div id="visVisiteGrid" class="items-grid">
-            <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
-        </div>
-    `;
-
-    await ensureVisMusei();
-
-    const filterSel = document.getElementById('filterVisiteMuseo');
-    filterSel.innerHTML = '<option value="">Tutti i musei</option>' +
-        allVisitatoreCachedMusei.map(m => `<option value="${m.codiceIsil}">${m.nome}</option>`).join('');
-
-    await loadVisVisite('');
-
-    filterSel.addEventListener('change', () => loadVisVisite(filterSel.value));
-}
-
-window.onVisVisiteRangeChange = function () {
-    const minEl = document.getElementById('visRangeMin');
-    const maxEl = document.getElementById('visRangeMax');
-    if (!minEl || !maxEl) return;
-    let minVal = parseFloat(minEl.value);
-    let maxVal = parseFloat(maxEl.value);
-    const sliderMax = parseFloat(minEl.max);
-    const sliderMin = parseFloat(minEl.min);
-    if (minVal > maxVal) { minEl.value = maxVal; minVal = maxVal; }
-    const pct  = v => ((v - sliderMin) / (sliderMax - sliderMin)) * 100;
-    const fill = document.getElementById('visRangeFill');
-    if (fill) { fill.style.left = pct(minVal) + '%'; fill.style.right = (100 - pct(maxVal)) + '%'; }
-    const lblMin = document.getElementById('visRangeLabelMin');
-    const lblMax = document.getElementById('visRangeLabelMax');
-    if (lblMin) lblMin.textContent = '€' + minVal;
-    if (lblMax) lblMax.textContent = maxVal >= sliderMax ? '∞' : '€' + maxVal;
-    filterVisVisite();
-};
-
-async function loadVisVisite(codiceIsil) {
-    const grid = document.getElementById('visVisiteGrid');
-    if (!grid) return;
-    grid.className = '';
-    grid.innerHTML = '<p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>';
-
-    const url = codiceIsil
-        ? `/api/visite?codiceIsil=${encodeURIComponent(codiceIsil)}`
-        : '/api/visite';
-
-    try {
-        const res  = await fetch(url);
-        const data = await res.json();
-        currentVisitatoreVisite = data.ok ? data.data : [];
-
-        // Calibra slider sul prezzo massimo reale
-        const prices = currentVisitatoreVisite.map(v => v.prezzo || 0).filter(p => p > 0);
-        const maxP   = prices.length ? Math.ceil(Math.max(...prices)) : 200;
-        const rMin = document.getElementById('visRangeMin');
-        const rMax = document.getElementById('visRangeMax');
-        if (rMin) { rMin.max = maxP; rMin.value = 0; }
-        if (rMax) { rMax.max = maxP; rMax.value = maxP; }
-        onVisVisiteRangeChange();
-
-        filterVisVisite();
-    } catch (e) {
-        grid.innerHTML = '<p class="empty-msg">Errore nel caricamento delle visite.</p>';
-    }
-}
-
-function filterVisVisite() {
-    const q      = (document.getElementById('searchVisVisite')?.value        || '').toLowerCase();
-    const stato  =  document.getElementById('filterVisiteStatoVis')?.value   || '';
-    const minEl  =  document.getElementById('visRangeMin');
-    const maxEl  =  document.getElementById('visRangeMax');
-    const prezzoMin = minEl ? parseFloat(minEl.value) : 0;
-    const prezzoMax = maxEl ? parseFloat(maxEl.value) : NaN;
-    const maxIsLimit = maxEl && parseFloat(maxEl.value) < parseFloat(maxEl.max);
-
-    let filtered = currentVisitatoreVisite;
-    if (q)     filtered = filtered.filter(v =>
-        (v.nomeVisita || '').toLowerCase().includes(q) ||
-        (v.codiceIsil || '').toLowerCase().includes(q));
-    if (stato === 'pubblica') filtered = filtered.filter(v =>  v.pubblica);
-    if (stato === 'privata')  filtered = filtered.filter(v => !v.pubblica);
-    if (prezzoMin > 0)    filtered = filtered.filter(v => (v.prezzo || 0) >= prezzoMin);
-    if (maxIsLimit)       filtered = filtered.filter(v => (v.prezzo || 0) <= prezzoMax);
-    renderVisVisite(filtered);
-}
-
-function renderVisVisite(lista) {
-    const grid = document.getElementById('visVisiteGrid');
-    if (!grid) return;
-    if (!lista.length) {
-        grid.className = '';
-        grid.innerHTML = '<p class="empty-msg">Nessuna visita trovata.</p>';
-        return;
-    }
-    grid.className = 'items-grid';
-    grid.innerHTML = lista.map(v => {
-        const idx = currentVisitatoreVisite.indexOf(v);
-        return `
-        <div class="visita-read-card scroll-card-clickable" onclick="showVisVisitaDetail(${idx})"
-             style="cursor:pointer;">
-            <h3>${v.nomeVisita}</h3>
-            ${v.codiceIsil ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${v.codiceIsil}</p>` : ''}
-            ${v.logistica  ? `<p style="margin-top:8px;font-size:0.88rem;color:#475569;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;">${v.logistica}</p>` : ''}
-            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                <span class="tag-bubble">
-                    <i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere
-                </span>
-                <span class="tag-bubble">
-                    <i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti
-                </span>
-                ${v.prezzo > 0
-                    ? `<span class="price-badge">€${v.prezzo}</span>`
-                    : `<span class="free-badge">Gratis</span>`
-                }
-                ${v.pubblica
-                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                           <i class="fa-solid fa-check"></i> In vendita
-                       </span>`
-                    : `<span class="tag-bubble" style="background:rgba(100,116,139,0.1);color:#64748b;">
-                           <i class="fa-solid fa-lock"></i> Privata
-                       </span>`
-                }
-            </div>
-        </div>`;
-    }).join('');
-}
-
-window.showVisVisitaDetail = function (idx) {
-    const visita = currentVisitatoreVisite[idx];
-    if (!visita) return;
-
-    const museo   = allVisitatoreCachedMusei.find(m => m.codiceIsil === visita.codiceIsil);
-    const section = document.getElementById('section-visitatore-visite');
-    section.innerHTML = `
-        <button class="museo-detail-back" onclick="initVisitatoreVisite()">
-            <i class="fa-solid fa-arrow-left"></i> Torna alle visite
-        </button>
-        <h2 class="museo-detail-title">${visita.nomeVisita}</h2>
-        <p class="museo-detail-sub">${museo ? museo.nome + ' · ' : ''}${visita.codiceIsil || ''}</p>
-        <div class="glass-card p-4" style="margin-top:24px;">
-            <div class="row g-3">
-                ${visita.nomeMnemonico ? `
-                <div class="col-md-6">
-                    <p class="custom-label">Nome Mnemonico</p>
-                    <p>${visita.nomeMnemonico}</p>
-                </div>` : ''}
-                <div class="col-md-3">
-                    <p class="custom-label">Prezzo</p>
-                    ${visita.prezzo > 0
-                        ? `<span class="price-badge">€${visita.prezzo}</span>`
-                        : `<span class="free-badge">Gratis</span>`
-                    }
-                </div>
-                <div class="col-md-3">
-                    <p class="custom-label">Stato</p>
-                    ${visita.pubblica
-                        ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                               <i class="fa-solid fa-check"></i> In vendita
-                           </span>`
-                        : `<span class="tag-bubble" style="background:rgba(100,116,139,0.1);color:#64748b;">
-                               <i class="fa-solid fa-lock"></i> Privata
-                           </span>`
-                    }
-                </div>
-                <div class="col-md-3">
-                    <p class="custom-label">Opere incluse</p>
-                    <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${visita.opereCount || 0}</span>
-                </div>
-                <div class="col-md-3">
-                    <p class="custom-label">Acquirenti</p>
-                    <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${visita.acquirenti || 0}</span>
-                </div>
-                ${visita.logistica ? `
-                <div class="col-12">
-                    <p class="custom-label">Logistica</p>
-                    <p>${visita.logistica}</p>
-                </div>` : ''}
-                ${visita.quizDomanda ? `
-                <div class="col-12">
-                    <p class="custom-label">Domanda Quiz</p>
-                    <p>${visita.quizDomanda}</p>
-                </div>` : ''}
-            </div>
-        </div>
-    `;
-};
 
 async function ensureVisMusei() {
     if (allVisitatoreCachedMusei.length) return;
@@ -4078,8 +4290,8 @@ async function initMarketplace() {
         const [dItems, dVisite, dMusei] = await Promise.all([
             rItems.json(), rVisite.json(), rMusei.json(),
         ]);
-        allMktItems  = dItems.ok  ? dItems.data.filter(it => it.authorId !== SESSION.userId) : [];
-        allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica && v.autoreId !== SESSION.userId) : [];
+        allMktItems  = dItems.ok  ? dItems.data : [];
+        allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica) : [];
         allMktMusei  = dMusei.ok  ? dMusei.data  : [];
     } catch (e) {
         document.getElementById('mktContent').innerHTML =
@@ -4185,24 +4397,29 @@ window.applyMktFilter = function () {
 
     const purchases = getMktPurchases();
 
-    if (mktTab === 'acquisti') {
-        renderMktAcquisti(purchases);
-        return;
-    }
-
     const applyPriceFilter = (price) =>
         (prezzoMin <= 0 || price >= prezzoMin) && (!maxIsLimit || price <= prezzoMax);
 
+    if (mktTab === 'acquisti') {
+        renderMktAcquisti(purchases, museoVal, applyPriceFilter, q);
+        return;
+    }
+
     if (mktTab === 'visite') {
-        let lista = allMktVisite;
+        let lista = allMktVisite.filter(v => !purchases.visite.includes(v._id));
         if (museoVal) lista = lista.filter(v => v.codiceIsil === museoVal);
         lista = lista.filter(v => applyPriceFilter(v.prezzo || 0));
         if (q) lista = lista.filter(v =>
             (v.nomeVisita || '').toLowerCase().includes(q) ||
             (v.logistica  || '').toLowerCase().includes(q));
+        lista = lista.slice().sort((a, b) => {
+            const aOwn = SESSION.userId && a.autoreId === SESSION.userId;
+            const bOwn = SESSION.userId && b.autoreId === SESSION.userId;
+            return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
+        });
         renderMktVisite(lista, purchases.visite);
     } else {
-        let lista = allMktItems;
+        let lista = allMktItems.filter(it => !purchases.items.includes(it._id));
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
         lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
@@ -4215,6 +4432,11 @@ window.applyMktFilter = function () {
                 it.toni?.avanzato?.testo || '',
             ].join(' ').toLowerCase();
             return allText.includes(q);
+        });
+        lista = lista.slice().sort((a, b) => {
+            const aOwn = SESSION.userId && a.authorId === SESSION.userId;
+            const bOwn = SESSION.userId && b.authorId === SESSION.userId;
+            return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
         renderMktItems(lista, purchases.items);
     }
@@ -4231,6 +4453,7 @@ function renderMktItems(lista, purchasedIds) {
     content.innerHTML = lista.map(it => {
         const prezzo = it.metadata?.prezzo || 0;
         const bought = purchasedIds.includes(it._id);
+        const isMio  = SESSION.userId && it.authorId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
         return `
         <div class="item-read-card">
@@ -4249,15 +4472,19 @@ function renderMktItems(lista, purchasedIds) {
                     ? `<span class="price-badge">€${prezzo}</span>`
                     : `<span class="free-badge">Gratis</span>`
                 }
-                ${bought
-                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                           <i class="fa-solid fa-check"></i> Acquistato
+                ${isMio
+                    ? `<span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
+                           <i class="fa-solid fa-user"></i> La tua inserzione
                        </span>`
-                    : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                               onclick="acquistaItem('${it._id}')">
-                           <i class="fa-solid fa-cart-plus me-1"></i>
-                           ${prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
-                       </button>`
+                    : bought
+                        ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                               <i class="fa-solid fa-check"></i> Acquistato
+                           </span>`
+                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="acquistaItem('${it._id}')">
+                               <i class="fa-solid fa-cart-plus me-1"></i>
+                               ${prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
+                           </button>`
                 }
             </div>
         </div>`;
@@ -4274,6 +4501,7 @@ function renderMktVisite(lista, purchasedIds) {
     content.className = 'items-grid';
     content.innerHTML = lista.map(v => {
         const bought = purchasedIds.includes(v._id);
+        const isMia  = SESSION.userId && v.autoreId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
         return `
         <div class="visita-read-card">
@@ -4290,29 +4518,61 @@ function renderMktVisite(lista, purchasedIds) {
                 }
             </div>
             <div style="margin-top:12px;">
-                ${bought
-                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                           <i class="fa-solid fa-check"></i> Acquistata
+                ${isMia
+                    ? `<span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
+                           <i class="fa-solid fa-user"></i> La tua inserzione
                        </span>`
-                    : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                               onclick="acquistaVisita('${v._id}')">
-                           <i class="fa-solid fa-cart-plus me-1"></i>
-                           ${v.prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
-                       </button>`
+                    : bought
+                        ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                               <i class="fa-solid fa-check"></i> Acquistata
+                           </span>`
+                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="acquistaVisita('${v._id}')">
+                               <i class="fa-solid fa-cart-plus me-1"></i>
+                               ${v.prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
+                           </button>`
                 }
             </div>
         </div>`;
     }).join('');
 }
 
-function renderMktAcquisti(purchases) {
+function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
     const content = document.getElementById('mktContent');
-    const purchasedItems  = allMktItems.filter(it => purchases.items.includes(it._id));
-    const purchasedVisite = allMktVisite.filter(v  => purchases.visite.includes(v._id));
+    let purchasedItems  = allMktItems.filter(it => purchases.items.includes(it._id));
+    let purchasedVisite = allMktVisite.filter(v  => purchases.visite.includes(v._id));
+    const hasAnyPurchase = purchasedItems.length > 0 || purchasedVisite.length > 0;
+
+    if (museoVal) {
+        purchasedItems  = purchasedItems.filter(it => it.museumId  === museoVal);
+        purchasedVisite = purchasedVisite.filter(v  => v.codiceIsil === museoVal);
+    }
+    if (applyPriceFilter) {
+        purchasedItems  = purchasedItems.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
+        purchasedVisite = purchasedVisite.filter(v  => applyPriceFilter(v.prezzo || 0));
+    }
+    if (q) {
+        purchasedItems = purchasedItems.filter(it => {
+            const allText = [
+                it.operaId || '',
+                it.toni?.semplice?.testo || '',
+                it.toni?.medio?.testo    || '',
+                it.toni?.avanzato?.testo || '',
+            ].join(' ').toLowerCase();
+            return allText.includes(q);
+        });
+        purchasedVisite = purchasedVisite.filter(v =>
+            (v.nomeVisita || '').toLowerCase().includes(q) ||
+            (v.logistica  || '').toLowerCase().includes(q));
+    }
 
     if (!purchasedItems.length && !purchasedVisite.length) {
         content.className = '';
-        content.innerHTML = `
+        content.innerHTML = hasAnyPurchase ? `
+            <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+                <i class="fa-solid fa-bag-shopping" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                <p>Nessun acquisto corrisponde ai filtri selezionati.</p>
+            </div>` : `
             <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
                 <i class="fa-solid fa-bag-shopping" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
                 <p>Non hai ancora acquistato nulla.</p>
@@ -4569,22 +4829,21 @@ async function initCuratoreQuiz() {
             <div id="quizEditor" style="display:none;"></div>
         </div>`;
 
-    await ensureMuseiAutore();
-
-    const allVisite = [];
-    await Promise.all(allMuseiAutore.map(async m => {
-        try {
-            const res  = await fetch(`/api/visite?codiceIsil=${encodeURIComponent(m.codiceIsil)}`);
-            const data = await res.json();
-            if (data.ok) allVisite.push(...data.data);
-        } catch {}
-    }));
+    let allVisite = [];
+    try {
+        const purchases = getMktPurchases();
+        const params = new URLSearchParams({ autoreId: SESSION.userId });
+        if (purchases.visite?.length) params.set('ids', purchases.visite.join(','));
+        const res  = await fetch(`/api/visite?${params}`);
+        const data = await res.json();
+        if (data.ok) allVisite = data.data;
+    } catch {}
     quizCurrentVisite = allVisite;
 
     const sel = document.getElementById('quizSelectVisita');
     if (!sel) return;
     if (!allVisite.length) {
-        sel.innerHTML = '<option value="">Nessuna visita disponibile</option>';
+        sel.innerHTML = '<option value="">Nessuna visita disponibile — crea o acquista una visita</option>';
     } else {
         sel.innerHTML = '<option value="">— Seleziona una visita —</option>' +
             allVisite.map(v =>

@@ -1778,6 +1778,14 @@ select.custom-input {
     border-color: rgba(255, 255, 255, 0.07);
 }
 
+[data-theme="dark"] .vf-drag-card {
+    background: #1a2235 !important;
+}
+
+[data-theme="dark"] .vf-drag-card strong {
+    color: #e8edf5;
+}
+
 [data-theme="dark"] .scroll-card {
     background: #1a2235;
     border-color: rgba(255, 255, 255, 0.07);

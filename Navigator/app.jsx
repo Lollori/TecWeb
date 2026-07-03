@@ -15,6 +15,25 @@ function applyFloorPlanOverrides(museo) {
   };
 }
 
+/* ── Persistenza sessione attiva ─────────────────────────
+   Una ricarica della pagina non deve mai far "uscire" dalla
+   visita (né per la docente né per i partecipanti): l'unico
+   modo per uscire deve restare il pulsante dedicato (Termina
+   visita / Esci). Salviamo lo stretto indispensabile per
+   ricollegarsi alla sessione già esistente lato server dopo
+   un reload, e lo puliamo solo nei punti di uscita deliberata.
+───────────────────────────────────────────────────────── */
+const NAV_SESSION_KEY = 'navActiveSession';
+function saveNavSession(data) {
+  try { localStorage.setItem(NAV_SESSION_KEY, JSON.stringify(data)); } catch (_) {}
+}
+function loadNavSession() {
+  try { return JSON.parse(localStorage.getItem(NAV_SESSION_KEY) || 'null'); } catch (_) { return null; }
+}
+function clearNavSession() {
+  try { localStorage.removeItem(NAV_SESSION_KEY); } catch (_) {}
+}
+
 /* ── Shared role config & theme helper ─────────────── */
 
 const ROLE_MAP = {
@@ -217,17 +236,19 @@ const TONI_CONFIG = [
   { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
 ];
 
-function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack, messages = [], nomeAssegnato = '' }) {
-  const [item,        setItem]        = React.useState(null);
-  const [loading,     setLoading]     = React.useState(false);
-  const [navigating,  setNavigating]  = React.useState(false);
-  const [tono,        setTono]        = React.useState('medio');
-  const [chatOpen,    setChatOpen]    = React.useState(false);
-  const [composeOpen, setComposeOpen] = React.useState(false);
-  const [msgText,     setMsgText]     = React.useState('');
-  const [sending,     setSending]     = React.useState(false);
-  const [unread,      setUnread]      = React.useState(0);
-  const [terminating, setTerminating] = React.useState(false);
+function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack, messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [] }) {
+  const [item,          setItem]          = React.useState(null);
+  const [loading,       setLoading]       = React.useState(false);
+  const [navigating,    setNavigating]    = React.useState(false);
+  const [tono,          setTono]          = React.useState('medio');
+  const [chatOpen,      setChatOpen]      = React.useState(false);
+  const [composeOpen,   setComposeOpen]   = React.useState(false);
+  const [msgText,       setMsgText]       = React.useState('');
+  const [sending,       setSending]       = React.useState(false);
+  const [unread,        setUnread]        = React.useState(0);
+  const [terminating,   setTerminating]   = React.useState(false);
+  const [monitorOpen,   setMonitorOpen]   = React.useState(false);
+  const [itemsMenuOpen, setItemsMenuOpen] = React.useState(false);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
 
@@ -254,6 +275,16 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
     }
   }, [chatOpen, messages.length]);
 
+  // Lo studente segnala alla docente ogni cambio di tono/linguaggio, per la
+  // dashboard di monitoraggio ("chi ha chiesto cosa").
+  React.useEffect(() => {
+    if (isDocente || !nomeAssegnato || !codice) return;
+    fetch(`/api/sessioni/${encodeURIComponent(codice)}/tono`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: nomeAssegnato, tono }),
+    }).catch(() => {});
+  }, [tono, isDocente, nomeAssegnato, codice]);
+
   async function navigate(direction) {
     if (navigating) return;
     setNavigating(true);
@@ -263,6 +294,17 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
         body: JSON.stringify({ direction }),
       });
     } finally { setNavigating(false); }
+  }
+
+  async function jumpToItem(idx) {
+    if (navigating || idx === currentIdx) { setItemsMenuOpen(false); return; }
+    setNavigating(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ index: idx }),
+      });
+    } finally { setNavigating(false); setItemsMenuOpen(false); }
   }
 
   async function handleTermina() {
@@ -304,8 +346,26 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
         <div className="visita-item-header-actions">
           {isDocente && (
             <button
+              className={`visita-chat-toggle${itemsMenuOpen ? ' visita-chat-toggle--active' : ''}`}
+              onClick={() => { setItemsMenuOpen(v => !v); setMonitorOpen(false); setChatOpen(false); }}
+              title="Vai a un'opera specifica"
+            >
+              <i className="fa-solid fa-list" />
+            </button>
+          )}
+          {isDocente && (
+            <button
+              className={`visita-chat-toggle${monitorOpen ? ' visita-chat-toggle--active' : ''}`}
+              onClick={() => { setMonitorOpen(v => !v); setItemsMenuOpen(false); setChatOpen(false); }}
+              title="Monitoraggio partecipanti"
+            >
+              <i className="fa-solid fa-chart-line" />
+            </button>
+          )}
+          {isDocente && (
+            <button
               className={`visita-chat-toggle${chatOpen ? ' visita-chat-toggle--active' : ''}`}
-              onClick={() => setChatOpen(v => !v)}
+              onClick={() => { setChatOpen(v => !v); setMonitorOpen(false); setItemsMenuOpen(false); }}
               title="Messaggi partecipanti"
             >
               <i className="fa-solid fa-comments" />
@@ -341,6 +401,8 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
               <img className="visita-item-img" src={item.image} alt={item.operaId} />
             )}
             <h2 className="visita-item-title">{item.operaId}</h2>
+
+            <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
 
             <div className="visita-toni-bar">
               {TONI_CONFIG.map(t => (
@@ -383,6 +445,81 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
           <button className="visita-termina-btn" onClick={handleTermina} disabled={terminating}>
             {terminating ? 'Chiusura…' : '⏹ Termina visita'}
           </button>
+        </div>
+      )}
+
+      {/* Vai a un'opera — backdrop + pannello */}
+      {isDocente && itemsMenuOpen && (
+        <div className="visita-chat-overlay" onClick={() => setItemsMenuOpen(false)} />
+      )}
+      {isDocente && (
+        <div className={`visita-chat-panel${itemsMenuOpen ? ' visita-chat-panel--open' : ''}`}>
+          <div className="visita-chat-panel-header">
+            <span className="visita-chat-panel-title">
+              <i className="fa-solid fa-list" style={{ marginRight: '8px' }} />
+              Vai a un'opera
+            </span>
+            <button className="visita-chat-close" onClick={() => setItemsMenuOpen(false)}>✕</button>
+          </div>
+          <div className="visita-chat-msgs">
+            {visitaItems.length === 0 ? (
+              <p className="visita-chat-empty">Caricamento elenco opere…</p>
+            ) : (
+              visitaItems.map((it, idx) => (
+                <button
+                  key={it._id}
+                  className={`visita-jump-item${idx === currentIdx ? ' visita-jump-item--active' : ''}`}
+                  onClick={() => jumpToItem(idx)}
+                  disabled={navigating}
+                >
+                  <span className="visita-jump-item-num">{idx + 1}</span>
+                  <span className="visita-jump-item-name">{it.operaId}</span>
+                  {idx === currentIdx && <i className="fa-solid fa-volume-high" />}
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Monitoraggio partecipanti — backdrop + pannello */}
+      {isDocente && monitorOpen && (
+        <div className="visita-chat-overlay" onClick={() => setMonitorOpen(false)} />
+      )}
+      {isDocente && (
+        <div className={`visita-chat-panel${monitorOpen ? ' visita-chat-panel--open' : ''}`}>
+          <div className="visita-chat-panel-header">
+            <span className="visita-chat-panel-title">
+              <i className="fa-solid fa-chart-line" style={{ marginRight: '8px' }} />
+              Monitoraggio partecipanti
+            </span>
+            <button className="visita-chat-close" onClick={() => setMonitorOpen(false)}>✕</button>
+          </div>
+          <div className="visita-chat-msgs">
+            {Object.keys(studentTono).length === 0 ? (
+              <p className="visita-chat-empty">
+                Nessuna richiesta ancora.<br />
+                Qui vedrai in tempo reale i cambi di tono/linguaggio di ogni partecipante.
+              </p>
+            ) : (
+              Object.entries(studentTono)
+                .sort((a, b) => b[1].timestamp - a[1].timestamp)
+                .map(([nome, info]) => {
+                  const tonoLabel = TONI_CONFIG.find(t => t.key === info.tono)?.label || info.tono;
+                  return (
+                    <div key={nome} className="visita-chat-msg">
+                      <div className="visita-chat-msg-top">
+                        <span className="visita-chat-sender">{nome}</span>
+                        <span className="visita-chat-time">
+                          {new Date(info.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
+                        </span>
+                      </div>
+                      <p className="visita-chat-text">Tono: <strong>{tonoLabel}</strong></p>
+                    </div>
+                  );
+                })
+            )}
+          </div>
         </div>
       )}
 
@@ -473,6 +610,8 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
   const [totalItems,     setTotalItems]     = React.useState(0);
   const [messages,       setMessages]       = React.useState([]);
+  const [studentTono,    setStudentTono]    = React.useState({});
+  const [visitaItems,    setVisitaItems]    = React.useState([]);
   const closedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -485,6 +624,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        if (data.studentTono)                  setStudentTono(data.studentTono);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
@@ -498,11 +638,36 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         setTotalItems(data.totalItems);
       } else if (data.tipo === 'nuovo-messaggio') {
         setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp }]);
+      } else if (data.tipo === 'tono-cambiato') {
+        setStudentTono(prev => ({ ...prev, [data.nome]: { tono: data.tono, timestamp: data.timestamp } }));
       } else if (data.tipo === 'visita-chiusa') {
         if (!closedRef.current) { closedRef.current = true; onClose(); }
       }
     };
     return () => es.close();
+  }, [codice]);
+
+  // Elenco ordinato degli item della visita, per il salto manuale a un'opera specifica.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}`);
+        const d = await r.json();
+        const ids = d.ok ? (d.data?.itemIds || []) : [];
+        const items = await Promise.all(ids.map(async id => {
+          try {
+            const ri = await fetch(`/api/items/${encodeURIComponent(id)}`);
+            const di = await ri.json();
+            return { _id: id, operaId: di.data?.operaId || id };
+          } catch (_) {
+            return { _id: id, operaId: id };
+          }
+        }));
+        if (!cancelled) setVisitaItems(items);
+      } catch (_) { /* silent */ }
+    })();
+    return () => { cancelled = true; };
   }, [codice]);
 
   // Polling di fallback: se SSE non consegna i messaggi (proxy buffering / istanze multiple),
@@ -564,6 +729,8 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       visitaNome={visitaNome}
       onBack={onClose}
       messages={messages}
+      studentTono={studentTono}
+      visitaItems={visitaItems}
     />
   );
 
@@ -1049,6 +1216,130 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
   );
 }
 
+/* ── VisitaItemRoomMap ────────────────────────────────────
+   Non-interactive floor-plan shown during an active visita:
+   highlights the room containing the current item's opera.
+   No room is clickable — this is a "you are here" reference,
+   not the exploratory map from VisitaGeoScreen. Renders
+   nothing if the museum has no geoJson floor plan or the
+   opera's sala isn't found in it (only shown "se disponibile").
+───────────────────────────────────────────────────────── */
+function VisitaItemRoomMap({ museumId, operaId }) {
+  const [sala,     setSala]     = React.useState(null);
+  const [museo,    setMuseo]    = React.useState(null);
+  const [floorDef, setFloorDef] = React.useState(null);
+  const [geoJson,  setGeoJson]  = React.useState(null);
+
+  React.useEffect(() => {
+    setSala(null);
+    if (!museumId || !operaId) return;
+    fetch(`/api/opere?codiceIsil=${encodeURIComponent(museumId)}`)
+      .then(r => r.json())
+      .then(d => {
+        const op = (d.data || []).find(o => o.operaId === operaId);
+        setSala(op?.sala || null);
+      })
+      .catch(() => setSala(null));
+  }, [museumId, operaId]);
+
+  React.useEffect(() => {
+    setMuseo(null);
+    if (!museumId) return;
+    fetch(`/api/musei/${encodeURIComponent(museumId)}`)
+      .then(r => r.json())
+      .then(d => setMuseo(d.ok ? applyFloorPlanOverrides(d.data) : null))
+      .catch(() => setMuseo(null));
+  }, [museumId]);
+
+  React.useEffect(() => {
+    setFloorDef(null);
+    setGeoJson(null);
+    if (!museo?.mappaInterna?.length || sala == null) return;
+    let cancelled = false;
+    (async () => {
+      for (const piano of museo.mappaInterna) {
+        if (!piano.geoJsonUrl) continue;
+        try {
+          const res  = await fetch(piano.geoJsonUrl);
+          const geo  = await res.json();
+          const found = (geo.features || []).some(f => f.properties?.room_id === String(sala));
+          if (found) {
+            if (!cancelled) { setFloorDef(piano); setGeoJson(geo); }
+            return;
+          }
+        } catch (_) { /* prova il prossimo piano */ }
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [museo, sala]);
+
+  if (!floorDef || !geoJson) return null;
+
+  const viewBox = `0 0 ${floorDef.imgWidth || 437} ${floorDef.imgHeight || 600}`;
+  const legendIds = [...new Set(geoJson.features.map(f => f.properties.room_id))]
+    .filter(id => AMENITY_ICONS[id]);
+
+  return (
+    <div className="visita-item-map">
+      <p className="visita-item-map-title">
+        <i className="fa-solid fa-map-location-dot" style={{ marginRight: '6px' }} />
+        Ti trovi in: {roomDisplayName(String(sala))}
+      </p>
+      <div className="geo-floorplan-wrap">
+        <img className="geo-floorplan-img" src={floorDef.url} alt={floorDef.piano || 'Planimetria'} />
+        <svg
+          className="geo-room-overlay"
+          viewBox={viewBox}
+          preserveAspectRatio="none"
+          style={{ pointerEvents: 'none' }}
+        >
+          {geoJson.features.map(f => {
+            const roomId = f.properties.room_id;
+            const points = f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' ');
+            if (AMENITY_ICONS[roomId]) {
+              return <polygon key={f.properties.fid} points={points} className="geo-amenity-polygon" />;
+            }
+            const isTarget = roomId === String(sala);
+            return (
+              <polygon
+                key={f.properties.fid}
+                points={points}
+                className={`geo-room-polygon geo-room-polygon--static${isTarget ? ' geo-room-polygon--target' : ''}`}
+              />
+            );
+          })}
+        </svg>
+        {geoJson.features.filter(f => AMENITY_ICONS[f.properties.room_id]).map(f => {
+          const amenity  = AMENITY_ICONS[f.properties.room_id];
+          const centroid = ringCentroid(f.geometry.coordinates[0]);
+          const left = (centroid.x / (floorDef.imgWidth  || 437)) * 100;
+          const top  = (centroid.y / (floorDef.imgHeight || 600)) * 100;
+          return (
+            <div
+              key={f.properties.fid}
+              className="geo-amenity-marker"
+              style={{ left: `${left}%`, top: `${top}%` }}
+              title={amenity.label}
+            >
+              <i className={`fa-solid ${amenity.icon}`} />
+            </div>
+          );
+        })}
+      </div>
+      {legendIds.length > 0 && (
+        <div className="geo-amenity-legend">
+          {legendIds.map(id => (
+            <span key={id} className="geo-amenity-legend-item">
+              <span className="geo-amenity-legend-icon"><i className={`fa-solid ${AMENITY_ICONS[id].icon}`} /></span>
+              {AMENITY_ICONS[id].label}
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ── VisiteScreen ─────────────────────────────────────── */
 
 function VisiteScreen({ museo, visite, onBack, onAvvia }) {
@@ -1221,11 +1512,43 @@ function App() {
   React.useEffect(() => { museiRef.current = musei; }, [musei]);
 
   React.useEffect(() => {
-    if (codiceIsil) {
-      selectMuseo(codiceIsil);
-    } else {
-      loadMusei();
-    }
+    (async () => {
+      const saved = loadNavSession();
+      if (saved?.codice && saved?.role) {
+        try {
+          const r = await fetch(`/api/sessioni/${encodeURIComponent(saved.codice)}`);
+          const d = await r.json();
+          if (d.ok) {
+            if (saved.role === 'docente') {
+              if (saved.museoIsil) {
+                try {
+                  const rm = await fetch(`/api/musei/${encodeURIComponent(saved.museoIsil)}`);
+                  const dm = await rm.json();
+                  if (dm.data) setMuseo(applyFloorPlanOverrides(dm.data));
+                } catch (_) {}
+              }
+              setLobby({ codice: saved.codice, visitaNome: saved.visitaNome });
+              setScreen('lobby-docente');
+              return;
+            }
+            if (saved.role === 'studente') {
+              setLobby({ codice: saved.codice, myName: saved.nomeAssegnato, museoIsil: saved.museoIsil });
+              setScreen('lobby-studente');
+              return;
+            }
+          }
+          // Sessione non più valida (chiusa/scaduta lato server): pulisci e riparti normalmente.
+          clearNavSession();
+        } catch (_) {
+          clearNavSession();
+        }
+      }
+      if (codiceIsil) {
+        selectMuseo(codiceIsil);
+      } else {
+        loadMusei();
+      }
+    })();
 
     function handlePopState() {
       const isil = new URLSearchParams(window.location.search).get('museo');
@@ -1332,6 +1655,7 @@ function App() {
         const data = await res.json();
         if (res.ok && !data.error) {
           setLobby({ codice, visitaNome: visita.nomeVisita });
+          saveNavSession({ role: 'docente', codice, visitaNome: visita.nomeVisita, museoIsil: museo.codiceIsil });
           window.history.pushState({ screen: 'lobby-docente' }, '', window.location.href);
           setScreen('lobby-docente');
           return;
@@ -1365,28 +1689,34 @@ function App() {
     </div>
   );
 
+  // Unica via d'uscita per i partecipanti: il pulsante "Esci" dentro la visita
+  // (o la chiusura da parte della docente). Un reload non deve mai passare di qui.
+  const exitStudente = () => { clearNavSession(); setLobby(null); setScreen('musei'); };
+
   if (screen === 'lobby-studente') return (
     <LobbyStudente
       codice={lobby.codice}
       nomeAssegnato={lobby.myName}
       museoIsil={lobby.museoIsil}
-      onBack={() => { setLobby(null); setScreen('musei'); }}
+      onBack={exitStudente}
     />
   );
 
-  /* screen === 'musei' | 'join' | 'visite' | 'lobby-docente' */
-  const closeSession = () => { setLobby(null); setScreen('visite'); };
+  // Unica via d'uscita per la docente: "Annulla sessione" (prima dell'avvio) o
+  // "Termina visita" (durante), entrambi passano per onClose. Niente sidebar
+  // qui sotto (Musei/Marketplace/Unisciti) — non deve esistere un'uscita implicita.
+  const closeSession = () => { clearNavSession(); setLobby(null); setScreen('visite'); };
+
+  if (screen === 'lobby-docente') return (
+    <LobbyDocente codice={lobby.codice} visitaNome={lobby.visitaNome} museo={museo} onClose={closeSession} />
+  );
+
+  /* screen === 'musei' | 'join' | 'visite' */
   const joinClick    = () => { window.history.pushState({ screen: 'join' }, '', window.location.href); setScreen('join'); };
 
   const goMarketplace = () => setScreen('marketplace');
 
-  const sidebarLinks = screen === 'lobby-docente'
-    ? [
-        { label: 'Musei',                   icon: 'fa-museum', active: true,                    onClick: closeSession },
-        { label: 'Marketplace',             icon: 'fa-store',                                   onClick: goMarketplace },
-        { label: 'Unisciti tramite codice', icon: 'fa-link',                                    onClick: joinClick },
-      ]
-    : screen === 'visite'
+  const sidebarLinks = screen === 'visite'
     ? [
         { label: 'Musei',                   icon: 'fa-museum', active: true,                    onClick: goBack },
         { label: 'Marketplace',             icon: 'fa-store',                                   onClick: goMarketplace },
@@ -1409,7 +1739,7 @@ function App() {
       <Sidebar contextLabel="Navigator" links={sidebarLinks} />
       <MobileMenu contextLabel="ArtAround." links={sidebarLinks} />
 
-      <main className={`main-content${screen === 'visite' ? ' main-content--visite' : screen === 'lobby-docente' || screen === 'marketplace' ? ' main-content--lobby' : ''}`}>
+      <main className={`main-content${screen === 'visite' ? ' main-content--visite' : screen === 'marketplace' ? ' main-content--lobby' : ''}`}>
         {screen === 'musei' ? (
           <>
             <header className="content-header">
@@ -1457,11 +1787,13 @@ function App() {
           <VisiteScreen museo={museo} visite={visite} onBack={goBack} onAvvia={handleAvvia} />
         ) : screen === 'marketplace' ? (
           <MarketplaceScreen />
-        ) : screen === 'lobby-docente' ? (
-          <LobbyDocente codice={lobby.codice} visitaNome={lobby.visitaNome} museo={museo} onClose={closeSession} />
         ) : (
           <JoinContent
-            onJoined={(codice, nome, museoIsil) => { setLobby({ codice, myName: nome, museoIsil }); setScreen('lobby-studente'); }}
+            onJoined={(codice, nome, museoIsil) => {
+              setLobby({ codice, myName: nome, museoIsil });
+              saveNavSession({ role: 'studente', codice, nomeAssegnato: nome, museoIsil });
+              setScreen('lobby-studente');
+            }}
           />
         )}
       </main>

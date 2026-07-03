@@ -1127,6 +1127,44 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
   box-shadow: 0 4px 24px rgba(0,0,0,.1);
 }
 
+/* ── "You are here" room map inside an active visita ── */
+.visita-item-map {
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 16px;
+  background: var(--dark, #0f172a);
+  color: #f1f5f9;
+  border-radius: 14px;
+}
+.visita-item-map-title {
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin: 0 0 10px;
+  text-align: center;
+  color: #f1f5f9;
+}
+.visita-item-map .geo-floorplan-wrap {
+  margin-top: 0;
+}
+.visita-item-map .geo-floorplan-img {
+  max-height: 260px;
+}
+.geo-room-polygon--static {
+  cursor: default;
+  pointer-events: none;
+}
+.geo-room-polygon--target {
+  fill: rgba(255, 0, 127, 0.3);
+  stroke: var(--magenta, #FF007F);
+  stroke-width: 2.5;
+  animation: geo-target-pulse 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes geo-target-pulse {
+  0%, 100% { fill: rgba(255, 0, 127, 0.3); }
+  50%      { fill: rgba(255, 0, 127, 0.12); }
+}
+
 .visita-item-title {
   font-size: 1.45rem;
   font-weight: 700;
@@ -1373,6 +1411,44 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 .visita-chat-sender { font-size: 0.78rem; font-weight: 700; color: var(--magenta); }
 .visita-chat-time   { font-size: 0.68rem; color: var(--muted, #94a3b8); flex-shrink: 0; }
 .visita-chat-text   { font-size: 0.88rem; color: var(--text, #334155); line-height: 1.5; margin: 0; word-break: break-word; }
+
+/* ── "Vai a un'opera" — lista item cliccabile nel pannello docente ── */
+.visita-jump-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: var(--body-bg, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: var(--text, #334155);
+  cursor: pointer;
+  transition: border-color .15s, background .15s;
+}
+.visita-jump-item:hover:not(:disabled) { border-color: var(--magenta); }
+.visita-jump-item:disabled { cursor: default; opacity: 0.7; }
+.visita-jump-item--active {
+  border-color: var(--magenta);
+  background: rgba(255, 0, 127, 0.06);
+}
+.visita-jump-item-num {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--border, #e2e8f0);
+  color: var(--muted, #64748b);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 0.72rem; font-weight: 700;
+}
+.visita-jump-item--active .visita-jump-item-num {
+  background: var(--magenta);
+  color: #fff;
+}
+.visita-jump-item-name { flex: 1; }
+.visita-jump-item--active i { color: var(--magenta); }
 
 /* ── Student FAB ── */
 .visita-msg-fab {

@@ -319,11 +319,22 @@ app.post('/api/sessioni/:codice/avvia', (req, res) => {
     res.json(result);
 });
 
-// Docente naviga tra gli items
+// Docente naviga tra gli items (avanti/indietro) oppure salta direttamente a un item
 app.post('/api/sessioni/:codice/naviga', (req, res) => {
-    const { direction } = req.body;
-    if (!direction) return res.status(400).json({ error: 'Parametro direction mancante.' });
-    const result = sessioni.navigaItem(req.params.codice, direction);
+    const { direction, index } = req.body;
+    if (!direction && typeof index !== 'number') {
+        return res.status(400).json({ error: 'Parametro direction o index mancante.' });
+    }
+    const result = sessioni.navigaItem(req.params.codice, direction, index);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Studente segnala il cambio di tono/linguaggio (per la dashboard di monitoraggio della docente)
+app.post('/api/sessioni/:codice/tono', (req, res) => {
+    const { nome, tono } = req.body;
+    if (!nome || !tono) return res.status(400).json({ error: 'Parametri nome o tono mancanti.' });
+    const result = sessioni.setStudentTono(req.params.codice, nome, tono);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });

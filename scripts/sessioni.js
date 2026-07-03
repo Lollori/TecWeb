@@ -14,6 +14,7 @@ function createSession(codice, visitaId, visitaNome, museoIsil, itemIds) {
     clients: new Set(),
     studentCount: 0,
     messages: [],
+    studentTono: {},      // nome -> { tono, timestamp } — per la dashboard di monitoraggio della docente
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -50,14 +51,15 @@ function startSession(codice) {
   return { ok: true };
 }
 
-function navigaItem(codice, direction) {
+function navigaItem(codice, direction, index) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   if (session.stato !== 'iniziata') return { error: 'Visita non ancora iniziata.' };
   const total = session.itemIds.length;
   if (total === 0) return { error: 'Nessun item nella visita.' };
   let newIdx = session.currentItemIdx;
-  if (direction === 'avanti' || direction === 'next')       newIdx = Math.min(total - 1, newIdx + 1);
+  if (Number.isInteger(index))                               newIdx = Math.max(0, Math.min(total - 1, index));
+  else if (direction === 'avanti' || direction === 'next')       newIdx = Math.min(total - 1, newIdx + 1);
   else if (direction === 'indietro' || direction === 'prev') newIdx = Math.max(0, newIdx - 1);
   if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
   session.currentItemIdx = newIdx;
@@ -85,6 +87,7 @@ function addClient(codice, res) {
     currentItemId,
     currentItemIdx: session.currentItemIdx,
     totalItems: session.itemIds.length,
+    studentTono: session.studentTono,
   })}\n\n`);
   return true;
 }
@@ -109,6 +112,15 @@ function sendMessage(codice, sender, text) {
   return { ok: true };
 }
 
+function setStudentTono(codice, nome, tono) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  const entry = { tono, timestamp: Date.now() };
+  session.studentTono[nome] = entry;
+  broadcast(codice, { tipo: 'tono-cambiato', nome, ...entry });
+  return { ok: true };
+}
+
 function broadcast(codice, data) {
   const session = sessions.get(codice);
   if (!session) return;
@@ -118,4 +130,4 @@ function broadcast(codice, data) {
   }
 }
 
-module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem, closeSession, sendMessage };
+module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem, closeSession, sendMessage, setStudentTono };

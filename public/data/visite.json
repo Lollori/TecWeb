@@ -7,6 +7,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-TO0576",
     "autoreId": "a3f7k2m9qz",
+    "pubblica": true,
+    "prezzo": 0,
     "acquirenti": 0
   },
   {
@@ -17,6 +19,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-TO0576",
     "autoreId": "a3f7k2m9qz",
+    "pubblica": true,
+    "prezzo": 3,
     "acquirenti": 0
   },
   {
@@ -27,6 +31,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-TO0576",
     "autoreId": "b8h4p1r6xw",
+    "pubblica": true,
+    "prezzo": 4,
     "acquirenti": 0
   },
   {
@@ -37,6 +43,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-FI0082",
     "autoreId": "b8h4p1r6xw",
+    "pubblica": true,
+    "prezzo": 0,
     "acquirenti": 0
   },
   {
@@ -47,6 +55,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-FI0082",
     "autoreId": "b8h4p1r6xw",
+    "pubblica": true,
+    "prezzo": 5,
     "acquirenti": 0
   },
   {
@@ -57,6 +67,8 @@
     "opereCount": 0,
     "codiceIsil": "IT-FI0082",
     "autoreId": "a3f7k2m9qz",
+    "pubblica": true,
+    "prezzo": 6,
     "acquirenti": 0
   }
 ]
