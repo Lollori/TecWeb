@@ -8,6 +8,35 @@ const SESSION = {
     username: localStorage.getItem('userUsername') || '',
 };
 
+// Immagini profilo per ruolo — un'opera d'arte famosissima per ruolo,
+// ospitata su Wikimedia Commons (pubblico dominio). Vale per tutti gli
+// utenti di quel ruolo, anche quelli creati prima di questa modifica: non
+// è un dato salvato per utente, è derivato dal ruolo al volo.
+const ROLE_AVATARS = {
+    // Edgar Degas, "Blue Dancers" (Ballerine in blu)
+    autore:     'https://upload.wikimedia.org/wikipedia/commons/2/21/Edgar_Germain_Hilaire_Degas_076.jpg',
+    // Vincent van Gogh, "The Starry Night" (La Notte Stellata)
+    visitatore: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg',
+    // Caravaggio, "Boy with a Basket of Fruit" (Giovane con canestra di frutta)
+    curatore:   'https://upload.wikimedia.org/wikipedia/commons/6/64/Boy_with_a_Basket_of_Fruit-Caravaggio_%281593%29.jpg',
+    // Michelangelo, "La Creazione di Adamo" — dettaglio delle mani
+    admin:      'https://upload.wikimedia.org/wikipedia/commons/d/d8/Hands_of_God_and_Adam.jpg',
+};
+
+// Applica l'avatar a un elemento .avatar-sm: immagine di dettaglio se il
+// ruolo ne ha una, altrimenti la vecchia iniziale colorata come fallback.
+function applyAvatar(el, role, fallbackLetter) {
+    if (!el) return;
+    const src = ROLE_AVATARS[role];
+    if (src) {
+        el.style.backgroundImage = `url('${src}')`;
+        el.textContent = '';
+    } else {
+        el.style.backgroundImage = '';
+        el.textContent = fallbackLetter || '?';
+    }
+}
+
 let curMusei = [];
 
 // index-based lookup avoids JSON serialisation in onclick attrs
@@ -257,7 +286,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                      : role;
     const initial = (SESSION.username[0] || '?').toUpperCase();
     document.getElementById('sidebarRole').textContent     = badgeLabel;
-    document.getElementById('avatarInitial').textContent   = initial;
+    applyAvatar(document.getElementById('avatarInitial'), role, initial);
     document.getElementById('footerUsername').textContent  = SESSION.username;
     document.getElementById('headerRoleLabel').textContent = role;
 
@@ -266,8 +295,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const mobileAvatarMenu = document.getElementById('mobileAvatarMenu');
     const mobileUsername   = document.getElementById('mobileMenuUsername');
     const mobileRole       = document.getElementById('mobileMenuRole');
-    if (mobileAvatarTop)  mobileAvatarTop.textContent  = initial;
-    if (mobileAvatarMenu) mobileAvatarMenu.textContent  = initial;
+    applyAvatar(mobileAvatarTop,  role, initial);
+    applyAvatar(mobileAvatarMenu, role, initial);
     if (mobileUsername)   mobileUsername.textContent    = SESSION.username;
     if (mobileRole)       mobileRole.textContent        = badgeLabel;
 
@@ -2797,11 +2826,16 @@ function renderAdminUtenti(lista) {
         tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted py-4">Nessun utente trovato.</td></tr>';
         return;
     }
-    tbody.innerHTML = lista.map(u => `
+    tbody.innerHTML = lista.map(u => {
+        const avatarSrc = ROLE_AVATARS[u.ruolo];
+        const avatarHtml = avatarSrc
+            ? `<div class="avatar-sm" style="background-image:url('${avatarSrc}')"></div>`
+            : `<div class="avatar-sm">${(u.username || '?')[0].toUpperCase()}</div>`;
+        return `
         <tr>
             <td>
                 <div class="d-flex align-items-center gap-3">
-                    <div class="avatar-sm">${(u.username || '?')[0].toUpperCase()}</div>
+                    ${avatarHtml}
                     <div>
                         <div class="fw-bold">${u.username}</div>
                         <small class="text-muted">${u.userId || ''}</small>
@@ -2819,7 +2853,8 @@ function renderAdminUtenti(lista) {
                     <i class="fa-solid fa-lock me-1"></i>Protetto
                 </span>`}
             </td>
-        </tr>`).join('');
+        </tr>`;
+    }).join('');
 }
 
 window.adminDeleteUtente = async function (id, username) {

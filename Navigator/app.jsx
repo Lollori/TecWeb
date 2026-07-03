@@ -36,11 +36,24 @@ function clearNavSession() {
 
 /* ── Shared role config & theme helper ─────────────── */
 
+// avatar: opera d'arte famosissima coerente col ruolo (Wikimedia Commons,
+// pubblico dominio) — stessa mappa usata in Editor-Marketplace/dashboard.js.
 const ROLE_MAP = {
-  curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore' },
-  visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore' },
-  autore:     { letter: 'A', color: '#05070A', label: 'Autore' },
+  curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Boy_with_a_Basket_of_Fruit-Caravaggio_%281593%29.jpg' },
+  visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg' },
+  autore:     { letter: 'A', color: '#05070A', label: 'Autore',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Edgar_Germain_Hilaire_Degas_076.jpg' },
+  admin:      { letter: 'M', color: '#05070A', label: 'Admin',
+                avatar: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Hands_of_God_and_Adam.jpg' },
 };
+
+function avatarStyle(cfg) {
+  return cfg.avatar
+    ? { backgroundImage: `url('${cfg.avatar}')` }
+    : { backgroundColor: cfg.color };
+}
 
 function applyTheme(isDark, setIsDark) {
   const next = isDark ? 'light' : 'dark';
@@ -73,14 +86,14 @@ function MobileMenu({ links, contextLabel }) {
           <i className={`fa-solid ${open ? 'fa-xmark' : 'fa-bars'}`} />
         </button>
         <a href="/" className="mobile-topbar-logo">{contextLabel || 'ArtAround.'}</a>
-        <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
+        <div className="avatar-sm" style={avatarStyle(cfg)}>{cfg.avatar ? '' : cfg.letter}</div>
       </div>
 
       <div className={`mobile-menu-overlay${open ? ' open' : ''}`} onClick={close} />
 
       <div className={`mobile-menu-dropdown${open ? ' open' : ''}`}>
         <div className="mobile-menu-user-row">
-          <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
+          <div className="avatar-sm" style={avatarStyle(cfg)}>{cfg.avatar ? '' : cfg.letter}</div>
           <div>
             <div className="mobile-menu-username">{username || '—'}</div>
             <div className="mobile-menu-role">{cfg.label}</div>
@@ -164,7 +177,7 @@ function Sidebar({ links, contextLabel }) {
           <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
         </button>
         <div className="user-pill-mini">
-          <div className="avatar-sm" style={{ backgroundColor: cfg.color }}>{cfg.letter}</div>
+          <div className="avatar-sm" style={avatarStyle(cfg)}>{cfg.avatar ? '' : cfg.letter}</div>
           <div className="user-info-mini">
             <span className="name">{username || '—'}</span>
             <span className="role">{cfg.label}</span>

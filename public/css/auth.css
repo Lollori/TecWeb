@@ -103,6 +103,8 @@ body, html {
     box-shadow: 0 8px 32px rgba(255,0,127,0.2);
     transition: var(--transition);
     animation: badgeEntrance 0.6s ease-out;
+    background-size: cover;
+    background-position: center;
 }
 
 @keyframes badgeEntrance {
@@ -116,23 +118,26 @@ body, html {
     transition: var(--transition);
 }
 
-/* Role-specific avatar colors */
+/* Role-specific avatar colors — background-color (longhand), non "background":
+   lo shorthand resetterebbe background-size/position del blocco base sopra,
+   che essendo questa regola più specifica vincerebbe e romperebbe il fit
+   dell'immagine (mostrerebbe solo un pixel in alto a sinistra a size "auto"). */
 .auth-avatar-badge.bg-visitatore {
-    background: rgba(255,0,127,0.15);
+    background-color: rgba(255,0,127,0.15);
     border-color: rgba(255,0,127,0.3);
 }
 
 .auth-avatar-badge.bg-visitatore i { color: var(--magenta); }
 
 .auth-avatar-badge.bg-curatore {
-    background: rgba(99,102,241,0.15);
+    background-color: rgba(99,102,241,0.15);
     border-color: rgba(99,102,241,0.3);
 }
 
 .auth-avatar-badge.bg-curatore i { color: #818cf8; }
 
 .auth-avatar-badge.bg-autore {
-    background: rgba(255,255,255,0.08);
+    background-color: rgba(255,255,255,0.08);
     border-color: rgba(255,255,255,0.2);
 }
 
@@ -262,9 +267,9 @@ body, html {
     color: white;
 }
 
-.bg-visitatore { background: rgba(255,0,127,0.7) !important; }
-.bg-curatore   { background: rgba(99,102,241,0.7) !important; }
-.bg-autore     { background: rgba(255,255,255,0.15) !important; }
+.bg-visitatore { background-color: rgba(255,0,127,0.7) !important; }
+.bg-curatore   { background-color: rgba(99,102,241,0.7) !important; }
+.bg-autore     { background-color: rgba(255,255,255,0.15) !important; }
 
 /* ========== SELECT DROPDOWN ========== */
 .select-dark-navy {

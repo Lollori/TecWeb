@@ -14,6 +14,8 @@
     font-size: 0.9rem;
     border: 2px solid rgba(255,255,255,0.25);
     flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
 }
 
 .nav-theme-icon {
