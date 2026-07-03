@@ -1,7 +1,7 @@
 // Sessioni sincronizzate in memoria (ephemeral – no persistence needed)
 const sessions = new Map();
 
-function createSession(codice, visitaId, visitaNome, museoIsil, itemIds) {
+function createSession(codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz) {
   if (sessions.has(codice)) {
     return { error: 'Codice già in uso. Scegli un nome diverso.' };
   }
@@ -15,6 +15,8 @@ function createSession(codice, visitaId, visitaNome, museoIsil, itemIds) {
     studentCount: 0,
     messages: [],
     studentTono: {},      // nome -> { tono, timestamp } — per la dashboard di monitoraggio della docente
+    hasQuiz: !!hasQuiz,   // la visita ha un quiz associato (informativo, per mostrare il bottone "Avvia Quiz")
+    quiz: null,           // stato del quiz di fine visita, vedi avviaQuiz()
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -47,6 +49,7 @@ function startSession(codice) {
     currentItemId,
     currentItemIdx: session.currentItemIdx,
     totalItems: session.itemIds.length,
+    hasQuiz: session.hasQuiz,
   });
   return { ok: true };
 }
@@ -88,6 +91,8 @@ function addClient(codice, res) {
     currentItemIdx: session.currentItemIdx,
     totalItems: session.itemIds.length,
     studentTono: session.studentTono,
+    hasQuiz: session.hasQuiz,
+    quiz: publicQuiz(session.quiz),
   })}\n\n`);
   return true;
 }
@@ -95,6 +100,7 @@ function addClient(codice, res) {
 function closeSession(codice) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
+  if (session.quiz?.timer) clearTimeout(session.quiz.timer);
   broadcast(codice, { tipo: 'visita-chiusa' });
   sessions.delete(codice);
   return { ok: true };
@@ -130,4 +136,95 @@ function broadcast(codice, data) {
   }
 }
 
-module.exports = { createSession, getSession, joinSession, startSession, addClient, navigaItem, closeSession, sendMessage, setStudentTono };
+// Versione del quiz sicura da mandare ai client: mentre è in corso non deve
+// rivelare quale opzione è quella corretta (solo testo + opzioni).
+function publicQuiz(quiz) {
+  if (!quiz) return null;
+  const { timer, ...rest } = quiz;
+  if (quiz.stato === 'terminato') return rest;
+  return {
+    ...rest,
+    domande: quiz.domande.map(d => ({ testo: d.testo, opzioni: d.opzioni })),
+  };
+}
+
+/* ============================================================
+   QUIZ DI FINE VISITA
+   ============================================================ */
+
+function avviaQuiz(codice, domande) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (!Array.isArray(domande) || !domande.length) {
+    return { error: 'Questa visita non ha domande quiz.' };
+  }
+  if (session.quiz && session.quiz.stato === 'in-corso') {
+    return { error: 'Il quiz è già in corso.' };
+  }
+  const durataSec = domande.length * 40;
+  const scadenza  = Date.now() + durataSec * 1000;
+  session.quiz = {
+    domande,               // con `corretta` — usato solo server-side per lo scoring
+    durataSec,
+    scadenza,
+    stato: 'in-corso',     // 'in-corso' | 'terminato'
+    risposte: {},          // nome studente -> [indice risposta per domanda, ...]
+    risultati: null,
+    timer: setTimeout(() => terminaQuiz(codice), durataSec * 1000),
+  };
+  broadcast(codice, { tipo: 'quiz-iniziato', ...publicQuiz(session.quiz) });
+  return { ok: true, durataSec, scadenza };
+}
+
+function rispondiQuiz(codice, nome, risposte) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (!nome) return { error: 'Nome mancante.' };
+  if (!session.quiz || session.quiz.stato !== 'in-corso') {
+    return { error: 'Nessun quiz in corso.' };
+  }
+  session.quiz.risposte[nome] = Array.isArray(risposte) ? risposte : [];
+  broadcast(codice, {
+    tipo: 'quiz-progresso',
+    risposte: Object.keys(session.quiz.risposte).length,
+  });
+  return { ok: true };
+}
+
+function terminaQuiz(codice) {
+  const session = sessions.get(codice);
+  if (!session || !session.quiz) return { error: 'Nessun quiz in corso.' };
+  if (session.quiz.stato === 'terminato') {
+    return { ok: true, risultati: session.quiz.risultati };
+  }
+  clearTimeout(session.quiz.timer);
+  const { domande, risposte } = session.quiz;
+
+  const risultati = session.studenti.map(({ nome }) => {
+    const rispostaStudente = risposte[nome] || [];
+    let punteggio = 0;
+    const dettaglio = domande.map((d, i) => {
+      const rispostaData = rispostaStudente[i];
+      const isCorrect = rispostaData === d.corretta;
+      if (isCorrect) punteggio++;
+      return {
+        testo: d.testo,
+        opzioni: d.opzioni,
+        corretta: d.corretta,
+        rispostaData: (rispostaData === undefined) ? null : rispostaData,
+        isCorrect,
+      };
+    });
+    return { nome, punteggio, totale: domande.length, dettaglio };
+  }).sort((a, b) => b.punteggio - a.punteggio);
+
+  session.quiz.stato = 'terminato';
+  session.quiz.risultati = risultati;
+  broadcast(codice, { tipo: 'quiz-terminato', ...publicQuiz(session.quiz) });
+  return { ok: true, risultati };
+}
+
+module.exports = {
+  createSession, getSession, joinSession, startSession, addClient, navigaItem,
+  closeSession, sendMessage, setStudentTono, avviaQuiz, rispondiQuiz, terminaQuiz,
+};

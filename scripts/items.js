@@ -25,9 +25,10 @@ const itemSchema = new mongoose.Schema({
     },
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
     image:    { type: String, default: '' },
-    authorId: { type: String, required: true },
-    operaId:  { type: String, required: true, index: true },
-    pubblica: { type: Boolean, default: false },
+    authorId:   { type: String, required: true },
+    operaId:    { type: String, required: true, index: true },
+    pubblica:   { type: Boolean, default: false },
+    acquirenti: { type: Number, default: 0 },
 });
 
 const Item = mongoose.models.Item || mongoose.model("Item", itemSchema);

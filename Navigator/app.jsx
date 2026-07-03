@@ -228,6 +228,160 @@ function JoinContent({ onJoined }) {
   );
 }
 
+/* ── QuizPanel ─────────────────────────────────────────
+   Quiz di fine visita: la docente lo avvia dall'ultimo item, parte un
+   conto alla rovescia condiviso (40s per domanda) durante il quale
+   ciascun partecipante risponde dal proprio dispositivo. Allo scadere
+   del tempo (o se la docente lo chiude prima) il server calcola i
+   punteggi e li trasmette a tutti.
+───────────────────────────────────────────────────────── */
+
+function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStudenti, onRispondiQuiz, onTerminaQuizOra, quizTerminandoOra }) {
+  const [risposte, setRisposte] = React.useState(() => quiz.domande.map(() => null));
+  const [inviato,  setInviato]  = React.useState(false);
+  const [remaining, setRemaining] = React.useState(
+    () => Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000))
+  );
+
+  React.useEffect(() => {
+    if (quiz.stato !== 'in-corso') return;
+    const id = setInterval(() => {
+      setRemaining(Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000)));
+    }, 1000);
+    return () => clearInterval(id);
+  }, [quiz.stato, quiz.scadenza]);
+
+  // Lo studente invia automaticamente le risposte selezionate finora allo scadere del tempo.
+  React.useEffect(() => {
+    if (isDocente || inviato || quiz.stato !== 'in-corso') return;
+    if (remaining <= 0) {
+      setInviato(true);
+      onRispondiQuiz(risposte);
+    }
+  }, [remaining, isDocente, inviato, quiz.stato]);
+
+  function selezionaRisposta(domandaIdx, opzioneIdx) {
+    if (inviato) return;
+    setRisposte(prev => {
+      const next = prev.slice();
+      next[domandaIdx] = opzioneIdx;
+      return next;
+    });
+  }
+
+  function handleInvia() {
+    setInviato(true);
+    onRispondiQuiz(risposte);
+  }
+
+  const minuti  = String(Math.floor(remaining / 60)).padStart(2, '0');
+  const secondi = String(remaining % 60).padStart(2, '0');
+
+  if (quiz.stato === 'terminato') {
+    const risultati = quiz.risultati || [];
+    const mio = !isDocente ? risultati.find(r => r.nome === nomeAssegnato) : null;
+
+    const dettaglioBlock = (dettaglio) => (
+      <div className="quiz-result-detail">
+        {dettaglio.map((d, i) => (
+          <div key={i} className={`quiz-result-item${d.isCorrect ? ' quiz-result-item--ok' : ' quiz-result-item--ko'}`}>
+            <p className="quiz-result-q">{i + 1}. {d.testo}</p>
+            <p className="quiz-result-a">
+              {isDocente ? 'Risposta data' : 'Hai risposto'}: {d.rispostaData != null ? d.opzioni[d.rispostaData] : <em>nessuna risposta</em>}
+            </p>
+            {!d.isCorrect && (
+              <p className="quiz-result-correct">Corretta: {d.opzioni[d.corretta]}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    );
+
+    return (
+      <div className="quiz-panel">
+        <div className="quiz-panel-header">
+          <i className="fa-solid fa-trophy" />
+          <h2>{isDocente ? 'Risultati del quiz' : 'Quiz terminato'}</h2>
+        </div>
+
+        {isDocente ? (
+          <div className="quiz-results-list">
+            {risultati.length === 0 && <p className="quiz-empty">Nessun partecipante ha risposto.</p>}
+            {risultati.map(r => (
+              <details key={r.nome} className="quiz-result-card">
+                <summary>
+                  <span className="quiz-result-name">{r.nome}</span>
+                  <span className="quiz-result-score">{r.punteggio} / {r.totale}</span>
+                </summary>
+                {dettaglioBlock(r.dettaglio)}
+              </details>
+            ))}
+          </div>
+        ) : (
+          <div className="quiz-my-result">
+            {mio ? (
+              <>
+                <p className="quiz-my-score">{mio.punteggio} / {mio.totale}</p>
+                {dettaglioBlock(mio.dettaglio)}
+              </>
+            ) : (
+              <p className="quiz-empty">Non hai partecipato a questo quiz.</p>
+            )}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // quiz.stato === 'in-corso'
+  return (
+    <div className="quiz-panel">
+      <div className="quiz-panel-header">
+        <i className="fa-solid fa-clock" />
+        <h2>Quiz finale</h2>
+        <span className="quiz-countdown">{minuti}:{secondi}</span>
+      </div>
+
+      {isDocente ? (
+        <div className="quiz-docente-live">
+          <p className="quiz-docente-live-text">
+            Il quiz è in corso — {respondedCount} / {totalStudenti} partecipanti hanno risposto.
+          </p>
+          <button className="visita-termina-btn" onClick={onTerminaQuizOra} disabled={quizTerminandoOra}>
+            {quizTerminandoOra ? 'Chiusura…' : 'Termina quiz ora'}
+          </button>
+        </div>
+      ) : (
+        <>
+          <div className="quiz-domande-list">
+            {quiz.domande.map((d, i) => (
+              <div key={i} className="quiz-domanda-card">
+                <p className="quiz-domanda-testo">{i + 1}. {d.testo}</p>
+                <div className="quiz-opzioni-list">
+                  {d.opzioni.map((o, j) => (
+                    <button
+                      key={j}
+                      className={`quiz-opzione-btn${risposte[i] === j ? ' quiz-opzione-btn--active' : ''}`}
+                      onClick={() => selezionaRisposta(i, j)}
+                      disabled={inviato}
+                    >
+                      <span className="quiz-opzione-letter">{['A', 'B', 'C', 'D'][j]}</span>
+                      {o}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+          <button className="quiz-invia-btn" onClick={handleInvia} disabled={inviato}>
+            {inviato ? 'Risposte inviate — in attesa della fine del quiz…' : 'Invia risposte'}
+          </button>
+        </>
+      )}
+    </div>
+  );
+}
+
 /* ── VisitaItemScreen ─────────────────────────────────── */
 
 const TONI_CONFIG = [
@@ -236,7 +390,12 @@ const TONI_CONFIG = [
   { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
 ];
 
-function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack, messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [] }) {
+function VisitaItemScreen({
+  itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
+  messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
+  hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0,
+  onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
+}) {
   const [item,          setItem]          = React.useState(null);
   const [loading,       setLoading]       = React.useState(false);
   const [navigating,    setNavigating]    = React.useState(false);
@@ -383,48 +542,63 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
       </div>
 
       <div className="visita-item-content">
-        {loading && (
-          <div className="visita-item-loading">
-            <div className="nav-spinner" />
-            <p>Caricamento item…</p>
-          </div>
-        )}
-        {!loading && !itemId && (
-          <p className="visita-item-empty">La visita non contiene items.</p>
-        )}
-        {!loading && itemId && !item && (
-          <p className="visita-item-empty">Item non trovato.</p>
-        )}
-        {!loading && item && (
-          <div className="visita-item-card">
-            {item.image && (
-              <img className="visita-item-img" src={item.image} alt={item.operaId} />
+        {quiz ? (
+          <QuizPanel
+            quiz={quiz}
+            isDocente={isDocente}
+            nomeAssegnato={nomeAssegnato}
+            respondedCount={respondedCount}
+            totalStudenti={totalStudenti}
+            onRispondiQuiz={onRispondiQuiz}
+            onTerminaQuizOra={onTerminaQuizOra}
+            quizTerminandoOra={quizTerminandoOra}
+          />
+        ) : (
+          <>
+            {loading && (
+              <div className="visita-item-loading">
+                <div className="nav-spinner" />
+                <p>Caricamento item…</p>
+              </div>
             )}
-            <h2 className="visita-item-title">{item.operaId}</h2>
+            {!loading && !itemId && (
+              <p className="visita-item-empty">La visita non contiene items.</p>
+            )}
+            {!loading && itemId && !item && (
+              <p className="visita-item-empty">Item non trovato.</p>
+            )}
+            {!loading && item && (
+              <div className="visita-item-card">
+                {item.image && (
+                  <img className="visita-item-img" src={item.image} alt={item.operaId} />
+                )}
+                <h2 className="visita-item-title">{item.operaId}</h2>
 
-            <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
+                <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
 
-            <div className="visita-toni-bar">
-              {TONI_CONFIG.map(t => (
-                <button
-                  key={t.key}
-                  className={`visita-tono-btn${tono === t.key ? ' visita-tono-btn--active' : ''}`}
-                  onClick={() => setTono(t.key)}
-                >
-                  {t.label}
-                  <span className="visita-tono-dur">{t.durata}</span>
-                </button>
-              ))}
-            </div>
+                <div className="visita-toni-bar">
+                  {TONI_CONFIG.map(t => (
+                    <button
+                      key={t.key}
+                      className={`visita-tono-btn${tono === t.key ? ' visita-tono-btn--active' : ''}`}
+                      onClick={() => setTono(t.key)}
+                    >
+                      {t.label}
+                      <span className="visita-tono-dur">{t.durata}</span>
+                    </button>
+                  ))}
+                </div>
 
-            <p className="visita-item-text">
-              {item.toni?.[tono]?.testo || <em>Nessun contenuto per questo tono.</em>}
-            </p>
-          </div>
+                <p className="visita-item-text">
+                  {item.toni?.[tono]?.testo || <em>Nessun contenuto per questo tono.</em>}
+                </p>
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {isDocente && (
+      {isDocente && !quiz && (
         <div className="visita-item-nav">
           <button
             className="visita-nav-btn visita-nav-btn--prev"
@@ -437,6 +611,15 @@ function VisitaItemScreen({ itemId, currentIdx, totalItems, isDocente, codice, v
             onClick={() => navigate('avanti')}
             disabled={currentIdx >= totalItems - 1 || navigating}
           >Prossimo →</button>
+        </div>
+      )}
+
+      {isDocente && hasQuiz && !quiz && currentIdx >= totalItems - 1 && (
+        <div className="visita-quiz-cta-bar">
+          <button className="visita-quiz-cta-btn" onClick={onAvviaQuiz} disabled={quizAvviando}>
+            <i className="fa-solid fa-graduation-cap" />
+            {quizAvviando ? 'Avvio in corso…' : 'Avvia Quiz finale'}
+          </button>
         </div>
       )}
 
@@ -612,6 +795,11 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [messages,       setMessages]       = React.useState([]);
   const [studentTono,    setStudentTono]    = React.useState({});
   const [visitaItems,    setVisitaItems]    = React.useState([]);
+  const [hasQuiz,        setHasQuiz]        = React.useState(false);
+  const [quiz,           setQuiz]           = React.useState(null);
+  const [respondedCount, setRespondedCount] = React.useState(0);
+  const [quizAvviando,   setQuizAvviando]   = React.useState(false);
+  const [quizTerminandoOra, setQuizTerminandoOra] = React.useState(false);
   const closedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -625,6 +813,11 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
         if (data.studentTono)                  setStudentTono(data.studentTono);
+        setHasQuiz(!!data.hasQuiz);
+        if (data.quiz) {
+          setQuiz(data.quiz);
+          setRespondedCount(data.quiz.risposte ? Object.keys(data.quiz.risposte).length : 0);
+        }
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
@@ -632,6 +825,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        setHasQuiz(!!data.hasQuiz);
       } else if (data.tipo === 'item-cambiato') {
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
@@ -640,6 +834,13 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp }]);
       } else if (data.tipo === 'tono-cambiato') {
         setStudentTono(prev => ({ ...prev, [data.nome]: { tono: data.tono, timestamp: data.timestamp } }));
+      } else if (data.tipo === 'quiz-iniziato') {
+        setRespondedCount(0);
+        setQuiz(data);
+      } else if (data.tipo === 'quiz-progresso') {
+        setRespondedCount(data.risposte);
+      } else if (data.tipo === 'quiz-terminato') {
+        setQuiz(data);
       } else if (data.tipo === 'visita-chiusa') {
         if (!closedRef.current) { closedRef.current = true; onClose(); }
       }
@@ -695,6 +896,28 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     }
   }
 
+  async function handleAvviaQuiz() {
+    setQuizAvviando(true);
+    try {
+      const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/quiz/avvia`, { method: 'POST' });
+      const d = await r.json();
+      if (!r.ok || d.error) alert(d.error || 'Impossibile avviare il quiz.');
+    } catch (e) {
+      alert('Impossibile raggiungere il server.');
+    } finally {
+      setQuizAvviando(false);
+    }
+  }
+
+  async function handleTerminaQuizOra() {
+    setQuizTerminandoOra(true);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/quiz/termina`, { method: 'POST' });
+    } finally {
+      setQuizTerminandoOra(false);
+    }
+  }
+
   const museoHeader = museo && (
     <div className="museo-mini-header">
       <div className="museo-mini-identity">
@@ -731,6 +954,14 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       messages={messages}
       studentTono={studentTono}
       visitaItems={visitaItems}
+      hasQuiz={hasQuiz}
+      quiz={quiz}
+      respondedCount={respondedCount}
+      totalStudenti={studenti.length}
+      onAvviaQuiz={handleAvviaQuiz}
+      quizAvviando={quizAvviando}
+      onTerminaQuizOra={handleTerminaQuizOra}
+      quizTerminandoOra={quizTerminandoOra}
     />
   );
 
@@ -797,6 +1028,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
   const [totalItems,     setTotalItems]     = React.useState(0);
   const [visitaNome,     setVisitaNome]     = React.useState('');
+  const [quiz,           setQuiz]           = React.useState(null);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -809,6 +1041,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        if (data.quiz)                         setQuiz(data.quiz);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
@@ -821,12 +1054,25 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
+      } else if (data.tipo === 'quiz-iniziato') {
+        setQuiz(data);
+      } else if (data.tipo === 'quiz-terminato') {
+        setQuiz(data);
       } else if (data.tipo === 'visita-chiusa') {
         onBack();
       }
     };
     return () => es.close();
   }, [codice]);
+
+  async function handleRispondiQuiz(risposte) {
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/quiz/rispondi`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeAssegnato, risposte }),
+      });
+    } catch (e) { /* silent */ }
+  }
 
   if (stato === 'iniziata') return (
     <VisitaItemScreen
@@ -838,6 +1084,8 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       visitaNome={visitaNome}
       onBack={onBack}
       nomeAssegnato={nomeAssegnato}
+      quiz={quiz}
+      onRispondiQuiz={handleRispondiQuiz}
     />
   );
 
@@ -1650,6 +1898,7 @@ function App() {
             visitaNome: visita.nomeVisita,
             museoIsil:  museo.codiceIsil,
             itemIds:    visita.itemIds || [],
+            hasQuiz:    (visita.quizDomande || []).length > 0,
           }),
         });
         const data = await res.json();

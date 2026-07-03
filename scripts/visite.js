@@ -10,6 +10,14 @@ const visitaSchema = new mongoose.Schema({
     nomeMnemonico:    { type: String, required: false },
     logistica:        { type: String, required: false },
     quizDomanda:      { type: String, required: false },
+    quizDomande:      {
+        type: [{
+            testo:    { type: String, required: true },
+            opzioni:  { type: [String], required: true },
+            corretta: { type: Number, required: true },
+        }],
+        default: [],
+    },
     opereCount:       { type: Number, default: 0 },
     codiceIsil:       { type: String, required: false },
     autoreId:         { type: String, required: false },

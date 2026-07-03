@@ -290,9 +290,9 @@ app.delete('/api/items/:id', async function (req, res) {
 
 // Crea sessione (docente avvia una visita)
 app.post('/api/sessioni', (req, res) => {
-    const { codice, visitaId, visitaNome, museoIsil, itemIds } = req.body;
+    const { codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz } = req.body;
     if (!codice || !visitaId) return res.status(400).json({ error: 'Parametri mancanti.' });
-    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil, itemIds);
+    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz);
     if (result.error) return res.status(409).json(result);
     res.json(result);
 });
@@ -342,6 +342,36 @@ app.post('/api/sessioni/:codice/tono', (req, res) => {
 // Docente termina la visita
 app.post('/api/sessioni/:codice/chiudi', (req, res) => {
     const result = sessioni.closeSession(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Docente avvia il quiz di fine visita: le domande vengono lette fresche da
+// Mongo (non ci si fida di un payload mandato dal client) usando la visitaId
+// salvata sulla sessione.
+app.post('/api/sessioni/:codice/quiz/avvia', async (req, res) => {
+    const session = sessioni.getSession(req.params.codice);
+    if (!session) return res.status(404).json({ error: 'Sessione non trovata.' });
+    const visitaResult = await visite.getOne(mongoCredentials, session.visitaId);
+    if (!visitaResult.ok) return res.status(404).json({ error: 'Visita non trovata.' });
+    const domande = visitaResult.data.quizDomande || [];
+    const result = sessioni.avviaQuiz(req.params.codice, domande);
+    if (result.error) return res.status(400).json(result);
+    res.json(result);
+});
+
+// Partecipante invia le proprie risposte al quiz
+app.post('/api/sessioni/:codice/quiz/rispondi', (req, res) => {
+    const { nome, risposte } = req.body;
+    if (!nome) return res.status(400).json({ error: 'Nome mancante.' });
+    const result = sessioni.rispondiQuiz(req.params.codice, nome, risposte);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Docente termina il quiz anticipatamente (prima dello scadere del tempo)
+app.post('/api/sessioni/:codice/quiz/termina', (req, res) => {
+    const result = sessioni.terminaQuiz(req.params.codice);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });

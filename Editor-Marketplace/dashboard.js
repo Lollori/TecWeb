@@ -402,6 +402,7 @@ function switchSection(id) {
     if (id === 'curatore-quiz') initCuratoreQuiz();
 
     if (id === 'marketplace') initMarketplace();
+    if (id === 'carrello')    initCarrello();
 }
 
 /* ============================================================
@@ -1113,11 +1114,11 @@ async function initAutoreMusei() {
                 <h1 class="page-title">Musei</h1>
                 <p class="text-muted mb-0">Esplora i musei disponibili.</p>
             </div>
-            <div class="d-flex align-items-center gap-3">
-                <button class="btn-magenta" style="white-space:nowrap;"
-                        onclick="document.getElementById('autoreVisiteSection').scrollIntoView({behavior:'smooth',block:'start'})">
-                    <i class="fa-solid fa-ranking-star me-2"></i>Visite Popolari
-                </button>
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <select id="filterAutoreCitta" class="custom-input" style="max-width:180px;"
+                        onchange="filterAutoreMusei()">
+                    <option value="">Tutte le città</option>
+                </select>
                 <div class="search-box-container shadow-sm py-1 px-3" style="max-width:240px;">
                     <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
                     <input type="text" id="searchAutoreMusei" class="search-input py-2"
@@ -1129,117 +1130,19 @@ async function initAutoreMusei() {
         <div id="autoreMuseiGrid" class="items-grid mb-5" style="align-items:stretch;">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
-
-        <hr style="border:none;border-top:1px solid #e2e8f0;margin:0 0 2rem;">
-
-        <div id="autoreVisiteSection">
-            <div class="d-flex justify-content-between align-items-center mb-3">
-                <div>
-                    <h1 class="page-title mb-0">Visite più Popolari</h1>
-                    <p class="text-muted mb-0">Le tre visite più acquistate sul marketplace</p>
-                </div>
-                <button class="btn-outline-custom" style="padding:5px 12px;font-size:0.8rem;white-space:nowrap;"
-                        onclick="switchSection('marketplace')">
-                    Vedi tutte <i class="fa-solid fa-arrow-right ms-1"></i>
-                </button>
-            </div>
-            <div class="glass-card p-4">
-                <div id="autoreVisiteTop3" style="display:flex;align-items:flex-end;gap:12px;padding:4px 0 0;"></div>
-            </div>
-        </div>
     `;
 
     try {
-        const [rMusei, rVisite] = await Promise.all([
-            fetch('/api/musei'), fetch('/api/visite'),
-        ]);
-        const [dMusei, dVisite] = await Promise.all([
-            rMusei.json(), rVisite.json(),
-        ]);
+        const rMusei = await fetch('/api/musei');
+        const dMusei = await rMusei.json();
 
         allMuseiAutore = dMusei.ok ? dMusei.data : [];
         _renderAutoreMuseiGrid(allMuseiAutore);
 
-        // Top 3 visite — podio
-        const visiteTop3 = document.getElementById('autoreVisiteTop3');
-        const museoMap = {};
-        allMuseiAutore.forEach(m => { museoMap[m.codiceIsil] = m.nome; });
-
-        if (dVisite.ok && dVisite.data.length) {
-            const sorted = [...dVisite.data]
-                .filter(v => v.pubblica)
-                .sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0))
-                .slice(0, 3);
-
-            const podioMeta = [
-                { rank: 1, color: '#f59e0b', bg: 'rgba(245,158,11,0.08)', emoji: '🥇', baseH: '72px' },
-                { rank: 2, color: '#94a3b8', bg: 'rgba(148,163,184,0.08)', emoji: '🥈', baseH: '48px' },
-                { rank: 3, color: '#cd7c3a', bg: 'rgba(205,124,58,0.08)',  emoji: '🥉', baseH: '28px' },
-            ];
-
-            const podioCard = (v, meta, museoName) => `
-                <div style="flex:1;display:flex;flex-direction:column;border-radius:16px;overflow:hidden;
-                            border:2px solid ${meta.color}50;background:${meta.bg};
-                            transition:transform 0.22s ease,box-shadow 0.22s ease;cursor:pointer;"
-                     onmouseenter="this.style.transform='translateY(-10px) scale(1.04)';
-                                   this.style.boxShadow='0 18px 40px rgba(0,0,0,0.13)';"
-                     onmouseleave="this.style.transform='';this.style.boxShadow='';"
-                     onclick="switchSection('marketplace')">
-                    <div style="text-align:center;padding:18px 12px 10px;">
-                        <span style="font-size:2.2rem;line-height:1;">${meta.emoji}</span>
-                        <div style="font-size:0.72rem;font-weight:700;letter-spacing:0.05em;
-                                    color:${meta.color};margin-top:4px;text-transform:uppercase;">
-                            ${meta.rank}° posto
-                        </div>
-                    </div>
-                    <div style="padding:0 12px 14px;flex:1;display:flex;flex-direction:column;gap:6px;text-align:center;">
-                        <p style="margin:0;font-weight:700;font-size:0.88rem;
-                                   overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;
-                                   line-clamp:2;-webkit-box-orient:vertical;">
-                            ${v.nomeVisita}
-                        </p>
-                        <p style="margin:0;font-size:0.74rem;color:#94a3b8;
-                                   white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            ${museoName}
-                        </p>
-                        <p style="margin:0;font-size:0.74rem;color:#94a3b8;">
-                            <i class="fa-solid fa-users me-1"></i>${v.acquirenti || 0} acquirenti
-                        </p>
-                        <div style="margin-top:auto;padding-top:10px;display:flex;flex-direction:column;gap:6px;align-items:center;">
-                            ${v.prezzo > 0
-                                ? `<span class="price-badge">€${v.prezzo}</span>`
-                                : `<span class="free-badge">Gratis</span>`
-                            }
-                            <button class="btn-magenta" style="width:100%;padding:5px 8px;font-size:0.76rem;">
-                                <i class="fa-solid fa-cart-plus me-1"></i>Acquista
-                            </button>
-                        </div>
-                    </div>
-                    <div style="height:${meta.baseH};background:${meta.color}25;
-                                border-top:3px solid ${meta.color}60;
-                                display:flex;align-items:center;justify-content:center;">
-                        <span style="font-size:1.6rem;font-weight:900;color:${meta.color};">${meta.rank}</span>
-                    </div>
-                </div>`;
-
-            if (!sorted.length) {
-                visiteTop3.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessuna visita pubblica disponibile.</p>';
-            } else {
-                // ordine visivo podio: 2° — 1° — 3°
-                const podioOrder = sorted.length === 1
-                    ? [[sorted[0], podioMeta[0]]]
-                    : sorted.length === 2
-                        ? [[sorted[1], podioMeta[1]], [sorted[0], podioMeta[0]]]
-                        : [[sorted[1], podioMeta[1]], [sorted[0], podioMeta[0]], [sorted[2], podioMeta[2]]];
-
-                visiteTop3.innerHTML = podioOrder
-                    .map(([v, meta]) => podioCard(v, meta, museoMap[v.codiceIsil] || v.codiceIsil))
-                    .join('');
-            }
-        } else {
-            visiteTop3.innerHTML = '<p class="text-muted" style="font-size:0.88rem;">Nessuna visita disponibile.</p>';
-        }
-
+        const cittaSel = document.getElementById('filterAutoreCitta');
+        const citta = [...new Set(allMuseiAutore.map(m => m.citta).filter(Boolean))].sort();
+        cittaSel.innerHTML = '<option value="">Tutte le città</option>' +
+            citta.map(c => `<option value="${c}">${c}</option>`).join('');
     } catch (e) {
         console.error('Errore autore-musei:', e);
         document.getElementById('autoreMuseiGrid').innerHTML =
@@ -1298,11 +1201,12 @@ function _renderAutoreMuseiGrid(lista) {
 }
 
 window.filterAutoreMusei = function () {
-    const q = (document.getElementById('searchAutoreMusei')?.value || '').toLowerCase();
-    const filtered = q
-        ? allMuseiAutore.filter(m =>
-            m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q))
-        : allMuseiAutore;
+    const q      = (document.getElementById('searchAutoreMusei')?.value || '').toLowerCase();
+    const citta  = document.getElementById('filterAutoreCitta')?.value || '';
+    let filtered = allMuseiAutore;
+    if (q) filtered = filtered.filter(m =>
+        m.nome.toLowerCase().includes(q) || m.citta.toLowerCase().includes(q));
+    if (citta) filtered = filtered.filter(m => m.citta === citta);
     _renderAutoreMuseiGrid(filtered);
 };
 
@@ -2039,6 +1943,23 @@ async function initAutoreAggiungiItem() {
                 <i class="fa-solid fa-plus me-2"></i>Nuovo Item
             </button>
         </div>
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-4">
+            <select id="filterAutoreItemMuseo" class="custom-input" style="max-width:200px;"
+                    onchange="filterAutoreItems()">
+                <option value="">Tutti i musei</option>
+            </select>
+            <select id="filterAutoreItemVisibilita" class="custom-input" style="max-width:160px;"
+                    onchange="filterAutoreItems()">
+                <option value="">Stato</option>
+                <option value="pubblica">Pubblici</option>
+                <option value="privata">Privati</option>
+            </select>
+            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:240px;">
+                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
+                <input type="text" id="searchAutoreItem" class="search-input py-2"
+                       placeholder="Cerca item…" oninput="filterAutoreItems()">
+            </div>
+        </div>
         <div id="autoreItemsListGrid" class="items-grid">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
@@ -2049,29 +1970,62 @@ async function initAutoreAggiungiItem() {
         const data = await res.json();
         allAutoreItems = data.ok ? data.data : [];
         _renderAutoreItemsList(allAutoreItems);
+
+        await ensureMuseiAutore();
+        const museoNameMap = {};
+        allMuseiAutore.forEach(m => { museoNameMap[m.codiceIsil] = m.nome; });
+
+        const museoSel = document.getElementById('filterAutoreItemMuseo');
+        const museiPresenti = [...new Set(allAutoreItems.map(it => it.museumId).filter(Boolean))]
+            .sort((a, b) => (museoNameMap[a] || a).localeCompare(museoNameMap[b] || b));
+        museoSel.innerHTML = '<option value="">Tutti i musei</option>' +
+            museiPresenti.map(id => `<option value="${id}">${museoNameMap[id] || id}</option>`).join('');
     } catch (e) {
         document.getElementById('autoreItemsListGrid').innerHTML =
             '<p class="empty-msg">Errore nel caricamento degli items.</p>';
     }
 }
 
+window.filterAutoreItems = function () {
+    const q      = (document.getElementById('searchAutoreItem')?.value || '').toLowerCase();
+    const museo  = document.getElementById('filterAutoreItemMuseo')?.value || '';
+    const vis    = document.getElementById('filterAutoreItemVisibilita')?.value || '';
+
+    let filtered = allAutoreItems;
+    if (q) filtered = filtered.filter(it => {
+        const testo = [
+            it.operaId || '',
+            it.toni?.semplice?.testo || '',
+            it.toni?.medio?.testo    || '',
+            it.toni?.avanzato?.testo || '',
+        ].join(' ').toLowerCase();
+        return testo.includes(q);
+    });
+    if (museo) filtered = filtered.filter(it => it.museumId === museo);
+    if (vis)   filtered = filtered.filter(it => vis === 'pubblica' ? it.pubblica : !it.pubblica);
+
+    _renderAutoreItemsList(filtered);
+};
+
 function _renderAutoreItemsList(lista) {
     const grid = document.getElementById('autoreItemsListGrid');
     if (!grid) return;
     if (!lista.length) {
-        grid.innerHTML = '<p class="empty-msg">Non hai ancora creato nessun item. Usa "Nuovo Item" per iniziare.</p>';
+        grid.innerHTML = allAutoreItems.length
+            ? '<p class="empty-msg">Nessun item corrisponde ai filtri selezionati.</p>'
+            : '<p class="empty-msg">Non hai ancora creato nessun item. Usa "Nuovo Item" per iniziare.</p>';
         return;
     }
     grid.innerHTML = lista.map(it => {
-        const preview = (it.toni?.semplice?.testo || '').substring(0, 70);
+        const preview = it.toni?.semplice?.testo || '';
         return `
         <div class="item-read-card">
             ${it.image
                 ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">`
                 : ''}
-            <h3 style="margin:0 0 4px;">${it.operaId}</h3>
-            <p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
-            ${preview ? `<p style="font-size:0.85rem;color:#64748b;margin:6px 0 0;">${preview}${preview.length >= 70 ? '…' : ''}</p>` : ''}
+            <h3 style="margin:0 0 4px;overflow-wrap:break-word;word-break:break-word;">${it.operaId}</h3>
+            <p class="opera-meta" style="overflow-wrap:break-word;word-break:break-word;"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
+            ${preview ? `<p class="description-text" style="font-size:0.85rem;color:#64748b;margin:6px 0 0;overflow-wrap:break-word;word-break:break-word;">${preview}</p>` : ''}
             <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 ${it.pubblica
                     ? '<span class="badge bg-success">Pubblico</span>'
@@ -2129,7 +2083,7 @@ window._showAutoreItemForm = async function (itemId) {
                         <option value="">— Prima seleziona un museo —</option>
                     </select>
                 </div>
-                ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:-14px 0 0;">Museo e opera non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
+                ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;"><i class="fa-solid fa-circle-info me-1"></i>Museo e opera non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
                 <div class="col-12">
                     <label class="custom-label">
                         Tono <strong>Semplice</strong>
@@ -4197,6 +4151,26 @@ function saveMktPurchases(p) {
     localStorage.setItem('purchases_' + SESSION.userId, JSON.stringify(p));
 }
 
+function getMktCart() {
+    try {
+        return JSON.parse(localStorage.getItem('cart_' + SESSION.userId) || '{"items":[],"visite":[]}');
+    } catch { return { items: [], visite: [] }; }
+}
+
+function saveMktCart(c) {
+    localStorage.setItem('cart_' + SESSION.userId, JSON.stringify(c));
+    updateMktCartBadge();
+}
+
+function updateMktCartBadge() {
+    const badge = document.getElementById('mktCartBadge');
+    if (!badge) return;
+    const c = getMktCart();
+    const count = c.items.length + c.visite.length;
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+}
+
 async function initMarketplace() {
     const section = document.getElementById('section-marketplace');
     mktTab = 'items';
@@ -4212,6 +4186,10 @@ async function initMarketplace() {
                 <h1 class="page-title">Marketplace</h1>
                 <p class="text-muted mb-0">Acquista visite e contenuti esclusivi dai nostri autori.</p>
             </div>
+            <button class="btn-outline-custom" style="position:relative" onclick="switchSection('carrello')">
+                <i class="fa-solid fa-cart-shopping me-1"></i> Carrello
+                <span id="mktCartBadge" style="display:none;position:absolute;top:-8px;right:-8px;background:#FF007F;color:#fff;border-radius:50%;min-width:20px;height:20px;font-size:0.72rem;font-weight:700;align-items:center;justify-content:center;padding:0 4px;">0</span>
+            </button>
         </div>
 
         <div class="glass-card p-4 mb-4">
@@ -4276,6 +4254,8 @@ async function initMarketplace() {
             </button>
         </div>
 
+        <div id="mktPopularCard"></div>
+
         <div id="mktContent" class="items-grid">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
@@ -4321,6 +4301,7 @@ async function initMarketplace() {
 
     _populateMktOpereSelect('');
     applyMktFilter();
+    updateMktCartBadge();
 }
 
 function _populateMktOpereSelect(codiceIsil) {
@@ -4400,6 +4381,8 @@ window.applyMktFilter = function () {
     const applyPriceFilter = (price) =>
         (prezzoMin <= 0 || price >= prezzoMin) && (!maxIsLimit || price <= prezzoMax);
 
+    renderMktPopularCard(mktTab === 'visite' ? 'visite' : mktTab === 'items' ? 'items' : null);
+
     if (mktTab === 'acquisti') {
         renderMktAcquisti(purchases, museoVal, applyPriceFilter, q);
         return;
@@ -4417,7 +4400,7 @@ window.applyMktFilter = function () {
             const bOwn = SESSION.userId && b.autoreId === SESSION.userId;
             return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
-        renderMktVisite(lista, purchases.visite);
+        renderMktVisite(lista, purchases.visite, getMktCart().visite);
     } else {
         let lista = allMktItems.filter(it => !purchases.items.includes(it._id));
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
@@ -4438,11 +4421,62 @@ window.applyMktFilter = function () {
             const bOwn = SESSION.userId && b.authorId === SESSION.userId;
             return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
-        renderMktItems(lista, purchases.items);
+        renderMktItems(lista, purchases.items, getMktCart().items);
     }
 };
 
-function renderMktItems(lista, purchasedIds) {
+function renderMktPopularCard(tipo) {
+    const container = document.getElementById('mktPopularCard');
+    if (!container) return;
+    if (!tipo) { container.innerHTML = ''; return; }
+
+    const fonte = tipo === 'items' ? allMktItems : allMktVisite;
+    const top3 = [...fonte]
+        .filter(x => (x.acquirenti || 0) > 0)
+        .sort((a, b) => (b.acquirenti || 0) - (a.acquirenti || 0))
+        .slice(0, 3);
+
+    if (!top3.length) { container.innerHTML = ''; return; }
+
+    const medalColors = ['#f59e0b', '#94a3b8', '#cd7c3a'];
+
+    container.innerHTML = `
+        <div class="glass-card p-4 mb-4">
+            <h3 class="scroll-section-label" style="margin-bottom:14px;">
+                <i class="fa-solid fa-fire" style="color:#FF007F;"></i>
+                ${tipo === 'items' ? 'I 3 items più popolari' : 'Le 3 visite più popolari'}
+            </h3>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;">
+                ${top3.map((x, i) => {
+                    const nome   = tipo === 'items' ? x.operaId : x.nomeVisita;
+                    const prezzo = tipo === 'items' ? (x.metadata?.prezzo || 0) : (x.prezzo || 0);
+                    const museo  = allMktMusei.find(m =>
+                        m.codiceIsil === (tipo === 'items' ? x.museumId : x.codiceIsil));
+                    return `
+                    <div style="flex:1;min-width:200px;display:flex;gap:12px;align-items:center;
+                                padding:12px 14px;border:1px solid #e2e8f0;border-radius:14px;">
+                        <div style="width:32px;height:32px;border-radius:50%;flex-shrink:0;
+                                    background:${medalColors[i]}22;border:2px solid ${medalColors[i]};
+                                    color:${medalColors[i]};display:flex;align-items:center;justify-content:center;
+                                    font-weight:800;font-size:0.95rem;">
+                            ${i + 1}
+                        </div>
+                        <div style="min-width:0;flex:1;">
+                            <p style="margin:0;font-weight:700;font-size:0.9rem;white-space:nowrap;
+                                       overflow:hidden;text-overflow:ellipsis;">${nome}</p>
+                            ${museo ? `<p style="margin:0;font-size:0.76rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${museo.nome}</p>` : ''}
+                            <p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;">
+                                <i class="fa-solid fa-users me-1"></i>${x.acquirenti} acquirenti
+                                ${prezzo > 0 ? ` · €${prezzo}` : ' · Gratis'}
+                            </p>
+                        </div>
+                    </div>`;
+                }).join('')}
+            </div>
+        </div>`;
+}
+
+function renderMktItems(lista, purchasedIds, cartIds = []) {
     const content = document.getElementById('mktContent');
     if (!lista.length) {
         content.className = '';
@@ -4453,6 +4487,7 @@ function renderMktItems(lista, purchasedIds) {
     content.innerHTML = lista.map(it => {
         const prezzo = it.metadata?.prezzo || 0;
         const bought = purchasedIds.includes(it._id);
+        const inCart = cartIds.includes(it._id);
         const isMio  = SESSION.userId && it.authorId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
         return `
@@ -4480,18 +4515,22 @@ function renderMktItems(lista, purchasedIds) {
                         ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
                                <i class="fa-solid fa-check"></i> Acquistato
                            </span>`
-                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                                   onclick="acquistaItem('${it._id}')">
-                               <i class="fa-solid fa-cart-plus me-1"></i>
-                               ${prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
-                           </button>`
+                        : inCart
+                            ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                                       onclick="rimuoviDalCarrello('items','${it._id}')">
+                                   <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
+                               </button>`
+                            : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                       onclick="aggiungiAlCarrello('items','${it._id}')">
+                                   <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
+                               </button>`
                 }
             </div>
         </div>`;
     }).join('');
 }
 
-function renderMktVisite(lista, purchasedIds) {
+function renderMktVisite(lista, purchasedIds, cartIds = []) {
     const content = document.getElementById('mktContent');
     if (!lista.length) {
         content.className = '';
@@ -4501,6 +4540,7 @@ function renderMktVisite(lista, purchasedIds) {
     content.className = 'items-grid';
     content.innerHTML = lista.map(v => {
         const bought = purchasedIds.includes(v._id);
+        const inCart = cartIds.includes(v._id);
         const isMia  = SESSION.userId && v.autoreId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
         return `
@@ -4526,11 +4566,15 @@ function renderMktVisite(lista, purchasedIds) {
                         ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
                                <i class="fa-solid fa-check"></i> Acquistata
                            </span>`
-                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                                   onclick="acquistaVisita('${v._id}')">
-                               <i class="fa-solid fa-cart-plus me-1"></i>
-                               ${v.prezzo > 0 ? 'Acquista' : 'Ottieni gratis'}
-                           </button>`
+                        : inCart
+                            ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                                       onclick="rimuoviDalCarrello('visite','${v._id}')">
+                                   <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
+                               </button>`
+                            : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                       onclick="aggiungiAlCarrello('visite','${v._id}')">
+                                   <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
+                               </button>`
                 }
             </div>
         </div>`;
@@ -4642,19 +4686,220 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
     content.innerHTML = html;
 }
 
-window.acquistaItem = function (id) {
+async function finalizzaAcquistoItem(id) {
     const item = allMktItems.find(it => it._id === id);
-    if (!item) return;
-    const prezzo = item.metadata?.prezzo || 0;
-    const msg = prezzo > 0
-        ? `Acquistare questo item per €${prezzo}?`
-        : 'Ottenere questo item gratuitamente?';
-    if (!confirm(msg)) return;
     const p = getMktPurchases();
-    if (!p.items.includes(id)) p.items.push(id);
+    if (!p.items.includes(id)) {
+        p.items.push(id);
+        if (item) {
+            try {
+                await fetch(`/api/items/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ acquirenti: (item.acquirenti || 0) + 1 }),
+                });
+                item.acquirenti = (item.acquirenti || 0) + 1;
+            } catch (e) { /* silent */ }
+        }
+    }
     saveMktPurchases(p);
+}
+
+window.aggiungiAlCarrello = function (tipo, id) {
+    const c = getMktCart();
+    if (!c[tipo].includes(id)) c[tipo].push(id);
+    saveMktCart(c);
     applyMktFilter();
 };
+
+window.rimuoviDalCarrello = function (tipo, id) {
+    const c = getMktCart();
+    c[tipo] = c[tipo].filter(x => x !== id);
+    saveMktCart(c);
+    if (document.getElementById('section-carrello')?.style.display !== 'none') initCarrello();
+    applyMktFilter();
+};
+
+async function initCarrello() {
+    const section = document.getElementById('section-carrello');
+    if (!section) return;
+
+    if (!allMktItems.length && !allMktVisite.length) {
+        try {
+            const [rItems, rVisite, rMusei] = await Promise.all([
+                fetch('/api/items?pubblica=true'),
+                fetch('/api/visite'),
+                fetch('/api/musei'),
+            ]);
+            const [dItems, dVisite, dMusei] = await Promise.all([
+                rItems.json(), rVisite.json(), rMusei.json(),
+            ]);
+            allMktItems  = dItems.ok  ? dItems.data : [];
+            allMktVisite = dVisite.ok ? dVisite.data.filter(v => v.pubblica) : [];
+            allMktMusei  = dMusei.ok  ? dMusei.data  : [];
+        } catch (_) { /* si procede coi dati eventualmente già in cache */ }
+    }
+
+    const cart = getMktCart();
+    const cartItems  = allMktItems.filter(it => cart.items.includes(it._id));
+    const cartVisite = allMktVisite.filter(v  => cart.visite.includes(v._id));
+    const totale = cartItems.reduce((s, it) => s + (it.metadata?.prezzo || 0), 0)
+                 + cartVisite.reduce((s, v)  => s + (v.prezzo || 0), 0);
+
+    section.innerHTML = `
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h1 class="page-title">Carrello</h1>
+                <p class="text-muted mb-0">Rivedi gli articoli scelti prima di procedere all'acquisto.</p>
+            </div>
+            <button class="btn-outline-custom" onclick="switchSection('marketplace')">
+                <i class="fa-solid fa-arrow-left me-1"></i> Torna al Marketplace
+            </button>
+        </div>
+        <div id="carrelloContent"></div>
+    `;
+
+    const content = document.getElementById('carrelloContent');
+
+    if (!cartItems.length && !cartVisite.length) {
+        content.innerHTML = `
+            <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+                <i class="fa-solid fa-cart-shopping" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                <p>Il carrello è vuoto.</p>
+                <p style="font-size:0.88rem;">Aggiungi items o visite dal Marketplace per vederli qui.</p>
+            </div>`;
+        return;
+    }
+
+    let html = '';
+
+    if (cartItems.length) {
+        html += `<h3 class="scroll-section-label">Items</h3><div class="items-grid" style="margin-bottom:32px;">`;
+        html += cartItems.map(it => {
+            const prezzo = it.metadata?.prezzo || 0;
+            const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
+            return `
+            <div class="item-read-card">
+                ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    ${prezzo > 0 ? `<span class="price-badge">€${prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
+                    <button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                            onclick="rimuoviDalCarrello('items','${it._id}')">
+                        <i class="fa-solid fa-trash me-1"></i> Rimuovi
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    if (cartVisite.length) {
+        html += `<h3 class="scroll-section-label">Visite</h3><div class="items-grid" style="margin-bottom:24px;">`;
+        html += cartVisite.map(v => {
+            const museo = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
+            return `
+            <div class="visita-read-card">
+                <h3>${v.nomeVisita}</h3>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                <div style="margin-top:10px;">
+                    ${v.prezzo > 0 ? `<span class="price-badge">€${v.prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
+                </div>
+                <div style="margin-top:12px;">
+                    <button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                            onclick="rimuoviDalCarrello('visite','${v._id}')">
+                        <i class="fa-solid fa-trash me-1"></i> Rimuovi
+                    </button>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    html += `
+        <div class="glass-card p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <span class="kpi-label">TOTALE</span>
+                <h2 class="text-magenta fw-900 mb-0">€${totale}</h2>
+            </div>
+            <div class="d-flex gap-2">
+                <button class="btn-outline-custom" onclick="svuotaCarrello()">
+                    <i class="fa-solid fa-trash me-1"></i> Svuota carrello
+                </button>
+                <button class="btn-magenta" onclick="checkoutCarrello()">
+                    <i class="fa-solid fa-check me-1"></i> Procedi all'acquisto
+                </button>
+            </div>
+        </div>`;
+
+    content.innerHTML = html;
+}
+
+window.svuotaCarrello = function () {
+    if (!confirm('Svuotare il carrello?')) return;
+    saveMktCart({ items: [], visite: [] });
+    initCarrello();
+};
+
+window.checkoutCarrello = async function () {
+    const cart = getMktCart();
+    if (!cart.items.length && !cart.visite.length) return;
+    if (!confirm('Confermi l\'acquisto di tutti gli articoli nel carrello?')) return;
+
+    const totale = allMktItems.filter(it => cart.items.includes(it._id))
+        .reduce((s, it) => s + (it.metadata?.prezzo || 0), 0)
+        + allMktVisite.filter(v => cart.visite.includes(v._id))
+        .reduce((s, v) => s + (v.prezzo || 0), 0);
+
+    for (const id of cart.items) {
+        await finalizzaAcquistoItem(id);
+    }
+    for (const id of cart.visite) {
+        await finalizzaAcquistoVisita(id);
+    }
+
+    saveMktCart({ items: [], visite: [] });
+
+    mostraModaleAcquistoConfermato(
+        totale > 0
+            ? `Il totale di <strong>€${totale}</strong> sarà da saldare direttamente presso il museo, al momento della visita.`
+            : 'I contenuti selezionati sono ora disponibili tra i tuoi acquisti.'
+    );
+};
+
+function mostraModaleAcquistoConfermato(messaggioHtml) {
+    document.getElementById('mktSuccessOverlay')?.remove();
+
+    const goToAcquisti = () => {
+        document.getElementById('mktSuccessOverlay')?.remove();
+        switchSection('marketplace');
+        setTimeout(() => {
+            const btn = document.getElementById('mktTabAcquisti');
+            if (btn) setMktTab('acquisti', btn);
+        }, 0);
+    };
+    window._mktGoToAcquisti = goToAcquisti;
+
+    const overlay = document.createElement('div');
+    overlay.id = 'mktSuccessOverlay';
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,7,10,0.65);backdrop-filter:blur(3px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.innerHTML = `
+        <div class="glass-card" style="background:#fff;max-width:420px;width:100%;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
+            <i class="fa-solid fa-circle-check" style="font-size:3rem;color:#FF007F;margin-bottom:16px;display:block;"></i>
+            <h2 style="font-family:'Playfair Display',serif;font-weight:800;font-size:1.5rem;margin-bottom:12px;color:#1e293b;">
+                Fantastico! Acquisto finalizzato.
+            </h2>
+            <p style="color:#64748b;font-size:0.95rem;line-height:1.6;margin-bottom:28px;">
+                ${messaggioHtml}
+            </p>
+            <button class="btn-magenta w-100 justify-content-center" onclick="window._mktGoToAcquisti()">
+                Vai ai miei acquisti
+            </button>
+        </div>`;
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) goToAcquisti(); });
+    document.body.appendChild(overlay);
+}
 
 /* ============================================================
    ADMIN — NAVIGATOR EXPORT
@@ -4799,17 +5044,22 @@ let quizCurrentVisite   = [];
 let quizCurrentVisitaId = null;
 let quizDomande         = [];
 
-function _quizKey(visitaId) {
-    return `quiz_${SESSION.userId}_${visitaId}`;
-}
-
-function _loadQuiz(visitaId) {
-    try { return JSON.parse(localStorage.getItem(_quizKey(visitaId)) || '[]'); }
-    catch { return []; }
-}
-
-function _saveQuiz(visitaId, domande) {
-    localStorage.setItem(_quizKey(visitaId), JSON.stringify(domande));
+async function _saveQuiz(visitaId, domande) {
+    try {
+        const res  = await fetch(`/api/visite/${visitaId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ quizDomande: domande }),
+        });
+        const data = await res.json();
+        if (!data.ok) { alert('Errore nel salvataggio del quiz: ' + (data.error || '')); return false; }
+        const cached = quizCurrentVisite.find(v => v._id === visitaId);
+        if (cached) cached.quizDomande = domande;
+        return true;
+    } catch (e) {
+        alert('Impossibile contattare il server per salvare il quiz.');
+        return false;
+    }
 }
 
 async function initCuratoreQuiz() {
@@ -4858,7 +5108,8 @@ window.onQuizVisitaChange = function () {
     if (!sel || !editor) return;
     quizCurrentVisitaId = sel.value;
     if (!quizCurrentVisitaId) { editor.style.display = 'none'; return; }
-    quizDomande = _loadQuiz(quizCurrentVisitaId);
+    const visita = quizCurrentVisite.find(v => v._id === quizCurrentVisitaId);
+    quizDomande = JSON.parse(JSON.stringify(visita?.quizDomande || []));
     editor.style.display = 'block';
     _renderQuizEditor();
 };
@@ -4970,7 +5221,7 @@ window.highlightCorrettaLabel = function () {
     });
 };
 
-window.salvaQuizDomanda = function () {
+window.salvaQuizDomanda = async function () {
     const testo = document.getElementById('qfTesto')?.value.trim();
     if (!testo) { alert('Inserisci il testo della domanda.'); return; }
 
@@ -4983,10 +5234,12 @@ window.salvaQuizDomanda = function () {
     const editIdx = parseInt(document.getElementById('qfEditIndex')?.value ?? '-1');
     const domanda = { testo, opzioni, corretta: parseInt(correttaEl.value) };
 
-    if (editIdx >= 0) quizDomande[editIdx] = domanda;
-    else              quizDomande.push(domanda);
+    const nuoveDomande = quizDomande.slice();
+    if (editIdx >= 0) nuoveDomande[editIdx] = domanda;
+    else              nuoveDomande.push(domanda);
 
-    _saveQuiz(quizCurrentVisitaId, quizDomande);
+    if (!(await _saveQuiz(quizCurrentVisitaId, nuoveDomande))) return;
+    quizDomande = nuoveDomande;
     _renderQuizEditor();
 };
 
@@ -5007,10 +5260,12 @@ window.editQuizDomanda = function (i) {
     title?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 };
 
-window.deleteQuizDomanda = function (i) {
+window.deleteQuizDomanda = async function (i) {
     if (!confirm('Eliminare questa domanda?')) return;
-    quizDomande.splice(i, 1);
-    _saveQuiz(quizCurrentVisitaId, quizDomande);
+    const nuoveDomande = quizDomande.slice();
+    nuoveDomande.splice(i, 1);
+    if (!(await _saveQuiz(quizCurrentVisitaId, nuoveDomande))) return;
+    quizDomande = nuoveDomande;
     _renderQuizEditor();
 };
 
@@ -5030,26 +5285,21 @@ window.resetQuizForm = function () {
         '<i class="fa-solid fa-plus-circle me-2" style="color:var(--magenta)"></i>Aggiungi Domanda';
 };
 
-window.acquistaVisita = async function (id) {
+async function finalizzaAcquistoVisita(id) {
     const visita = allMktVisite.find(v => v._id === id);
-    if (!visita) return;
-    const prezzo = visita.prezzo || 0;
-    const msg = prezzo > 0
-        ? `Acquistare "${visita.nomeVisita}" per €${prezzo}?`
-        : `Ottenere "${visita.nomeVisita}" gratuitamente?`;
-    if (!confirm(msg)) return;
     const p = getMktPurchases();
     if (!p.visite.includes(id)) {
         p.visite.push(id);
-        try {
-            await fetch(`/api/visite/${id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ acquirenti: (visita.acquirenti || 0) + 1 }),
-            });
-            visita.acquirenti = (visita.acquirenti || 0) + 1;
-        } catch (e) { /* silent */ }
+        if (visita) {
+            try {
+                await fetch(`/api/visite/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ acquirenti: (visita.acquirenti || 0) + 1 }),
+                });
+                visita.acquirenti = (visita.acquirenti || 0) + 1;
+            } catch (e) { /* silent */ }
+        }
     }
     saveMktPurchases(p);
-    applyMktFilter();
-};
+}

@@ -15,8 +15,9 @@
       html.embedded .sidebar        { display: none !important; }
       html.embedded .mobile-topbar  { display: none !important; }
       html.embedded .main-content                          { margin-left: 0 !important; padding-top: 0 !important; }
-      html.embedded .main-content > *:not(#section-marketplace) { display: none !important; }
-      html.embedded #section-marketplace                  { display: block !important; padding-top: 32px; }
+      html.embedded .main-content > *:not(#section-marketplace):not(#section-carrello) { display: none !important; }
+      html.embedded #section-marketplace                  { padding-top: 32px; }
+      html.embedded #section-carrello                     { padding-top: 32px; }
       html.embedded body                                  { background: transparent; }
     </style>
 </head>
@@ -392,6 +393,7 @@
              MARKETPLACE — condiviso fra tutti i ruoli
              ════════════════════════════════════════ -->
         <section id="section-marketplace" class="dashboard-section mb-5" style="display:none"></section>
+        <section id="section-carrello" class="dashboard-section mb-5" style="display:none"></section>
 
     </main>
 </div>

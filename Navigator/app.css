@@ -1324,6 +1324,242 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 .visita-termina-btn:hover:not(:disabled) { background: rgba(239,68,68,0.08); }
 .visita-termina-btn:disabled { opacity: 0.4; cursor: default; }
 
+/* ── Quiz di fine visita: bottone di avvio (ultimo item) ── */
+.visita-quiz-cta-bar {
+  display: flex;
+  justify-content: center;
+  padding: 0 24px 14px;
+  background: var(--card-bg, #fff);
+  flex-shrink: 0;
+}
+.visita-quiz-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--magenta, #FF007F);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 26px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  box-shadow: 0 6px 18px rgba(255,0,127,0.3);
+  transition: transform .15s ease, box-shadow .15s ease, opacity .15s;
+}
+.visita-quiz-cta-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px rgba(255,0,127,0.38);
+}
+.visita-quiz-cta-btn:disabled { opacity: 0.5; cursor: default; }
+
+/* ── Quiz panel (in corso / risultati) ── */
+.quiz-panel {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+.quiz-panel-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--magenta, #FF007F);
+}
+.quiz-panel-header i { font-size: 1.2rem; }
+.quiz-panel-header h2 {
+  flex: 1;
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text, #1e293b);
+  font-family: 'Playfair Display', serif;
+}
+.quiz-countdown {
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--magenta, #FF007F);
+  background: rgba(255,0,127,0.08);
+  border-radius: 10px;
+  padding: 4px 14px;
+}
+
+.quiz-empty { color: var(--muted, #94a3b8); text-align: center; padding: 24px 0; }
+
+/* ── Vista docente: quiz in corso ── */
+.quiz-docente-live {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+  padding: 32px 16px;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 16px;
+}
+.quiz-docente-live-text {
+  margin: 0;
+  color: var(--text, #334155);
+  font-size: 0.95rem;
+}
+
+/* ── Vista studente: domande del quiz ── */
+.quiz-domande-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.quiz-domanda-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  padding: 16px 18px;
+}
+.quiz-domanda-testo {
+  margin: 0 0 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text, #1e293b);
+}
+.quiz-opzioni-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.quiz-opzione-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  color: var(--text, #334155);
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color .15s, background .15s, color .15s;
+}
+.quiz-opzione-btn:hover:not(:disabled) { border-color: var(--magenta, #FF007F); }
+.quiz-opzione-btn:disabled { cursor: default; opacity: 0.7; }
+.quiz-opzione-btn--active {
+  border-color: var(--magenta, #FF007F);
+  background: rgba(255,0,127,0.07);
+  color: var(--magenta, #FF007F);
+  font-weight: 600;
+}
+.quiz-opzione-letter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px; height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.05);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+.quiz-opzione-btn--active .quiz-opzione-letter { background: var(--magenta, #FF007F); color: #fff; }
+
+.quiz-invia-btn {
+  background: var(--magenta, #FF007F);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 13px 20px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: opacity .15s;
+}
+.quiz-invia-btn:disabled { opacity: 0.55; cursor: default; }
+
+/* ── Risultati quiz (docente e studente) ── */
+.quiz-results-list, .quiz-my-result {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.quiz-result-card {
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 14px;
+  padding: 4px 4px;
+}
+.quiz-result-card summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 16px;
+  cursor: pointer;
+  list-style: none;
+}
+.quiz-result-card summary::-webkit-details-marker { display: none; }
+.quiz-result-name { font-weight: 700; color: var(--text, #1e293b); }
+.quiz-result-score {
+  font-weight: 800;
+  color: var(--magenta, #FF007F);
+  font-variant-numeric: tabular-nums;
+}
+.quiz-my-score {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--magenta, #FF007F);
+  text-align: center;
+  margin: 0 0 8px;
+  font-family: 'Playfair Display', serif;
+}
+
+.quiz-result-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 0 16px 16px;
+}
+.quiz-result-item {
+  border-left: 3px solid var(--border, #e2e8f0);
+  padding: 4px 0 4px 12px;
+}
+.quiz-result-item--ok { border-left-color: #22c55e; }
+.quiz-result-item--ko { border-left-color: #ef4444; }
+.quiz-result-q {
+  margin: 0 0 4px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  color: var(--text, #1e293b);
+}
+.quiz-result-a {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--muted, #94a3b8);
+}
+.quiz-result-correct {
+  margin: 2px 0 0;
+  font-size: 0.84rem;
+  color: #22c55e;
+  font-weight: 600;
+}
+
+[data-theme="dark"] .visita-quiz-cta-bar,
+[data-theme="dark"] .quiz-docente-live,
+[data-theme="dark"] .quiz-domanda-card,
+[data-theme="dark"] .quiz-result-card {
+  background: var(--card-bg, #1a2235);
+  border-color: rgba(255,255,255,0.08);
+}
+[data-theme="dark"] .quiz-opzione-btn { border-color: rgba(255,255,255,0.1); color: #cbd5e1; }
+[data-theme="dark"] .quiz-opzione-letter { background: rgba(255,255,255,0.08); }
+[data-theme="dark"] .quiz-countdown { background: rgba(255,0,127,0.15); }
+
 /* ── Chat backdrop ── */
 .visita-chat-overlay {
   position: fixed;
