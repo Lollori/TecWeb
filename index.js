@@ -208,6 +208,11 @@ app.delete('/api/visite/:id', async function (req, res) {
     res.json(result);
 });
 
+app.post('/api/visite/:id/acquista', async function (req, res) {
+    const result = await visite.acquista(mongoCredentials, req.params.id, req.body.userId);
+    res.json(result);
+});
+
 /* ========================== */
 /* API OPERE (Marketplace)    */
 /* ========================== */
@@ -280,6 +285,11 @@ app.put('/api/items/:id', async function (req, res) {
 
 app.delete('/api/items/:id', async function (req, res) {
     const result = await items.remove(mongoCredentials, req.params.id);
+    res.json(result);
+});
+
+app.post('/api/items/:id/acquista', async function (req, res) {
+    const result = await items.acquista(mongoCredentials, req.params.id, req.body.userId);
     res.json(result);
 });
 

@@ -255,6 +255,7 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
   const [remaining, setRemaining] = React.useState(
     () => Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000))
   );
+  const [filtroVisitatore, setFiltroVisitatore] = React.useState('');
 
   React.useEffect(() => {
     if (quiz.stato !== 'in-corso') return;
@@ -293,6 +294,20 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
   if (quiz.stato === 'terminato') {
     const risultati = quiz.risultati || [];
     const mio = !isDocente ? risultati.find(r => r.nome === nomeAssegnato) : null;
+    const pct = (punteggio, totale) => totale > 0 ? Math.round((punteggio / totale) * 100) : 0;
+
+    const domandePiuSbagliate = risultati.length === 0 ? [] : risultati[0].dettaglio
+      .map((d, i) => {
+        const errati = risultati.filter(r => r.dettaglio[i] && !r.dettaglio[i].isCorrect).length;
+        return { testo: d.testo, errati, totale: risultati.length, pct: pct(errati, risultati.length) };
+      })
+      .filter(d => d.errati > 0)
+      .sort((a, b) => b.errati - a.errati)
+      .slice(0, 5);
+
+    const risultatiFiltrati = filtroVisitatore
+      ? risultati.filter(r => r.nome === filtroVisitatore)
+      : risultati;
 
     const dettaglioBlock = (dettaglio) => (
       <div className="quiz-result-detail">
@@ -318,18 +333,53 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
         </div>
 
         {isDocente ? (
-          <div className="quiz-results-list">
-            {risultati.length === 0 && <p className="quiz-empty">Nessun partecipante ha risposto.</p>}
-            {risultati.map(r => (
-              <details key={r.nome} className="quiz-result-card">
-                <summary>
-                  <span className="quiz-result-name">{r.nome}</span>
-                  <span className="quiz-result-score">{r.punteggio} / {r.totale}</span>
-                </summary>
-                {dettaglioBlock(r.dettaglio)}
-              </details>
-            ))}
-          </div>
+          <>
+            {domandePiuSbagliate.length > 0 && (
+              <div className="quiz-most-missed-card">
+                <h3 className="quiz-most-missed-title">
+                  <i className="fa-solid fa-triangle-exclamation" /> Domande più sbagliate
+                </h3>
+                <div className="quiz-most-missed-list">
+                  {domandePiuSbagliate.map((d, i) => (
+                    <div key={i} className="quiz-most-missed-item">
+                      <p className="quiz-most-missed-q">{d.testo}</p>
+                      <p className="quiz-most-missed-stat">{d.errati} / {d.totale} risposte errate ({d.pct}%)</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {risultati.length > 0 && (
+              <div className="quiz-filter-bar">
+                <label htmlFor="quiz-filtro-visitatore">Visitatore</label>
+                <select
+                  id="quiz-filtro-visitatore"
+                  className="quiz-filtro-select"
+                  value={filtroVisitatore}
+                  onChange={e => setFiltroVisitatore(e.target.value)}
+                >
+                  <option value="">Tutti i visitatori</option>
+                  {risultati.map(r => (
+                    <option key={r.nome} value={r.nome}>{r.nome}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="quiz-results-list">
+              {risultati.length === 0 && <p className="quiz-empty">Nessun partecipante ha risposto.</p>}
+              {risultatiFiltrati.map(r => (
+                <details key={r.nome} className="quiz-result-card">
+                  <summary>
+                    <span className="quiz-result-name">{r.nome}</span>
+                    <span className="quiz-result-score">{r.punteggio} / {r.totale} · {pct(r.punteggio, r.totale)}%</span>
+                  </summary>
+                  {dettaglioBlock(r.dettaglio)}
+                </details>
+              ))}
+            </div>
+          </>
         ) : (
           <div className="quiz-my-result">
             {mio ? (
@@ -424,6 +474,11 @@ function VisitaItemScreen({
   const [quizPromptOpen, setQuizPromptOpen] = React.useState(false);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
+  const composeInputRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
+  }, [composeOpen]);
 
   React.useEffect(() => {
     if (!itemId) { setItem(null); return; }
@@ -576,6 +631,8 @@ function VisitaItemScreen({
         <div className="visita-item-progress-fill" style={{ width: `${progress}%` }} />
       </div>
 
+      <div className="visita-item-body">
+      <div className="visita-item-main">
       <div className="visita-item-content">
         {quiz ? (
           <QuizPanel
@@ -656,6 +713,38 @@ function VisitaItemScreen({
           </button>
         </div>
       )}
+      </div>
+
+      {/* Chat visitatore — parte del layout: quando è aperta lo schermo si
+          rimodella (il contenuto principale si restringe) invece di aprirsi
+          come pannello sopra il contenuto. */}
+      {!isDocente && (
+        <aside className={`visita-compose-sidebar${composeOpen ? ' visita-compose-sidebar--open' : ''}`}>
+          <div className="visita-compose-header">
+            <span>Invia un messaggio</span>
+            <button onClick={() => { setComposeOpen(false); setMsgText(''); }}>✕</button>
+          </div>
+          <div className="visita-compose-body">
+            <textarea
+              ref={composeInputRef}
+              className="visita-compose-input"
+              placeholder="Scrivi il tuo messaggio…"
+              value={msgText}
+              onChange={e => setMsgText(e.target.value)}
+              rows={3}
+              maxLength={280}
+            />
+            <button
+              className="visita-compose-send"
+              onClick={handleSendMsg}
+              disabled={!msgText.trim() || sending}
+            >
+              {sending ? 'Invio…' : 'Invia →'}
+            </button>
+          </div>
+        </aside>
+      )}
+      </div>
 
       {/* Prompt: avviare il quiz prima di terminare la visita? */}
       {isDocente && quizPromptOpen && (
@@ -793,34 +882,6 @@ function VisitaItemScreen({
               ))
             )}
             <div ref={chatEndRef} />
-          </div>
-        </div>
-      )}
-
-      {/* Compose sheet studente */}
-      {!isDocente && composeOpen && (
-        <div className="visita-compose-sheet">
-          <div className="visita-compose-header">
-            <span>Invia un messaggio</span>
-            <button onClick={() => { setComposeOpen(false); setMsgText(''); }}>✕</button>
-          </div>
-          <div className="visita-compose-body">
-            <textarea
-              className="visita-compose-input"
-              placeholder="Scrivi il tuo messaggio…"
-              value={msgText}
-              onChange={e => setMsgText(e.target.value)}
-              rows={3}
-              maxLength={280}
-              autoFocus
-            />
-            <button
-              className="visita-compose-send"
-              onClick={handleSendMsg}
-              disabled={!msgText.trim() || sending}
-            >
-              {sending ? 'Invio…' : 'Invia →'}
-            </button>
           </div>
         </div>
       )}
@@ -1892,13 +1953,7 @@ function App() {
     }
     try {
       const params = new URLSearchParams({ codiceIsil: isil });
-      if (userId) {
-        params.set('autoreId', userId);
-        try {
-          const p = JSON.parse(localStorage.getItem(`purchases_${userId}`) || '{"visite":[]}');
-          if (p.visite?.length) params.set('ids', p.visite.join(','));
-        } catch (_) {}
-      }
+      if (userId) params.set('autoreId', userId);
       const [museoRes, visiteRes] = await Promise.all([
         fetch(`/api/musei/${isil}`),
         fetch(`/api/visite?${params}`),

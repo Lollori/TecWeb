@@ -1678,6 +1678,12 @@ select.custom-input {
     height: 8px;
 }
 
+/* ── Vertical column track (Entrate Totali per Utente) ── */
+.analytics-col-track {
+    background: #e2e8f0;
+    border-radius: 4px;
+}
+
 /* ── KPI card ── */
 .kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
 .kpi-label { font-size: 0.82rem; color: #64748b; }
@@ -1935,6 +1941,10 @@ select.custom-input {
     background: rgba(255, 255, 255, 0.1);
 }
 
+[data-theme="dark"] .analytics-col-track {
+    background: rgba(255, 255, 255, 0.1);
+}
+
 /* ── View-toggle buttons (tabella / griglia) ── */
 .view-toggle-btn {
     padding: 8px 14px;
@@ -1953,4 +1963,21 @@ select.custom-input {
 [data-theme="dark"] .view-toggle-btn.vt-inactive {
     background: #1a2235;
     color: #94a3b8;
+}
+
+/* ========== STAMPA / ESPORTAZIONE PDF (Analytics) ========== */
+@media print {
+    body                { background: #fff !important; }
+    .sidebar,
+    .mobile-topbar,
+    .no-print           { display: none !important; }
+    .main-content       { margin-left: 0 !important; padding: 0 !important; background: #fff !important; }
+    .glass-card {
+        background: #fff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
 }

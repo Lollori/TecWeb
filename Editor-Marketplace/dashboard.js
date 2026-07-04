@@ -1476,11 +1476,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     <input type="text" id="vfNomeMnemonico" class="custom-input"
                            placeholder="es. uffizi_rinascimento" value="${(visita?.nomeMnemonico || '').replace(/"/g, '&quot;')}">
                 </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Domanda Quiz</label>
-                    <input type="text" id="vfQuizDomanda" class="custom-input"
-                           placeholder="es. In quale anno fu dipinta la Primavera?" value="${(visita?.quizDomanda || '').replace(/"/g, '&quot;')}">
-                </div>
                 <div class="col-12">
                     <label class="custom-label">Items da includere nella visita</label>
                     <div class="detail-tabs mb-3" style="margin-top:8px;">
@@ -1891,7 +1886,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
         const body = {
             nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
             nomeMnemonico: document.getElementById('vfNomeMnemonico').value.trim(),
-            quizDomanda:   document.getElementById('vfQuizDomanda').value.trim(),
             codiceIsil,
             prezzo:        isPubblica ? (parseFloat(document.getElementById('vfPrezzo').value) || 0) : 0,
             pubblica:      isPubblica,
@@ -4027,24 +4021,41 @@ window.adminEditItem = function (id) {
 async function initAdminAnalytics() {
     const section = document.getElementById('section-admin-analytics');
     section.innerHTML = `
-        <h1 class="page-title">Analytics</h1>
-        <p class="text-muted mb-4">Panoramica delle statistiche della piattaforma.</p>
+        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">Analytics</h1>
+                <p class="text-muted mb-0">Panoramica delle statistiche della piattaforma.</p>
+            </div>
+            <button class="btn-outline-custom no-print" onclick="exportAnalyticsPDF()">
+                <i class="fa-solid fa-file-pdf me-1"></i> Esporta PDF
+            </button>
+        </div>
         <div id="analyticsKpis" class="row g-4 mb-5">
             <div class="col-12 text-center text-muted py-4">
                 <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento dati…
             </div>
         </div>
         <div class="row g-4">
-            <div class="col-md-6">
+            <div class="col-md-6 d-flex flex-column gap-4">
                 <div class="glass-card p-4">
                     <h5 class="fw-bold mb-3">Distribuzione Visite</h5>
                     <div id="analyticsVisteChart" class="d-flex justify-content-around align-items-center gap-3"></div>
                 </div>
+                <div class="glass-card p-3">
+                    <h6 class="fw-bold mb-2">Orari Consigliati per la Visita <small class="text-muted fw-normal" style="font-size:0.68rem;">(dati stimati)</small></h6>
+                    <div id="analyticsOrariChart"></div>
+                </div>
             </div>
             <div class="col-md-6">
                 <div class="glass-card p-4">
-                    <h5 class="fw-bold mb-3">Items per Opera (Top 5)</h5>
-                    <div id="analyticsItemsChart"></div>
+                    <h5 class="fw-bold mb-3">Opere per Visita</h5>
+                    <div id="analyticsOpereChart"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="glass-card p-4">
+                    <h5 class="fw-bold mb-3">Entrate Totali per Utente</h5>
+                    <div id="analyticsRevenueChart"></div>
                 </div>
             </div>
         </div>`;
@@ -4100,30 +4111,98 @@ async function initAdminAnalytics() {
                   ], 'Prezzo')
                 : '<p class="text-muted text-center w-100">Nessun dato.</p>';
 
-        const barChart = (data, colorFn) => data.map(([label, val, max]) => `
-            <div class="mb-3">
-                <div class="d-flex justify-content-between mb-1">
-                    <small class="fw-bold">${label}</small>
-                    <small class="text-muted">${val}</small>
-                </div>
-                <div class="analytics-bar-track">
-                    <div style="width:${max ? Math.round(val/max*100) : 0}%;background:${colorFn()};border-radius:4px;height:8px;transition:width .4s;"></div>
-                </div>
-            </div>`).join('');
+        const orariConsigliati = [
+            { medaglia: '🥇', orario: '17:00–18:00', affluenza: 30 },
+            { medaglia: '🥈', orario: '09:00–10:00', affluenza: 35 },
+            { medaglia: '🥉', orario: '14:00–15:00', affluenza: 40 },
+        ];
 
-        const itemCounts = {};
-        items.forEach(it => { itemCounts[it.operaId] = (itemCounts[it.operaId] || 0) + 1; });
-        const top5 = Object.entries(itemCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
-        const maxItems = top5[0]?.[1] || 1;
-        document.getElementById('analyticsItemsChart').innerHTML =
-            top5.length
-                ? barChart(top5.map(([k, v]) => [k, v, maxItems]), () => '#6366f1')
+        document.getElementById('analyticsOrariChart').innerHTML =
+            `<p class="text-muted mb-2" style="font-size:0.78rem;">Fasce orarie con minore affluenza prevista</p>` +
+            orariConsigliati.map(o => `
+                <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(34,197,94,0.08);border-radius:10px;">
+                    <span style="font-size:1.1rem;line-height:1;">${o.medaglia}</span>
+                    <span class="fw-bold flex-grow-1" style="font-size:0.78rem;">${o.orario}</span>
+                    <span class="badge" style="background:#22c55e;font-size:0.68rem;font-weight:600;">${o.affluenza}% affluenza</span>
+                </div>`).join('');
+
+        const opereCounts = visite.map(v => ({
+            nome:  v.nomeVisita || v.nomeMnemonico || 'Senza nome',
+            count: v.opereCount || (v.itemIds || []).length,
+        }));
+        const avgOpere = opereCounts.length
+            ? opereCounts.reduce((s, o) => s + o.count, 0) / opereCounts.length
+            : 0;
+        const sortedOpere = [...opereCounts].sort((a, b) => b.count - a.count);
+        const maxOpere = sortedOpere[0]?.count || 1;
+
+        document.getElementById('analyticsOpereChart').innerHTML =
+            sortedOpere.length
+                ? `<p class="text-muted mb-1">Media: <b style="color:#e91e8c;">${avgOpere.toFixed(1)}</b> opere per visita</p>
+                   <p class="mb-3">
+                     <small class="text-muted"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;"></span> sopra media &nbsp; <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;"></span> sotto media</small>
+                   </p>` +
+                  sortedOpere.map(o => `
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small class="fw-bold">${o.nome}</small>
+                            <small class="text-muted">${o.count}</small>
+                        </div>
+                        <div class="analytics-bar-track">
+                            <div style="width:${maxOpere ? Math.round(o.count / maxOpere * 100) : 0}%;background:${o.count >= avgOpere ? '#22c55e' : '#f59e0b'};border-radius:4px;height:8px;transition:width .4s;"></div>
+                        </div>
+                    </div>`).join('')
+                : '<p class="text-muted">Nessun dato.</p>';
+
+        const userMap = {};
+        utenti.forEach(u => { userMap[u.userId] = u.username || u.userId; });
+
+        const sellerIds = new Set([
+            ...items.filter(it => it.pubblica && (it.metadata?.prezzo || 0) > 0).map(it => it.authorId),
+            ...visite.filter(v => v.pubblica && (v.prezzo || 0) > 0).map(v => v.autoreId),
+        ].filter(Boolean));
+
+        const revenueByUser = {};
+        sellerIds.forEach(id => { revenueByUser[id] = 0; });
+        items.forEach(it => {
+            if (sellerIds.has(it.authorId)) revenueByUser[it.authorId] += (it.metadata?.prezzo || 0) * (it.acquirenti || 0);
+        });
+        visite.forEach(v => {
+            if (sellerIds.has(v.autoreId)) revenueByUser[v.autoreId] += (v.prezzo || 0) * (v.acquirenti || 0);
+        });
+
+        const revenueRows = Object.entries(revenueByUser)
+            .map(([uid, rev]) => [userMap[uid] || uid, rev])
+            .sort((a, b) => b[1] - a[1]);
+        const maxRevenue = revenueRows[0]?.[1] || 1;
+
+        document.getElementById('analyticsRevenueChart').innerHTML =
+            revenueRows.length
+                ? `<div class="d-flex align-items-end" style="height:200px;gap:20px;overflow-x:auto;padding-bottom:4px;">
+                    ${revenueRows.map(([label, val]) => `
+                        <div class="d-flex flex-column align-items-center" style="flex:0 0 auto;width:64px;">
+                            <small class="fw-bold mb-1" style="font-size:0.72rem;white-space:nowrap;">€${val.toFixed(0)}</small>
+                            <div class="analytics-col-track d-flex align-items-end justify-content-center" style="width:32px;height:140px;">
+                                <div style="width:100%;height:${maxRevenue ? Math.max(3, Math.round(val / maxRevenue * 100)) : 0}%;background:#e91e8c;border-radius:4px;transition:height .4s;"></div>
+                            </div>
+                            <small class="text-muted mt-2 text-center" style="font-size:0.7rem;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${label}">${label}</small>
+                        </div>`).join('')}
+                   </div>`
                 : '<p class="text-muted">Nessun dato.</p>';
 
     } catch (e) {
         document.getElementById('analyticsKpis').innerHTML =
             '<div class="col-12 text-center text-danger py-4">Errore nel caricamento dei dati.</div>';
     }
+}
+
+// Sfrutta la stampa del browser (con CSS dedicato) per generare il PDF:
+// nessuna libreria esterna, il salvataggio come PDF è a carico della finestra di stampa.
+function exportAnalyticsPDF() {
+    const originalTitle = document.title;
+    document.title = `Analytics ArtAround - ${new Date().toLocaleDateString('it-IT')}`;
+    window.addEventListener('afterprint', () => { document.title = originalTitle; }, { once: true });
+    window.print();
 }
 
 /* ============================================================
@@ -4177,9 +4256,25 @@ let allMktMusei  = [];
 let mktTab = 'items';
 
 function getMktPurchases() {
+    let local;
     try {
-        return JSON.parse(localStorage.getItem('purchases_' + SESSION.userId) || '{"items":[],"visite":[]}');
-    } catch { return { items: [], visite: [] }; }
+        local = JSON.parse(localStorage.getItem('purchases_' + SESSION.userId) || '{"items":[],"visite":[]}');
+    } catch { local = { items: [], visite: [] }; }
+
+    // Items e visite acquistati sono registrati anche lato server (acquirentiIds),
+    // così l'accesso resta legato all'account e sopravvive a logout/dispositivi diversi.
+    // Il localStorage resta solo come cache ottimistica finché allMktItems/allMktVisite non sono aggiornati.
+    const serverItemsIds = SESSION.userId
+        ? allMktItems.filter(it => Array.isArray(it.acquirentiIds) && it.acquirentiIds.includes(SESSION.userId)).map(it => it._id)
+        : [];
+    const serverVisiteIds = SESSION.userId
+        ? allMktVisite.filter(v => Array.isArray(v.acquirentiIds) && v.acquirentiIds.includes(SESSION.userId)).map(v => v._id)
+        : [];
+
+    return {
+        items:  Array.from(new Set([...(local.items  || []), ...serverItemsIds])),
+        visite: Array.from(new Set([...(local.visite || []), ...serverVisiteIds])),
+    };
 }
 
 function saveMktPurchases(p) {
@@ -4723,21 +4818,23 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
 
 async function finalizzaAcquistoItem(id) {
     const item = allMktItems.find(it => it._id === id);
-    const p = getMktPurchases();
-    if (!p.items.includes(id)) {
-        p.items.push(id);
-        if (item) {
-            try {
-                await fetch(`/api/items/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ acquirenti: (item.acquirenti || 0) + 1 }),
-                });
-                item.acquirenti = (item.acquirenti || 0) + 1;
-            } catch (e) { /* silent */ }
+    if (item?.acquirentiIds?.includes(SESSION.userId)) return;
+
+    try {
+        const res  = await fetch(`/api/items/${id}/acquista`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: SESSION.userId }),
+        });
+        const data = await res.json();
+        if (data.ok && item) {
+            item.acquirentiIds = data.data.acquirentiIds;
+            item.acquirenti    = data.data.acquirenti;
         }
-    }
-    saveMktPurchases(p);
+    } catch (e) { /* silent */ }
+
+    const p = getMktPurchases();
+    if (!p.items.includes(id)) { p.items.push(id); saveMktPurchases(p); }
 }
 
 window.aggiungiAlCarrello = function (tipo, id) {
@@ -5169,9 +5266,16 @@ window.onQuizVisitaChange = function () {
     _renderQuizEditor();
 };
 
+function _quizVisitaHaItems() {
+    const visita = quizCurrentVisite.find(v => v._id === quizCurrentVisitaId);
+    return ((visita?.itemIds) || []).length > 0;
+}
+
 function _renderQuizEditor() {
     const editor = document.getElementById('quizEditor');
     if (!editor) return;
+
+    const hasItems = _quizVisitaHaItems();
 
     const domHtml = quizDomande.length
         ? quizDomande.map((d, i) => `
@@ -5220,6 +5324,7 @@ function _renderQuizEditor() {
         </div>
         <div id="quizDomandeList" class="mb-4">${domHtml}</div>
         <hr style="border-color:#e2e8f0;margin:24px 0;">
+        ${hasItems ? `
         <h5 class="fw-bold mb-4" id="quizFormTitle">
             <i class="fa-solid fa-plus-circle me-2" style="color:var(--magenta)"></i>
             Aggiungi Domanda
@@ -5258,7 +5363,13 @@ function _renderQuizEditor() {
                     <i class="fa-solid fa-floppy-disk me-2"></i>Salva Domanda
                 </button>
             </div>
-        </div>`;
+        </div>` : `
+        <div style="display:flex;align-items:center;gap:10px;padding:14px 18px;
+                     border-radius:10px;background:rgba(239,68,68,0.08);
+                     border:1px solid rgba(239,68,68,0.3);color:#ef4444;font-size:0.9rem;">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <span>Non è possibile creare un quiz per questa visita perché non contiene ancora nessun item. Aggiungi almeno un item alla visita prima di poter creare le domande del quiz.</span>
+        </div>`}`;
 }
 
 window.highlightCorrettaLabel = function () {
@@ -5277,6 +5388,11 @@ window.highlightCorrettaLabel = function () {
 };
 
 window.salvaQuizDomanda = async function () {
+    if (!_quizVisitaHaItems()) {
+        alert('Non è possibile creare un quiz per questa visita perché non contiene ancora nessun item.');
+        return;
+    }
+
     const testo = document.getElementById('qfTesto')?.value.trim();
     if (!testo) { alert('Inserisci il testo della domanda.'); return; }
 
@@ -5342,19 +5458,21 @@ window.resetQuizForm = function () {
 
 async function finalizzaAcquistoVisita(id) {
     const visita = allMktVisite.find(v => v._id === id);
-    const p = getMktPurchases();
-    if (!p.visite.includes(id)) {
-        p.visite.push(id);
-        if (visita) {
-            try {
-                await fetch(`/api/visite/${id}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ acquirenti: (visita.acquirenti || 0) + 1 }),
-                });
-                visita.acquirenti = (visita.acquirenti || 0) + 1;
-            } catch (e) { /* silent */ }
+    if (visita?.acquirentiIds?.includes(SESSION.userId)) return;
+
+    try {
+        const res  = await fetch(`/api/visite/${id}/acquista`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ userId: SESSION.userId }),
+        });
+        const data = await res.json();
+        if (data.ok && visita) {
+            visita.acquirentiIds = data.data.acquirentiIds;
+            visita.acquirenti    = data.data.acquirenti;
         }
-    }
-    saveMktPurchases(p);
+    } catch (e) { /* silent */ }
+
+    const p = getMktPurchases();
+    if (!p.visite.includes(id)) { p.visite.push(id); saveMktPurchases(p); }
 }

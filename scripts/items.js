@@ -29,6 +29,7 @@ const itemSchema = new mongoose.Schema({
     operaId:    { type: String, required: true, index: true },
     pubblica:   { type: Boolean, default: false },
     acquirenti: { type: Number, default: 0 },
+    acquirentiIds: { type: [String], default: [] },
 });
 
 const Item = mongoose.models.Item || mongoose.model("Item", itemSchema);
@@ -120,6 +121,28 @@ exports.remove = async (credentials, id) => {
         const deleted = await Item.findByIdAndDelete(id);
         if (!deleted) return { ok: false, error: "Item non trovato." };
         return { ok: true, message: "Item rimosso correttamente" };
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
+};
+
+// Registra l'acquisto lato server (idempotente): l'utente resta proprietario
+// dell'item anche dopo logout o su un altro dispositivo/browser.
+exports.acquista = async (credentials, id, userId) => {
+    try {
+        await connect(credentials);
+        if (!userId) return { ok: false, error: "Utente mancante." };
+
+        let item = await Item.findOneAndUpdate(
+            { _id: id, acquirentiIds: { $ne: userId } },
+            { $addToSet: { acquirentiIds: userId }, $inc: { acquirenti: 1 } },
+            { new: true, projection: { __v: 0 } }
+        );
+        if (!item) item = await Item.findById(id, { __v: 0 });
+        if (!item) return { ok: false, error: "Item non trovato." };
+
+        return { ok: true, data: item };
     } catch (e) {
         console.error(e);
         return { ok: false, error: e.message };

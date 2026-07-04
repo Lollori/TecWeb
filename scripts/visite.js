@@ -24,6 +24,7 @@ const visitaSchema = new mongoose.Schema({
     pubblica:         { type: Boolean, default: false },
     prezzo:           { type: Number,  default: 0 },
     acquirenti:       { type: Number,  default: 0 },
+    acquirentiIds:    { type: [String], default: [] },
     itemIds:          { type: [String], default: [] },
 });
 
@@ -68,13 +69,13 @@ exports.getAll = async (credentials, query) => {
             .split(',')
             .filter(id => id && mongoose.isValidObjectId(id));
 
-        if (query.autoreId && validIds.length) {
-            filter.$or = [
+        if (query.autoreId) {
+            const or = [
                 { autoreId: query.autoreId },
-                { _id: { $in: validIds } },
+                { acquirentiIds: query.autoreId },
             ];
-        } else if (query.autoreId) {
-            filter.autoreId = query.autoreId;
+            if (validIds.length) or.push({ _id: { $in: validIds } });
+            filter.$or = or;
         } else if (validIds.length) {
             filter._id = { $in: validIds };
         }
@@ -129,6 +130,28 @@ exports.remove = async (credentials, id) => {
         const deleted = await Visita.findByIdAndDelete(id);
         if (!deleted) return { ok: false, error: "Visita non trovata." };
         return { ok: true, message: `Visita "${deleted.nomeVisita}" eliminata.` };
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
+};
+
+// Registra l'acquisto lato server (idempotente): l'utente resta proprietario
+// della visita anche dopo logout o su un altro dispositivo/browser.
+exports.acquista = async (credentials, id, userId) => {
+    try {
+        await connect(credentials);
+        if (!userId) return { ok: false, error: "Utente mancante." };
+
+        let visita = await Visita.findOneAndUpdate(
+            { _id: id, acquirentiIds: { $ne: userId } },
+            { $addToSet: { acquirentiIds: userId }, $inc: { acquirenti: 1 } },
+            { new: true, projection: { __v: 0 } }
+        );
+        if (!visita) visita = await Visita.findById(id, { __v: 0 });
+        if (!visita) return { ok: false, error: "Visita non trovata." };
+
+        return { ok: true, data: visita };
     } catch (e) {
         console.error(e);
         return { ok: false, error: e.message };
