@@ -1,6 +1,30 @@
 const mongoose = require("mongoose");
-const mymongo = require("./mongo.js");
-const Opera = mymongo.Opera;
+
+const operaSchema = new mongoose.Schema({
+    codiceIsil: { type: String, required: true, index: true },
+    operaId:    { type: String, required: true },
+    tipo:       { type: String, default: '' },
+    autore:     { type: String, default: '' },
+    datazione:  { type: String, default: '' },
+    immagine:   { type: String, default: '' },
+    descrizione:{ type: String, default: '' },
+    linguaggio: { type: String, default: 'semplice' },
+    lunghezza:  { type: String, default: '1min' },
+    testo:      { type: String, default: '' },
+    licenza:    { type: String, default: 'gratuita' },
+    prezzo:     { type: Number, default: 0 },
+    pubblica:   { type: Boolean, default: false },
+    adozioni:   { type: Number, default: 0 },
+    creatoDa:   { type: String, default: '' },
+    altezza:    { type: Number, default: 0 },
+    larghezza:  { type: Number, default: 0 },
+    profondita: { type: Number, default: 0 },
+    tecnica:    { type: String, default: '' },
+    materiali:  { type: String, default: '' },
+    sala:       { type: String, default: '' },
+});
+
+const Opera = mongoose.models.Opera || mongoose.model("Opera", operaSchema);
 
 // ── HELPER: connessione ──────────────────────────────────────
 
