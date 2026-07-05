@@ -1,0 +1,133 @@
+/* ============================================================
+   Marketplace – Dashboard: tab navigazione museo, analytics,
+   KPI, donut chart, pictograph, view-toggle, print.
+   ============================================================ */
+
+/* ── Museo detail header ── */
+.museo-detail-back {
+    background: none; border: none;
+    color: var(--magenta); cursor: pointer;
+    font-weight: 600; font-size: 0.9rem;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 0; margin-bottom: 16px;
+    transition: var(--transition);
+}
+.museo-detail-back:hover { color: var(--magenta-light); }
+
+.museo-detail-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 800; font-size: 2rem;
+    color: var(--text-dark); margin: 0 0 4px;
+}
+.museo-detail-sub { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 24px; }
+
+/* ── Detail tabs ── */
+.detail-tabs {
+    display: flex; gap: 8px; margin-bottom: 24px;
+    border-bottom: 2px solid #e2e8f0; padding-bottom: 0;
+}
+.tab-btn {
+    background: none; border: none;
+    border-bottom: 2px solid transparent; margin-bottom: -2px;
+    padding: 10px 22px; font-weight: 600; font-size: 0.9rem;
+    font-family: 'Inter', sans-serif; color: var(--text-muted);
+    cursor: pointer; transition: var(--transition); border-radius: 0;
+}
+.tab-btn:hover  { color: var(--text-dark); }
+.tab-btn.active { color: var(--magenta); border-bottom-color: var(--magenta); }
+
+/* ── Analytics bar tracks ── */
+.analytics-bar-track { background: #e2e8f0; border-radius: 4px; height: 8px; }
+.analytics-col-track { background: #e2e8f0; border-radius: 4px; }
+
+/* ── KPI card ── */
+.kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
+.kpi-label { font-size: 0.82rem; color: #64748b; }
+
+/* ── Donut chart ── */
+.donut-title       { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+.donut-center-val  { fill: #1e293b; }
+.donut-legend-text { font-size: 0.7rem; color: #64748b; }
+.donut-legend-val  { color: #1e293b; }
+
+/* ── Pictograph ── */
+.picto-wrap  { display: flex; flex-direction: column; gap: 10px; }
+.picto-row   { display: flex; align-items: center; gap: 10px; }
+.picto-label {
+    font-size: 0.78rem; font-weight: 600; color: #475569;
+    min-width: 110px; flex-shrink: 0; text-align: right;
+}
+.picto-dots  { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
+.picto-dot   { font-size: 0.82rem; color: #6366f1; }
+.picto-count { font-size: 0.75rem; font-weight: 700; color: #94a3b8; min-width: 20px; text-align: right; }
+.picto-key {
+    font-size: 0.7rem; color: #94a3b8;
+    margin-top: 6px; padding-top: 8px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    display: flex; align-items: center; gap: 5px;
+}
+
+/* ── View-toggle (tabella / griglia) ── */
+.view-toggle-btn {
+    padding: 8px 14px; border: none;
+    cursor: pointer; transition: background 0.2s, color 0.2s;
+}
+.view-toggle-btn.vt-active   { background: #FF007F; color: #fff; }
+.view-toggle-btn.vt-inactive { background: #f8f9fa; color: #888; }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .detail-tabs    { border-bottom-color: rgba(255, 255, 255, 0.08); }
+[data-theme="dark"] .tab-btn:hover  { color: #e8edf5; }
+
+[data-theme="dark"] .analytics-bar-track { background: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .analytics-col-track { background: rgba(255, 255, 255, 0.1); }
+
+[data-theme="dark"] .kpi-icon          { color: rgba(255,255,255,0.18); }
+[data-theme="dark"] .kpi-label         { color: #94a3b8; }
+[data-theme="dark"] .donut-title       { color: #64748b; }
+[data-theme="dark"] .donut-center-val  { fill: #e2e8f0; }
+[data-theme="dark"] .donut-legend-text { color: #94a3b8; }
+[data-theme="dark"] .donut-legend-val  { color: #e2e8f0; }
+
+[data-theme="dark"] .picto-label { color: #cbd5e1; }
+[data-theme="dark"] .picto-count { color: #64748b; }
+[data-theme="dark"] .picto-key   { border-top-color: rgba(255,255,255,0.06); }
+
+[data-theme="dark"] .view-toggle-btn.vt-inactive { background: #1a2235; color: #94a3b8; }
+
+[data-theme="dark"] .table                 { color: #e8edf5; }
+[data-theme="dark"] .table th              { border-bottom-color: rgba(255, 255, 255, 0.08); color: #94a3b8; }
+[data-theme="dark"] .table td              { border-bottom-color: rgba(255, 255, 255, 0.05); }
+[data-theme="dark"] .table-hover tbody tr:hover { background-color: rgba(255, 255, 255, 0.04); }
+[data-theme="dark"] .table-hover tbody tr:hover > *,
+[data-theme="dark"] .table-hover tbody tr:hover td,
+[data-theme="dark"] .table-hover tbody tr:hover .fw-bold,
+[data-theme="dark"] .table-hover tbody tr:hover small,
+[data-theme="dark"] .table-hover tbody tr:hover .text-muted { color: #e8edf5 !important; }
+
+/* ── Table base ── */
+.table { width: 100%; margin-bottom: 1rem; color: var(--text-dark); }
+.table th {
+    font-weight: 700; font-size: 0.85rem;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    color: var(--text-muted); border-bottom: 2px solid #e2e8f0; padding: 12px 16px;
+}
+.table td { padding: 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
+.table-hover tbody tr:hover { background-color: #f8fafc; }
+
+/* ── Print ── */
+@media print {
+    body            { background: #fff !important; }
+    .sidebar,
+    .mobile-topbar,
+    .no-print       { display: none !important; }
+    .main-content   { margin-left: 0 !important; padding: 0 !important; background: #fff !important; }
+    .glass-card {
+        background: #fff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        box-shadow: none !important;
+        border: 1px solid #ddd !important;
+        break-inside: avoid;
+    }
+}

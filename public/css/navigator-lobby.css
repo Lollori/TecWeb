@@ -1,0 +1,130 @@
+/* ============================================================
+   Navigator – Lobby: schermata di attesa (docente e studente)
+   e schermata di join tramite codice.
+   ============================================================ */
+
+/* ── Join screen ── */
+.join-wrapper {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: calc(100vh - 200px); text-align: center;
+}
+.join-wrapper .page-title { margin-bottom: 8px; }
+.join-wrapper > p { color: #64748b; margin-bottom: 32px; }
+.join-card {
+  width: 100%; max-width: 500px;
+  background: var(--nav-card-bg); border: 1px solid var(--nav-border);
+  border-radius: 20px; padding: 40px;
+  display: flex; flex-direction: column; gap: 16px;
+}
+
+/* Bootstrap form-control override per il codice stanza */
+.join-code-input {
+  width: 100%; background: transparent;
+  border: 2px solid var(--nav-border); border-radius: 16px;
+  color: var(--nav-text);
+  font-size: 1.4rem; font-weight: 600; font-family: 'Inter', sans-serif;
+  padding: 18px 24px; text-align: center; outline: none;
+  transition: border-color 0.2s;
+}
+.join-code-input:focus               { border-color: var(--nav-magenta); }
+.join-code-input::placeholder        { color: var(--nav-muted); font-weight: 400; font-size: 1.1rem; }
+.join-code-input--error              { border-color: #f87171 !important; }
+.join-error                          { color: #ef4444; font-size: 0.88rem; text-align: center; }
+
+/* btn Bootstrap: class="btn btn-magenta w-100" */
+.student-join-btn {
+  width: 100%; background: var(--nav-magenta); color: #fff;
+  border: none; border-radius: 14px;
+  font-size: 1.1rem; font-weight: 700; font-family: 'Inter', sans-serif;
+  padding: 18px 32px; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.student-join-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); }
+.student-join-btn:disabled             { opacity: 0.35; cursor: default; }
+
+/* ── Lobby root ── */
+.lobby-root      { min-height: 100vh; display: flex; flex-direction: column; }
+.lobby-root--dark { background: var(--nav-dark); color: #f1f5f9; }
+.lobby-body {
+  display: flex; flex-direction: column;
+  max-width: 600px; width: 100%;
+  margin: 0 auto; padding: 40px 32px 80px; gap: 28px;
+}
+.lobby-body--center { align-items: center; text-align: center; }
+
+/* ── Lobby header ── */
+.lobby-header { display: flex; flex-direction: column; gap: 10px; }
+.lobby-label  {
+  font-size: 0.82rem; font-weight: 600; color: var(--nav-magenta);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+.lobby-title  {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.5rem, 4vw, 2.2rem); line-height: 1.2;
+}
+
+/* ── Codice condivisione ── */
+.lobby-code-box {
+  display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 14px; padding: 14px 20px;
+}
+.lobby-code-box--sm   { padding: 10px 16px; border-radius: 10px; }
+.lobby-code-label     { font-size: 0.82rem; color: var(--nav-muted); }
+.lobby-code {
+  font-size: 1.25rem; font-weight: 800; color: var(--nav-magenta);
+  font-family: 'Playfair Display', serif; letter-spacing: 0.02em;
+}
+.lobby-code-box--sm .lobby-code { font-size: 1rem; }
+
+/* ── Pannello partecipanti ── */
+.lobby-panel {
+  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 18px; padding: 24px;
+}
+.lobby-panel-title {
+  font-size: 1rem; font-weight: 700; color: #e2e8f0;
+  display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
+}
+.lobby-count-badge {
+  background: var(--nav-magenta); color: #fff;
+  border-radius: 20px; padding: 2px 10px;
+  font-size: 0.85rem; font-weight: 700;
+}
+.lobby-empty         { color: var(--nav-muted); font-size: 0.9rem; }
+.lobby-students-list { list-style: none; display: flex; flex-direction: column; gap: 10px; padding: 0; margin: 0; }
+.lobby-student-item  { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: #cbd5e1; }
+.lobby-avatar        {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: rgba(255,0,127,0.18); color: #ff7fc8;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 0.88rem; flex-shrink: 0;
+}
+.lobby-avatar--me    { background: rgba(255,0,127,0.4); color: #fff; }
+
+/* btn Bootstrap: class="btn btn-magenta w-100" */
+.inizia-btn {
+  width: 100%; background: var(--nav-magenta); color: #fff;
+  border: none; border-radius: 16px;
+  font-size: 1.1rem; font-weight: 700; font-family: 'Inter', sans-serif;
+  padding: 20px 32px; cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+.inizia-btn:hover:not(:disabled) { opacity: 0.88; transform: translateY(-2px); }
+.inizia-btn:disabled             { opacity: 0.3; cursor: default; }
+
+/* ── Lobby studente – attesa ── */
+.lobby-spinner-wrap  { padding: 24px 0 8px; }
+.lobby-spinner       { width: 52px; height: 52px; border-width: 4px; }
+.lobby-waiting-title { font-size: clamp(1.1rem, 3vw, 1.4rem); color: #e2e8f0; line-height: 1.4; max-width: 400px; }
+.lobby-you-are       { color: var(--nav-muted); font-size: 0.9rem; }
+.lobby-avatars-row   { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 8px; }
+.lobby-avatars-label { color: var(--nav-muted); font-size: 0.82rem; }
+.lobby-avatars       { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+
+/* ── Stato iniziata (non ancora usato ma preparato) ── */
+.lobby-started       { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 40px 32px; }
+.lobby-started-icon  { font-size: 4rem; line-height: 1; }
+.lobby-started-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-family: 'Playfair Display', serif; color: #f1f5f9; }
+.lobby-started-sub   { color: var(--nav-muted); font-size: 1rem; }

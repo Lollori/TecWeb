@@ -1,0 +1,231 @@
+/* ============================================================
+   Navigator – Musei: museum picker, mini-header, visite list,
+   toolbar filtro, map section, nav-main cards.
+   ============================================================ */
+
+/* ── Museum picker grid (Bootstrap grid in alternativa: row row-cols-md-2 g-4) ── */
+.picker-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.picker-card {
+  background: var(--nav-card-bg);
+  border: 1px solid var(--nav-border);
+  border-radius: 18px; overflow: hidden;
+  text-align: left; cursor: pointer; padding: 0;
+  max-width: 380px;
+  transition: all 0.25s;
+}
+.picker-card:hover {
+  border-color: rgba(255,0,127,0.4);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(255,0,127,0.15);
+}
+[data-theme="dark"] .picker-card { background: rgba(255,255,255,0.05); border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .picker-card:hover { background: rgba(255,255,255,0.08); }
+
+.picker-card-img { width: 100%; height: 150px; object-fit: cover; display: block; }
+.picker-card-placeholder {
+  width: 100%; height: 150px;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3rem; font-family: 'Playfair Display', serif;
+  color: rgba(255,0,127,0.4); font-weight: 800;
+}
+.picker-card-body { padding: 16px 18px; }
+.picker-card-name { font-weight: 700; font-size: 1rem; color: var(--nav-text); margin-bottom: 4px; }
+.picker-card-city { color: var(--nav-muted); font-size: 0.82rem; margin-bottom: 8px; }
+.picker-card-footer { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.picker-card-isil {
+  background: rgba(255,0,127,0.15); color: #ff7fc8;
+  border-radius: 12px; padding: 2px 10px;
+  font-size: 0.75rem; font-weight: 600;
+}
+.picker-card-mie-visite {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,0,127,0.12); color: #ff007f;
+  border-radius: 12px; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 600;
+}
+[data-theme="dark"] .picker-card-mie-visite { background: rgba(255,0,127,0.2); color: #ff7fc8; }
+
+/* ── Musei toolbar (ricerca + filtro visite) ── */
+.musei-toolbar-row { display: flex; align-items: center; gap: 12px; }
+
+.musei-visite-filter {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  background: var(--nav-card-bg); border: 1.5px solid var(--nav-border);
+  border-radius: 14px; padding: 0 18px; height: 52px;
+  font-size: 0.85rem; font-weight: 600; color: var(--nav-text);
+  cursor: pointer; transition: all 0.2s;
+}
+.musei-visite-filter:hover { border-color: rgba(255,0,127,0.4); color: #ff007f; }
+.musei-visite-filter--active {
+  background: rgba(255,0,127,0.1); border-color: #ff007f; color: #ff007f;
+}
+[data-theme="dark"] .musei-visite-filter { background: #1a2235; border-color: rgba(255,255,255,0.1); color: #e8edf5; }
+[data-theme="dark"] .musei-visite-filter--active { background: rgba(255,0,127,0.15); border-color: #ff007f; color: #ff7fc8; }
+
+/* ── Search box dark mode (search-box-container viene da marketplace.css) ── */
+[data-theme="dark"] .search-box-container { background: #1a2235; border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .search-input { color: #e8edf5; }
+[data-theme="dark"] .search-input::placeholder { color: #475569; }
+
+/* ── Museum mini header ── */
+.museo-mini-header {
+  display: flex; align-items: center; gap: 16px;
+  padding: 20px 32px;
+  background: var(--nav-dark);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.museo-mini-identity { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+.museo-mini-actions  { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.museo-mini-cover    { width: 60px; height: 60px; border-radius: 10px; overflow: hidden; flex-shrink: 0; }
+.museo-mini-cover img { width: 100%; height: 100%; object-fit: cover; }
+.museo-mini-info  { min-width: 0; }
+.museo-mini-title { font-size: 1.25rem; font-weight: 700; color: #f1f5f9; margin: 0 0 4px; font-family: 'Playfair Display', serif; }
+.museo-mini-sub   { font-size: 0.82rem; color: var(--nav-muted); margin: 0; }
+
+/* ── Show map button ── */
+.show-map-btn {
+  flex-shrink: 0; background: transparent;
+  border: 1.5px solid rgba(255,255,255,0.2); color: #e2e8f0;
+  border-radius: 8px; padding: 7px 14px;
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  white-space: nowrap;
+}
+.show-map-btn:hover    { border-color: var(--nav-magenta); color: #fff; }
+.show-map-btn--active  { border-color: var(--nav-magenta); color: var(--nav-magenta); background: rgba(255,0,127,0.08); }
+
+/* ── Museum map sections ── */
+.museo-map-section {
+  background: var(--nav-dark); padding: 0 0 16px;
+  border-bottom: 2px solid rgba(255,255,255,0.06);
+}
+.museo-map-iframe  { width: 100%; height: 280px; border: none; display: block; }
+.museo-map-link    {
+  display: inline-block; margin: 10px 32px 0;
+  font-size: 0.8rem; color: var(--nav-magenta);
+  text-decoration: none; font-weight: 500; opacity: 0.85; transition: opacity 0.2s;
+}
+.museo-map-link:hover { opacity: 1; }
+.museo-map-interna-section {
+  background: var(--nav-dark); padding: 16px 32px 20px;
+  border-bottom: 2px solid rgba(255,255,255,0.06);
+}
+.piano-tabs-nav { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 4px 16px; }
+
+/* Navigator usa piano-tab-btn su sfondi scuri: override del default di marketplace.css */
+.museo-map-interna-section .piano-tab-btn,
+.geo-piano-tabs .piano-tab-btn {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.12);
+  color: var(--nav-muted);
+}
+.museo-map-interna-section .piano-tab-btn:hover,
+.geo-piano-tabs .piano-tab-btn:hover { border-color: var(--nav-magenta); color: #e2e8f0; }
+.museo-map-interna-section .piano-tab-btn.active,
+.geo-piano-tabs .piano-tab-btn.active { background: rgba(255,0,127,0.15); border-color: var(--nav-magenta); color: var(--nav-magenta); }
+
+.museo-interna-img { display: block; width: auto; height: auto; max-width: 100%; max-height: 52vh; border-radius: 10px; background: #fff; margin: 0 auto; }
+
+/* ── Nav main + cards griglia ── */
+.nav-main  { max-width: 900px; margin: 0 auto; padding: 32px; }
+.nav-empty { color: var(--nav-muted); text-align: center; padding: 48px 0; font-size: 0.95rem; }
+.items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+}
+.nav-card {
+  background: var(--nav-card-bg); border: 1px solid var(--nav-border);
+  border-radius: 16px; overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.nav-card:hover { box-shadow: 0 8px 24px rgba(255,0,127,0.1); transform: translateY(-3px); }
+.nav-card-img   { width: 100%; height: 160px; object-fit: cover; }
+.nav-card-body  { padding: 16px; }
+.nav-card-title { font-weight: 700; font-size: 1rem; margin-bottom: 8px; }
+.nav-card-meta  { font-size: 0.82rem; color: var(--nav-muted); margin-bottom: 4px; }
+.nav-card-desc  {
+  font-size: 0.85rem; color: var(--nav-text); margin-top: 8px; line-height: 1.5;
+  display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* ── Visite list ── */
+.visite-section-title {
+  font-size: 0.75rem; font-weight: 700; color: var(--nav-muted);
+  text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px;
+}
+.visite-list   { display: flex; flex-direction: column; gap: 16px; }
+.visita-card   {
+  background: var(--nav-card-bg); border: 1px solid var(--nav-border);
+  border-radius: 16px; padding: 20px 24px; cursor: pointer;
+  transition: box-shadow 0.2s;
+}
+.visita-card:hover       { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+.visita-card--selected   { border-color: var(--nav-magenta) !important; box-shadow: 0 4px 20px rgba(255,0,127,0.12); }
+.visita-card-head        { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.visita-title            { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
+.visita-badge            { background: rgba(255,0,127,0.08); color: var(--nav-magenta); border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; font-weight: 600; }
+.visita-meta-right       { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+.visita-logistica        { font-size: 0.88rem; color: var(--nav-text); line-height: 1.5; margin-bottom: 10px; }
+.visita-avvia-row        { display: flex; justify-content: flex-end; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--nav-border); }
+
+/* Bottone avvia – usa anche class="btn btn-magenta" in Bootstrap */
+.avvia-btn {
+  background: var(--nav-magenta); color: #fff; border: none; border-radius: 10px;
+  padding: 10px 18px; font-size: 0.88rem; font-weight: 700; font-family: 'Inter', sans-serif;
+  cursor: pointer; white-space: nowrap; transition: opacity 0.2s, transform 0.15s;
+}
+.avvia-btn:hover:not(:disabled) { opacity: 0.87; transform: translateY(-1px); }
+.avvia-btn:disabled { opacity: 0.35; cursor: default; }
+
+/* ── DocVisiteList ── */
+.visita-card--docente    { padding: 0; overflow: hidden; }
+.visita-docente-top      { display: flex; }
+.visita-docente-cover    { width: 120px; min-width: 120px; height: 110px; flex-shrink: 0; overflow: hidden; }
+.visita-docente-cover img { width: 100%; height: 100%; object-fit: cover; }
+.visita-cover-placeholder {
+  width: 100%; height: 100%;
+  background: linear-gradient(135deg, #1e293b, #0f172a);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2.4rem; font-family: 'Playfair Display', serif;
+  color: rgba(255,0,127,0.35); font-weight: 800;
+}
+.visita-docente-info   { padding: 16px 18px; flex: 1; }
+.visita-docente-pills  { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 6px; }
+.visita-docente-launch { display: flex; gap: 12px; align-items: center; padding: 14px 18px; border-top: 1px solid var(--nav-border); background: var(--nav-body-bg); }
+.mnemonic-input {
+  flex: 1; border: 1px solid var(--nav-border); border-radius: 10px;
+  padding: 10px 14px; font-size: 0.9rem; font-family: 'Inter', sans-serif;
+  color: var(--nav-text); outline: none; background: transparent;
+  transition: border-color 0.2s;
+}
+.mnemonic-input:focus { border-color: var(--nav-magenta); }
+
+/* ── Join code btn ── */
+.join-code-btn {
+  background: transparent; border: 1.5px solid var(--nav-magenta);
+  color: var(--nav-magenta); border-radius: 8px; padding: 6px 14px;
+  font-size: 0.82rem; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif;
+  transition: background 0.2s, color 0.2s; white-space: nowrap;
+}
+.join-code-btn:hover { background: var(--nav-magenta); color: #fff; }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .mnemonic-input           { background: #1e293b; border-color: rgba(255,255,255,0.12); color: #f1f5f9; }
+[data-theme="dark"] .visita-docente-launch    { background: #0f172a; border-top-color: rgba(255,255,255,0.06); }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .museo-mini-header { flex-direction: column; align-items: flex-start; padding: 16px 20px; gap: 12px; }
+  .museo-mini-identity, .museo-mini-actions { width: 100%; }
+  .museo-mini-title { font-size: 1.05rem; }
+  .show-map-btn { flex: 1; justify-content: center; text-align: center; }
+  .musei-toolbar-row { flex-direction: column; align-items: stretch; }
+  .musei-visite-filter { justify-content: center; }
+}

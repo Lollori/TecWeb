@@ -1,0 +1,76 @@
+/* ============================================================
+   Marketplace – Base: variabili CSS, body, layout radice,
+   helper di testo, badge colore, utility Bootstrap-adjacent.
+   ============================================================ */
+
+:root {
+    --dark-navy:      #05070A;
+    --navy-deep:      #0B101A;
+    --navy-card:      #0F1520;
+    --magenta:        #FF007F;
+    --magenta-light:  #FF3399;
+    --magenta-dark:   #CC0066;
+    --magenta-glow:   rgba(255, 0, 127, 0.3);
+    --magenta-subtle: rgba(255, 0, 127, 0.08);
+    --white:          #FFFFFF;
+    --white-70:       rgba(255, 255, 255, 0.7);
+    --white-50:       rgba(255, 255, 255, 0.5);
+    --white-10:       rgba(255, 255, 255, 0.1);
+    --border-subtle:  rgba(255, 255, 255, 0.06);
+    --light-bg:       #f8fafc;
+    --text-dark:      #1e293b;
+    --text-muted:     #64748b;
+    --sidebar-width:  280px;
+    --transition:     all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--light-bg);
+    color: var(--text-dark);
+    margin: 0;
+}
+
+.admin-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ── Text helpers ── */
+.text-magenta { color: var(--magenta) !important; }
+.text-navy    { color: var(--dark-navy) !important; }
+.text-muted   { color: var(--text-muted) !important; }
+
+/* ── Badges ── */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.bg-magenta { background-color: var(--magenta) !important; color: white !important; }
+.bg-success  { background-color: #10b981 !important; color: white !important; }
+.bg-primary  { background-color: #6366f1 !important; color: white !important; }
+.btn-sm      { padding: 6px 16px !important; font-size: 0.85rem !important; }
+
+/* ── Role avatar colors ── */
+.bg-visitatore { background-color: var(--magenta) !important; }
+.bg-curatore   { background-color: #6366f1 !important; }
+.bg-autore     { background-color: var(--dark-navy) !important; }
+
+/* ── Bootstrap gap override ── */
+.gap-3 { gap: 1rem !important; }
+
+/* ── Dark mode vars + body ── */
+[data-theme="dark"] {
+    --light-bg:    #0f1623;
+    --text-dark:   #e8edf5;
+    --text-muted:  #94a3b8;
+}
+[data-theme="dark"] body {
+    background-color: #0f1623;
+    color: #e8edf5;
+}

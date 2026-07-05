@@ -1,0 +1,167 @@
+/* ============================================================
+   Navigator – Base: variabili tema, override Bootstrap,
+   utilità condivise tra tutti i componenti Navigator.
+   Caricato per primo dopo marketplace.css e Bootstrap.
+   ============================================================ */
+
+/* ── Variabili tema Navigator ── */
+:root {
+  --nav-magenta:  #ff007f;
+  --nav-dark:     #0f172a;
+  --nav-card-bg:  #ffffff;
+  --nav-border:   #e2e8f0;
+  --nav-text:     #334155;
+  --nav-muted:    #94a3b8;
+  --nav-body-bg:  #f8fafc;
+
+  /* Mappa le variabili Navigator su Bootstrap, così i componenti BS
+     ereditano il tema automaticamente */
+  --bs-primary:          var(--nav-magenta);
+  --bs-primary-rgb:      255, 0, 127;
+  --bs-font-sans-serif:  'Inter', sans-serif;
+  --bs-body-bg:          var(--nav-body-bg);
+  --bs-body-color:       var(--nav-text);
+  --bs-border-color:     var(--nav-border);
+}
+
+[data-theme="dark"] {
+  --nav-card-bg:    #1a2235;
+  --nav-border:     rgba(255,255,255,0.08);
+  --nav-text:       #e8edf5;
+  --nav-body-bg:    #0f172a;
+  --bs-body-bg:     #0f172a;
+  --bs-body-color:  #e8edf5;
+}
+
+/* ── Reset base ── */
+* { box-sizing: border-box; }
+body {
+  background: var(--nav-body-bg);
+  color: var(--nav-text);
+  font-family: 'Inter', sans-serif;
+}
+button { font-family: inherit; font-size: inherit; line-height: inherit; }
+
+/* ── Bootstrap btn-magenta extension ──
+   Usare: <button class="btn btn-magenta"> */
+.btn-magenta {
+  --bs-btn-color:              #fff;
+  --bs-btn-bg:                 var(--nav-magenta);
+  --bs-btn-border-color:       var(--nav-magenta);
+  --bs-btn-hover-color:        #fff;
+  --bs-btn-hover-bg:           #cc0066;
+  --bs-btn-hover-border-color: #cc0066;
+  --bs-btn-focus-shadow-rgb:   255, 0, 127;
+  --bs-btn-active-bg:          #cc0066;
+  --bs-btn-disabled-opacity:   0.35;
+}
+
+/* ── Spinner (Bootstrap-compatibile) ── */
+.nav-spinner {
+  display: inline-block;
+  width: 2.5rem; height: 2.5rem;
+  border: 3px solid var(--nav-border);
+  border-top-color: var(--nav-magenta);
+  border-radius: 50%;
+  animation: nav-spin 0.75s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes nav-spin { to { transform: rotate(360deg); } }
+
+/* ── Pills condivise (stat-pill / price-pill) ── */
+.stat-pill {
+  background: rgba(255,255,255,0.1); color: #e2e8f0;
+  border-radius: 20px; padding: 4px 14px;
+  font-size: 0.8rem; font-weight: 600;
+}
+.price-pill {
+  background: rgba(255,0,127,0.12); color: var(--nav-magenta);
+  border: 1px solid rgba(255,0,127,0.3);
+  border-radius: 20px; padding: 3px 12px;
+  font-size: 0.8rem; font-weight: 700;
+}
+
+/* ── Loading / Error ── */
+.nav-loading, .nav-error {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1rem; color: var(--nav-muted);
+}
+.nav-error-icon { font-size: 2.5rem; }
+.nav-back-link {
+  color: var(--nav-magenta); background: none; border: none;
+  font-size: 0.9rem; cursor: pointer; text-decoration: underline;
+}
+
+/* ── Admin layout – varianti Navigator ── */
+.main-content--visite { padding: 0; }
+.main-content--lobby  { padding: 0; display: flex; flex-direction: column; }
+.lobby-back-bar       { padding: 20px 32px 0; flex-shrink: 0; }
+
+/* ── Topbar studente (visibile solo su mobile) ── */
+.nav-topbar {
+  background: var(--nav-dark); padding: 10px 32px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.nav-topbar--split {
+  display: flex; justify-content: space-between; align-items: center;
+}
+.back-to-marketplace {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--nav-magenta); font-size: 0.85rem; font-weight: 500;
+  text-decoration: none; transition: opacity 0.2s;
+}
+.back-to-marketplace:hover { opacity: 0.75; }
+
+/* ── Dark-mode text overrides generici ── */
+[data-theme="dark"] .nav-card-title,
+[data-theme="dark"] .visita-title  { color: #f1f5f9; }
+[data-theme="dark"] .nav-card-desc { color: #cbd5e1; }
+[data-theme="dark"] .visita-logistica { color: #94a3b8; }
+
+/* ── Marketplace tab bar (usata nel pannello embed) ── */
+.mkt-tabs { display: flex; border-bottom: 2px solid var(--nav-border); margin-bottom: 24px; }
+.mkt-tab  {
+  background: none; border: none;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  padding: 12px 20px; color: var(--nav-muted); font-size: 0.9rem; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; gap: 8px;
+  transition: color 0.15s; font-family: inherit;
+}
+.mkt-tab:hover     { color: var(--nav-text); }
+.mkt-tab--active   { color: var(--nav-magenta); border-bottom-color: var(--nav-magenta); }
+
+/* ── Classi condivise con marketplace.js non in marketplace.css ── */
+.card-opera-img    { width: 100%; height: 180px; object-fit: cover; border-radius: 12px 12px 0 0; }
+.logistica-clamp   { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.badges-row        { display: flex; align-items: center; gap: 8px; }
+.btn-sell {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--nav-dark); color: #e2e8f0;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px; padding: 6px 14px;
+  font-size: 0.82rem; font-weight: 600; cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-sell:hover { background: #1e293b; }
+.btn-sell.is-sold { background: rgba(255,0,127,0.15); color: var(--nav-magenta); border-color: rgba(255,0,127,0.3); }
+.badge-standard { background: rgba(255,255,255,0.08); color: var(--nav-muted); border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; }
+
+/* ── Responsive ── */
+@media (max-width: 991px) {
+  .nav-topbar   { display: none; }
+  .lobby-root   { padding-top: 60px; }
+  .geo-room-panel { left: 0; }
+  .main-content--visite,
+  .main-content--lobby { padding-top: 80px; }
+  .lobby-back-bar { padding: 24px 20px 0; }
+}
+@media (max-width: 768px) {
+  .main-content--visite,
+  .main-content--lobby { padding-top: 76px; }
+}
+@media (max-width: 540px) {
+  .main-content--visite,
+  .main-content--lobby { padding-top: 72px; }
+}

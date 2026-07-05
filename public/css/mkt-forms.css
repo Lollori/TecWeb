@@ -1,0 +1,147 @@
+/* ============================================================
+   Marketplace – Forms: input, select, textarea, bottoni,
+   modal, search glass.
+   ============================================================ */
+
+/* ── Buttons ── */
+.btn-magenta {
+    background: var(--magenta);
+    color: white; border: none;
+    padding: 12px 28px; border-radius: 14px;
+    font-weight: 700; transition: var(--transition);
+    display: inline-flex; align-items: center; gap: 8px;
+    text-decoration: none;
+    box-shadow: 0 4px 16px var(--magenta-glow);
+}
+.btn-magenta:hover {
+    background: var(--magenta-light); color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--magenta-glow);
+}
+
+.btn-outline-custom {
+    background: white; border: 1px solid #e2e8f0;
+    padding: 12px 28px; border-radius: 14px;
+    font-weight: 600; color: var(--text-muted);
+    transition: var(--transition); cursor: pointer;
+}
+.btn-outline-custom:hover { background: #f1f5f9; border-color: #cbd5e1; }
+
+.btn-primary-glass {
+    background: var(--magenta); color: white; border: none;
+    padding: 10px 22px; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px var(--magenta-glow);
+}
+.btn-primary-glass:hover { background: var(--magenta-light); transform: translateY(-1px); }
+
+.btn-secondary-dash {
+    background: white; border: 1px solid #e2e8f0;
+    padding: 10px 22px; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--text-muted); cursor: pointer;
+    transition: var(--transition);
+}
+.btn-secondary-dash:hover { background: #f1f5f9; border-color: #cbd5e1; }
+
+.btn-submit {
+    background: var(--magenta); color: white; border: none;
+    padding: 10px 24px; border-radius: 12px;
+    font-weight: 600; font-size: 0.9rem;
+    font-family: 'Inter', sans-serif; cursor: pointer;
+    display: inline-flex; align-items: center; gap: 8px;
+    transition: var(--transition);
+    box-shadow: 0 4px 12px var(--magenta-glow);
+}
+.btn-submit:hover { background: var(--magenta-light); transform: translateY(-1px); }
+
+/* ── Modal ── */
+.custom-modal { background: white; border-radius: 24px; border: none; overflow: hidden; }
+.custom-modal .modal-header {
+    background: var(--dark-navy); color: white;
+    padding: 25px 40px; border: none;
+}
+.custom-modal .modal-header .btn-close { filter: invert(1); }
+.modal-title        { font-weight: 700; }
+.modal-title .text-magenta { color: var(--magenta) !important; }
+.modal-actions {
+    display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;
+}
+
+/* ── Form inputs ── */
+.custom-label {
+    font-weight: 700; color: var(--text-dark);
+    font-size: 0.85rem; margin-bottom: 8px;
+    display: block; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.custom-input {
+    border: 2px solid #e2e8f0; border-radius: 12px;
+    padding: 12px 18px; font-size: 0.95rem;
+    transition: var(--transition); width: 100%; background: white;
+}
+.custom-input:focus {
+    border-color: var(--magenta);
+    box-shadow: 0 0 0 3px var(--magenta-glow);
+    outline: none;
+}
+select.custom-input {
+    appearance: none; -webkit-appearance: none; -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2364748b'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 14px; padding-right: 40px; cursor: pointer;
+}
+
+/* ── Search box glass (usato nel dashboard Autore) ── */
+.search-box-glass {
+    background: white; border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    display: flex; align-items: center;
+    padding: 8px 16px; gap: 10px;
+    transition: var(--transition);
+}
+.search-box-glass:focus-within {
+    border-color: var(--magenta);
+    box-shadow: 0 0 0 3px rgba(255, 0, 127, 0.1);
+}
+.search-box-glass input {
+    border: none; outline: none;
+    font-size: 0.9rem; font-family: 'Inter', sans-serif;
+    color: var(--text-dark); background: transparent; width: 100%;
+}
+.search-box-glass input::placeholder { color: #94a3b8; }
+
+/* ── Dark mode ── */
+[data-theme="dark"] .btn-outline-custom {
+    background: #1a2235; border-color: rgba(255, 255, 255, 0.1); color: #94a3b8;
+}
+[data-theme="dark"] .btn-outline-custom:hover {
+    background: #1e2a42; border-color: rgba(255, 255, 255, 0.2); color: #e8edf5;
+}
+[data-theme="dark"] .custom-modal  { background: #1a2235; }
+[data-theme="dark"] .modal-content { background: #1a2235 !important; color: #e8edf5; }
+[data-theme="dark"] .modal-body    { background: #1a2235; color: #e8edf5; }
+[data-theme="dark"] .custom-input {
+    background-color: #1a2235;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e8edf5;
+}
+[data-theme="dark"] select.custom-input {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%2394a3b8'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+[data-theme="dark"] .custom-input::placeholder { color: #4a5568; }
+[data-theme="dark"] .search-box-glass {
+    background: #1a2235; border-color: rgba(255, 255, 255, 0.1);
+}
+[data-theme="dark"] .search-box-glass input         { color: #e8edf5; }
+[data-theme="dark"] .search-box-glass input::placeholder { color: #4a5568; }
+[data-theme="dark"] .btn-secondary-dash {
+    background: #1a2235; border-color: rgba(255, 255, 255, 0.1); color: #94a3b8;
+}
+[data-theme="dark"] .btn-secondary-dash:hover {
+    background: #1e2a42; border-color: rgba(255, 255, 255, 0.2); color: #e8edf5;
+}

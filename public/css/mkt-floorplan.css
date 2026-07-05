@@ -1,0 +1,156 @@
+/* ============================================================
+   Marketplace – Floorplan: mappa dashboard, pianta interna,
+   stanze SVG, amenity POI, pannello opera.
+   ============================================================ */
+
+/* ── Map action buttons ── */
+.museo-map-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 6px; }
+.map-action-btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: transparent;
+    border: 1.5px solid #e2e8f0; color: #64748b;
+    border-radius: 8px; padding: 7px 14px;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.map-action-btn:hover { border-color: var(--magenta); color: var(--magenta); }
+[data-theme="dark"] .map-action-btn       { border-color: rgba(255,255,255,0.15); color: #94a3b8; }
+[data-theme="dark"] .map-action-btn:hover { border-color: var(--magenta); color: var(--magenta); }
+
+/* ── External map panel ── */
+.dash-map-panel   { margin: 8px 0 16px; }
+.dash-map-section {
+    background: #f1f5f9; border: 1px solid #e2e8f0;
+    border-radius: 12px; overflow: hidden;
+}
+[data-theme="dark"] .dash-map-section { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+.dash-map-iframe  { width: 100%; height: 280px; border: none; display: block; }
+.dash-map-link {
+    display: inline-block; margin: 10px 16px;
+    font-size: 0.8rem; color: var(--magenta);
+    text-decoration: none; font-weight: 500;
+}
+.dash-map-link:hover { text-decoration: underline; }
+
+/* ── Internal floor plan ── */
+.dash-map-interna { padding: 16px 24px; }
+.piano-tabs       { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 4px 14px; }
+.piano-tab-btn {
+    background: transparent; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 5px 12px;
+    font-size: 0.82rem; font-weight: 600;
+    cursor: pointer; font-family: inherit;
+    color: #64748b; transition: all 0.2s;
+}
+.piano-tab-btn:hover  { border-color: var(--magenta); color: var(--magenta); }
+.piano-tab-btn.active {
+    background: rgba(255,0,127,0.08);
+    border-color: var(--magenta); color: var(--magenta);
+}
+[data-theme="dark"] .piano-tab-btn       { border-color: rgba(255,255,255,0.12); color: #94a3b8; }
+[data-theme="dark"] .piano-tab-btn.active { background: rgba(255,0,127,0.15); }
+
+.dash-floor-wrap {
+    position: relative; display: block;
+    width: fit-content; max-width: 100%;
+    margin: 0 auto; border-radius: 8px;
+    overflow: hidden; background: #fff;
+}
+.dash-floor-img {
+    display: block; width: auto; height: auto;
+    max-width: 100%; max-height: 50vh; border-radius: 8px;
+}
+.dash-floor-overlay {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%; z-index: 5; pointer-events: all;
+}
+.dash-floor-hidden { display: none; }
+
+/* ── Room SVG polygons ── */
+.dash-room-polygon {
+    fill: transparent; stroke: transparent;
+    cursor: pointer; pointer-events: all;
+    transition: fill 0.15s, stroke 0.15s;
+}
+.dash-room-polygon:hover {
+    fill: rgba(255,200,0,0.18);
+    stroke: rgba(255,200,0,0.65);
+    stroke-width: 1.5;
+}
+.dash-room-polygon--active {
+    fill: rgba(255,0,127,0.22);
+    stroke: #ff007f; stroke-width: 2;
+}
+.dash-room-hint { margin: 8px 0 0; text-align: center; font-size: 0.78rem; color: #94a3b8; font-style: italic; }
+
+/* ── Amenity POIs ── */
+.dash-amenity-polygon {
+    fill: rgba(99,102,241,0.16);
+    stroke: rgba(99,102,241,0.55);
+    stroke-width: 1; pointer-events: none;
+}
+.dash-amenity-marker {
+    position: absolute;
+    width: 22px; height: 22px;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(99,102,241,0.92); color: #fff;
+    border: 2px solid #fff; border-radius: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 0.62rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    z-index: 8; pointer-events: none;
+}
+
+/* ── Amenity legend ── */
+.dash-amenity-legend {
+    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    justify-content: center;
+    margin: 10px 0 0; padding-top: 10px;
+    border-top: 1px solid #e2e8f0;
+}
+.dash-amenity-legend:empty { display: none; border-top: none; margin: 0; padding: 0; }
+[data-theme="dark"] .dash-amenity-legend { border-top-color: rgba(255,255,255,0.08); }
+.dash-amenity-legend-item {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 0.72rem; color: #64748b;
+}
+[data-theme="dark"] .dash-amenity-legend-item { color: #94a3b8; }
+.dash-amenity-legend-icon {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 18px; height: 18px;
+    background: rgba(99,102,241,0.85); color: #fff;
+    border-radius: 50%; font-size: 0.55rem; flex-shrink: 0;
+}
+
+/* ── Room panel (scrollable, sidebar) ── */
+.dash-room-panel {
+    margin-top: 16px;
+    background: var(--card-bg, #fff);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px; padding: 14px 16px;
+    max-height: 260px; overflow-y: auto;
+}
+[data-theme="dark"] .dash-room-panel { background: #1e293b; border-color: rgba(255,255,255,0.08); }
+.dash-room-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; font-weight: 700; font-size: 0.88rem;
+}
+.dash-room-close {
+    background: none; border: none; cursor: pointer;
+    font-size: 1rem; color: #94a3b8; padding: 0 4px; line-height: 1;
+}
+.dash-room-close:hover { color: #ff007f; }
+.dash-room-loading,
+.dash-room-empty { color: #94a3b8; font-size: 0.88rem; text-align: center; padding: 8px 0; }
+
+/* ── Opera list inside room panel ── */
+.dash-opera-list { display: flex; flex-direction: column; gap: 10px; }
+.dash-opera-card { display: flex; gap: 12px; align-items: center; }
+.dash-opera-img  { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
+.dash-opera-body { flex: 1; min-width: 0; }
+.dash-opera-name {
+    font-weight: 600; font-size: 0.88rem;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.dash-opera-meta { font-size: 0.78rem; color: #94a3b8; margin-top: 2px; }
