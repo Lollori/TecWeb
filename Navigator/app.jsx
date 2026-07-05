@@ -1858,13 +1858,15 @@ function MarketplaceScreen() {
 /* ── App principale ─────────────────────────────────────── */
 
 function App() {
-  const [screen,  setScreen]  = React.useState('loading');
-  const [musei,   setMusei]   = React.useState([]);
-  const [museo,   setMuseo]   = React.useState(null);
-  const [visite,  setVisite]  = React.useState([]);
-  const [lobby,   setLobby]   = React.useState(null);
-  const [error,   setError]   = React.useState(null);
-  const [search,  setSearch]  = React.useState('');
+  const [screen,         setScreen]         = React.useState('loading');
+  const [musei,          setMusei]          = React.useState([]);
+  const [museo,          setMuseo]          = React.useState(null);
+  const [visite,         setVisite]         = React.useState([]);
+  const [lobby,          setLobby]          = React.useState(null);
+  const [error,          setError]          = React.useState(null);
+  const [search,         setSearch]         = React.useState('');
+  const [soloConiVisite, setSoloConiVisite] = React.useState(false);
+  const [museiConVisite, setMuseiConVisite] = React.useState(new Set());
 
   const userId   = localStorage.getItem('userId')   || '';
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
@@ -1936,6 +1938,23 @@ function App() {
       const res  = await fetch('/api/musei');
       const data = await res.json();
       setMusei(data.data || []);
+
+      // Carica le visite dell'utente per sapere quali musei hanno visite sue
+      if (userId) {
+        try {
+          const vParams = new URLSearchParams({ autoreId: userId });
+          try {
+            const p = JSON.parse(localStorage.getItem(`purchases_${userId}`) || '{"visite":[]}');
+            if (p.visite?.length) vParams.set('ids', p.visite.join(','));
+          } catch (_) {}
+          const vRes  = await fetch(`/api/visite?${vParams}`);
+          const vData = await vRes.json();
+          if (vData.ok && Array.isArray(vData.data)) {
+            setMuseiConVisite(new Set(vData.data.map(v => v.codiceIsil).filter(Boolean)));
+          }
+        } catch (_) {}
+      }
+
       setScreen('musei');
     } catch (_) {
       setError('Impossibile caricare la lista dei musei.');
@@ -2084,9 +2103,10 @@ function App() {
       ];
 
   const filteredMusei = musei.filter(m =>
-    !search.trim() ||
-    m.nome.toLowerCase().includes(search.toLowerCase()) ||
-    (m.citta || '').toLowerCase().includes(search.toLowerCase())
+    (!search.trim() ||
+      m.nome.toLowerCase().includes(search.toLowerCase()) ||
+      (m.citta || '').toLowerCase().includes(search.toLowerCase())) &&
+    (!soloConiVisite || museiConVisite.has(m.codiceIsil))
   );
 
   return (
@@ -2105,15 +2125,27 @@ function App() {
             </header>
 
             <div className="toolbar-section">
-              <div className="search-box-container">
-                <i className="fa-solid fa-magnifying-glass search-icon" />
-                <input
-                  className="search-input"
-                  type="text"
-                  placeholder="Cerca museo o città…"
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                />
+              <div className="musei-toolbar-row">
+                <div className="search-box-container" style={{ flex: 1 }}>
+                  <i className="fa-solid fa-magnifying-glass search-icon" />
+                  <input
+                    className="search-input"
+                    type="text"
+                    placeholder="Cerca museo o città…"
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
+                  />
+                </div>
+                {userId && museiConVisite.size > 0 && (
+                  <button
+                    className={`musei-visite-filter${soloConiVisite ? ' musei-visite-filter--active' : ''}`}
+                    onClick={() => setSoloConiVisite(v => !v)}
+                    title={soloConiVisite ? 'Mostra tutti i musei' : 'Mostra solo musei con le mie visite'}
+                  >
+                    <i className="fa-solid fa-ticket" />
+                    {soloConiVisite ? 'Tutti i musei' : 'Le mie visite'}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -2127,7 +2159,14 @@ function App() {
                   <div className="picker-card-body">
                     <h3 className="picker-card-name">{m.nome}</h3>
                     <p className="picker-card-city">{m.citta}</p>
-                    <span className="picker-card-isil">{m.codiceIsil}</span>
+                    <div className="picker-card-footer">
+                      <span className="picker-card-isil">{m.codiceIsil}</span>
+                      {museiConVisite.has(m.codiceIsil) && (
+                        <span className="picker-card-mie-visite">
+                          <i className="fa-solid fa-ticket" /> Le mie visite
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </button>
               ))}

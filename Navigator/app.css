@@ -964,6 +964,54 @@ button { font-family: inherit; font-size: inherit; line-height: inherit; }
 /* ── Picker card max-width so cards don't stretch too wide ── */
 .picker-card { max-width: 380px; }
 
+/* ── picker-card footer (isil + badge) ── */
+.picker-card-footer {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.picker-card-mie-visite {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: rgba(255,0,127,0.12); color: #ff007f;
+  border-radius: 12px; padding: 2px 10px;
+  font-size: 0.72rem; font-weight: 600;
+}
+[data-theme="dark"] .picker-card-mie-visite {
+  background: rgba(255,0,127,0.2); color: #ff7fc8;
+}
+
+/* ── Musei toolbar row (search + filter toggle) ── */
+.musei-toolbar-row {
+  display: flex; align-items: center; gap: 12px;
+}
+.musei-visite-filter {
+  display: inline-flex; align-items: center; gap: 7px;
+  white-space: nowrap;
+  background: var(--card-bg);
+  border: 1.5px solid var(--border);
+  border-radius: 14px; padding: 0 18px;
+  height: 52px; /* match search box height */
+  font-size: 0.85rem; font-weight: 600; color: var(--text);
+  cursor: pointer; transition: all 0.2s;
+}
+.musei-visite-filter:hover {
+  border-color: rgba(255,0,127,0.4);
+  color: #ff007f;
+}
+.musei-visite-filter--active {
+  background: rgba(255,0,127,0.1);
+  border-color: #ff007f;
+  color: #ff007f;
+}
+[data-theme="dark"] .musei-visite-filter {
+  background: #1a2235; border-color: rgba(255,255,255,0.1); color: #e8edf5;
+}
+[data-theme="dark"] .musei-visite-filter--active {
+  background: rgba(255,0,127,0.15); border-color: #ff007f; color: #ff7fc8;
+}
+@media (max-width: 600px) {
+  .musei-toolbar-row { flex-direction: column; align-items: stretch; }
+  .musei-visite-filter { justify-content: center; }
+}
+
 /* ── Navigator responsive (non-admin-layout screens) ── */
 @media (max-width: 991px) {
   .nav-topbar  { display: none; }
