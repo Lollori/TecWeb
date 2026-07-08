@@ -19,10 +19,12 @@
             <a class="navbar-brand fw-900" href="#">ArtAround<span class="text-magenta">.</span></a>
             <div class="ms-auto d-flex align-items-center gap-3">
                 <a href="/login/login.html" id="loginBtn" class="btn btn-magenta px-4 fw-bold">ACCEDI</a>
-                <button id="homeThemeToggle" onclick="toggleHomeTheme()" class="nav-theme-icon" title="Cambia tema">
-                    <i id="homeThemeIcon" class="fa-solid fa-moon"></i>
-                </button>
-                <div id="nav-profile-placeholder" class="d-flex align-items-center gap-3"></div>
+                <div class="nav-user-card d-flex align-items-center gap-3">
+                    <button id="homeThemeToggle" onclick="toggleHomeTheme()" class="nav-theme-icon" title="Cambia tema">
+                        <i id="homeThemeIcon" class="fa-solid fa-moon"></i>
+                    </button>
+                    <div id="nav-profile-placeholder" class="d-flex align-items-center gap-3"></div>
+                </div>
             </div>
         </div>
     </nav>
@@ -30,6 +32,8 @@
     <!-- HERO SECTION -->
     <section class="hero-section">
         <div class="hero-bg"></div>
+        <img src="/img/modalita-scura-1-neon.png" alt="" aria-hidden="true" class="hero-illustration hero-illustration--dark">
+        <img src="/img/modalita-scura-1-black.png" alt="" aria-hidden="true" class="hero-illustration hero-illustration--light">
         <div class="container text-center position-relative">
             <div class="hero-badge mb-4">L'Arte si adatta a te</div>
             <h1 class="hero-title fw-900 mb-4">
