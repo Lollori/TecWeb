@@ -4932,7 +4932,7 @@ async function initCarrello() {
             return `
             <div class="item-read-card">
                 ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
-                <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+                <h3 class="carrello-item-title">${it.operaId}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
                     ${prezzo > 0 ? `<span class="price-badge">€${prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
