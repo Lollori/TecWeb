@@ -4816,9 +4816,13 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
     content.innerHTML = html;
 }
 
+// Ritorna true solo se il server ha confermato e persistito l'acquisto:
+// il Navigator legge le visite/items acquistati esclusivamente da acquirentiIds lato DB,
+// quindi registrare l'acquisto solo in localStorage (anche se la chiamata fallisce)
+// disallineava marketplace (locale) e Navigator (server) — da qui la mancata sincronizzazione.
 async function finalizzaAcquistoItem(id) {
     const item = allMktItems.find(it => it._id === id);
-    if (item?.acquirentiIds?.includes(SESSION.userId)) return;
+    if (item?.acquirentiIds?.includes(SESSION.userId)) return true;
 
     try {
         const res  = await fetch(`/api/items/${id}/acquista`, {
@@ -4827,14 +4831,18 @@ async function finalizzaAcquistoItem(id) {
             body: JSON.stringify({ userId: SESSION.userId }),
         });
         const data = await res.json();
-        if (data.ok && item) {
-            item.acquirentiIds = data.data.acquirentiIds;
-            item.acquirenti    = data.data.acquirenti;
+        if (data.ok) {
+            if (item) {
+                item.acquirentiIds = data.data.acquirentiIds;
+                item.acquirenti    = data.data.acquirenti;
+            }
+            const p = getMktPurchases();
+            if (!p.items.includes(id)) { p.items.push(id); saveMktPurchases(p); }
+            return true;
         }
-    } catch (e) { /* silent */ }
+    } catch (e) { /* rete non disponibile */ }
 
-    const p = getMktPurchases();
-    if (!p.items.includes(id)) { p.items.push(id); saveMktPurchases(p); }
+    return false;
 }
 
 window.aggiungiAlCarrello = function (tipo, id) {
@@ -4984,14 +4992,24 @@ window.checkoutCarrello = async function () {
         + allMktVisite.filter(v => cart.visite.includes(v._id))
         .reduce((s, v) => s + (v.prezzo || 0), 0);
 
+    const itemsFalliti  = [];
+    const visiteFallite = [];
     for (const id of cart.items) {
-        await finalizzaAcquistoItem(id);
+        if (!(await finalizzaAcquistoItem(id))) itemsFalliti.push(id);
     }
     for (const id of cart.visite) {
-        await finalizzaAcquistoVisita(id);
+        if (!(await finalizzaAcquistoVisita(id))) visiteFallite.push(id);
     }
 
-    saveMktCart({ items: [], visite: [] });
+    // Solo gli acquisti confermati dal server vengono rimossi dal carrello:
+    // quelli falliti restano per permettere di ritentare.
+    saveMktCart({ items: itemsFalliti, visite: visiteFallite });
+
+    if (itemsFalliti.length || visiteFallite.length) {
+        alert('Alcuni articoli non sono stati acquistati per un problema di connessione al server. Sono rimasti nel carrello: riprova.');
+        initCarrello();
+        return;
+    }
 
     mostraModaleAcquistoConfermato(
         totale > 0
@@ -5458,7 +5476,7 @@ window.resetQuizForm = function () {
 
 async function finalizzaAcquistoVisita(id) {
     const visita = allMktVisite.find(v => v._id === id);
-    if (visita?.acquirentiIds?.includes(SESSION.userId)) return;
+    if (visita?.acquirentiIds?.includes(SESSION.userId)) return true;
 
     try {
         const res  = await fetch(`/api/visite/${id}/acquista`, {
@@ -5467,12 +5485,16 @@ async function finalizzaAcquistoVisita(id) {
             body: JSON.stringify({ userId: SESSION.userId }),
         });
         const data = await res.json();
-        if (data.ok && visita) {
-            visita.acquirentiIds = data.data.acquirentiIds;
-            visita.acquirenti    = data.data.acquirenti;
+        if (data.ok) {
+            if (visita) {
+                visita.acquirentiIds = data.data.acquirentiIds;
+                visita.acquirenti    = data.data.acquirenti;
+            }
+            const p = getMktPurchases();
+            if (!p.visite.includes(id)) { p.visite.push(id); saveMktPurchases(p); }
+            return true;
         }
-    } catch (e) { /* silent */ }
+    } catch (e) { /* rete non disponibile */ }
 
-    const p = getMktPurchases();
-    if (!p.visite.includes(id)) { p.visite.push(id); saveMktPurchases(p); }
+    return false;
 }

@@ -4,8 +4,7 @@
 global.rootDir = __dirname ;
 global.startDate = null;
 
-const template = require(global.rootDir + '/scripts/tpl.js');
-const mymongo = require(global.rootDir + '/scripts/mongo.js');
+const users = require(global.rootDir + '/scripts/users.js');
 let musei;
 try {
     musei = require(global.rootDir + '/scripts/musei.js');
@@ -49,7 +48,6 @@ let app = express();
 app.use('/js'  , express.static(global.rootDir +'/public/js'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
-app.use('/docs', express.static(global.rootDir +'/public/html'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
 app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
 app.use('/login', express.static(global.rootDir + '/Login'));
@@ -76,20 +74,13 @@ const mongoCredentials = {
 
 console.log(`Connessione DB impostata su: ${mongoCredentials.site}`);
 
-app.get('/db/create', async function (req, res) {
-    res.send(await mymongo.create(mongoCredentials))
-});
-app.get('/db/search', async function (req, res) {
-    res.send(await mymongo.search(req.query, mongoCredentials))
-});
-
 /* --- ROTTA LOGIN --- */
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     console.log(`[index.js] Tentativo di login per: ${username}`);
 
     try {
-        const user = await mymongo.findUser({ username: username, password: password }, mongoCredentials);
+        const user = await users.findUser({ username: username, password: password }, mongoCredentials);
 
         if (!user) {
             console.log(`[index.js] Login fallito per: ${username}`);
@@ -108,12 +99,12 @@ app.post('/api/login', async (req, res) => {
 app.post('/api/register', async (req, res) => {
     const { username, password, ruolo } = req.body;
     try {
-        const check = await mymongo.findUser({ username: username }, mongoCredentials);
+        const check = await users.findUser({ username: username }, mongoCredentials);
         if (check) {
             return res.status(400).json({ success: false, message: "Username già registrato!" });
         }
 
-        await mymongo.registerUser({ username: username, password: password, ruolo: ruolo || 'visitatore' }, mongoCredentials);
+        await users.registerUser({ username: username, password: password, ruolo: ruolo || 'visitatore' }, mongoCredentials);
         res.json({ success: true, message: "Registrazione avvenuta!" });
     } catch (e) {
         res.status(500).json({ success: false, message: "Errore nel salvataggio DB" });
@@ -124,17 +115,17 @@ app.post('/api/register', async (req, res) => {
 /* API UTENTI          */
 /* ========================== */
 app.get('/api/utenti/seed', async (_req, res) => {
-    const result = await mymongo.seedUsers(mongoCredentials);
+    const result = await users.seedUsers(mongoCredentials);
     res.json(result);
 });
 
 app.get('/api/utenti', async (_req, res) => {
-    const result = await mymongo.getAllUsers(mongoCredentials);
+    const result = await users.getAllUsers(mongoCredentials);
     res.json(result);
 });
 
 app.delete('/api/utenti/:id', async (req, res) => {
-    const result = await mymongo.deleteUser(req.params.id, mongoCredentials);
+    const result = await users.deleteUser(req.params.id, mongoCredentials);
     res.json(result);
 });
 
