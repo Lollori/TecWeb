@@ -405,6 +405,12 @@ function buildSidebar() {
    ============================================================ */
 
 function switchSection(id) {
+    // Su mobile "carrello" diventa una schermata a piena pagina non scrollabile
+    // (solo il div interno con items/visite scorre) — vedi mkt-layout.css.
+    // Marketplace invece resta una normale pagina scrollabile: solo la griglia
+    // items/visite/acquisti (#mktContent) ha un proprio scroll indipendente.
+    document.body.classList.toggle('carrello-fullscreen', id === 'carrello');
+
     document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
     const target = document.getElementById('section-' + id);
     if (target) target.style.display = 'block';
@@ -1625,8 +1631,10 @@ window._showAutoreVisitaForm = async function (visitaId) {
                             <i class="fa-solid fa-bag-shopping me-1"></i> Acquistati dal marketplace
                         </button>
                     </div>
-                    <div id="itemsCheckboxList"
-                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:320px;overflow-y:auto;padding:2px;">
+                    <input type="text" id="vfItemSearch" class="custom-input" placeholder="Cerca per nome opera…"
+                           style="margin-bottom:10px;" oninput="_renderVfItems()">
+                    <div id="itemsCheckboxList" class="vf-items-scrollbox"
+                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;width:100%;box-sizing:border-box;">
                         <p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">
                             Seleziona prima un museo per vedere gli items disponibili.
                         </p>
@@ -1637,7 +1645,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
                         <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
                     </p>
-                    <div id="itemsOrderPanel" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    <div id="itemsOrderPanel" class="vf-order-scrollbox"
+                         style="display:flex;flex-direction:column;gap:8px;width:100%;min-width:0;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;"></div>
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
@@ -1721,12 +1730,18 @@ window._showAutoreVisitaForm = async function (visitaId) {
             container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere gli items disponibili.</p>';
             return;
         }
-        const lista = _vfItemTab === 'miei' ? _vfMyItems : _vfAcquistatiItems;
-        if (!lista.length) {
+        const listaCompleta = _vfItemTab === 'miei' ? _vfMyItems : _vfAcquistatiItems;
+        if (!listaCompleta.length) {
             const msg = _vfItemTab === 'miei'
                 ? 'Nessun tuo item disponibile per questo museo. Crea un item dalla sezione "Aggiungi Item".'
                 : 'Nessun item acquistato disponibile per questo museo. Acquistane dal marketplace.';
             container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">${msg}</p>`;
+            return;
+        }
+        const q = (document.getElementById('vfItemSearch')?.value || '').trim().toLowerCase();
+        const lista = q ? listaCompleta.filter(it => (it.operaId || '').toLowerCase().includes(q)) : listaCompleta;
+        if (!lista.length) {
+            container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Nessun item corrisponde alla ricerca.</p>`;
             return;
         }
         container.innerHTML = lista.map(it => {
@@ -1736,21 +1751,27 @@ window._showAutoreVisitaForm = async function (visitaId) {
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
                           border:1px solid ${isChecked ? 'var(--magenta,#FF007F)' : '#e2e8f0'};
                           border-radius:10px;cursor:pointer;transition:border-color .18s,background .18s;
-                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};">
+                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};
+                          min-width:0;box-sizing:border-box;">
                 <input type="checkbox" name="itemsVisita" value="${it._id}"
                        ${isChecked ? 'checked' : ''}
-                       style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);"
+                       style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);flex-shrink:0;"
                        onchange="vfToggleItem('${it._id}',this.checked,this);">
-                <span style="font-size:0.88rem;">
+                <span style="font-size:0.88rem;min-width:0;overflow-wrap:anywhere;">
                     <strong>${it.operaId}</strong>
                     ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${preview.length >= 60 ? '…' : ''}</span>` : ''}
                 </span>
             </label>`;
         }).join('');
     }
+    // Esposta su window: l'input di ricerca la richiama tramite oninput inline,
+    // che gira in scope globale e non vedrebbe questa funzione altrimenti.
+    window._renderVfItems = _renderVfItems;
 
     async function _loadVfItemsForMuseo(codiceIsil, preserveSelection) {
         const container = document.getElementById('itemsCheckboxList');
+        const searchBox = document.getElementById('vfItemSearch');
+        if (searchBox) searchBox.value = '';
         _vfCurrentMuseo = codiceIsil;
         if (!codiceIsil) {
             _vfMyItems = [];
@@ -1764,23 +1785,46 @@ window._showAutoreVisitaForm = async function (visitaId) {
         }
         if (!preserveSelection) _vfSelectedItemIds = new Set();
         container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
-        try {
-            const [resOwn, resPublic] = await Promise.all([
-                fetch(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
-                fetch(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
-            ]);
-            const [dOwn, dPublic] = await Promise.all([resOwn.json(), resPublic.json()]);
-            _vfMyItems = dOwn.ok ? dOwn.data : [];
-            const purchases = getMktPurchases();
-            _vfAcquistatiItems = (dPublic.ok ? dPublic.data : [])
-                .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
-            await _vfLoadRoomGeo(codiceIsil);
-            _renderVfItems();
-            if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
-        } catch (e) {
-            container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento degli items.</p>';
+
+        // Le due fetch sono indipendenti: se una fallisce per un blip di rete
+        // (capita sulla rete del dipartimento) non deve far fallire anche
+        // l'altra — prima con Promise.all bastava un solo errore a rompere
+        // tutto, costringendo a ricaricare la pagina più volte.
+        const fetchJsonSafe = async (url) => {
+            try {
+                const r = await fetch(url);
+                const d = await r.json();
+                return d.ok ? d.data : [];
+            } catch (e) {
+                return null; // null = fallito, [] = ok ma vuoto
+            }
+        };
+        const [dOwn, dPublic] = await Promise.all([
+            fetchJsonSafe(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
+            fetchJsonSafe(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
+        ]);
+
+        if (dOwn === null && dPublic === null) {
+            container.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;">
+                    <p style="color:#e74c3c;font-size:0.88rem;margin-bottom:8px;">Errore nel caricamento degli items (connessione al server non riuscita).</p>
+                    <button type="button" class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                            onclick="_loadVfItemsForMuseo('${codiceIsil}', true)">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Riprova
+                    </button>
+                </div>`;
+            return;
         }
+
+        _vfMyItems = dOwn || [];
+        const purchases = getMktPurchases();
+        _vfAcquistatiItems = (dPublic || [])
+            .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
+        await _vfLoadRoomGeo(codiceIsil);
+        _renderVfItems();
+        if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
     }
+    window._loadVfItemsForMuseo = _loadVfItemsForMuseo;
 
     /* ---- ordinamento automatico per vicinanza spaziale (geoJson piantina) ---- */
 
@@ -1947,6 +1991,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                  style="display:flex;align-items:center;gap:12px;padding:10px 16px;
                         border:1px solid #e2e8f0;border-radius:10px;cursor:grab;
                         background:var(--card-bg,white);
+                        min-width:0;width:100%;box-sizing:border-box;
                         transition:box-shadow .15s,border-color .15s,opacity .15s;"
                  ondragstart="vfDragStart(event,this)"
                  ondragover="vfDragOver(event,this)"
@@ -1958,8 +2003,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                                        background:var(--magenta,#FF007F);color:#fff;
                                        display:inline-flex;align-items:center;justify-content:center;
                                        font-size:0.72rem;font-weight:700;flex-shrink:0;">${i + 1}</span>
-                <div style="flex:1;min-width:0;">
-                    <strong style="font-size:0.88rem;">${item.operaId}</strong>
+                <div style="flex:1;min-width:0;overflow:hidden;">
+                    <strong style="font-size:0.88rem;overflow-wrap:anywhere;">${item.operaId}</strong>
                     ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
                                             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
                 </div>
@@ -4967,10 +5012,12 @@ async function initCarrello() {
                 <i class="fa-solid fa-arrow-left me-1"></i> Torna al Marketplace
             </button>
         </div>
-        <div id="carrelloContent"></div>
+        <div id="carrelloScroll" class="carrello-scroll"></div>
+        <div id="carrelloFooter"></div>
     `;
 
-    const content = document.getElementById('carrelloContent');
+    const content = document.getElementById('carrelloScroll');
+    const footer  = document.getElementById('carrelloFooter');
 
     if (!cartItems.length && !cartVisite.length) {
         content.innerHTML = `
@@ -4992,7 +5039,7 @@ async function initCarrello() {
             return `
             <div class="item-read-card">
                 ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
-                <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+                <h3 class="carrello-item-title">${it.operaId}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
                     ${prezzo > 0 ? `<span class="price-badge">€${prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
@@ -5028,7 +5075,9 @@ async function initCarrello() {
         html += '</div>';
     }
 
-    html += `
+    content.innerHTML = html;
+
+    footer.innerHTML = `
         <div class="glass-card p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <span class="kpi-label">TOTALE</span>
@@ -5043,8 +5092,6 @@ async function initCarrello() {
                 </button>
             </div>
         </div>`;
-
-    content.innerHTML = html;
 }
 
 window.svuotaCarrello = function () {

@@ -91,6 +91,11 @@
 [data-theme="dark"] .search-input           { color: #e8edf5; }
 [data-theme="dark"] .search-input::placeholder { color: #4a5568; }
 
+/* ── Carrello: "Svuota carrello" e "Procedi all'acquisto" — cliccabili ma compatti ── */
+#carrelloFooter .btn-magenta,
+#carrelloFooter .btn-outline-custom { padding: 8px 16px; font-size: 0.8rem; gap: 6px; }
+.carrello-item-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+
 /* ── Responsive ── */
 @media (max-width: 991px) {
     .main-content {
@@ -125,7 +130,69 @@
     }
     .section-header-inline h3 { text-align: center; }
     .section-header-inline .search-box-container { width: 100%; max-width: 100%; }
+
+    /* ── Carrello: pagina a piena schermata non scrollabile, solo il div
+       interno (items + visite in carrello) scorre. Uscita unica tramite il
+       pulsante "Torna al Marketplace" già presente nell'header. ── */
+    body.carrello-fullscreen { overflow: hidden; }
+    body.carrello-fullscreen #section-carrello {
+        display: flex !important; flex-direction: column;
+        position: fixed; inset: 0; z-index: 10;
+        height: 100vh; height: 100dvh;
+        margin: 0; padding: 72px 12px 12px;
+        background: var(--light-bg);
+        overflow: hidden;
+    }
+    body.carrello-fullscreen #section-carrello .section-header-inline { flex-shrink: 0; margin-bottom: 10px; }
+    /* Via il sottotitolo e pulsante "Torna al Marketplace" più piccolo: sulla
+       schermata già ridotta del telefono servono a poco, tolgono spazio alle card. */
+    #section-carrello .section-header-inline p { display: none; }
+    #section-carrello .section-header-inline .btn-outline-custom { padding: 5px 12px; font-size: 0.78rem; }
+    #section-carrello .page-title { font-size: 1.3rem; margin-bottom: 0; }
+
+    .carrello-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 8px; }
+    .carrello-scroll .item-read-card,
+    .carrello-scroll .visita-read-card { padding: 12px; border-radius: 12px; gap: 6px; }
+    .carrello-scroll .item-read-card img { height: 90px; }
+    .carrello-scroll .item-read-card h3,
+    .carrello-scroll .visita-read-card h3 { font-size: 0.92rem; margin-bottom: 2px; }
+    .carrello-scroll .scroll-section-label { font-size: 0.95rem; margin-bottom: 8px; }
+
+    /* Sezione finale: totale e pulsanti sulla stessa riga, mai a capo
+       (flex-wrap:nowrap) — dimensioni tarate per entrare anche su schermi
+       stretti reali (iPhone ~390px di larghezza CSS), non solo in teoria. */
+    #carrelloFooter { flex-shrink: 0; }
+    #carrelloFooter .glass-card {
+        padding: 8px 10px; gap: 6px; flex-wrap: nowrap;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    #carrelloFooter .glass-card > div:first-child { flex-shrink: 0; }
+    #carrelloFooter .kpi-label  { font-size: 0.55rem; }
+    #carrelloFooter h2          { font-size: 0.9rem; }
+    #carrelloFooter .d-flex.gap-2 { gap: 4px !important; flex-shrink: 0; }
+    #carrelloFooter .btn-magenta,
+    #carrelloFooter .btn-outline-custom {
+        padding: 5px 8px; font-size: 0.62rem; gap: 3px; white-space: nowrap;
+    }
+
+    /* ── Marketplace: qui la pagina resta normalmente scrollabile (non è a
+       schermo bloccato come il carrello) — solo la griglia di items/visite/
+       acquisti (#mktContent) ha un proprio scroll indipendente, così quando
+       il dito è sopra la griglia scorre solo quella, non l'intera pagina.
+       Sfondo leggermente più scuro e card un po' più piccole, il minimo
+       indispensabile per far percepire visivamente il riquadro scrollabile. ── */
+    #mktContent {
+        max-height: 60vh; overflow-y: auto; padding: 10px; margin: 0 -10px;
+        background: rgba(0,0,0,0.03); border-radius: 12px;
+    }
+    #mktContent .item-read-card,
+    #mktContent .visita-read-card { padding: 14px; border-radius: 12px; gap: 8px; }
+    #mktContent .item-read-card img { height: 110px; }
+    #mktContent .visita-read-card h3 { font-size: 1rem; }
+    [data-theme="dark"] #mktContent { background: rgba(255,255,255,0.03); }
 }
+
+[data-theme="dark"] body.carrello-fullscreen #section-carrello { background: #0f1623; }
 
 /* ── Stampa / PDF ── */
 @media print {
