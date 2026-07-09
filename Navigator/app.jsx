@@ -472,9 +472,12 @@ function VisitaItemScreen({
   const [monitorOpen,   setMonitorOpen]   = React.useState(false);
   const [itemsMenuOpen, setItemsMenuOpen] = React.useState(false);
   const [quizPromptOpen, setQuizPromptOpen] = React.useState(false);
+  const [ttsMuted,      setTtsMuted]      = React.useState(false);
+  const [ttsLoading,    setTtsLoading]    = React.useState(false);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
+  const audioRef = React.useRef(null);
 
   React.useEffect(() => {
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
@@ -512,6 +515,47 @@ function VisitaItemScreen({
       body: JSON.stringify({ nome: nomeAssegnato, tono }),
     }).catch(() => {});
   }, [tono, isDocente, nomeAssegnato, codice]);
+
+  // Legge ad alta voce il testo descrittivo dell'item corrente (nel tono
+  // selezionato), sintetizzato al volo lato server tramite Edge TTS.
+  React.useEffect(() => {
+    const testo = item?.toni?.[tono]?.testo;
+    if (audioRef.current) {
+      audioRef.current.pause();
+      if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
+      audioRef.current = null;
+    }
+    setTtsLoading(false);
+    if (ttsMuted || !testo) return;
+    let cancelled = false;
+    setTtsLoading(true);
+    fetch('/api/tts', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: testo }),
+    })
+      .then(r => { if (!r.ok) throw new Error('tts fallita'); return r.blob(); })
+      .then(blob => {
+        if (cancelled) return;
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        audioRef.current = audio;
+        audio.play().catch(() => {});
+      })
+      .catch(() => {})
+      .finally(() => { if (!cancelled) setTtsLoading(false); });
+    return () => {
+      cancelled = true;
+      if (audioRef.current) {
+        audioRef.current.pause();
+        if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
+        audioRef.current = null;
+      }
+    };
+  }, [item, tono, ttsMuted]);
+
+  function toggleTtsMuted() {
+    setTtsMuted(m => !m);
+  }
 
   async function navigate(direction) {
     if (navigating) return;
@@ -664,7 +708,17 @@ function VisitaItemScreen({
                 {item.image && (
                   <img className="visita-item-img" src={item.image} alt={item.operaId} />
                 )}
-                <h2 className="visita-item-title">{item.operaId}</h2>
+                <h2 className="visita-item-title">
+                  {item.operaId}
+                  <button
+                    type="button"
+                    className={`visita-tts-toggle${ttsMuted ? '' : ' visita-tts-toggle--active'}`}
+                    onClick={toggleTtsMuted}
+                    title={ttsMuted ? 'Attiva lettura ad alta voce' : 'Disattiva lettura ad alta voce'}
+                  >
+                    <i className={`fa-solid ${ttsLoading ? 'fa-spinner fa-spin' : ttsMuted ? 'fa-volume-xmark' : 'fa-volume-high'}`} />
+                  </button>
+                </h2>
 
                 <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
 

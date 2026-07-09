@@ -46,8 +46,18 @@
 .visita-item-empty { color: var(--nav-muted); text-align: center; margin: auto; font-size: 0.95rem; }
 .visita-item-card  { max-width: 640px; width: 100%; }
 .visita-item-img   { width: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; margin-bottom: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.1); }
-.visita-item-title { font-size: 1.45rem; font-weight: 700; color: var(--nav-text); margin: 0 0 14px; font-family: 'Playfair Display', serif; text-align: center; }
+.visita-item-title { font-size: 1.45rem; font-weight: 700; color: var(--nav-text); margin: 0 0 14px; font-family: 'Playfair Display', serif; text-align: center; display: flex; align-items: center; justify-content: center; gap: 10px; }
 .visita-item-text  { font-size: 0.95rem; color: var(--nav-text); line-height: 1.75; margin: 0 0 14px; }
+
+.visita-tts-toggle {
+  flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+  border: 1.5px solid var(--nav-border); background: none; color: var(--nav-muted);
+  font-size: 0.85rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.visita-tts-toggle:hover        { border-color: var(--nav-magenta); color: var(--nav-text); }
+.visita-tts-toggle--active      { border-color: var(--nav-magenta); color: var(--nav-magenta); background: rgba(255,0,127,0.07); }
+[data-theme="dark"] .visita-tts-toggle { border-color: rgba(255,255,255,0.1); }
 
 /* ── Item contents (blocchi audio/img/link) ── */
 .item-contents      { margin-top: 12px; display: flex; flex-direction: column; gap: 8px; }

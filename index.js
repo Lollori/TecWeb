@@ -35,6 +35,7 @@ try {
 }
 
 const sessioni = require(global.rootDir + '/scripts/sessioni.js');
+const tts = require(global.rootDir + '/scripts/tts.js');
 
 
 const express = require('express');
@@ -338,6 +339,21 @@ app.post('/api/sessioni/:codice/tono', (req, res) => {
     const result = sessioni.setStudentTono(req.params.codice, nome, tono);
     if (result.error) return res.status(404).json(result);
     res.json(result);
+});
+
+// Sintesi vocale del testo descrittivo dell'item corrente (lettura ad alta voce
+// durante la visita). Nessuna persistenza: il testo viene sintetizzato al volo
+// ad ogni richiesta tramite il servizio Edge TTS.
+app.post('/api/tts', async (req, res) => {
+    const text = (req.body?.text || '').trim();
+    if (!text) return res.status(400).json({ error: 'Parametro text mancante.' });
+    try {
+        const audio = await tts.synthesize(text);
+        res.set('Content-Type', 'audio/mpeg');
+        res.send(audio);
+    } catch (e) {
+        res.status(502).json({ error: 'Sintesi vocale non disponibile al momento.' });
+    }
 });
 
 // Docente termina la visita
