@@ -483,6 +483,15 @@ function VisitaItemScreen({
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
   }, [composeOpen]);
 
+  // Impedisce lo scroll della pagina durante la visita: solo l'area centrale
+  // dei contenuti (visita-item-content) deve scorrere, header e barra in
+  // basso restano sempre visibili anche su mobile.
+  React.useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = prevOverflow; };
+  }, []);
+
   React.useEffect(() => {
     if (!itemId) { setItem(null); return; }
     setLoading(true);
@@ -705,9 +714,6 @@ function VisitaItemScreen({
             )}
             {!loading && item && (
               <div className="visita-item-card">
-                {item.image && (
-                  <img className="visita-item-img" src={item.image} alt={item.operaId} />
-                )}
                 <h2 className="visita-item-title">
                   {item.operaId}
                   <button
@@ -763,7 +769,7 @@ function VisitaItemScreen({
       {isDocente && (
         <div className="visita-termina-bar">
           <button className="visita-termina-btn" onClick={handleTermina} disabled={terminating}>
-            {terminating ? 'Chiusura…' : '⏹ Termina visita'}
+            {terminating ? 'Chiusura…' : 'Termina visita'}
           </button>
         </div>
       )}
