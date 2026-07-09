@@ -1652,7 +1652,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
                     </p>
                     <div id="itemsOrderPanel" class="vf-order-scrollbox"
-                         style="display:flex;flex-direction:column;gap:8px;width:100%;min-width:0;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;"></div>
+                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;width:100%;min-width:0;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;"></div>
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
