@@ -1497,8 +1497,10 @@ window._showAutoreVisitaForm = async function (visitaId) {
                             <i class="fa-solid fa-bag-shopping me-1"></i> Acquistati dal marketplace
                         </button>
                     </div>
-                    <div id="itemsCheckboxList"
-                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;max-height:320px;overflow-y:auto;padding:2px;">
+                    <input type="text" id="vfItemSearch" class="custom-input" placeholder="Cerca per nome opera…"
+                           style="margin-bottom:10px;" oninput="_renderVfItems()">
+                    <div id="itemsCheckboxList" class="vf-items-scrollbox"
+                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;width:100%;box-sizing:border-box;">
                         <p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">
                             Seleziona prima un museo per vedere gli items disponibili.
                         </p>
@@ -1593,12 +1595,18 @@ window._showAutoreVisitaForm = async function (visitaId) {
             container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Seleziona prima un museo per vedere gli items disponibili.</p>';
             return;
         }
-        const lista = _vfItemTab === 'miei' ? _vfMyItems : _vfAcquistatiItems;
-        if (!lista.length) {
+        const listaCompleta = _vfItemTab === 'miei' ? _vfMyItems : _vfAcquistatiItems;
+        if (!listaCompleta.length) {
             const msg = _vfItemTab === 'miei'
                 ? 'Nessun tuo item disponibile per questo museo. Crea un item dalla sezione "Aggiungi Item".'
                 : 'Nessun item acquistato disponibile per questo museo. Acquistane dal marketplace.';
             container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">${msg}</p>`;
+            return;
+        }
+        const q = (document.getElementById('vfItemSearch')?.value || '').trim().toLowerCase();
+        const lista = q ? listaCompleta.filter(it => (it.operaId || '').toLowerCase().includes(q)) : listaCompleta;
+        if (!lista.length) {
+            container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Nessun item corrisponde alla ricerca.</p>`;
             return;
         }
         container.innerHTML = lista.map(it => {
@@ -1620,9 +1628,14 @@ window._showAutoreVisitaForm = async function (visitaId) {
             </label>`;
         }).join('');
     }
+    // Esposta su window: l'input di ricerca la richiama tramite oninput inline,
+    // che gira in scope globale e non vedrebbe questa funzione altrimenti.
+    window._renderVfItems = _renderVfItems;
 
     async function _loadVfItemsForMuseo(codiceIsil, preserveSelection) {
         const container = document.getElementById('itemsCheckboxList');
+        const searchBox = document.getElementById('vfItemSearch');
+        if (searchBox) searchBox.value = '';
         _vfCurrentMuseo = codiceIsil;
         if (!codiceIsil) {
             _vfMyItems = [];
