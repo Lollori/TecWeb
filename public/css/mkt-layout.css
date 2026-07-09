@@ -93,7 +93,7 @@
 
 /* ── Carrello: "Svuota carrello" e "Procedi all'acquisto" più bassi/compatti ── */
 #carrelloFooter .btn-magenta,
-#carrelloFooter .btn-outline-custom { padding: 6px 16px; font-size: 0.84rem; }
+#carrelloFooter .btn-outline-custom { padding: 4px 10px; font-size: 0.56rem; gap: 4px; }
 .carrello-item-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
 
 /* ── Responsive ── */
@@ -118,7 +118,13 @@
 }
 @media (max-width: 540px) {
     .mobile-topbar      { padding: 0 12px; }
-    .main-content       { padding: 72px 12px 20px; }
+    .main-content       { padding: 72px 12px 10px; }
+
+    /* Marketplace un po' più corto: meno margini tra header/filtri/tab,
+       così la pagina scorre davvero fino alla fine del contenuto. */
+    #section-marketplace > .section-header-inline { margin-bottom: 16px !important; }
+    #section-marketplace > .glass-card             { margin-bottom: 16px !important; padding: 14px !important; }
+    #section-marketplace > .detail-tabs             { margin-bottom: 16px !important; }
     .page-title         { font-size: 1.5rem; text-align: center; }
     .content-header p   { text-align: center; }
     .items-grid         { grid-template-columns: 1fr; gap: 12px; }
