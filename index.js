@@ -341,6 +341,14 @@ app.post('/api/sessioni/:codice/tono', (req, res) => {
     res.json(result);
 });
 
+// Docente avvia in modo sincrono la lettura audio dell'item corrente per
+// tutti i partecipanti (fino a questo momento nessun client riproduce nulla)
+app.post('/api/sessioni/:codice/audio', (req, res) => {
+    const result = sessioni.avviaAudio(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
 // Sintesi vocale del testo descrittivo dell'item corrente (lettura ad alta voce
 // durante la visita). Nessuna persistenza: il testo viene sintetizzato al volo
 // ad ogni richiesta tramite il servizio Edge TTS.

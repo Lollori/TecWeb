@@ -17,6 +17,8 @@ function createSession(codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz
     studentTono: {},      // nome -> { tono, timestamp } — per la dashboard di monitoraggio della docente
     hasQuiz: !!hasQuiz,   // la visita ha un quiz associato (informativo, per mostrare il bottone "Avvia Quiz")
     quiz: null,           // stato del quiz di fine visita, vedi avviaQuiz()
+    audioAvviato: false,  // la docente ha premuto "Avvia audio" per l'item corrente — si
+                           // resetta ad ogni cambio di item, vedi navigaItem()/avviaAudio()
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -46,6 +48,7 @@ function startSession(codice) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   session.stato = 'iniziata';
+  session.audioAvviato = false;
   const currentItemId = session.itemIds[session.currentItemIdx] || null;
   broadcast(codice, {
     tipo: 'visita-iniziata',
@@ -70,6 +73,7 @@ function navigaItem(codice, direction, index) {
   else if (direction === 'indietro' || direction === 'prev') newIdx = Math.max(0, newIdx - 1);
   if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
   session.currentItemIdx = newIdx;
+  session.audioAvviato = false;
   const currentItemId = session.itemIds[newIdx];
   broadcast(codice, {
     tipo: 'item-cambiato',
@@ -78,6 +82,17 @@ function navigaItem(codice, direction, index) {
     totalItems: total,
   });
   return { ok: true, currentItemIdx: newIdx };
+}
+
+// La docente avvia in modo sincrono la lettura audio dell'item corrente per
+// tutti i partecipanti: fino a questo momento nessun client riproduce nulla.
+function avviaAudio(codice) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (session.stato !== 'iniziata') return { error: 'Visita non ancora iniziata.' };
+  session.audioAvviato = true;
+  broadcast(codice, { tipo: 'audio-avviato', currentItemIdx: session.currentItemIdx });
+  return { ok: true };
 }
 
 function addClient(codice, res) {
@@ -97,6 +112,7 @@ function addClient(codice, res) {
     studentTono: session.studentTono,
     hasQuiz: session.hasQuiz,
     quiz: publicQuiz(session.quiz),
+    audioAvviato: session.audioAvviato,
   })}\n\n`);
   return true;
 }
@@ -229,6 +245,6 @@ function terminaQuiz(codice) {
 }
 
 module.exports = {
-  createSession, getSession, joinSession, startSession, addClient, navigaItem,
+  createSession, getSession, joinSession, startSession, addClient, navigaItem, avviaAudio,
   closeSession, sendMessage, setStudentTono, avviaQuiz, rispondiQuiz, terminaQuiz,
 };

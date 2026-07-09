@@ -462,6 +462,7 @@ function VisitaItemScreen({
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
   hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0,
   onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
+  audioAvviato = false, onAvviaAudio,
 }) {
   const [item,          setItem]          = React.useState(null);
   const [loading,       setLoading]       = React.useState(false);
@@ -531,6 +532,10 @@ function VisitaItemScreen({
 
   // Legge ad alta voce il testo descrittivo dell'item corrente (nel tono
   // selezionato), sintetizzato al volo lato server tramite Edge TTS.
+  // Non parte mai da sola: resta in attesa finché la docente non preme
+  // "Avvia audio" (audioAvviato, sincronizzato via SSE a tutti i partecipanti);
+  // da lì in poi ogni cambio di item/tono la fa ripartire — finché la docente
+  // non torna a premere il tasto per il nuovo item, non riparte nulla.
   React.useEffect(() => {
     const testo = item?.toni?.[tono]?.testo;
     if (audioRef.current) {
@@ -539,7 +544,7 @@ function VisitaItemScreen({
       audioRef.current = null;
     }
     setTtsLoading(false);
-    if (ttsMuted || !testo) return;
+    if (ttsMuted || !testo || !audioAvviato) return;
     let cancelled = false;
     setTtsLoading(true);
     fetch('/api/tts', {
@@ -564,7 +569,7 @@ function VisitaItemScreen({
         audioRef.current = null;
       }
     };
-  }, [item, tono, ttsMuted]);
+  }, [item, tono, ttsMuted, audioAvviato]);
 
   function toggleTtsMuted() {
     setTtsMuted(m => !m);
@@ -753,6 +758,20 @@ function VisitaItemScreen({
           </>
         )}
       </div>
+
+      {isDocente && !quiz && (
+        <div className="visita-audio-bar">
+          <button
+            type="button"
+            className={`visita-audio-btn${audioAvviato ? ' visita-audio-btn--avviato' : ''}`}
+            onClick={onAvviaAudio}
+            disabled={audioAvviato}
+          >
+            <i className={`fa-solid ${audioAvviato ? 'fa-check' : 'fa-volume-high'}`} />
+            {audioAvviato ? 'Audio avviato' : 'Avvia audio per tutti'}
+          </button>
+        </div>
+      )}
 
       {isDocente && !quiz && (
         <div className="visita-item-nav">
@@ -976,6 +995,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [respondedCount, setRespondedCount] = React.useState(0);
   const [quizAvviando,   setQuizAvviando]   = React.useState(false);
   const [quizTerminandoOra, setQuizTerminandoOra] = React.useState(false);
+  const [audioAvviato,   setAudioAvviato]   = React.useState(false);
   const closedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -990,6 +1010,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
         if (data.studentTono)                  setStudentTono(data.studentTono);
         setHasQuiz(!!data.hasQuiz);
+        setAudioAvviato(!!data.audioAvviato);
         if (data.quiz) {
           setQuiz(data.quiz);
           setRespondedCount(data.quiz.risposte ? Object.keys(data.quiz.risposte).length : 0);
@@ -1002,10 +1023,14 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
         setHasQuiz(!!data.hasQuiz);
+        setAudioAvviato(false);
       } else if (data.tipo === 'item-cambiato') {
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
+        setAudioAvviato(false);
+      } else if (data.tipo === 'audio-avviato') {
+        setAudioAvviato(true);
       } else if (data.tipo === 'nuovo-messaggio') {
         setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp }]);
       } else if (data.tipo === 'tono-cambiato') {
@@ -1070,6 +1095,12 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     } finally {
       setAvviando(false);
     }
+  }
+
+  async function handleAvviaAudio() {
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/audio`, { method: 'POST' });
+    } catch (_) { /* silent */ }
   }
 
   async function handleAvviaQuiz() {
@@ -1138,6 +1169,8 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       quizAvviando={quizAvviando}
       onTerminaQuizOra={handleTerminaQuizOra}
       quizTerminandoOra={quizTerminandoOra}
+      audioAvviato={audioAvviato}
+      onAvviaAudio={handleAvviaAudio}
     />
   );
 
@@ -1205,6 +1238,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   const [totalItems,     setTotalItems]     = React.useState(0);
   const [visitaNome,     setVisitaNome]     = React.useState('');
   const [quiz,           setQuiz]           = React.useState(null);
+  const [audioAvviato,   setAudioAvviato]   = React.useState(false);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -1218,6 +1252,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
         if (data.quiz)                         setQuiz(data.quiz);
+        setAudioAvviato(!!data.audioAvviato);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
@@ -1226,10 +1261,14 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
         if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        setAudioAvviato(false);
       } else if (data.tipo === 'item-cambiato') {
         setCurrentItemId(data.currentItemId);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
+        setAudioAvviato(false);
+      } else if (data.tipo === 'audio-avviato') {
+        setAudioAvviato(true);
       } else if (data.tipo === 'quiz-iniziato') {
         setQuiz(data);
       } else if (data.tipo === 'quiz-terminato') {
@@ -1262,6 +1301,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       nomeAssegnato={nomeAssegnato}
       quiz={quiz}
       onRispondiQuiz={handleRispondiQuiz}
+      audioAvviato={audioAvviato}
     />
   );
 

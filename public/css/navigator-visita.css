@@ -85,6 +85,21 @@
 [data-theme="dark"] .visita-tono-btn         { border-color: rgba(255,255,255,0.1); color: #64748b; }
 [data-theme="dark"] .visita-tono-btn--active { background: rgba(255,0,127,0.12); }
 
+/* ── Barra "Avvia audio" (docente) ──
+   Finché non viene premuto, nessun partecipante (docente incluso) riproduce
+   l'audio dell'item corrente: il click broadcasta il via libera a tutti via SSE. */
+.visita-audio-bar { display: flex; justify-content: center; padding: 10px 24px 0; flex-shrink: 0; }
+.visita-audio-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 22px; border-radius: 10px; border: 2px solid var(--nav-magenta);
+  background: var(--nav-magenta); color: #fff; font-weight: 600; font-size: 0.9rem;
+  cursor: pointer; transition: background .15s, opacity .15s;
+}
+.visita-audio-btn:hover:not(:disabled) { background: #cc0066; border-color: #cc0066; }
+.visita-audio-btn--avviato {
+  background: transparent; color: var(--nav-muted); border-color: var(--nav-border); cursor: default;
+}
+
 /* ── Nav bar (docente) ── */
 .visita-item-nav {
   display: flex; align-items: center; justify-content: space-between;
