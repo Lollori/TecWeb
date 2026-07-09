@@ -5,16 +5,19 @@
     "objectId": "ramesse-ii-scheda",
     "toni": {
       "semplice": {
-        "testo": "Questa statua gigante mostra un antico re d'Egitto chiamato Ramesse II. È fatta di pietra dura e colorata di rosso.",
-        "durata": 3
+        "d3": "Questa statua gigante mostra un antico re d'Egitto chiamato Ramesse II. È fatta di pietra dura e colorata di rosso.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La statua raffigura il faraone Ramesse II seduto in trono con la doppia corona. È realizzata in granito rosso di Assuan e fu scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti. Alta 194 cm, è una delle opere più imponenti del museo.",
-        "durata": 15
+        "d3": "",
+        "d15": "La statua raffigura il faraone Ramesse II seduto in trono con la doppia corona. È realizzata in granito rosso di Assuan e fu scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti. Alta 194 cm, è una delle opere più imponenti del museo.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Esemplare di statuaria regale egizia del Nuovo Regno, la scultura in granito rosso di Assuan raffigura Ramesse II (XIX Dinastia, ca. 1279–1213 a.C.) in posizione frontale e seduta su trono cubiforme, con la doppia corona pschent e i tradizionali attributi del potere faraonico. Scoperta nel 1820 dalla spedizione Drovetti a Tebe (Karnak), costituisce uno dei rari esemplari di scultura monumentale in granito rosso di provenienza tebana. Le sue dimensioni (h. 194 cm) e la qualità d'intaglio del granito ignifugo ne fanno uno dei pezzi di maggiore rilevanza dell'intera collezione egizia torinese, testimonianza del gusto celebrativo della propaganda regia ramesside.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Esemplare di statuaria regale egizia del Nuovo Regno, la scultura in granito rosso di Assuan raffigura Ramesse II (XIX Dinastia, ca. 1279–1213 a.C.) in posizione frontale e seduta su trono cubiforme, con la doppia corona pschent e i tradizionali attributi del potere faraonico. Scoperta nel 1820 dalla spedizione Drovetti a Tebe (Karnak), costituisce uno dei rari esemplari di scultura monumentale in granito rosso di provenienza tebana. Le sue dimensioni (h. 194 cm) e la qualità d'intaglio del granito ignifugo ne fanno uno dei pezzi di maggiore rilevanza dell'intera collezione egizia torinese, testimonianza del gusto celebrativo della propaganda regia ramesside."
       }
     },
     "metadata": {
@@ -35,16 +38,19 @@
     "objectId": "ramesse-ii-iconografia",
     "toni": {
       "semplice": {
-        "testo": "Il re porta una corona speciale che unisce due regni: l'Alto e il Basso Egitto. È come avere due corone in una sola!",
-        "durata": 3
+        "d3": "Il re porta una corona speciale che unisce due regni: l'Alto e il Basso Egitto. È come avere due corone in una sola!",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto. Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre, che significa 'Ra è potente nella verità, eletto di Ra'.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto. Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre, che significa 'Ra è potente nella verità, eletto di Ra'.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il programma iconografico del manufatto esibisce gli attributi canonici della regalità egizia: la corona pschent (sekhemty), sintesi della hedjet bianca dell'Alto Egitto e della deshret rossa del Basso Egitto, sancisce il ruolo del sovrano come unificatore del Paese a Due Terre (Tawy). Il cartiglio inciso sul pettorale riporta il prenome di Ramesse II, Usermaatre Setepenre ('Ra è potente nella verità, eletto di Ra'), formula adottata sistematicamente per legittimare il potere divino del faraone. La barba posticcia intrecciata e il nemes completano l'apparato regalia tipico della statuaria ramesside.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il programma iconografico del manufatto esibisce gli attributi canonici della regalità egizia: la corona pschent (sekhemty), sintesi della hedjet bianca dell'Alto Egitto e della deshret rossa del Basso Egitto, sancisce il ruolo del sovrano come unificatore del Paese a Due Terre (Tawy). Il cartiglio inciso sul pettorale riporta il prenome di Ramesse II, Usermaatre Setepenre ('Ra è potente nella verità, eletto di Ra'), formula adottata sistematicamente per legittimare il potere divino del faraone. La barba posticcia intrecciata e il nemes completano l'apparato regalia tipico della statuaria ramesside."
       }
     },
     "metadata": {
@@ -64,16 +70,19 @@
     "objectId": "hunefer-analisi",
     "toni": {
       "semplice": {
-        "testo": "Questo vecchio rotolo di carta speciale racconta cosa succede dopo la morte, con tante figure colorate disegnate a mano.",
-        "durata": 3
+        "d3": "Questo vecchio rotolo di carta speciale racconta cosa succede dopo la morte, con tante figure colorate disegnate a mano.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di grande qualità. La scena più famosa mostra il giudizio di Osiride: il cuore di Hunefer viene pesato su una bilancia contro la piuma di Maat per capire se ha vissuto bene.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di grande qualità. La scena più famosa mostra il giudizio di Osiride: il cuore di Hunefer viene pesato su una bilancia contro la piuma di Maat per capire se ha vissuto bene.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il rotolo papiraceo di Hunefer (XIX Dinastia, ca. 1275 a.C.) è tra gli esemplari canonici del Libro dei Morti (pert em hru, 'Libro dell'uscita alla luce del giorno') in scrittura ieratica e geroglifica, con 78 capitoli corredati da vignette policrome in tempera. La scena psicostasica al capitolo 125 rappresenta la pesatura del cuore (ib) sull'astina di una bilancia contrapposta alla piuma di Maat: l'esito negativo comporterebbe la devorazione da parte di Ammit, con la conseguente seconda morte spirituale. Il manufatto esibisce una coerenza compositiva e una resa cromatica raramente conservata in esemplari dello stesso periodo, con pigmenti a base di ocra, lapislazzuli e malachite.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il rotolo papiraceo di Hunefer (XIX Dinastia, ca. 1275 a.C.) è tra gli esemplari canonici del Libro dei Morti (pert em hru, 'Libro dell'uscita alla luce del giorno') in scrittura ieratica e geroglifica, con 78 capitoli corredati da vignette policrome in tempera. La scena psicostasica al capitolo 125 rappresenta la pesatura del cuore (ib) sull'astina di una bilancia contrapposta alla piuma di Maat: l'esito negativo comporterebbe la devorazione da parte di Ammit, con la conseguente seconda morte spirituale. Il manufatto esibisce una coerenza compositiva e una resa cromatica raramente conservata in esemplari dello stesso periodo, con pigmenti a base di ocra, lapislazzuli e malachite."
       }
     },
     "metadata": {
@@ -94,16 +103,19 @@
     "objectId": "hunefer-contesto",
     "toni": {
       "semplice": {
-        "testo": "Hunefer era un importante lavoratore del re d'Egitto. Questo rotolo speciale fu fatto apposta per lui quando morì.",
-        "durata": 3
+        "d3": "Hunefer era un importante lavoratore del re d'Egitto. Questo rotolo speciale fu fatto apposta per lui quando morì.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo. Fu trovato nella sua tomba a Tebe e questa copia torinese è una delle riproduzioni più fedeli realizzate nel XIX secolo.",
-        "durata": 15
+        "d3": "",
+        "d15": "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo. Fu trovato nella sua tomba a Tebe e questa copia torinese è una delle riproduzioni più fedeli realizzate nel XIX secolo.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La committenza del papiro è attribuita a Hunefer, scriba reale (sesh nesu) al servizio di Seti I (XIX Dinastia), come documentato dall'iscrizione dedicatoria nel colophon. La collocazione originaria nella tomba tebana del defunto ne conferma la funzione di corredo funerario personalizzato, redatto secondo le prescrizioni canoniche della tradizione libraria del Nuovo Regno. Il testo, vergato in scrittura ieratica corsiva con titoli in geroglifico, costituisce un riferimento per gli studi di paleografia e per la storia delle raccolte egittologiche europee dell'Ottocento, periodo in cui esemplari analoghi furono sistematicamente acquisiti da istituzioni museali di tutta Europa.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La committenza del papiro è attribuita a Hunefer, scriba reale (sesh nesu) al servizio di Seti I (XIX Dinastia), come documentato dall'iscrizione dedicatoria nel colophon. La collocazione originaria nella tomba tebana del defunto ne conferma la funzione di corredo funerario personalizzato, redatto secondo le prescrizioni canoniche della tradizione libraria del Nuovo Regno. Il testo, vergato in scrittura ieratica corsiva con titoli in geroglifico, costituisce un riferimento per gli studi di paleografia e per la storia delle raccolte egittologiche europee dell'Ottocento, periodo in cui esemplari analoghi furono sistematicamente acquisiti da istituzioni museali di tutta Europa."
       }
     },
     "metadata": {
@@ -122,16 +134,19 @@
     "objectId": "venere-analisi-tecnica",
     "toni": {
       "semplice": {
-        "testo": "Venere è una donna bellissima che esce dal mare su una grande conchiglia. È uno dei quadri più famosi del mondo!",
-        "durata": 3
+        "d3": "Venere è una donna bellissima che esce dal mare su una grande conchiglia. È uno dei quadri più famosi del mondo!",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La dea Venere emerge dal mare su una grande conchiglia, simbolo di nascita e purezza. Botticelli ha usato colori preziosi come il lapislazzuli per i blu e il verderame per i verdi. Il dipinto è esposto alla Galleria degli Uffizi di Firenze.",
-        "durata": 15
+        "d3": "",
+        "d15": "La dea Venere emerge dal mare su una grande conchiglia, simbolo di nascita e purezza. Botticelli ha usato colori preziosi come il lapislazzuli per i blu e il verderame per i verdi. Il dipinto è esposto alla Galleria degli Uffizi di Firenze.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La tavola a tempera (172,5 × 278,9 cm) di Sandro Botticelli (ca. 1484–1486), commissionata da Lorenzo di Pierfrancesco de' Medici per la villa di Castello, esibisce una straordinaria raffinatezza tecnica. L'analisi stratigrafìca ha individuato lapislazzuli ultrafino per le velature azzurre, verderame per i toni verdi e biacca di piombo per le lumeggiature delle carnagioni; la preparazione a gesso fine e colla animale è caratteristica della tradizione fiorentina quattrocentesca. La Venere anadiomene richiama la Venere Pudica di tradizione ellenistica, reinterpretata in chiave neoplatonica mediceo-polizianesca: la nudità non è sensuale ma metafisica, identificando Venere Celeste con la Humanitas.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La tavola a tempera (172,5 × 278,9 cm) di Sandro Botticelli (ca. 1484–1486), commissionata da Lorenzo di Pierfrancesco de' Medici per la villa di Castello, esibisce una straordinaria raffinatezza tecnica. L'analisi stratigrafìca ha individuato lapislazzuli ultrafino per le velature azzurre, verderame per i toni verdi e biacca di piombo per le lumeggiature delle carnagioni; la preparazione a gesso fine e colla animale è caratteristica della tradizione fiorentina quattrocentesca. La Venere anadiomene richiama la Venere Pudica di tradizione ellenistica, reinterpretata in chiave neoplatonica mediceo-polizianesca: la nudità non è sensuale ma metafisica, identificando Venere Celeste con la Humanitas."
       }
     },
     "metadata": {
@@ -151,16 +166,19 @@
     "objectId": "venere-iconografia",
     "toni": {
       "semplice": {
-        "testo": "Nella scena c'è il vento che soffia forte e una donna che aspetta Venere con un bellissimo mantello pieno di fiori.",
-        "durata": 3
+        "d3": "Nella scena c'è il vento che soffia forte e una donna che aspetta Venere con un bellissimo mantello pieno di fiori.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Zefiro abbracciato alla ninfa Clori soffia vento caldo per spingere Venere verso riva. A destra, una delle Ore la accoglie con un manto decorato di fiori. La posa di Venere ricorda le antiche statue greche della Venere Pudica.",
-        "durata": 15
+        "d3": "",
+        "d15": "Zefiro abbracciato alla ninfa Clori soffia vento caldo per spingere Venere verso riva. A destra, una delle Ore la accoglie con un manto decorato di fiori. La posa di Venere ricorda le antiche statue greche della Venere Pudica.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La struttura compositiva articola tre gruppi figurativi: Zefiro abbracciato a Clori (o Aura) insuffla il vento primaverile; Venere emerge in equilibrio instabile dalla conchiglia volutiforme; a destra un'Ora porge il manto istoriato con fiordalisi e anemoni. La fonte iconografica primaria è nelle Stanze di Angelo Poliziano (1475–1478). La deformazione anatomica del collo allungato, le proporzioni irrealistiche delle dita e il ritmo astratto delle onde rivelano la persistenza del lessico gotico internazionale nel vocabolario formale di Botticelli, in tensione con il recupero classicista promosso dall'accademia medicea.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La struttura compositiva articola tre gruppi figurativi: Zefiro abbracciato a Clori (o Aura) insuffla il vento primaverile; Venere emerge in equilibrio instabile dalla conchiglia volutiforme; a destra un'Ora porge il manto istoriato con fiordalisi e anemoni. La fonte iconografica primaria è nelle Stanze di Angelo Poliziano (1475–1478). La deformazione anatomica del collo allungato, le proporzioni irrealistiche delle dita e il ritmo astratto delle onde rivelano la persistenza del lessico gotico internazionale nel vocabolario formale di Botticelli, in tensione con il recupero classicista promosso dall'accademia medicea."
       }
     },
     "metadata": {
@@ -179,16 +197,19 @@
     "objectId": "primavera-botanica",
     "toni": {
       "semplice": {
-        "testo": "In questo quadro ci sono tantissimi fiori e piante veri della Toscana. Al centro si vede Venere, la dea dell'amore.",
-        "durata": 3
+        "d3": "In questo quadro ci sono tantissimi fiori e piante veri della Toscana. Al centro si vede Venere, la dea dell'amore.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il giardino dipinto contiene oltre 500 specie botaniche quasi tutte autoctone della Toscana. Al centro Venere presiede la scena. A destra le Tre Grazie danzano, mentre Mercurio disperde le nuvole con il suo caduceo magico.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il giardino dipinto contiene oltre 500 specie botaniche quasi tutte autoctone della Toscana. Al centro Venere presiede la scena. A destra le Tre Grazie danzano, mentre Mercurio disperde le nuvole con il suo caduceo magico.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La Primavera (ca. 1477–1478, tempera su tavola, 203 × 314 cm) è stata oggetto di un'analisi botanica sistematica che ha portato all'identificazione di oltre 500 specie vegetali, quasi esclusivamente autoctone della flora tosco-appenninica. Il programma iconografico, ispirato alle Stanze di Poliziano e alle Elegie di Claudiano, articola sull'asse verticale il registro divino (Cupido, Venere, Mercurio) e su quello orizzontale i personaggi mitologici stagionali: le Tre Grazie in danza rappresentano Castità, Amore e Bellezza, mentre la sequenza Zefiro–Clori–Flora traduce in forma pittorica la metamorfosi ovidiana (Fasti, V). Il dato botanico eccezionale suggerisce una collaborazione con i naturalisti dell'Orto dei Semplici fiorentino.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La Primavera (ca. 1477–1478, tempera su tavola, 203 × 314 cm) è stata oggetto di un'analisi botanica sistematica che ha portato all'identificazione di oltre 500 specie vegetali, quasi esclusivamente autoctone della flora tosco-appenninica. Il programma iconografico, ispirato alle Stanze di Poliziano e alle Elegie di Claudiano, articola sull'asse verticale il registro divino (Cupido, Venere, Mercurio) e su quello orizzontale i personaggi mitologici stagionali: le Tre Grazie in danza rappresentano Castità, Amore e Bellezza, mentre la sequenza Zefiro–Clori–Flora traduce in forma pittorica la metamorfosi ovidiana (Fasti, V). Il dato botanico eccezionale suggerisce una collaborazione con i naturalisti dell'Orto dei Semplici fiorentino."
       }
     },
     "metadata": {
@@ -209,16 +230,19 @@
     "objectId": "tondo-doni-scheda",
     "toni": {
       "semplice": {
-        "testo": "Questo quadro tondo mostra la Sacra Famiglia: Maria, Giuseppe e il piccolo Gesù, dipinti da un grande scultore che sapeva anche dipingere benissimo.",
-        "durata": 3
+        "d3": "Questo quadro tondo mostra la Sacra Famiglia: Maria, Giuseppe e il piccolo Gesù, dipinti da un grande scultore che sapeva anche dipingere benissimo.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il Tondo Doni è l'unico dipinto su tavola sicuramente attribuito a Michelangelo. Raffigura la Sacra Famiglia con corpi torniti quasi scultorei, e sullo sfondo un gruppo di nudi maschili la cui interpretazione resta dibattuta.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il Tondo Doni è l'unico dipinto su tavola sicuramente attribuito a Michelangelo. Raffigura la Sacra Famiglia con corpi torniti quasi scultorei, e sullo sfondo un gruppo di nudi maschili la cui interpretazione resta dibattuta.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il Tondo Doni (ca. 1506–1508, tempera su tavola), commissionato da Agnolo Doni, costituisce l'unica opera pittorica autografa e sicuramente documentata di Michelangelo Buonarroti. La torsione elicoidale delle figure, la resa plastica ottenuta tramite un cangiantismo cromatico acceso e la cornice originale intagliata con teste profetiche anticipano soluzioni compositive poi sviluppate nella volta della Cappella Sistina.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il Tondo Doni (ca. 1506–1508, tempera su tavola), commissionato da Agnolo Doni, costituisce l'unica opera pittorica autografa e sicuramente documentata di Michelangelo Buonarroti. La torsione elicoidale delle figure, la resa plastica ottenuta tramite un cangiantismo cromatico acceso e la cornice originale intagliata con teste profetiche anticipano soluzioni compositive poi sviluppate nella volta della Cappella Sistina."
       }
     },
     "metadata": {
@@ -237,16 +261,19 @@
     "objectId": "venere-urbino-scheda",
     "toni": {
       "semplice": {
-        "testo": "Una bella donna è distesa su un letto e ci guarda dritta negli occhi. È uno dei quadri più famosi di Tiziano.",
-        "durata": 3
+        "d3": "Una bella donna è distesa su un letto e ci guarda dritta negli occhi. È uno dei quadri più famosi di Tiziano.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La Venere di Urbino di Tiziano mostra una figura femminile distesa in una camera rinascimentale, con due ancelle sullo sfondo intente a cercare vesti in un cassone. Il dipinto fu commissionato per celebrare un matrimonio.",
-        "durata": 15
+        "d3": "",
+        "d15": "La Venere di Urbino di Tiziano mostra una figura femminile distesa in una camera rinascimentale, con due ancelle sullo sfondo intente a cercare vesti in un cassone. Il dipinto fu commissionato per celebrare un matrimonio.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La Venere di Urbino (1538, olio su tela) di Tiziano Vecellio rielabora il modello della Venere dormiente di Giorgione trasferendo la figura da un paesaggio idealizzato a un interno domestico contemporaneo, con evidente valenza allegorica nuziale legata alla commissione di Guidobaldo II Della Rovere. Lo sguardo diretto della figura verso l'osservatore, insieme al cane addormentato ai suoi piedi, simbolo di fedeltà coniugale, colloca l'opera al centro del dibattito storiografico sulla rappresentazione del nudo femminile nel Cinquecento veneziano.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La Venere di Urbino (1538, olio su tela) di Tiziano Vecellio rielabora il modello della Venere dormiente di Giorgione trasferendo la figura da un paesaggio idealizzato a un interno domestico contemporaneo, con evidente valenza allegorica nuziale legata alla commissione di Guidobaldo II Della Rovere. Lo sguardo diretto della figura verso l'osservatore, insieme al cane addormentato ai suoi piedi, simbolo di fedeltà coniugale, colloca l'opera al centro del dibattito storiografico sulla rappresentazione del nudo femminile nel Cinquecento veneziano."
       }
     },
     "metadata": {
@@ -265,16 +292,19 @@
     "objectId": "madonna-cardellino-scheda",
     "toni": {
       "semplice": {
-        "testo": "Maria è seduta con in braccio Gesù bambino e un altro bimbo, san Giovannino, che tiene in mano un piccolo uccellino.",
-        "durata": 3
+        "d3": "Maria è seduta con in braccio Gesù bambino e un altro bimbo, san Giovannino, che tiene in mano un piccolo uccellino.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La Madonna del Cardellino di Raffaello raffigura la Vergine con Gesù Bambino e San Giovannino in un paesaggio toscano. Il cardellino simboleggia la futura Passione di Cristo.",
-        "durata": 15
+        "d3": "",
+        "d15": "La Madonna del Cardellino di Raffaello raffigura la Vergine con Gesù Bambino e San Giovannino in un paesaggio toscano. Il cardellino simboleggia la futura Passione di Cristo.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La Madonna del Cardellino (1505–1506, olio su tavola) di Raffaello Sanzio, dipinta per le nozze di Lorenzo Nasi, sviluppa uno schema piramidale di ascendenza leonardesca in cui le tre figure sono unite da sguardi e gesti reciproci. Il cardellino, rapace di insetti associato iconograficamente alla Passione, introduce un elemento premonitore nella scena altrimenti idillica. L'opera fu gravemente danneggiata dal crollo della casa Nasi nel 1548 e restaurata più volte, l'ultima delle quali con tecniche diagnostiche avanzate.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La Madonna del Cardellino (1505–1506, olio su tavola) di Raffaello Sanzio, dipinta per le nozze di Lorenzo Nasi, sviluppa uno schema piramidale di ascendenza leonardesca in cui le tre figure sono unite da sguardi e gesti reciproci. Il cardellino, rapace di insetti associato iconograficamente alla Passione, introduce un elemento premonitore nella scena altrimenti idillica. L'opera fu gravemente danneggiata dal crollo della casa Nasi nel 1548 e restaurata più volte, l'ultima delle quali con tecniche diagnostiche avanzate."
       }
     },
     "metadata": {
@@ -293,16 +323,19 @@
     "objectId": "maesta-santa-trinita-scheda",
     "toni": {
       "semplice": {
-        "testo": "Una grande tavola dorata mostra Maria seduta su un trono con Gesù bambino, circondata da angeli.",
-        "durata": 3
+        "d3": "Una grande tavola dorata mostra Maria seduta su un trono con Gesù bambino, circondata da angeli.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La Maestà di Cimabue, proveniente dalla chiesa di Santa Trinita a Firenze, mostra ancora i modi della pittura bizantina ma con una maggiore attenzione al volume dei corpi, anticipando la svolta di Giotto.",
-        "durata": 15
+        "d3": "",
+        "d15": "La Maestà di Cimabue, proveniente dalla chiesa di Santa Trinita a Firenze, mostra ancora i modi della pittura bizantina ma con una maggiore attenzione al volume dei corpi, anticipando la svolta di Giotto.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La Maestà di Santa Trinita (ca. 1280–1290, tempera e oro su tavola) di Cenni di Pepo detto Cimabue segna il punto di passaggio tra la tradizione bizantina della maniera greca e le prime istanze di naturalismo che troveranno piena maturazione in Giotto. Il trono a fughe prospettiche, benché ancora incoerenti, e il panneggio che accenna a un volume corporeo sotto le vesti della Vergine indicano un tentativo di superamento della bidimensionalità icastica bizantina.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La Maestà di Santa Trinita (ca. 1280–1290, tempera e oro su tavola) di Cenni di Pepo detto Cimabue segna il punto di passaggio tra la tradizione bizantina della maniera greca e le prime istanze di naturalismo che troveranno piena maturazione in Giotto. Il trono a fughe prospettiche, benché ancora incoerenti, e il panneggio che accenna a un volume corporeo sotto le vesti della Vergine indicano un tentativo di superamento della bidimensionalità icastica bizantina."
       }
     },
     "metadata": {
@@ -321,16 +354,19 @@
     "objectId": "durer-autoritratto-scheda",
     "toni": {
       "semplice": {
-        "testo": "In questo quadro un giovane pittore tedesco ha disegnato se stesso con una bella pelliccia, quasi come un re.",
-        "durata": 3
+        "d3": "In questo quadro un giovane pittore tedesco ha disegnato se stesso con una bella pelliccia, quasi come un re.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "L'autoritratto di Albrecht Dürer con collare di pelliccia lo mostra frontale e solenne, in una posa che ricorda le immagini sacre, a testimonianza della nuova consapevolezza del ruolo dell'artista nel Rinascimento tedesco.",
-        "durata": 15
+        "d3": "",
+        "d15": "L'autoritratto di Albrecht Dürer con collare di pelliccia lo mostra frontale e solenne, in una posa che ricorda le immagini sacre, a testimonianza della nuova consapevolezza del ruolo dell'artista nel Rinascimento tedesco.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "L'Autoritratto con collare di pelliccia (1500, olio su tavola) di Albrecht Dürer adotta uno schema compositivo frontale e simmetrico storicamente riservato alle immagini di Cristo Pantocratore, in un'operazione di autocelebrazione senza precedenti nella ritrattistica nordeuropea. La firma e la data, disposte come un'iscrizione quasi sacra, insieme alla resa minuziosa della capigliatura e della pelliccia, rivelano l'assimilazione di modelli fiamminghi fusi con l'ambizione teorica dell'artista rinascimentale italiano.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "L'Autoritratto con collare di pelliccia (1500, olio su tavola) di Albrecht Dürer adotta uno schema compositivo frontale e simmetrico storicamente riservato alle immagini di Cristo Pantocratore, in un'operazione di autocelebrazione senza precedenti nella ritrattistica nordeuropea. La firma e la data, disposte come un'iscrizione quasi sacra, insieme alla resa minuziosa della capigliatura e della pelliccia, rivelano l'assimilazione di modelli fiamminghi fusi con l'ambizione teorica dell'artista rinascimentale italiano."
       }
     },
     "metadata": {
@@ -349,16 +385,19 @@
     "objectId": "duchi-urbino-scheda",
     "toni": {
       "semplice": {
-        "testo": "Due ritratti mostrano il duca e la duchessa di Urbino, uno di fronte all'altro, con un bellissimo paesaggio dietro di loro.",
-        "durata": 3
+        "d3": "Due ritratti mostrano il duca e la duchessa di Urbino, uno di fronte all'altro, con un bellissimo paesaggio dietro di loro.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il Dittico dei Duchi di Urbino di Piero della Francesca ritrae Federico da Montefeltro e Battista Sforza di profilo, secondo la tradizione delle medaglie celebrative, con uno sfondo paesaggistico continuo tra i due pannelli.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il Dittico dei Duchi di Urbino di Piero della Francesca ritrae Federico da Montefeltro e Battista Sforza di profilo, secondo la tradizione delle medaglie celebrative, con uno sfondo paesaggistico continuo tra i due pannelli.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il Dittico dei Duchi di Urbino (ca. 1473–1475, tempera su tavola) di Piero della Francesca applica alla ritrattistica dinastica i principi prospettici e luministici propri della sua trattatistica matematica. Il profilo rigoroso di Federico da Montefeltro, che nasconde l'occhio destro perduto in un torneo, e il continuum atmosferico del paesaggio sullo sfondo dei due pannelli dimostrano l'assimilazione della prospettiva aerea fiamminga filtrata attraverso il rigore geometrico della scuola urbinate.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il Dittico dei Duchi di Urbino (ca. 1473–1475, tempera su tavola) di Piero della Francesca applica alla ritrattistica dinastica i principi prospettici e luministici propri della sua trattatistica matematica. Il profilo rigoroso di Federico da Montefeltro, che nasconde l'occhio destro perduto in un torneo, e il continuum atmosferico del paesaggio sullo sfondo dei due pannelli dimostrano l'assimilazione della prospettiva aerea fiamminga filtrata attraverso il rigore geometrico della scuola urbinate."
       }
     },
     "metadata": {
@@ -377,16 +416,19 @@
     "objectId": "venere-medici-scheda",
     "toni": {
       "semplice": {
-        "testo": "Questa statua di marmo bianco mostra la dea Venere che si copre pudicamente. È stata ammirata per secoli da artisti e viaggiatori.",
-        "durata": 3
+        "d3": "Questa statua di marmo bianco mostra la dea Venere che si copre pudicamente. È stata ammirata per secoli da artisti e viaggiatori.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "La Venere de' Medici è una copia romana in marmo di un originale greco ellenistico. Fu una delle sculture antiche più celebri e ammirate durante il Grand Tour settecentesco, custodita nella Tribuna degli Uffizi.",
-        "durata": 15
+        "d3": "",
+        "d15": "La Venere de' Medici è una copia romana in marmo di un originale greco ellenistico. Fu una delle sculture antiche più celebri e ammirate durante il Grand Tour settecentesco, custodita nella Tribuna degli Uffizi.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "La Venere de' Medici (copia romana in marmo, I secolo a.C., da originale ellenistico di ambito prassitelico) rappresenta il tipo della Venus Pudica, con il gesto delle mani a velare pudicamente il corpo. Collocata nella Tribuna, ottagono progettato dal Buontalenti per Francesco I de' Medici, divenne canone di bellezza ideale per generazioni di artisti neoclassici e tappa imprescindibile del Grand Tour, celebrata da Canova e ripetutamente copiata in gesso nelle accademie d'arte europee.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "La Venere de' Medici (copia romana in marmo, I secolo a.C., da originale ellenistico di ambito prassitelico) rappresenta il tipo della Venus Pudica, con il gesto delle mani a velare pudicamente il corpo. Collocata nella Tribuna, ottagono progettato dal Buontalenti per Francesco I de' Medici, divenne canone di bellezza ideale per generazioni di artisti neoclassici e tappa imprescindibile del Grand Tour, celebrata da Canova e ripetutamente copiata in gesso nelle accademie d'arte europee."
       }
     },
     "metadata": {
@@ -405,16 +447,19 @@
     "objectId": "bacco-caravaggio-scheda",
     "toni": {
       "semplice": {
-        "testo": "Un giovane con una corona di foglie d'uva ci offre un bicchiere di vino, guardandoci con aria un po' stanca.",
-        "durata": 3
+        "d3": "Un giovane con una corona di foglie d'uva ci offre un bicchiere di vino, guardandoci con aria un po' stanca.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il Bacco di Caravaggio raffigura il dio del vino come un giovane in carne e ossa, con dettagli realistici come la frutta quasi marcia e le unghie sporche, tipici del naturalismo caravaggesco.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il Bacco di Caravaggio raffigura il dio del vino come un giovane in carne e ossa, con dettagli realistici come la frutta quasi marcia e le unghie sporche, tipici del naturalismo caravaggesco.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il Bacco (ca. 1596–1597, olio su tela) di Michelangelo Merisi da Caravaggio trasfigura il soggetto mitologico in una posa da modello di studio, evidenziata dalle unghie annerite e dal pallore malsano del giovane, elementi che testimoniano l'adesione del pittore a un naturalismo privo di idealizzazione classicista. La natura morta di frutta in primo piano, con margini di decomposizione resi con virtuosismo illusionistico, funge da vanitas memento e da manifesto della nuova poetica caravaggesca.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il Bacco (ca. 1596–1597, olio su tela) di Michelangelo Merisi da Caravaggio trasfigura il soggetto mitologico in una posa da modello di studio, evidenziata dalle unghie annerite e dal pallore malsano del giovane, elementi che testimoniano l'adesione del pittore a un naturalismo privo di idealizzazione classicista. La natura morta di frutta in primo piano, con margini di decomposizione resi con virtuosismo illusionistico, funge da vanitas memento e da manifesto della nuova poetica caravaggesca."
       }
     },
     "metadata": {
@@ -433,16 +478,19 @@
     "objectId": "eleonora-toledo-scheda",
     "toni": {
       "semplice": {
-        "testo": "Una nobildonna vestita con un abito elegantissimo tiene per mano il suo bambino. Il vestito è ricamato con tantissimi dettagli.",
-        "durata": 3
+        "d3": "Una nobildonna vestita con un abito elegantissimo tiene per mano il suo bambino. Il vestito è ricamato con tantissimi dettagli.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "Il ritratto di Eleonora di Toledo del Bronzino mostra la moglie di Cosimo I de' Medici in un sontuoso abito di broccato, simbolo del potere e della ricchezza della corte medicea.",
-        "durata": 15
+        "d3": "",
+        "d15": "Il ritratto di Eleonora di Toledo del Bronzino mostra la moglie di Cosimo I de' Medici in un sontuoso abito di broccato, simbolo del potere e della ricchezza della corte medicea.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "Il Ritratto di Eleonora di Toledo con il figlio Giovanni (ca. 1545, olio su tavola) di Agnolo Bronzino codifica il linguaggio del ritratto di corte manierista fiorentino, in cui la resa minuziosa e quasi calligrafica del tessuto in broccato veneziano assume valore emblematico pari a quello del volto, funzionale alla costruzione dell'immagine dinastica e del potere mediceo attraverso il fasto materiale.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "Il Ritratto di Eleonora di Toledo con il figlio Giovanni (ca. 1545, olio su tavola) di Agnolo Bronzino codifica il linguaggio del ritratto di corte manierista fiorentino, in cui la resa minuziosa e quasi calligrafica del tessuto in broccato veneziano assume valore emblematico pari a quello del volto, funzionale alla costruzione dell'immagine dinastica e del potere mediceo attraverso il fasto materiale."
       }
     },
     "metadata": {
@@ -461,16 +509,19 @@
     "objectId": "annunciazione-leonardo-scheda",
     "toni": {
       "semplice": {
-        "testo": "Un angelo porta un messaggio importante a Maria, mentre dietro di loro c'è un giardino e un paesaggio lontano.",
-        "durata": 3
+        "d3": "Un angelo porta un messaggio importante a Maria, mentre dietro di loro c'è un giardino e un paesaggio lontano.",
+        "d15": "",
+        "d40": ""
       },
       "medio": {
-        "testo": "L'Annunciazione di Leonardo da Vinci, una delle sue prime opere, mostra l'angelo Gabriele inginocchiato davanti a Maria in un giardino curatissimo, con un paesaggio sfumato che si perde all'orizzonte.",
-        "durata": 15
+        "d3": "",
+        "d15": "L'Annunciazione di Leonardo da Vinci, una delle sue prime opere, mostra l'angelo Gabriele inginocchiato davanti a Maria in un giardino curatissimo, con un paesaggio sfumato che si perde all'orizzonte.",
+        "d40": ""
       },
       "avanzato": {
-        "testo": "L'Annunciazione (ca. 1472–1475, olio e tempera su tavola), opera giovanile attribuita a Leonardo da Vinci nella bottega del Verrocchio, mostra già la ricerca di resa atmosferica nello sfondo paesaggistico dissolto per gradazioni tonali, prefigurazione dello sfumato maturo. Il leggio marmoreo, ripreso dal monumento funebre di Piero e Giovanni de' Medici del Verrocchio, e l'accurata resa botanica del prato fiorito rivelano l'osservazione naturalistica già caratteristica del giovane Leonardo.",
-        "durata": 40
+        "d3": "",
+        "d15": "",
+        "d40": "L'Annunciazione (ca. 1472–1475, olio e tempera su tavola), opera giovanile attribuita a Leonardo da Vinci nella bottega del Verrocchio, mostra già la ricerca di resa atmosferica nello sfondo paesaggistico dissolto per gradazioni tonali, prefigurazione dello sfumato maturo. Il leggio marmoreo, ripreso dal monumento funebre di Piero e Giovanni de' Medici del Verrocchio, e l'accurata resa botanica del prato fiorito rivelano l'osservazione naturalistica già caratteristica del giovane Leonardo."
       }
     },
     "metadata": {

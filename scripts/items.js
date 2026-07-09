@@ -4,23 +4,26 @@ const itemSchema = new mongoose.Schema({
     museumId: { type: String, required: true },
     objectId: { type: String, default: '' },
     /*
-     * toni — tre livelli di contenuto:
-     *   semplice  (~3 s)  linguaggio elementare, utenti giovani
-     *   medio     (~15 s) linguaggio accessibile, pubblico generale
-     *   avanzato  (~40 s) terminologia tecnica, pubblico esperto
+     * toni — tre livelli di linguaggio (semplice/medio/avanzato).
+     * Ogni tono può avere fino a 3 varianti di durata (d3/d15/d40 secondi);
+     * l'autore può compilare le 3 varianti per uno, due o tutti e tre i toni,
+     * ma per essere valido un tono deve avere tutte e 3 le varianti compilate.
      */
     toni: {
         semplice: {
-            testo:  { type: String, default: '' },
-            durata: { type: Number, default: 3  },
+            d3:  { type: String, default: '' },
+            d15: { type: String, default: '' },
+            d40: { type: String, default: '' },
         },
         medio: {
-            testo:  { type: String, default: '' },
-            durata: { type: Number, default: 15 },
+            d3:  { type: String, default: '' },
+            d15: { type: String, default: '' },
+            d40: { type: String, default: '' },
         },
         avanzato: {
-            testo:  { type: String, default: '' },
-            durata: { type: Number, default: 40 },
+            d3:  { type: String, default: '' },
+            d15: { type: String, default: '' },
+            d40: { type: String, default: '' },
         },
     },
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },

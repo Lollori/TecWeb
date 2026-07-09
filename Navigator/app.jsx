@@ -458,6 +458,13 @@ const TONI_CONFIG = [
   { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
 ];
 
+// Un tono ha fino a 3 varianti di durata (d3/d15/d40): per la riproduzione
+// si preferisce la variante media, con fallback sulle altre se assente.
+function toneText(t) {
+  if (!t) return '';
+  return t.d15 || t.d3 || t.d40 || '';
+}
+
 function VisitaItemScreen({
   itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
@@ -544,7 +551,7 @@ function VisitaItemScreen({
   // da lì in poi ogni cambio di item/tono la fa ripartire — finché la docente
   // non torna a premere il tasto per il nuovo item, non riparte nulla.
   React.useEffect(() => {
-    const testo = item?.toni?.[tono]?.testo;
+    const testo = toneText(item?.toni?.[tono]);
     if (audioRef.current) {
       audioRef.current.pause();
       if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
@@ -780,7 +787,7 @@ function VisitaItemScreen({
                 </div>
 
                 <p className="visita-item-text">
-                  {item.toni?.[tono]?.testo || <em>Nessun contenuto per questo tono.</em>}
+                  {toneText(item.toni?.[tono]) || <em>Nessun contenuto per questo tono.</em>}
                 </p>
               </div>
             )}

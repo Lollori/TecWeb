@@ -1,6 +1,6 @@
 /* ============================================================
    Marketplace – Cards: museum card, glass card, opera/visita/
-   item read card, scroll card, section-form, toni-tabs,
+   item read card, scroll card, section-form, toni-switcher,
    price/free badge, tag bubble.
    ============================================================ */
 
@@ -123,39 +123,39 @@
 .item-read-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 10px; }
 .item-contents p    { font-size: 0.9rem; color: var(--text-dark); margin: 0; line-height: 1.6; }
 
-/* ── Toni tabs (semplice / medio / avanzato) ── */
-.toni-tabs {
-    display: flex; flex-direction: column; gap: 0;
+/* ── Toni switcher (frecce per passare fra semplice/medio/avanzato;
+   il tono attivo mostra tutte le durate compilate, 3s/15s/40s) ── */
+.toni-switcher {
     border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
 }
-.toni-tab-bar {
-    display: flex;
-    border-bottom: 1px solid #e2e8f0; background: #f8fafc;
+.toni-switcher-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 10px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;
 }
-.toni-tab-btn {
-    flex: 1; background: none; border: none;
-    padding: 7px 4px; font-size: 0.78rem; font-weight: 600;
-    color: #64748b; cursor: pointer; font-family: inherit;
-    transition: color 0.15s, background 0.15s;
-    display: flex; flex-direction: column; align-items: center; gap: 2px;
-    border-right: 1px solid #e2e8f0;
+.toni-nav-btn {
+    width: 28px; height: 28px; border-radius: 50%;
+    border: 1px solid #e2e8f0; background: white;
+    color: #64748b; cursor: pointer; font-size: 0.75rem;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
-.toni-tab-btn:last-child { border-right: none; }
-.toni-tab-btn:hover { color: var(--magenta, #FF007F); background: rgba(255,0,127,0.04); }
-.toni-tab-btn.active {
+.toni-nav-btn:hover { background: var(--magenta, #FF007F); border-color: var(--magenta, #FF007F); color: white; }
+.toni-current-label {
+    font-size: 0.8rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.5px;
     color: var(--magenta, #FF007F);
-    background: rgba(255,0,127,0.07);
-    border-bottom: 2px solid var(--magenta, #FF007F);
-    margin-bottom: -1px;
 }
-.toni-dur { font-size: 0.68rem; font-weight: 400; color: #94a3b8; }
-.toni-tab-btn.active .toni-dur { color: var(--magenta, #FF007F); opacity: 0.7; }
-.toni-panel         { padding: 12px 14px; }
-.toni-panel--hidden { display: none; }
+.toni-panels { position: relative; padding: 12px 14px; }
+.toni-panel  { display: none; }
+.toni-panel.is-active { display: block; }
 .toni-testo {
     font-size: 0.88rem; color: var(--text-dark, #334155);
-    margin: 0; line-height: 1.6;
+    margin: 0 0 4px; line-height: 1.6;
     overflow-wrap: break-word; word-break: break-word;
+}
+.toni-testo:last-child { margin-bottom: 0; }
+.toni-empty {
+    font-size: 0.85rem; color: #94a3b8;
 }
 .toni-dur-label {
     font-size: 0.72rem; font-weight: 400;
@@ -281,11 +281,11 @@
 [data-theme="dark"] .scroll-card         { background: #1a2235; border-color: rgba(255, 255, 255, 0.07); }
 [data-theme="dark"] .tag-bubble          { background: rgba(255, 255, 255, 0.07); color: #94a3b8; }
 
-[data-theme="dark"] .toni-tabs           { border-color: rgba(255,255,255,0.1); }
-[data-theme="dark"] .toni-tab-bar        { background: rgba(255,255,255,0.04); border-bottom-color: rgba(255,255,255,0.08); }
-[data-theme="dark"] .toni-tab-btn        { color: #94a3b8; border-right-color: rgba(255,255,255,0.07); }
-[data-theme="dark"] .toni-tab-btn.active { background: rgba(255,0,127,0.12); }
+[data-theme="dark"] .toni-switcher       { border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .toni-switcher-head  { background: rgba(255,255,255,0.04); border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .toni-nav-btn        { background: #1a2235; border-color: rgba(255,255,255,0.1); color: #94a3b8; }
 [data-theme="dark"] .toni-testo          { color: #cbd5e1; }
+[data-theme="dark"] .toni-empty          { color: #64748b; }
 
 [data-theme="dark"] .section-form {
     background: #1a2235;

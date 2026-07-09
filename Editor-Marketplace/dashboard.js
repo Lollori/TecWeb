@@ -932,38 +932,172 @@ window.showOperaItems = async function (idx, codiceIsil) {
     }
 };
 
+/* ── Helper: estrae un testo rappresentativo da un tono (anteprime/ricerca) ── */
+function toneText(t) {
+    if (!t) return '';
+    return t.d15 || t.d3 || t.d40 || '';
+}
+
+/* ── Helper: editor a schede per i 3 toni (una scheda per tono, ciascuna con
+   3 caselle di testo — 3s/15s/40s — della stessa dimensione). Un tono si
+   considera "completo" solo se tutte e 3 le durate sono compilate; l'autore
+   può scegliere di completare uno, due o tutti e tre i toni. ── */
+function toneEditorHtml(editorId, prefix, toni) {
+    const gruppi = [
+        { key: 'semplice', label: 'Semplice', hint: 'linguaggio elementare, utenti giovani' },
+        { key: 'medio',    label: 'Medio',    hint: 'linguaggio accessibile, pubblico generale' },
+        { key: 'avanzato', label: 'Avanzato', hint: 'terminologia tecnica, pubblico esperto' },
+    ];
+    const defaultKey = gruppi.find(g => !toneIsEmpty(toni?.[g.key] || {}))?.key || 'semplice';
+
+    const tabs = gruppi.map(g => `
+        <button type="button" class="tone-editor-tab${g.key === defaultKey ? ' active' : ''}"
+                data-tone-key="${g.key}" onclick="switchToneTab('${editorId}','${g.key}')">
+            <span class="tone-editor-tab-label">
+                ${g.label}
+                <span class="tone-editor-tab-badge" data-badge-key="${g.key}">0/3</span>
+            </span>
+            <span class="tone-editor-tab-hint">${g.hint}</span>
+        </button>`).join('');
+
+    const panels = gruppi.map(g => {
+        const t = toni?.[g.key] || {};
+        return `
+        <div class="tone-editor-panel${g.key === defaultKey ? ' active' : ''}" data-tone-panel="${g.key}">
+            <div class="tone-editor-fields">
+                <div class="tone-editor-field">
+                    <label>3 secondi</label>
+                    <textarea id="${prefix}${g.label}3" placeholder="Versione brevissima…">${t.d3 || ''}</textarea>
+                </div>
+                <div class="tone-editor-field">
+                    <label>15 secondi</label>
+                    <textarea id="${prefix}${g.label}15" placeholder="Versione media…">${t.d15 || ''}</textarea>
+                </div>
+                <div class="tone-editor-field">
+                    <label>40 secondi</label>
+                    <textarea id="${prefix}${g.label}40" placeholder="Versione estesa…">${t.d40 || ''}</textarea>
+                </div>
+            </div>
+        </div>`;
+    }).join('');
+
+    return `
+        <div class="col-12">
+            <div class="tone-editor" id="${editorId}">
+                <div class="tone-editor-tabs">${tabs}</div>
+                ${panels}
+            </div>
+        </div>`;
+}
+
+window.switchToneTab = function (editorId, key) {
+    const root = document.getElementById(editorId);
+    if (!root) return;
+    root.querySelectorAll('.tone-editor-tab').forEach(b => b.classList.toggle('active', b.dataset.toneKey === key));
+    root.querySelectorAll('.tone-editor-panel').forEach(p => p.classList.toggle('active', p.dataset.tonePanel === key));
+};
+
+/* Aggiorna i badge "n/3" di ogni scheda in base ai campi compilati in quel momento. */
+function refreshToneBadges(editorId, prefix) {
+    const root = document.getElementById(editorId);
+    if (!root) return;
+    ['semplice', 'medio', 'avanzato'].forEach(key => {
+        const label = key.charAt(0).toUpperCase() + key.slice(1);
+        const n = ['3', '15', '40'].filter(d => (document.getElementById(`${prefix}${label}${d}`)?.value || '').trim()).length;
+        const badge = root.querySelector(`.tone-editor-tab-badge[data-badge-key="${key}"]`);
+        if (!badge) return;
+        badge.textContent = `${n}/3`;
+        badge.classList.toggle('is-complete', n === 3);
+    });
+}
+
+/* Aggancia l'aggiornamento live dei badge quando l'autore scrive nelle caselle. */
+function wireToneBadges(editorId, prefix) {
+    const root = document.getElementById(editorId);
+    if (!root) return;
+    root.addEventListener('input', (e) => {
+        if (e.target.tagName === 'TEXTAREA') refreshToneBadges(editorId, prefix);
+    });
+    refreshToneBadges(editorId, prefix);
+}
+
+/* ── Helper: legge i 3 campi durata di un tono dal form (per id-prefix/label) ── */
+function readToneFields(prefix, label) {
+    return {
+        d3:  (document.getElementById(`${prefix}${label}3`)?.value  || '').trim(),
+        d15: (document.getElementById(`${prefix}${label}15`)?.value || '').trim(),
+        d40: (document.getElementById(`${prefix}${label}40`)?.value || '').trim(),
+    };
+}
+
+function toneIsComplete(t) { return !!(t.d3 && t.d15 && t.d40); }
+function toneIsEmpty(t)    { return !t.d3 && !t.d15 && !t.d40; }
+
+/* Un tono va lasciato completamente vuoto oppure compilato in tutte e 3 le
+   durate; l'item è salvabile solo se almeno un tono è completo. */
+function validateToniOrAlert(toniObj) {
+    const entries = Object.entries(toniObj);
+    for (const [key, t] of entries) {
+        if (!toneIsEmpty(t) && !toneIsComplete(t)) {
+            alert(`Completa tutte e 3 le durate (3s / 15s / 40s) del tono "${key}", oppure lasciale tutte vuote.`);
+            return false;
+        }
+    }
+    if (!entries.some(([, t]) => toneIsComplete(t))) {
+        alert('Completa le 3 durate (3s / 15s / 40s) di almeno un tono.');
+        return false;
+    }
+    return true;
+}
+
 /* ── Helper: render tabbed toni panel ─────────────────── */
 function renderToni(item, uid) {
     const t = item.toni || {};
     const livelli = [
-        { key: 'semplice', label: 'Semplice', durata: 3  },
-        { key: 'medio',    label: 'Medio',    durata: 15 },
-        { key: 'avanzato', label: 'Avanzato', durata: 40 },
+        { key: 'semplice', label: 'Semplice' },
+        { key: 'medio',    label: 'Medio' },
+        { key: 'avanzato', label: 'Avanzato' },
     ];
+    const durate = [['d3', '3s'], ['d15', '15s'], ['d40', '40s']];
     const id = uid || item._id || Math.random().toString(36).slice(2);
+
+    const panels = livelli.map((l, i) => {
+        const blocks = durate
+            .filter(([dk]) => t[l.key]?.[dk])
+            .map(([dk, dl]) => `<p class="toni-testo"><strong>${dl}:</strong> ${t[l.key][dk].replace(/\n/g, '<br>')}</p>`)
+            .join('');
+        return `
+            <div class="toni-panel${i === 0 ? ' is-active' : ''}" data-toni-key="${l.key}">
+                ${blocks || '<em class="toni-empty">Nessun contenuto.</em>'}
+            </div>`;
+    }).join('');
+
     return `
-        <div class="toni-tabs" data-toni-id="${id}">
-            <div class="toni-tab-bar">
-                ${livelli.map((l, i) => `
-                    <button type="button"
-                            class="toni-tab-btn${i === 0 ? ' active' : ''}"
-                            onclick="toniSwitch('${id}','${l.key}')">
-                        ${l.label}
-                        <span class="toni-dur">${l.durata}s</span>
-                    </button>`).join('')}
+        <div class="toni-switcher" data-toni-id="${id}" data-toni-index="0">
+            <div class="toni-switcher-head">
+                <button type="button" class="toni-nav-btn" onclick="toniNav('${id}',-1)" aria-label="Tono precedente">
+                    <i class="fa-solid fa-chevron-left"></i>
+                </button>
+                <span class="toni-current-label">${livelli[0].label}</span>
+                <button type="button" class="toni-nav-btn" onclick="toniNav('${id}',1)" aria-label="Tono successivo">
+                    <i class="fa-solid fa-chevron-right"></i>
+                </button>
             </div>
-            ${livelli.map((l, i) => `
-                <div class="toni-panel${i === 0 ? '' : ' toni-panel--hidden'}" data-toni-key="${l.key}">
-                    <p class="toni-testo">${(t[l.key]?.testo || '').replace(/\n/g, '<br>') || '<em style="color:#94a3b8">Nessun contenuto.</em>'}</p>
-                </div>`).join('')}
+            <div class="toni-panels">${panels}</div>
         </div>`;
 }
 
-window.toniSwitch = function (id, key) {
-    const root = document.querySelector(`.toni-tabs[data-toni-id="${id}"]`);
+window.toniNav = function (id, dir) {
+    const root = document.querySelector(`.toni-switcher[data-toni-id="${id}"]`);
     if (!root) return;
-    root.querySelectorAll('.toni-tab-btn').forEach(b => b.classList.toggle('active', b.textContent.trim().toLowerCase().startsWith(key)));
-    root.querySelectorAll('.toni-panel').forEach(p => p.classList.toggle('toni-panel--hidden', p.dataset.toniKey !== key));
+    const keys   = ['semplice', 'medio', 'avanzato'];
+    const labels = { semplice: 'Semplice', medio: 'Medio', avanzato: 'Avanzato' };
+    let idx = (parseInt(root.dataset.toniIndex, 10) || 0) + dir;
+    idx = (idx + keys.length) % keys.length;
+    root.dataset.toniIndex = idx;
+    const key = keys[idx];
+    root.querySelector('.toni-current-label').textContent = labels[key];
+    root.querySelectorAll('.toni-panel').forEach(p => p.classList.toggle('is-active', p.dataset.toniKey === key));
 };
 
 function renderItemCard(item) {
@@ -1596,7 +1730,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             return;
         }
         container.innerHTML = lista.map(it => {
-            const preview   = (it.toni?.semplice?.testo || '').substring(0, 60);
+            const preview   = toneText(it.toni?.semplice).substring(0, 60);
             const isChecked = _vfSelectedItemIds.has(it._id);
             return `
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
@@ -1807,7 +1941,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         panel.innerHTML = newOrder.map((id, i) => {
             const item = allItems.find(it => it._id === id);
             if (!item) return '';
-            const preview = (item.toni?.semplice?.testo || '').substring(0, 70);
+            const preview = toneText(item.toni?.semplice).substring(0, 70);
             return `
             <div class="vf-drag-card" data-item-id="${id}" draggable="true"
                  style="display:flex;align-items:center;gap:12px;padding:10px 16px;
@@ -2021,9 +2155,9 @@ window.filterAutoreItems = function () {
     if (q) filtered = filtered.filter(it => {
         const testo = [
             it.operaId || '',
-            it.toni?.semplice?.testo || '',
-            it.toni?.medio?.testo    || '',
-            it.toni?.avanzato?.testo || '',
+            toneText(it.toni?.semplice),
+            toneText(it.toni?.medio),
+            toneText(it.toni?.avanzato),
         ].join(' ').toLowerCase();
         return testo.includes(q);
     });
@@ -2043,7 +2177,7 @@ function _renderAutoreItemsList(lista) {
         return;
     }
     grid.innerHTML = lista.map(it => {
-        const preview = it.toni?.semplice?.testo || '';
+        const preview = toneText(it.toni?.semplice);
         return `
         <div class="item-read-card">
             ${it.image
@@ -2110,59 +2244,14 @@ window._showAutoreItemForm = async function (itemId) {
                     </select>
                 </div>
                 ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;"><i class="fa-solid fa-circle-info me-1"></i>Museo e opera non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Semplice</strong>
-                        <span class="toni-dur-label">~3 s · linguaggio elementare</span>
-                    </label>
-                    <textarea id="ifSemplice" class="custom-input" rows="2"
-                              placeholder="Breve descrizione in parole semplici, adatta a bambini e ragazzi…" required>${item?.toni?.semplice?.testo || ''}</textarea>
-                </div>
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Medio</strong>
-                        <span class="toni-dur-label">~15 s · pubblico generale</span>
-                    </label>
-                    <textarea id="ifMedio" class="custom-input" rows="3"
-                              placeholder="Descrizione accessibile con qualche dettaglio storico o tecnico…" required>${item?.toni?.medio?.testo || ''}</textarea>
-                </div>
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Avanzato</strong>
-                        <span class="toni-dur-label">~40 s · terminologia tecnica</span>
-                    </label>
-                    <textarea id="ifAvanzato" class="custom-input" rows="5"
-                              placeholder="Analisi approfondita con terminologia specialistica…" required>${item?.toni?.avanzato?.testo || ''}</textarea>
-                </div>
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-circle-info me-1"></i>Scegli un tono e compila le sue 3 durate (3s / 15s / 40s). Puoi farne uno, due o tutti e tre.
+                </p>
+                ${toneEditorHtml('ifToneEditor', 'if', item?.toni)}
                 <div class="col-md-6">
                     <label class="custom-label">ID Oggetto</label>
                     <input type="text" id="ifObjectId" class="custom-input"
                            placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Materiale</label>
-                    <input type="text" id="ifMateriale" class="custom-input"
-                           placeholder="es. Marmo, Tempera su tavola" value="${(item?.metadata?.materiale || '').replace(/"/g, '&quot;')}">
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Tecnica</label>
-                    <input type="text" id="ifTecnica" class="custom-input"
-                           placeholder="es. Scultura, Affresco" value="${(item?.metadata?.tecnica || '').replace(/"/g, '&quot;')}">
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Dimensioni</label>
-                    <input type="text" id="ifDimensioni" class="custom-input"
-                           placeholder="es. 172 × 278 cm" value="${(item?.metadata?.dimensioni || '').replace(/"/g, '&quot;')}">
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Provenienza</label>
-                    <input type="text" id="ifProvenienza" class="custom-input"
-                           placeholder="es. Firenze, Uffizi" value="${(item?.metadata?.provenienza || '').replace(/"/g, '&quot;')}">
-                </div>
-                <div class="col-md-6">
-                    <label class="custom-label">Periodo</label>
-                    <input type="text" id="ifPeriodo" class="custom-input"
-                           placeholder="es. 1477–1478" value="${(item?.metadata?.periodo || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
@@ -2201,6 +2290,7 @@ window._showAutoreItemForm = async function (itemId) {
 
     await ensureMuseiAutore();
     populateMuseoSelect('ifMuseo', allMuseiAutore);
+    wireToneBadges('ifToneEditor', 'if');
 
     window.toggleIfVisibilita = function (forceValue) {
         const track     = document.getElementById('ifToggleTrack');
@@ -2263,25 +2353,20 @@ window._showAutoreItemForm = async function (itemId) {
         e.preventDefault();
         const museoIsil  = document.getElementById('ifMuseo').value;
         const operaId    = document.getElementById('ifOpera').value;
-        const testoSem   = document.getElementById('ifSemplice').value.trim();
-        const testoMed   = document.getElementById('ifMedio').value.trim();
-        const testoAdv   = document.getElementById('ifAvanzato').value.trim();
+        const toni = {
+            semplice: readToneFields('if', 'Semplice'),
+            medio:    readToneFields('if', 'Medio'),
+            avanzato: readToneFields('if', 'Avanzato'),
+        };
 
         if (!museoIsil) { alert('Seleziona un museo.'); return; }
         if (!operaId)   { alert("Seleziona un'opera."); return; }
-        if (!testoSem && !testoMed && !testoAdv) {
-            alert('Inserisci almeno un tono di contenuto.'); return;
-        }
+        if (!validateToniOrAlert(toni)) return;
 
         const isPubblicaItem = SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
         const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
         const metadata = {};
         if (prezzo > 0) metadata.prezzo = prezzo;
-        [['materiale','ifMateriale'],['tecnica','ifTecnica'],['dimensioni','ifDimensioni'],
-         ['provenienza','ifProvenienza'],['periodo','ifPeriodo']].forEach(([key, id]) => {
-            const val = document.getElementById(id)?.value.trim();
-            if (val) metadata[key] = val;
-        });
 
         const objectIdVal = document.getElementById('ifObjectId').value.trim();
         const body = {
@@ -2289,11 +2374,7 @@ window._showAutoreItemForm = async function (itemId) {
             museumId: museoIsil,
             authorId: SESSION.userId,
             objectId: objectIdVal || (operaId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
-            toni: {
-                semplice: { testo: testoSem, durata: 3  },
-                medio:    { testo: testoMed, durata: 15 },
-                avanzato: { testo: testoAdv, durata: 40 },
-            },
+            toni,
             metadata,
             image:    document.getElementById('ifImmagine').value.trim(),
             pubblica: isPubblicaItem,
@@ -3898,7 +3979,7 @@ function renderAdminItems(lista) {
         return;
     }
     tbody.innerHTML = lista.map(it => {
-        const preview = (it.toni?.semplice?.testo || '').slice(0, 60);
+        const preview = toneText(it.toni?.semplice).slice(0, 60);
         return `
         <tr>
             <td class="fw-bold">${it.operaId || '—'}</td>
@@ -3942,27 +4023,10 @@ window.adminEditItem = function (id) {
         <p class="museo-detail-sub">Opera: ${it.operaId || '—'}</p>
         <div class="glass-card p-5 mt-4">
             <form id="adminItemForm" class="row g-4">
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Semplice</strong>
-                        <span class="toni-dur-label">~3 s · linguaggio elementare</span>
-                    </label>
-                    <textarea id="aiSemplice" class="custom-input" rows="2">${toni.semplice?.testo || ''}</textarea>
-                </div>
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Medio</strong>
-                        <span class="toni-dur-label">~15 s · pubblico generale</span>
-                    </label>
-                    <textarea id="aiMedio" class="custom-input" rows="3">${toni.medio?.testo || ''}</textarea>
-                </div>
-                <div class="col-12">
-                    <label class="custom-label">
-                        Tono <strong>Avanzato</strong>
-                        <span class="toni-dur-label">~40 s · terminologia tecnica</span>
-                    </label>
-                    <textarea id="aiAvanzato" class="custom-input" rows="5">${toni.avanzato?.testo || ''}</textarea>
-                </div>
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-circle-info me-1"></i>Scegli un tono e compila le sue 3 durate (3s / 15s / 40s). Puoi farne uno, due o tutti e tre.
+                </p>
+                ${toneEditorHtml('aiToneEditor', 'ai', toni)}
                 <div class="col-md-6">
                     <label class="custom-label">Opera (ID)</label>
                     <input type="text" class="custom-input" value="${it.operaId || ''}" disabled>
@@ -3983,8 +4047,16 @@ window.adminEditItem = function (id) {
             </form>
         </div>`;
 
+    wireToneBadges('aiToneEditor', 'ai');
+
     document.getElementById('adminItemForm').addEventListener('submit', async (e) => {
         e.preventDefault();
+        const nuoviToni = {
+            semplice: readToneFields('ai', 'Semplice'),
+            medio:    readToneFields('ai', 'Medio'),
+            avanzato: readToneFields('ai', 'Avanzato'),
+        };
+        if (!validateToniOrAlert(nuoviToni)) return;
         let metadata;
         try {
             metadata = JSON.parse(document.getElementById('aiMetadata').value || '{}');
@@ -3993,11 +4065,7 @@ window.adminEditItem = function (id) {
             return;
         }
         const body = {
-            toni: {
-                semplice: { testo: document.getElementById('aiSemplice').value.trim(), durata: 3  },
-                medio:    { testo: document.getElementById('aiMedio').value.trim(),    durata: 15 },
-                avanzato: { testo: document.getElementById('aiAvanzato').value.trim(), durata: 40 },
-            },
+            toni: nuoviToni,
             image:    document.getElementById('aiImmagine').value.trim(),
             metadata,
             operaId:  it.operaId,
@@ -4543,9 +4611,9 @@ window.applyMktFilter = function () {
         if (q) lista = lista.filter(it => {
             const allText = [
                 it.operaId || '',
-                it.toni?.semplice?.testo || '',
-                it.toni?.medio?.testo    || '',
-                it.toni?.avanzato?.testo || '',
+                toneText(it.toni?.semplice),
+                toneText(it.toni?.medio),
+                toneText(it.toni?.avanzato),
             ].join(' ').toLowerCase();
             return allText.includes(q);
         });
@@ -4732,9 +4800,9 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
         purchasedItems = purchasedItems.filter(it => {
             const allText = [
                 it.operaId || '',
-                it.toni?.semplice?.testo || '',
-                it.toni?.medio?.testo    || '',
-                it.toni?.avanzato?.testo || '',
+                toneText(it.toni?.semplice),
+                toneText(it.toni?.medio),
+                toneText(it.toni?.avanzato),
             ].join(' ').toLowerCase();
             return allText.includes(q);
         });

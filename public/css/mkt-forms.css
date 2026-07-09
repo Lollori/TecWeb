@@ -96,6 +96,107 @@ select.custom-input {
     background-size: 14px; padding-right: 40px; cursor: pointer;
 }
 
+/* ── Tone editor (creazione/modifica item: 3 toni, 3 durate ciascuno) ── */
+.tone-editor {
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    background: #f8fafc;
+}
+.tone-editor-tabs {
+    display: flex;
+    background: #ffffff;
+    border-bottom: 1px solid #e2e8f0;
+}
+.tone-editor-tab {
+    flex: 1;
+    background: none;
+    border: none;
+    border-right: 1px solid #e2e8f0;
+    padding: 18px 20px;
+    cursor: pointer;
+    font-family: inherit;
+    text-align: left;
+    transition: background 0.15s, color 0.15s;
+}
+.tone-editor-tab:last-child { border-right: none; }
+.tone-editor-tab-label {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 700;
+    font-size: 0.98rem;
+    color: var(--text-dark);
+}
+.tone-editor-tab-hint {
+    display: block;
+    font-size: 0.76rem;
+    font-weight: 400;
+    color: #94a3b8;
+    margin-top: 5px;
+}
+.tone-editor-tab-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 2px 9px;
+    border-radius: 20px;
+    background: #e2e8f0;
+    color: #64748b;
+    flex-shrink: 0;
+}
+.tone-editor-tab-badge.is-complete {
+    background: rgba(255, 0, 127, 0.12);
+    color: var(--magenta);
+}
+.tone-editor-tab:hover { background: rgba(255, 0, 127, 0.04); }
+.tone-editor-tab.active {
+    background: rgba(255, 0, 127, 0.06);
+    box-shadow: inset 0 -3px 0 var(--magenta);
+}
+.tone-editor-tab.active .tone-editor-tab-label { color: var(--magenta); }
+
+.tone-editor-panel { display: none; padding: 30px; }
+.tone-editor-panel.active { display: block; }
+
+.tone-editor-fields {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+.tone-editor-field label {
+    display: block;
+    font-weight: 700;
+    font-size: 0.78rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #94a3b8;
+    margin-bottom: 9px;
+}
+.tone-editor-field textarea {
+    width: 100%;
+    height: 170px;
+    resize: vertical;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-size: 0.92rem;
+    font-family: inherit;
+    line-height: 1.55;
+    transition: var(--transition);
+}
+.tone-editor-field textarea:focus {
+    border-color: var(--magenta);
+    box-shadow: 0 0 0 3px var(--magenta-glow);
+    outline: none;
+}
+
+@media (max-width: 767.98px) {
+    .tone-editor-tabs { flex-direction: column; }
+    .tone-editor-tab { border-right: none; border-bottom: 1px solid #e2e8f0; }
+    .tone-editor-tab:last-child { border-bottom: none; }
+    .tone-editor-fields { grid-template-columns: 1fr; }
+}
+
 /* ── Search box glass (usato nel dashboard Autore) ── */
 .search-box-glass {
     background: white; border: 1px solid #e2e8f0;
@@ -116,6 +217,22 @@ select.custom-input {
 .search-box-glass input::placeholder { color: #94a3b8; }
 
 /* ── Dark mode ── */
+[data-theme="dark"] .tone-editor { background: #10182b; border-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .tone-editor-tabs { background: #161f38; border-bottom-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .tone-editor-tab { border-right-color: rgba(255,255,255,0.08); }
+[data-theme="dark"] .tone-editor-tab-label { color: #e8edf5; }
+[data-theme="dark"] .tone-editor-tab-hint { color: #64748b; }
+[data-theme="dark"] .tone-editor-tab-badge { background: rgba(255,255,255,0.08); color: #94a3b8; }
+[data-theme="dark"] .tone-editor-tab:hover { background: rgba(255,0,127,0.06); }
+[data-theme="dark"] .tone-editor-tab.active { background: rgba(255,0,127,0.1); }
+[data-theme="dark"] .tone-editor-field label { color: #64748b; }
+[data-theme="dark"] .tone-editor-field textarea {
+    background-color: #1a2235;
+    border-color: rgba(255, 255, 255, 0.1);
+    color: #e8edf5;
+}
+[data-theme="dark"] .tone-editor-field textarea::placeholder { color: #4a5568; }
+
 [data-theme="dark"] .btn-outline-custom {
     background: #1a2235; border-color: rgba(255, 255, 255, 0.1); color: #94a3b8;
 }
