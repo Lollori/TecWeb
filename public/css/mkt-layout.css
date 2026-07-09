@@ -158,16 +158,22 @@
     .carrello-scroll .visita-read-card h3 { font-size: 0.92rem; margin-bottom: 2px; }
     .carrello-scroll .scroll-section-label { font-size: 0.95rem; margin-bottom: 8px; }
 
-    /* Sezione finale: totale e pulsanti sulla stessa riga — niente più a capo
-       (flex-wrap:nowrap) — quindi i pulsanti vanno rimpiccioliti il giusto
-       perché ci stiano tutti insieme senza traboccare. */
+    /* Sezione finale: totale e pulsanti sulla stessa riga, mai a capo
+       (flex-wrap:nowrap) — dimensioni tarate per entrare anche su schermi
+       stretti reali (iPhone ~390px di larghezza CSS), non solo in teoria. */
     #carrelloFooter { flex-shrink: 0; }
-    #carrelloFooter .glass-card { padding: 10px 12px; gap: 6px; flex-wrap: nowrap; }
-    #carrelloFooter .kpi-label  { font-size: 0.6rem; }
-    #carrelloFooter h2          { font-size: 1.05rem; }
-    #carrelloFooter .d-flex.gap-2 { gap: 6px !important; flex-shrink: 0; }
+    #carrelloFooter .glass-card {
+        padding: 8px 10px; gap: 6px; flex-wrap: nowrap;
+        display: flex; align-items: center; justify-content: space-between;
+    }
+    #carrelloFooter .glass-card > div:first-child { flex-shrink: 0; }
+    #carrelloFooter .kpi-label  { font-size: 0.55rem; }
+    #carrelloFooter h2          { font-size: 0.9rem; }
+    #carrelloFooter .d-flex.gap-2 { gap: 4px !important; flex-shrink: 0; }
     #carrelloFooter .btn-magenta,
-    #carrelloFooter .btn-outline-custom { padding: 6px 10px; font-size: 0.68rem; gap: 4px; white-space: nowrap; }
+    #carrelloFooter .btn-outline-custom {
+        padding: 5px 8px; font-size: 0.62rem; gap: 3px; white-space: nowrap;
+    }
 
     /* ── Marketplace: qui la pagina resta normalmente scrollabile (non è a
        schermo bloccato come il carrello) — solo la griglia di items/visite/
