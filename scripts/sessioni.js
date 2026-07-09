@@ -27,12 +27,16 @@ function getSession(codice) {
   return sessions.get(codice) || null;
 }
 
-function joinSession(codice) {
+function joinSession(codice, nomeRichiesto) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata. Controlla il codice.' };
   if (session.stato === 'iniziata') return { error: 'La visita è già iniziata.' };
   session.studentCount++;
-  const nome = `Studente ${session.studentCount}`;
+  // Se l'utente ha effettuato il login usiamo il suo nome account reale al
+  // posto del generico "Studente N"; in caso di omonimia (o utente non
+  // loggato) si distingue comunque ogni partecipante.
+  let nome = (nomeRichiesto || '').trim() || `Studente ${session.studentCount}`;
+  if (session.studenti.some(s => s.nome === nome)) nome = `${nome} (${session.studentCount})`;
   session.studenti.push({ nome });
   broadcast(codice, { tipo: 'studente-connesso', studenti: session.studenti });
   return { ok: true, nome, museoIsil: session.museoIsil };

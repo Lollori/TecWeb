@@ -309,7 +309,7 @@ app.get('/api/sessioni/:codice', (req, res) => {
 
 // Studente entra in sessione
 app.post('/api/sessioni/:codice/join', (req, res) => {
-    const result = sessioni.joinSession(req.params.codice);
+    const result = sessioni.joinSession(req.params.codice, req.body?.nome);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });

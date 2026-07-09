@@ -204,7 +204,11 @@ function JoinContent({ onJoined }) {
     setJoining(true);
     setJoinError(null);
     try {
-      const res  = await fetch(`/api/sessioni/${encodeURIComponent(trimmed)}/join`, { method: 'POST' });
+      const nomeAccount = localStorage.getItem('userUsername') || '';
+      const res  = await fetch(`/api/sessioni/${encodeURIComponent(trimmed)}/join`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nome: nomeAccount }),
+      });
       const data = await res.json();
       if (!res.ok || data.error) {
         setJoinError(data.error || 'Codice non trovato. Riprova.');

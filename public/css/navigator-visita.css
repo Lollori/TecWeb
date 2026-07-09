@@ -274,4 +274,12 @@
     border-left: none; z-index: 300;
   }
   .visita-compose-sidebar--open { width: 100%; }
+
+  /* Mappa "sei qui" leggermente più grande e icone dei servizi (bagni,
+     ascensori, scale) più piccole, altrimenti su schermi stretti coprono
+     quasi per intero le stanze della planimetria. */
+  .visita-item-map .geo-floorplan-img { max-height: 340px; }
+  .visita-item-map .geo-amenity-marker {
+    width: 16px; height: 16px; font-size: 0.5rem; border-width: 1.5px;
+  }
 }
