@@ -59,6 +59,12 @@ let _vfAcquistatiItems = [];
 let _vfSelectedItemIds = new Set();
 let _vfOperaSalaMap    = {};
 let _vfRoomGeo         = null;
+// Incrementato ogni volta che il form "Nuova/Modifica Visita" viene aperto o
+// il museo cambia: una fetch di items partita da un'apertura precedente del
+// form (rimasta in sospeso per lentezza di rete) confronta il proprio token
+// prima di scrivere i risultati, così non sovrascrive più con dati vecchi lo
+// stato di un'apertura successiva — la causa reale del caricamento intermittente.
+let _vfLoadToken       = 0;
 
 /* Amenity POIs — geoJson room_id values that mark building amenities
    rather than exhibition rooms (shown as icon markers, not clickable sale). */
@@ -1640,7 +1646,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         </p>
                     </div>
                 </div>
-                <div class="col-12" id="vfOrderSection" style="display:none;">
+                <div class="col-12" id="vfOrderSection" style="display:none;min-width:0;max-width:100%;">
                     <label class="custom-label" style="margin-bottom:4px;">Ordine degli items</label>
                     <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
                         <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
@@ -1714,6 +1720,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
     _vfSelectedItemIds = new Set(isEdit ? (visita.itemIds || []) : []);
     _vfOperaSalaMap    = {};
     _vfRoomGeo         = null;
+    _vfLoadToken++;
 
     window.setVfItemTab = function (tab, btn) {
         _vfItemTab = tab;
@@ -1774,6 +1781,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         if (searchBox) searchBox.value = '';
         _vfCurrentMuseo = codiceIsil;
         if (!codiceIsil) {
+            _vfLoadToken++; // invalida qualunque fetch precedente ancora in volo
             _vfMyItems = [];
             _vfAcquistatiItems = [];
             _vfOperaSalaMap = {};
@@ -1785,6 +1793,15 @@ window._showAutoreVisitaForm = async function (visitaId) {
         }
         if (!preserveSelection) _vfSelectedItemIds = new Set();
         container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
+
+        // Token della richiesta corrente: se nel frattempo il form viene
+        // richiuso/riaperto (_vfLoadToken incrementato altrove) o si sceglie
+        // un altro museo, questa fetch ormai "vecchia" scarta i propri
+        // risultati invece di sovrascrivere lo stato di quella nuova — è
+        // questa la vera causa del caricamento intermittente, non (solo) la
+        // rete: una fetch lenta e lasciata partire da un'apertura precedente
+        // del form arrivava dopo e rimpiazzava i dati corretti con quelli sbagliati.
+        const myToken = ++_vfLoadToken;
 
         // Le due fetch sono indipendenti: se una fallisce per un blip di rete
         // (capita sulla rete del dipartimento) non deve far fallire anche
@@ -1803,6 +1820,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
             fetchJsonSafe(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
             fetchJsonSafe(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
         ]);
+
+        if (myToken !== _vfLoadToken) return; // richiesta superata, ignorala
 
         if (dOwn === null && dPublic === null) {
             container.innerHTML = `
@@ -2118,6 +2137,7 @@ window.resetVisitaForm = function () {
     if (label)  { label.textContent = 'Privata'; label.style.color = '#64748b'; }
     if (hidden) hidden.value = 'false';
     if (row)    row.style.display = 'none';
+    _vfLoadToken++; // invalida qualunque fetch di items ancora in volo
     _vfCurrentMuseo    = '';
     _vfMyItems         = [];
     _vfAcquistatiItems = [];

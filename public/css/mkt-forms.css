@@ -262,3 +262,17 @@ select.custom-input {
 [data-theme="dark"] .btn-secondary-dash:hover {
     background: #1e2a42; border-color: rgba(255, 255, 255, 0.2); color: #e8edf5;
 }
+
+/* ── Form "Nuova/Modifica Visita" (autore/curatore/visitatore) ──
+   Bootstrap dà alle colonne .col-* flex-shrink:0 di default: se un figlio
+   (es. il nome di un'opera lunga dentro le card di riordino item) ha un
+   contenuto che non va a capo, la colonna rifiuta di restringersi e allarga
+   l'intera pagina su mobile. Qui forziamo lo shrink a ogni livello. */
+#visitaFormAutore.row               { min-width: 0; }
+#visitaFormAutore > [class*="col-"] { min-width: 0; max-width: 100%; }
+
+@media (max-width: 540px) {
+    .vf-drag-card         { padding: 8px 10px !important; gap: 8px !important; }
+    .vf-drag-card strong  { font-size: 0.82rem !important; }
+    .vf-drag-card p       { font-size: 0.72rem !important; }
+}
