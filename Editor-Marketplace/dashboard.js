@@ -405,6 +405,10 @@ function buildSidebar() {
    ============================================================ */
 
 function switchSection(id) {
+    // Su mobile "carrello" diventa una schermata a piena pagina non scrollabile
+    // (solo il div interno con items/visite scorre) — vedi mkt-layout.css.
+    document.body.classList.toggle('carrello-fullscreen', id === 'carrello');
+
     document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
     const target = document.getElementById('section-' + id);
     if (target) target.style.display = 'block';
@@ -4899,10 +4903,12 @@ async function initCarrello() {
                 <i class="fa-solid fa-arrow-left me-1"></i> Torna al Marketplace
             </button>
         </div>
-        <div id="carrelloContent"></div>
+        <div id="carrelloScroll" class="carrello-scroll"></div>
+        <div id="carrelloFooter"></div>
     `;
 
-    const content = document.getElementById('carrelloContent');
+    const content = document.getElementById('carrelloScroll');
+    const footer  = document.getElementById('carrelloFooter');
 
     if (!cartItems.length && !cartVisite.length) {
         content.innerHTML = `
@@ -4960,7 +4966,9 @@ async function initCarrello() {
         html += '</div>';
     }
 
-    html += `
+    content.innerHTML = html;
+
+    footer.innerHTML = `
         <div class="glass-card p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <span class="kpi-label">TOTALE</span>
@@ -4975,8 +4983,6 @@ async function initCarrello() {
                 </button>
             </div>
         </div>`;
-
-    content.innerHTML = html;
 }
 
 window.svuotaCarrello = function () {

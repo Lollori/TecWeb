@@ -125,7 +125,25 @@
     }
     .section-header-inline h3 { text-align: center; }
     .section-header-inline .search-box-container { width: 100%; max-width: 100%; }
+
+    /* ── Carrello: pagina a piena schermata non scrollabile, solo il div
+       interno (items + visite in carrello) scorre. Uscita unica tramite il
+       pulsante "Torna al Marketplace" già presente nell'header. ── */
+    body.carrello-fullscreen { overflow: hidden; }
+    body.carrello-fullscreen #section-carrello {
+        display: flex !important; flex-direction: column;
+        position: fixed; inset: 0; z-index: 1200;
+        height: 100vh; height: 100dvh;
+        margin: 0; padding: 72px 12px 12px;
+        background: var(--light-bg);
+        overflow: hidden;
+    }
+    body.carrello-fullscreen #section-carrello .section-header-inline { flex-shrink: 0; }
+    .carrello-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
+    #carrelloFooter  { flex-shrink: 0; }
 }
+
+[data-theme="dark"] body.carrello-fullscreen #section-carrello { background: #0f1623; }
 
 /* ── Stampa / PDF ── */
 @media print {
