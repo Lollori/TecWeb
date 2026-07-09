@@ -46,7 +46,7 @@
 .visita-item-empty { color: var(--nav-muted); text-align: center; margin: auto; font-size: 0.95rem; }
 .visita-item-card  { max-width: 640px; width: 100%; }
 .visita-item-img   { width: 100%; max-height: 320px; object-fit: cover; border-radius: 14px; margin-bottom: 20px; box-shadow: 0 4px 24px rgba(0,0,0,.1); }
-.visita-item-title { font-size: 1.45rem; font-weight: 700; color: var(--nav-text); margin: 0 0 14px; font-family: 'Playfair Display', serif; }
+.visita-item-title { font-size: 1.45rem; font-weight: 700; color: var(--nav-text); margin: 0 0 14px; font-family: 'Playfair Display', serif; text-align: center; }
 .visita-item-text  { font-size: 0.95rem; color: var(--nav-text); line-height: 1.75; margin: 0 0 14px; }
 
 /* ── Item contents (blocchi audio/img/link) ── */
@@ -57,7 +57,7 @@
 .content-block a    { color: var(--nav-magenta); word-break: break-all; }
 
 /* ── Toni bar ── */
-.visita-toni-bar { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; }
+.visita-toni-bar { display: flex; gap: 6px; margin-bottom: 14px; flex-wrap: wrap; justify-content: center; }
 .visita-tono-btn {
   display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
   background: none; border: 1.5px solid var(--nav-border); border-radius: 8px;
@@ -221,10 +221,16 @@
 .visita-item-map-title { font-size: 0.85rem; font-weight: 600; margin: 0 0 10px; text-align: center; color: #f1f5f9; }
 .visita-item-map .geo-floorplan-wrap { margin-top: 0; }
 .visita-item-map .geo-floorplan-img  { max-height: 260px; }
-.geo-room-polygon--static { cursor: default; pointer-events: none; }
-.geo-room-polygon--target {
-  fill: rgba(255,0,127,0.3); stroke: var(--nav-magenta); stroke-width: 2.5;
-  animation: geo-target-pulse 1.8s ease-in-out infinite; pointer-events: none;
+/* Higher-specificity + !important: navigator-geo.css loads after this file and its
+   plain .geo-room-polygon rule (fill/pointer-events/cursor) would otherwise win the
+   cascade tie and make every room clickable/hoverable again during a visita. */
+.geo-room-overlay .geo-room-polygon.geo-room-polygon--static {
+  fill: transparent !important; stroke: none !important;
+  cursor: default !important; pointer-events: none !important;
+}
+.geo-room-overlay .geo-room-polygon.geo-room-polygon--static.geo-room-polygon--target {
+  fill: rgba(255,0,127,0.3) !important; stroke: var(--nav-magenta) !important; stroke-width: 2.5 !important;
+  animation: geo-target-pulse 1.8s ease-in-out infinite; pointer-events: none !important;
 }
 @keyframes geo-target-pulse {
   0%, 100% { fill: rgba(255,0,127,0.3); }
