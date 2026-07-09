@@ -405,9 +405,10 @@ function buildSidebar() {
    ============================================================ */
 
 function switchSection(id) {
-    // Su mobile "carrello" diventa una schermata a piena pagina non scrollabile
-    // (solo il div interno con items/visite scorre) — vedi mkt-layout.css.
+    // Su mobile "carrello" e "marketplace" diventano schermate a piena pagina
+    // non scrollabili (solo il div interno con items/visite scorre) — vedi mkt-layout.css.
     document.body.classList.toggle('carrello-fullscreen', id === 'carrello');
+    document.body.classList.toggle('marketplace-fullscreen', id === 'marketplace');
 
     document.querySelectorAll('.dashboard-section').forEach(s => s.style.display = 'none');
     const target = document.getElementById('section-' + id);
