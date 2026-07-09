@@ -91,9 +91,9 @@
 [data-theme="dark"] .search-input           { color: #e8edf5; }
 [data-theme="dark"] .search-input::placeholder { color: #4a5568; }
 
-/* ── Carrello: "Svuota carrello" e "Procedi all'acquisto" più bassi/compatti ── */
+/* ── Carrello: "Svuota carrello" e "Procedi all'acquisto" — cliccabili ma compatti ── */
 #carrelloFooter .btn-magenta,
-#carrelloFooter .btn-outline-custom { padding: 4px 10px; font-size: 0.56rem; gap: 4px; }
+#carrelloFooter .btn-outline-custom { padding: 8px 16px; font-size: 0.8rem; gap: 6px; }
 .carrello-item-title { font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
 
 /* ── Responsive ── */
@@ -120,11 +120,25 @@
     .mobile-topbar      { padding: 0 12px; }
     .main-content       { padding: 72px 12px 10px; }
 
-    /* Marketplace un po' più corto: meno margini tra header/filtri/tab,
-       così la pagina scorre davvero fino alla fine del contenuto. */
+    /* Marketplace molto più corto: il grosso dell'altezza in più non erano i
+       margini ma i 5 campi filtro, che sotto i 768px Bootstrap impila a piena
+       larghezza uno sopra l'altro (le classi col-md-* non fanno nulla sotto
+       md). Li mettiamo su una griglia 2 colonne, molto più compatta. */
     #section-marketplace > .section-header-inline { margin-bottom: 16px !important; }
     #section-marketplace > .glass-card             { margin-bottom: 16px !important; padding: 14px !important; }
     #section-marketplace > .detail-tabs             { margin-bottom: 16px !important; }
+    #section-marketplace > #mktPopularCard:empty    { margin: 0 !important; }
+    #section-marketplace .glass-card .row.g-3 {
+        display: grid !important; grid-template-columns: 1fr 1fr;
+        gap: 8px 10px; align-items: start;
+    }
+    #section-marketplace .glass-card .row.g-3 > div {
+        width: auto; max-width: none; flex: none; padding: 0;
+    }
+    /* Il filtro Prezzo (3° campo, slider a doppio cursore) resta a piena larghezza */
+    #section-marketplace .glass-card .row.g-3 > div:nth-child(3) { grid-column: 1 / -1; }
+    #section-marketplace .custom-label { font-size: 0.68rem; margin-bottom: 3px; }
+    #section-marketplace .custom-input { padding: 8px 12px; font-size: 0.85rem; }
     .page-title         { font-size: 1.5rem; text-align: center; }
     .content-header p   { text-align: center; }
     .items-grid         { grid-template-columns: 1fr; gap: 12px; }
