@@ -1511,7 +1511,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
                         <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
                     </p>
-                    <div id="itemsOrderPanel" style="display:flex;flex-direction:column;gap:8px;"></div>
+                    <div id="itemsOrderPanel" class="vf-order-scrollbox"
+                         style="display:flex;flex-direction:column;gap:8px;width:100%;min-width:0;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;"></div>
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
@@ -1616,12 +1617,13 @@ window._showAutoreVisitaForm = async function (visitaId) {
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
                           border:1px solid ${isChecked ? 'var(--magenta,#FF007F)' : '#e2e8f0'};
                           border-radius:10px;cursor:pointer;transition:border-color .18s,background .18s;
-                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};">
+                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};
+                          min-width:0;box-sizing:border-box;">
                 <input type="checkbox" name="itemsVisita" value="${it._id}"
                        ${isChecked ? 'checked' : ''}
-                       style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);"
+                       style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);flex-shrink:0;"
                        onchange="vfToggleItem('${it._id}',this.checked,this);">
-                <span style="font-size:0.88rem;">
+                <span style="font-size:0.88rem;min-width:0;overflow-wrap:anywhere;">
                     <strong>${it.operaId}</strong>
                     ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${preview.length >= 60 ? '…' : ''}</span>` : ''}
                 </span>
@@ -1649,23 +1651,46 @@ window._showAutoreVisitaForm = async function (visitaId) {
         }
         if (!preserveSelection) _vfSelectedItemIds = new Set();
         container.innerHTML = '<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;"><i class="fa-solid fa-spinner fa-spin me-1"></i> Caricamento items…</p>';
-        try {
-            const [resOwn, resPublic] = await Promise.all([
-                fetch(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
-                fetch(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
-            ]);
-            const [dOwn, dPublic] = await Promise.all([resOwn.json(), resPublic.json()]);
-            _vfMyItems = dOwn.ok ? dOwn.data : [];
-            const purchases = getMktPurchases();
-            _vfAcquistatiItems = (dPublic.ok ? dPublic.data : [])
-                .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
-            await _vfLoadRoomGeo(codiceIsil);
-            _renderVfItems();
-            if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
-        } catch (e) {
-            container.innerHTML = '<p style="color:#e74c3c;font-size:0.88rem;grid-column:1/-1;">Errore nel caricamento degli items.</p>';
+
+        // Le due fetch sono indipendenti: se una fallisce per un blip di rete
+        // (capita sulla rete del dipartimento) non deve far fallire anche
+        // l'altra — prima con Promise.all bastava un solo errore a rompere
+        // tutto, costringendo a ricaricare la pagina più volte.
+        const fetchJsonSafe = async (url) => {
+            try {
+                const r = await fetch(url);
+                const d = await r.json();
+                return d.ok ? d.data : [];
+            } catch (e) {
+                return null; // null = fallito, [] = ok ma vuoto
+            }
+        };
+        const [dOwn, dPublic] = await Promise.all([
+            fetchJsonSafe(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}&museumId=${encodeURIComponent(codiceIsil)}`),
+            fetchJsonSafe(`/api/items?pubblica=true&museumId=${encodeURIComponent(codiceIsil)}`),
+        ]);
+
+        if (dOwn === null && dPublic === null) {
+            container.innerHTML = `
+                <div style="grid-column:1/-1;text-align:center;">
+                    <p style="color:#e74c3c;font-size:0.88rem;margin-bottom:8px;">Errore nel caricamento degli items (connessione al server non riuscita).</p>
+                    <button type="button" class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                            onclick="_loadVfItemsForMuseo('${codiceIsil}', true)">
+                        <i class="fa-solid fa-rotate-right me-1"></i> Riprova
+                    </button>
+                </div>`;
+            return;
         }
+
+        _vfMyItems = dOwn || [];
+        const purchases = getMktPurchases();
+        _vfAcquistatiItems = (dPublic || [])
+            .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
+        await _vfLoadRoomGeo(codiceIsil);
+        _renderVfItems();
+        if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
     }
+    window._loadVfItemsForMuseo = _loadVfItemsForMuseo;
 
     /* ---- ordinamento automatico per vicinanza spaziale (geoJson piantina) ---- */
 
@@ -1832,6 +1857,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                  style="display:flex;align-items:center;gap:12px;padding:10px 16px;
                         border:1px solid #e2e8f0;border-radius:10px;cursor:grab;
                         background:var(--card-bg,white);
+                        min-width:0;width:100%;box-sizing:border-box;
                         transition:box-shadow .15s,border-color .15s,opacity .15s;"
                  ondragstart="vfDragStart(event,this)"
                  ondragover="vfDragOver(event,this)"
@@ -1843,8 +1869,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                                        background:var(--magenta,#FF007F);color:#fff;
                                        display:inline-flex;align-items:center;justify-content:center;
                                        font-size:0.72rem;font-weight:700;flex-shrink:0;">${i + 1}</span>
-                <div style="flex:1;min-width:0;">
-                    <strong style="font-size:0.88rem;">${item.operaId}</strong>
+                <div style="flex:1;min-width:0;overflow:hidden;">
+                    <strong style="font-size:0.88rem;overflow-wrap:anywhere;">${item.operaId}</strong>
                     ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
                                             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
                 </div>
