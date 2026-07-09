@@ -205,9 +205,10 @@ function JoinContent({ onJoined }) {
     setJoinError(null);
     try {
       const nomeAccount = localStorage.getItem('userUsername') || '';
+      const ruoloAccount = localStorage.getItem('userRole') || '';
       const res  = await fetch(`/api/sessioni/${encodeURIComponent(trimmed)}/join`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome: nomeAccount }),
+        body: JSON.stringify({ nome: nomeAccount, ruolo: ruoloAccount }),
       });
       const data = await res.json();
       if (!res.ok || data.error) {
@@ -479,6 +480,12 @@ function VisitaItemScreen({
   const [quizPromptOpen, setQuizPromptOpen] = React.useState(false);
   const [ttsMuted,      setTtsMuted]      = React.useState(false);
   const [ttsLoading,    setTtsLoading]    = React.useState(false);
+  // 'mappa' | 'opera' | null — la visita inizia con la mappa aperta; da qui in
+  // poi lo stato resta quello scelto dall'utente man mano che si avanza tra
+  // gli item, dato che VisitaItemScreen non viene rimontato tra un item e
+  // l'altro (solo itemId cambia). Mutuamente esclusivi, ma possono essere
+  // entrambi chiusi (null).
+  const [activePanel,   setActivePanel]   = React.useState('mappa');
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
@@ -735,7 +742,29 @@ function VisitaItemScreen({
                   </button>
                 </h2>
 
-                <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
+                <div className="visita-view-toggle">
+                  <button
+                    type="button"
+                    className={`visita-view-btn${activePanel === 'mappa' ? ' visita-view-btn--active' : ''}`}
+                    onClick={() => setActivePanel(p => p === 'mappa' ? null : 'mappa')}
+                  >
+                    <i className="fa-solid fa-map-location-dot" /> Mappa
+                  </button>
+                  <button
+                    type="button"
+                    className={`visita-view-btn${activePanel === 'opera' ? ' visita-view-btn--active' : ''}`}
+                    onClick={() => setActivePanel(p => p === 'opera' ? null : 'opera')}
+                  >
+                    <i className="fa-solid fa-image" /> Opera
+                  </button>
+                </div>
+
+                {activePanel === 'mappa' && (
+                  <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
+                )}
+                {activePanel === 'opera' && item.image && (
+                  <img className="visita-item-img" src={item.image} alt={item.operaId} />
+                )}
 
                 <div className="visita-toni-bar">
                   {TONI_CONFIG.map(t => (
@@ -1198,12 +1227,17 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
             ? <p className="lobby-empty">In attesa che i partecipanti si connettano…</p>
             : (
               <ul className="lobby-students-list">
-                {studenti.map((s, i) => (
-                  <li key={i} className="lobby-student-item">
-                    <span className="lobby-avatar">{s.nome[0]}</span>
-                    {s.nome}
-                  </li>
-                ))}
+                {studenti.map((s, i) => {
+                  const roleCfg = ROLE_MAP[s.ruolo];
+                  return (
+                    <li key={i} className="lobby-student-item">
+                      <span className="lobby-avatar" style={roleCfg ? avatarStyle(roleCfg) : undefined}>
+                        {roleCfg ? '' : s.nome[0]}
+                      </span>
+                      {s.nome}
+                    </li>
+                  );
+                })}
               </ul>
             )
           }
@@ -1326,15 +1360,19 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
           <div className="lobby-avatars-row">
             <p className="lobby-avatars-label">{studenti.length} in stanza</p>
             <div className="lobby-avatars">
-              {studenti.map((s, i) => (
-                <span
-                  key={i}
-                  className={`lobby-avatar${s.nome === nomeAssegnato ? ' lobby-avatar--me' : ''}`}
-                  title={s.nome}
-                >
-                  {s.nome[0]}
-                </span>
-              ))}
+              {studenti.map((s, i) => {
+                const roleCfg = ROLE_MAP[s.ruolo];
+                return (
+                  <span
+                    key={i}
+                    className={`lobby-avatar${s.nome === nomeAssegnato ? ' lobby-avatar--me' : ''}`}
+                    style={roleCfg ? avatarStyle(roleCfg) : undefined}
+                    title={s.nome}
+                  >
+                    {roleCfg ? '' : s.nome[0]}
+                  </span>
+                );
+              })}
             </div>
           </div>
         )}
