@@ -14,13 +14,13 @@ const SESSION = {
 // è un dato salvato per utente, è derivato dal ruolo al volo.
 const ROLE_AVATARS = {
     // Edgar Degas, "Blue Dancers" (Ballerine in blu)
-    autore:     'https://upload.wikimedia.org/wikipedia/commons/2/21/Edgar_Germain_Hilaire_Degas_076.jpg',
+    autore:     '/img/pfp_autore.jpg',
     // Vincent van Gogh, "The Starry Night" (La Notte Stellata)
-    visitatore: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg',
+    visitatore: '/img/pfp_visitatore.jpg',
     // Caravaggio, "Boy with a Basket of Fruit" (Giovane con canestra di frutta)
-    curatore:   'https://upload.wikimedia.org/wikipedia/commons/6/64/Boy_with_a_Basket_of_Fruit-Caravaggio_%281593%29.jpg',
+    curatore:   '/img/pfp_curatore.jpg',
     // Michelangelo, "La Creazione di Adamo" — dettaglio delle mani
-    admin:      'https://upload.wikimedia.org/wikipedia/commons/d/d8/Hands_of_God_and_Adam.jpg',
+    admin:      '/img/pfp_admin.jpg',
 };
 
 // Applica l'avatar a un elemento .avatar-sm: immagine di dettaglio se il

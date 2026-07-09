@@ -219,10 +219,10 @@
         if (userUsername) {
             if (loginBtn) loginBtn.style.display = 'none';
             const roleMap = {
-                curatore:   { letter: 'C', color: '#6366f1', avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Boy_with_a_Basket_of_Fruit-Caravaggio_%281593%29.jpg' },
-                visitatore: { letter: 'V', color: '#FF007F', avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg' },
-                autore:     { letter: 'A', color: '#05070A', avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Edgar_Germain_Hilaire_Degas_076.jpg' },
-                admin:      { letter: 'M', color: '#05070A', avatar: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Hands_of_God_and_Adam.jpg' },
+                curatore:   { letter: 'C', color: '#6366f1', avatar: '/img/pfp_curatore.jpg' },
+                visitatore: { letter: 'V', color: '#FF007F', avatar: '/img/pfp_visitatore.jpg' },
+                autore:     { letter: 'A', color: '#05070A', avatar: '/img/pfp_autore.jpg' },
+                admin:      { letter: 'M', color: '#05070A', avatar: '/img/pfp_admin.jpg' },
             };
             const cfg = roleMap[userRole] || { letter: '?', color: '#888' };
             const avatarStyleAttr = cfg.avatar ? `background-image:url('${cfg.avatar}')` : `background-color:${cfg.color}`;

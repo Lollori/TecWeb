@@ -40,13 +40,13 @@ function clearNavSession() {
 // pubblico dominio) — stessa mappa usata in Editor-Marketplace/dashboard.js.
 const ROLE_MAP = {
   curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore',
-                avatar: 'https://upload.wikimedia.org/wikipedia/commons/6/64/Boy_with_a_Basket_of_Fruit-Caravaggio_%281593%29.jpg' },
+                avatar: '/img/pfp_curatore.jpg' },
   visitatore: { letter: 'V', color: '#FF007F', label: 'Visitatore',
-                avatar: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg/1280px-Van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg' },
+                avatar: '/img/pfp_visitatore.jpg' },
   autore:     { letter: 'A', color: '#05070A', label: 'Autore',
-                avatar: 'https://upload.wikimedia.org/wikipedia/commons/2/21/Edgar_Germain_Hilaire_Degas_076.jpg' },
+                avatar: '/img/pfp_autore.jpg' },
   admin:      { letter: 'M', color: '#05070A', label: 'Admin',
-                avatar: 'https://upload.wikimedia.org/wikipedia/commons/d/d8/Hands_of_God_and_Adam.jpg' },
+                avatar: '/img/pfp_admin.jpg' },
 };
 
 function avatarStyle(cfg) {
