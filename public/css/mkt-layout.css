@@ -91,8 +91,9 @@
 [data-theme="dark"] .search-input           { color: #e8edf5; }
 [data-theme="dark"] .search-input::placeholder { color: #4a5568; }
 
-/* ── Carrello: pulsante "Procedi all'acquisto" un filo più compatto ── */
-#carrelloFooter .btn-magenta { padding: 9px 20px; font-size: 0.92rem; }
+/* ── Carrello: "Svuota carrello" e "Procedi all'acquisto" più bassi/compatti ── */
+#carrelloFooter .btn-magenta,
+#carrelloFooter .btn-outline-custom { padding: 8px 18px; font-size: 0.88rem; }
 
 /* ── Responsive ── */
 @media (max-width: 991px) {
@@ -145,23 +146,14 @@
     .carrello-scroll { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
     #carrelloFooter  { flex-shrink: 0; }
 
-    /* ── Marketplace: stessa logica — header, filtri e tab restano fissi,
-       solo la griglia di items/visite/acquisti (#mktContent) scorre. ── */
-    body.marketplace-fullscreen { overflow: hidden; }
-    body.marketplace-fullscreen #section-marketplace {
-        display: flex !important; flex-direction: column;
-        position: fixed; inset: 0; z-index: 10;
-        height: 100vh; height: 100dvh;
-        margin: 0; padding: 72px 12px 12px;
-        background: var(--light-bg);
-        overflow: hidden;
-    }
-    body.marketplace-fullscreen #section-marketplace > *:not(#mktContent) { flex-shrink: 0; }
-    body.marketplace-fullscreen #mktContent { flex: 1; min-height: 0; overflow-y: auto; padding-bottom: 12px; }
+    /* ── Marketplace: qui la pagina resta normalmente scrollabile (non è a
+       schermo bloccato come il carrello) — solo la griglia di items/visite/
+       acquisti (#mktContent) ha un proprio scroll indipendente, così quando
+       il dito è sopra la griglia scorre solo quella, non l'intera pagina. ── */
+    #mktContent { max-height: 60vh; overflow-y: auto; padding-right: 2px; }
 }
 
-[data-theme="dark"] body.carrello-fullscreen #section-carrello         { background: #0f1623; }
-[data-theme="dark"] body.marketplace-fullscreen #section-marketplace  { background: #0f1623; }
+[data-theme="dark"] body.carrello-fullscreen #section-carrello { background: #0f1623; }
 
 /* ── Stampa / PDF ── */
 @media print {
