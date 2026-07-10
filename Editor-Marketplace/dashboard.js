@@ -2083,10 +2083,6 @@ window._showAutoreItemForm = async function (itemId) {
                     <input type="text" id="ifObjectId" class="custom-input"
                            placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
                 </div>
-                <div class="col-md-6">
-                    <label class="custom-label">URL Immagine</label>
-                    <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…" value="${(item?.image || '').replace(/"/g, '&quot;')}">
-                </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
@@ -2206,7 +2202,6 @@ window._showAutoreItemForm = async function (itemId) {
             objectId: objectIdVal || (operaId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
             toni,
             metadata,
-            image:    document.getElementById('ifImmagine').value.trim(),
             pubblica: isPubblicaItem,
         };
 
