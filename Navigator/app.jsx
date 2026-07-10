@@ -489,14 +489,28 @@ function toneText(t, dur) {
   return t[dur] || '';
 }
 
+// Tra tutti gli item di un gruppo opera, sceglie quello più adatto al tono+durata
+// selezionato. Priorità: match esatto → stesso tono (qualsiasi durata) → primo item.
+function findBestItem(items, tono, durata) {
+  if (!items.length) return null;
+  const exact = items.find(it => it.toni?.[tono]?.[durata]?.trim());
+  if (exact) return exact;
+  const tonoMatch = items.find(it => {
+    const t = it.toni?.[tono];
+    return t && (t.d3?.trim() || t.d15?.trim() || t.d40?.trim());
+  });
+  return tonoMatch || items[0];
+}
+
 function VisitaItemScreen({
-  itemId, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
+  operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
   hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0,
   onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
   audioAvviato = false, onAvviaAudio,
 }) {
-  const [item,          setItem]          = React.useState(null);
+  const [allItems,      setAllItems]      = React.useState([]);
+  const [activeItem,    setActiveItem]    = React.useState(null);
   const [loading,       setLoading]       = React.useState(false);
   const [navigating,    setNavigating]    = React.useState(false);
   const [tono,          setTono]          = React.useState('medio');
@@ -536,15 +550,31 @@ function VisitaItemScreen({
     return () => { document.body.style.overflow = prevOverflow; };
   }, []);
 
+  // Carica tutti gli item del gruppo opera corrente
   React.useEffect(() => {
-    if (!itemId) { setItem(null); return; }
+    const ids = operaGroup?.itemIds;
+    if (!ids?.length) {
+      setAllItems([]);
+      setActiveItem(null);
+      setLoading(false);
+      return;
+    }
+    setAllItems([]);
     setLoading(true);
-    fetch(`/api/items/${encodeURIComponent(itemId)}`)
-      .then(r => r.json())
-      .then(d => setItem(d.data || null))
-      .catch(() => setItem(null))
-      .finally(() => setLoading(false));
-  }, [itemId]);
+    let cancelled = false;
+    Promise.all(ids.map(id =>
+      fetch(`/api/items/${encodeURIComponent(id)}`).then(r => r.json()).then(d => d.data || null).catch(() => null)
+    )).then(items => {
+      if (cancelled) return;
+      setAllItems(items.filter(Boolean));
+    }).finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [operaGroup]);
+
+  // Ricalcola l'item attivo quando cambiano tono, durata o la lista degli item
+  React.useEffect(() => {
+    setActiveItem(findBestItem(allItems, tono, durata));
+  }, [allItems, tono, durata]);
 
   React.useEffect(() => {
     const added = messages.length - prevLenRef.current;
@@ -576,7 +606,7 @@ function VisitaItemScreen({
   // da lì in poi ogni cambio di item/tono la fa ripartire — finché la docente
   // non torna a premere il tasto per il nuovo item, non riparte nulla.
   React.useEffect(() => {
-    const testo = toneText(item?.toni?.[tono], durata);
+    const testo = toneText(activeItem?.toni?.[tono], durata);
     if (audioRef.current) {
       audioRef.current.pause();
       if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
@@ -608,7 +638,7 @@ function VisitaItemScreen({
         audioRef.current = null;
       }
     };
-  }, [item, tono, durata, ttsMuted, audioAvviato]);
+  }, [activeItem, tono, durata, ttsMuted, audioAvviato]);
 
   function toggleTtsMuted() {
     setTtsMuted(m => !m);
@@ -754,16 +784,16 @@ function VisitaItemScreen({
                 <p>Caricamento item…</p>
               </div>
             )}
-            {!loading && !itemId && (
-              <p className="visita-item-empty">La visita non contiene items.</p>
+            {!loading && !operaGroup && (
+              <p className="visita-item-empty">La visita non contiene opere.</p>
             )}
-            {!loading && itemId && !item && (
-              <p className="visita-item-empty">Item non trovato.</p>
+            {!loading && operaGroup && !activeItem && (
+              <p className="visita-item-empty">Nessun item disponibile per questa opera.</p>
             )}
-            {!loading && item && (
+            {!loading && activeItem && (
               <div className="visita-item-card">
                 <h2 className="visita-item-title">
-                  {item.operaId}
+                  {operaGroup?.operaId || activeItem.operaId}
                   <button
                     type="button"
                     className={`visita-tts-toggle${ttsMuted ? '' : ' visita-tts-toggle--active'}`}
@@ -792,10 +822,10 @@ function VisitaItemScreen({
                 </div>
 
                 {activePanel === 'mappa' && (
-                  <VisitaItemRoomMap museumId={item.museumId} operaId={item.operaId} />
+                  <VisitaItemRoomMap museumId={activeItem.museumId} operaId={operaGroup?.operaId || activeItem.operaId} />
                 )}
-                {activePanel === 'opera' && item.image && (
-                  <img className="visita-item-img" src={item.image} alt={item.operaId} />
+                {activePanel === 'opera' && activeItem.image && (
+                  <img className="visita-item-img" src={activeItem.image} alt={operaGroup?.operaId || activeItem.operaId} />
                 )}
 
                 <div className="visita-toni-bar">
@@ -822,7 +852,7 @@ function VisitaItemScreen({
                 </div>
 
                 <p className="visita-item-text">
-                  {toneText(item.toni?.[tono], durata) || <em>Nessun contenuto per questo tono e durata.</em>}
+                  {toneText(activeItem.toni?.[tono], durata) || <em>Nessun contenuto per questo tono e durata.</em>}
                 </p>
               </div>
             )}
@@ -944,7 +974,7 @@ function VisitaItemScreen({
             ) : (
               visitaItems.map((it, idx) => (
                 <button
-                  key={it._id}
+                  key={it.operaId || idx}
                   className={`visita-jump-item${idx === currentIdx ? ' visita-jump-item--active' : ''}`}
                   onClick={() => jumpToItem(idx)}
                   disabled={navigating}
@@ -1056,21 +1086,21 @@ function VisitaItemScreen({
 /* ── LobbyDocente ─────────────────────────────────────── */
 
 function LobbyDocente({ codice, visitaNome, museo, onClose }) {
-  const [studenti,       setStudenti]       = React.useState([]);
-  const [stato,          setStato]          = React.useState('attesa');
-  const [avviando,       setAvviando]       = React.useState(false);
-  const [currentItemId,  setCurrentItemId]  = React.useState(null);
-  const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
-  const [totalItems,     setTotalItems]     = React.useState(0);
-  const [messages,       setMessages]       = React.useState([]);
-  const [studentTono,    setStudentTono]    = React.useState({});
-  const [visitaItems,    setVisitaItems]    = React.useState([]);
-  const [hasQuiz,        setHasQuiz]        = React.useState(false);
-  const [quiz,           setQuiz]           = React.useState(null);
-  const [respondedCount, setRespondedCount] = React.useState(0);
-  const [quizAvviando,   setQuizAvviando]   = React.useState(false);
+  const [studenti,         setStudenti]         = React.useState([]);
+  const [stato,            setStato]            = React.useState('attesa');
+  const [avviando,         setAvviando]         = React.useState(false);
+  const [currentOperaGroup, setCurrentOperaGroup] = React.useState(null);
+  const [currentItemIdx,   setCurrentItemIdx]   = React.useState(0);
+  const [totalItems,       setTotalItems]       = React.useState(0);
+  const [messages,         setMessages]         = React.useState([]);
+  const [studentTono,      setStudentTono]      = React.useState({});
+  const [visitaItems,      setVisitaItems]      = React.useState([]);
+  const [hasQuiz,          setHasQuiz]          = React.useState(false);
+  const [quiz,             setQuiz]             = React.useState(null);
+  const [respondedCount,   setRespondedCount]   = React.useState(0);
+  const [quizAvviando,     setQuizAvviando]     = React.useState(false);
   const [quizTerminandoOra, setQuizTerminandoOra] = React.useState(false);
-  const [audioAvviato,   setAudioAvviato]   = React.useState(false);
+  const [audioAvviato,     setAudioAvviato]     = React.useState(false);
   const closedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -1080,10 +1110,10 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       if (data.tipo === 'stato-iniziale') {
         setStudenti(data.studenti);
         setStato(data.stato);
-        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
-        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
-        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
-        if (data.studentTono)                  setStudentTono(data.studentTono);
+        if (data.currentOperaGroup !== undefined) setCurrentOperaGroup(data.currentOperaGroup);
+        if (data.currentItemIdx    !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
+        if (data.studentTono)                     setStudentTono(data.studentTono);
         setHasQuiz(!!data.hasQuiz);
         setAudioAvviato(!!data.audioAvviato);
         if (data.quiz) {
@@ -1094,13 +1124,13 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
-        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
-        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
-        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        if (data.currentOperaGroup !== undefined) setCurrentOperaGroup(data.currentOperaGroup);
+        if (data.currentItemIdx    !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
         setHasQuiz(!!data.hasQuiz);
         setAudioAvviato(false);
       } else if (data.tipo === 'item-cambiato') {
-        setCurrentItemId(data.currentItemId);
+        setCurrentOperaGroup(data.currentOperaGroup);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
         setAudioAvviato(false);
@@ -1124,25 +1154,16 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     return () => es.close();
   }, [codice]);
 
-  // Elenco ordinato degli item della visita, per il salto manuale a un'opera specifica.
+  // Elenco ordinato dei gruppi opera della visita, per il salto manuale.
   React.useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
         const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}`);
         const d = await r.json();
-        const ids = d.ok ? (d.data?.itemIds || []) : [];
-        const items = await Promise.all(ids.map(async id => {
-          try {
-            const ri = await fetch(`/api/items/${encodeURIComponent(id)}`);
-            const di = await ri.json();
-            return { _id: id, operaId: di.data?.operaId || id };
-          } catch (_) {
-            return { _id: id, operaId: id };
-          }
-        }));
-        if (!cancelled) setVisitaItems(items);
-      } catch (_) { /* silent */ }
+        const groups = d.ok ? (d.data?.operaGroups || []) : [];
+        if (!cancelled) setVisitaItems(groups); // [{ operaId, itemIds }]
+      } catch (_) {}
     })();
     return () => { cancelled = true; };
   }, [codice]);
@@ -1226,7 +1247,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
 
   if (stato === 'iniziata') return (
     <VisitaItemScreen
-      itemId={currentItemId}
+      operaGroup={currentOperaGroup}
       currentIdx={currentItemIdx}
       totalItems={totalItems}
       isDocente={true}
@@ -1310,15 +1331,15 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
 /* ── LobbyStudente ─────────────────────────────────────── */
 
 function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onBack }) {
-  const [studenti,       setStudenti]       = React.useState([]);
-  const [stato,          setStato]          = React.useState('attesa');
-  const [museoIsil,      setMuseoIsil]      = React.useState(initialMuseoIsil || null);
-  const [currentItemId,  setCurrentItemId]  = React.useState(null);
-  const [currentItemIdx, setCurrentItemIdx] = React.useState(0);
-  const [totalItems,     setTotalItems]     = React.useState(0);
-  const [visitaNome,     setVisitaNome]     = React.useState('');
-  const [quiz,           setQuiz]           = React.useState(null);
-  const [audioAvviato,   setAudioAvviato]   = React.useState(false);
+  const [studenti,          setStudenti]          = React.useState([]);
+  const [stato,             setStato]             = React.useState('attesa');
+  const [museoIsil,         setMuseoIsil]         = React.useState(initialMuseoIsil || null);
+  const [currentOperaGroup, setCurrentOperaGroup] = React.useState(null);
+  const [currentItemIdx,    setCurrentItemIdx]    = React.useState(0);
+  const [totalItems,        setTotalItems]        = React.useState(0);
+  const [visitaNome,        setVisitaNome]        = React.useState('');
+  const [quiz,              setQuiz]              = React.useState(null);
+  const [audioAvviato,      setAudioAvviato]      = React.useState(false);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -1327,23 +1348,23 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       if (data.tipo === 'stato-iniziale') {
         setStudenti(data.studenti);
         setStato(data.stato);
-        if (data.museoIsil)      setMuseoIsil(data.museoIsil);
-        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
-        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
-        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
-        if (data.quiz)                         setQuiz(data.quiz);
+        if (data.museoIsil)                   setMuseoIsil(data.museoIsil);
+        if (data.currentOperaGroup !== undefined) setCurrentOperaGroup(data.currentOperaGroup);
+        if (data.currentItemIdx    !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
+        if (data.quiz)                            setQuiz(data.quiz);
         setAudioAvviato(!!data.audioAvviato);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
-        if (data.museoIsil)      setMuseoIsil(data.museoIsil);
-        if (data.currentItemId  !== undefined) setCurrentItemId(data.currentItemId);
-        if (data.currentItemIdx !== undefined) setCurrentItemIdx(data.currentItemIdx);
-        if (data.totalItems     !== undefined) setTotalItems(data.totalItems);
+        if (data.museoIsil)                   setMuseoIsil(data.museoIsil);
+        if (data.currentOperaGroup !== undefined) setCurrentOperaGroup(data.currentOperaGroup);
+        if (data.currentItemIdx    !== undefined) setCurrentItemIdx(data.currentItemIdx);
+        if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
         setAudioAvviato(false);
       } else if (data.tipo === 'item-cambiato') {
-        setCurrentItemId(data.currentItemId);
+        setCurrentOperaGroup(data.currentOperaGroup);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
         setAudioAvviato(false);
@@ -1371,7 +1392,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
 
   if (stato === 'iniziata') return (
     <VisitaItemScreen
-      itemId={currentItemId}
+      operaGroup={currentOperaGroup}
       currentIdx={currentItemIdx}
       totalItems={totalItems}
       isDocente={false}
@@ -2044,12 +2065,13 @@ function MarketplaceScreen() {
 }
 
 /* ── ReorderScreen ───────────────────────────────────────
-   Mostrata al docente prima della lobby: permette di riordinare
-   gli items della visita trascinando le card o usando ↑↓.
-   Conferma con "Avanti" → passa i nuovi itemIds ordinati a onConfirm.
+   Mostrata al docente prima della lobby: raggruppa gli items per opera,
+   mostrando una card per opera. Il docente può riordinare le opere;
+   onConfirm riceve operaGroups: [{ operaId, itemIds }].
 ───────────────────────────────────────────────────────── */
 function ReorderScreen({ visita, onBack, onConfirm }) {
-  const [items,   setItems]   = React.useState([]);
+  // groups: [{ operaId, itemIds: [id, ...] }]
+  const [groups,  setGroups]  = React.useState([]);
   const [loading, setLoading] = React.useState(true);
   const [dragOver, setDragOver] = React.useState(null);
   const dragSrcRef = React.useRef(null);
@@ -2058,7 +2080,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
     let cancelled = false;
     (async () => {
       const ids = visita.itemIds || [];
-      if (!ids.length) { if (!cancelled) { setItems([]); setLoading(false); } return; }
+      if (!ids.length) { if (!cancelled) { setGroups([]); setLoading(false); } return; }
       try {
         const loaded = await Promise.all(ids.map(async id => {
           try {
@@ -2067,7 +2089,14 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
             return { _id: id, operaId: d.data?.operaId || id };
           } catch (_) { return { _id: id, operaId: id }; }
         }));
-        if (!cancelled) setItems(loaded);
+        if (cancelled) return;
+        // Raggruppa mantenendo l'ordine di prima apparizione
+        const map = new Map();
+        for (const it of loaded) {
+          if (!map.has(it.operaId)) map.set(it.operaId, []);
+          map.get(it.operaId).push(it._id);
+        }
+        setGroups([...map.entries()].map(([operaId, itemIds]) => ({ operaId, itemIds })));
       } catch (_) {}
       finally { if (!cancelled) setLoading(false); }
     })();
@@ -2076,7 +2105,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
 
   function moveUp(idx) {
     if (idx === 0) return;
-    setItems(prev => {
+    setGroups(prev => {
       const next = [...prev];
       [next[idx - 1], next[idx]] = [next[idx], next[idx - 1]];
       return next;
@@ -2084,7 +2113,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
   }
 
   function moveDown(idx) {
-    setItems(prev => {
+    setGroups(prev => {
       if (idx >= prev.length - 1) return prev;
       const next = [...prev];
       [next[idx], next[idx + 1]] = [next[idx + 1], next[idx]];
@@ -2103,7 +2132,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
     setDragOver(idx);
     const src = dragSrcRef.current;
     if (src === null || src === idx) return;
-    setItems(prev => {
+    setGroups(prev => {
       const next = [...prev];
       const [moved] = next.splice(src, 1);
       next.splice(idx, 0, moved);
@@ -2149,7 +2178,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
 
       <div className="lobby-body" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
         <header className="lobby-header">
-          <p className="lobby-label">Ordina gli items</p>
+          <p className="lobby-label">Ordina le opere</p>
           <h1 className="lobby-title">{visita.nomeVisita}</h1>
           <p style={{ color: 'var(--nav-muted)', fontSize: '0.88rem', marginTop: '8px' }}>
             <i className="fa-solid fa-grip-vertical" style={{ marginRight: '6px' }} />
@@ -2160,17 +2189,17 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '40px 16px' }}>
             <div className="nav-spinner" />
-            <p style={{ marginTop: '12px', color: 'var(--nav-muted)' }}>Caricamento items…</p>
+            <p style={{ marginTop: '12px', color: 'var(--nav-muted)' }}>Caricamento opere…</p>
           </div>
-        ) : items.length === 0 ? (
+        ) : groups.length === 0 ? (
           <p style={{ textAlign: 'center', color: 'var(--nav-muted)', padding: '40px 16px' }}>
-            Questa visita non ha items associati.
+            Questa visita non ha opere associate.
           </p>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px', width: '100%', margin: '0 auto', padding: '0 16px 8px' }}>
-            {items.map((item, idx) => (
+            {groups.map((group, idx) => (
               <div
-                key={item._id}
+                key={group.operaId}
                 draggable
                 onDragStart={e => handleDragStart(e, idx)}
                 onDragOver={e => handleDragOver(e, idx)}
@@ -2187,11 +2216,20 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
                   fontSize: '0.73rem', fontWeight: '700', flexShrink: 0,
                 }}>{idx + 1}</span>
                 <span style={{ flex: 1, fontWeight: '600', fontSize: '0.92rem', minWidth: 0, overflowWrap: 'anywhere' }}>
-                  {item.operaId}
+                  {group.operaId}
                 </span>
+                {group.itemIds.length > 1 && (
+                  <span style={{
+                    fontSize: '0.75rem', color: 'var(--nav-muted)',
+                    background: 'rgba(255,0,127,0.1)', borderRadius: '20px',
+                    padding: '2px 8px', flexShrink: 0,
+                  }}>
+                    {group.itemIds.length} varianti
+                  </span>
+                )}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flexShrink: 0 }}>
-                  <button onClick={() => moveUp(idx)}   disabled={idx === 0}               style={arrowBtnStyle(idx === 0)}>↑</button>
-                  <button onClick={() => moveDown(idx)} disabled={idx === items.length - 1} style={arrowBtnStyle(idx === items.length - 1)}>↓</button>
+                  <button onClick={() => moveUp(idx)}   disabled={idx === 0}                style={arrowBtnStyle(idx === 0)}>↑</button>
+                  <button onClick={() => moveDown(idx)} disabled={idx === groups.length - 1} style={arrowBtnStyle(idx === groups.length - 1)}>↓</button>
                 </div>
               </div>
             ))}
@@ -2201,7 +2239,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
         <div style={{ textAlign: 'center', padding: '24px 16px 40px', marginTop: 'auto' }}>
           <button
             className="inizia-btn"
-            onClick={() => onConfirm(items.map(it => it._id))}
+            onClick={() => onConfirm(groups)}
             disabled={loading}
           >
             Avanti — Apri la lobby →
@@ -2373,7 +2411,7 @@ function App() {
     setScreen('reorder');
   }
 
-  async function handleCreaSessione(visita, orderedItemIds) {
+  async function handleCreaSessione(visita, operaGroups) {
     let codice = generateCode(visita);
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -2382,11 +2420,11 @@ function App() {
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify({
             codice,
-            visitaId:   visita._id,
-            visitaNome: visita.nomeVisita,
-            museoIsil:  museo.codiceIsil,
-            itemIds:    orderedItemIds,
-            hasQuiz:    (visita.quizDomande || []).length > 0,
+            visitaId:    visita._id,
+            visitaNome:  visita.nomeVisita,
+            museoIsil:   museo.codiceIsil,
+            operaGroups,
+            hasQuiz:     (visita.quizDomande || []).length > 0,
           }),
         });
         const data = await res.json();
@@ -2443,7 +2481,7 @@ function App() {
     <ReorderScreen
       visita={reorderVisita}
       onBack={() => setScreen('visite')}
-      onConfirm={(orderedItemIds) => handleCreaSessione(reorderVisita, orderedItemIds)}
+      onConfirm={(operaGroups) => handleCreaSessione(reorderVisita, operaGroups)}
     />
   );
 
