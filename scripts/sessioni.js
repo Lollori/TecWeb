@@ -1,24 +1,25 @@
 // Sessioni sincronizzate in memoria (ephemeral – no persistence needed)
 const sessions = new Map();
 
-function createSession(codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz) {
+function createSession(codice, visitaId, visitaNome, museoIsil, operaGroups, hasQuiz) {
   if (sessions.has(codice)) {
     return { error: 'Codice già in uso. Scegli un nome diverso.' };
   }
   sessions.set(codice, {
     codice, visitaId, visitaNome, museoIsil,
-    itemIds: Array.isArray(itemIds) ? itemIds : [],
+    // operaGroups: [{ operaId, itemIds }] — un gruppo per ogni opera, con tutti
+    // gli item audio associati (uno per tono, o uno con tutti i toni compilati).
+    operaGroups: Array.isArray(operaGroups) ? operaGroups : [],
     currentItemIdx: 0,
     studenti: [],
     stato: 'attesa',      // 'attesa' | 'iniziata'
     clients: new Set(),
     studentCount: 0,
     messages: [],
-    studentTono: {},      // nome -> { tono, timestamp } — per la dashboard di monitoraggio della docente
-    hasQuiz: !!hasQuiz,   // la visita ha un quiz associato (informativo, per mostrare il bottone "Avvia Quiz")
-    quiz: null,           // stato del quiz di fine visita, vedi avviaQuiz()
-    audioAvviato: false,  // la docente ha premuto "Avvia audio" per l'item corrente — si
-                           // resetta ad ogni cambio di item, vedi navigaItem()/avviaAudio()
+    studentTono: {},      // nome -> { tono, durata, timestamp }
+    hasQuiz: !!hasQuiz,
+    quiz: null,
+    audioAvviato: false,
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -34,10 +35,6 @@ function joinSession(codice, nomeRichiesto, ruolo) {
   if (!session) return { error: 'Sessione non trovata. Controlla il codice.' };
   if (session.stato === 'iniziata') return { error: 'La visita è già iniziata.' };
   session.studentCount++;
-  // Se l'utente ha effettuato il login usiamo il suo nome account reale al
-  // posto del generico "Studente N"; in caso di omonimia (o utente non
-  // loggato) si distingue comunque ogni partecipante. Il ruolo viaggia con
-  // il nome per poter mostrare la foto profilo corretta lato client.
   let nome = (nomeRichiesto || '').trim() || `Studente ${session.studentCount}`;
   if (session.studenti.some(s => s.nome === nome)) nome = `${nome} (${session.studentCount})`;
   session.studenti.push({ nome, ruolo: (ruolo || '').trim() });
@@ -50,13 +47,13 @@ function startSession(codice) {
   if (!session) return { error: 'Sessione non trovata.' };
   session.stato = 'iniziata';
   session.audioAvviato = false;
-  const currentItemId = session.itemIds[session.currentItemIdx] || null;
+  const currentOperaGroup = session.operaGroups[session.currentItemIdx] || null;
   broadcast(codice, {
     tipo: 'visita-iniziata',
     museoIsil: session.museoIsil,
-    currentItemId,
+    currentOperaGroup,
     currentItemIdx: session.currentItemIdx,
-    totalItems: session.itemIds.length,
+    totalItems: session.operaGroups.length,
     hasQuiz: session.hasQuiz,
   });
   return { ok: true };
@@ -66,27 +63,25 @@ function navigaItem(codice, direction, index) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   if (session.stato !== 'iniziata') return { error: 'Visita non ancora iniziata.' };
-  const total = session.itemIds.length;
-  if (total === 0) return { error: 'Nessun item nella visita.' };
+  const total = session.operaGroups.length;
+  if (total === 0) return { error: 'Nessuna opera nella visita.' };
   let newIdx = session.currentItemIdx;
   if (Number.isInteger(index))                               newIdx = Math.max(0, Math.min(total - 1, index));
-  else if (direction === 'avanti' || direction === 'next')       newIdx = Math.min(total - 1, newIdx + 1);
+  else if (direction === 'avanti' || direction === 'next')   newIdx = Math.min(total - 1, newIdx + 1);
   else if (direction === 'indietro' || direction === 'prev') newIdx = Math.max(0, newIdx - 1);
   if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
   session.currentItemIdx = newIdx;
   session.audioAvviato = false;
-  const currentItemId = session.itemIds[newIdx];
+  const currentOperaGroup = session.operaGroups[newIdx];
   broadcast(codice, {
     tipo: 'item-cambiato',
-    currentItemId,
+    currentOperaGroup,
     currentItemIdx: newIdx,
     totalItems: total,
   });
   return { ok: true, currentItemIdx: newIdx };
 }
 
-// La docente avvia in modo sincrono la lettura audio dell'item corrente per
-// tutti i partecipanti: fino a questo momento nessun client riproduce nulla.
 function avviaAudio(codice) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
@@ -101,15 +96,15 @@ function addClient(codice, res) {
   if (!session) return false;
   session.clients.add(res);
   res.on('close', () => session.clients.delete(res));
-  const currentItemId = session.itemIds[session.currentItemIdx] || null;
+  const currentOperaGroup = session.operaGroups[session.currentItemIdx] || null;
   res.write(`data: ${JSON.stringify({
     tipo: 'stato-iniziale',
     studenti: session.studenti,
     stato: session.stato,
     museoIsil: session.museoIsil,
-    currentItemId,
+    currentOperaGroup,
     currentItemIdx: session.currentItemIdx,
-    totalItems: session.itemIds.length,
+    totalItems: session.operaGroups.length,
     studentTono: session.studentTono,
     hasQuiz: session.hasQuiz,
     quiz: publicQuiz(session.quiz),
@@ -139,10 +134,10 @@ function sendMessage(codice, sender, text) {
   return { ok: true };
 }
 
-function setStudentTono(codice, nome, tono) {
+function setStudentTono(codice, nome, tono, durata) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
-  const entry = { tono, timestamp: Date.now() };
+  const entry = { tono, durata: durata || null, timestamp: Date.now() };
   session.studentTono[nome] = entry;
   broadcast(codice, { tipo: 'tono-cambiato', nome, ...entry });
   return { ok: true };
@@ -157,8 +152,6 @@ function broadcast(codice, data) {
   }
 }
 
-// Versione del quiz sicura da mandare ai client: mentre è in corso non deve
-// rivelare quale opzione è quella corretta (solo testo + opzioni).
 function publicQuiz(quiz) {
   if (!quiz) return null;
   const { timer, ...rest } = quiz;
@@ -185,11 +178,11 @@ function avviaQuiz(codice, domande) {
   const durataSec = domande.length * 40;
   const scadenza  = Date.now() + durataSec * 1000;
   session.quiz = {
-    domande,               // con `corretta` — usato solo server-side per lo scoring
+    domande,
     durataSec,
     scadenza,
-    stato: 'in-corso',     // 'in-corso' | 'terminato'
-    risposte: {},          // nome studente -> [indice risposta per domanda, ...]
+    stato: 'in-corso',
+    risposte: {},
     risultati: null,
     timer: setTimeout(() => terminaQuiz(codice), durataSec * 1000),
   };

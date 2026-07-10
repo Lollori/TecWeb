@@ -292,9 +292,9 @@ app.post('/api/items/:id/acquista', async function (req, res) {
 
 // Crea sessione (docente avvia una visita)
 app.post('/api/sessioni', (req, res) => {
-    const { codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz } = req.body;
+    const { codice, visitaId, visitaNome, museoIsil, operaGroups, hasQuiz } = req.body;
     if (!codice || !visitaId) return res.status(400).json({ error: 'Parametri mancanti.' });
-    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil, itemIds, hasQuiz);
+    const result = sessioni.createSession(codice, visitaId, visitaNome, museoIsil, operaGroups, hasQuiz);
     if (result.error) return res.status(409).json(result);
     res.json(result);
 });
@@ -334,9 +334,9 @@ app.post('/api/sessioni/:codice/naviga', (req, res) => {
 
 // Studente segnala il cambio di tono/linguaggio (per la dashboard di monitoraggio della docente)
 app.post('/api/sessioni/:codice/tono', (req, res) => {
-    const { nome, tono } = req.body;
+    const { nome, tono, durata } = req.body;
     if (!nome || !tono) return res.status(400).json({ error: 'Parametri nome o tono mancanti.' });
-    const result = sessioni.setStudentTono(req.params.codice, nome, tono);
+    const result = sessioni.setStudentTono(req.params.codice, nome, tono, durata);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });

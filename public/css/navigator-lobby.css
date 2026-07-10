@@ -44,8 +44,12 @@
 .student-join-btn:disabled             { opacity: 0.35; cursor: default; }
 
 /* ── Lobby root ── */
-.lobby-root      { min-height: 100vh; display: flex; flex-direction: column; }
-.lobby-root--dark { background: var(--nav-dark); color: #f1f5f9; }
+.lobby-root {
+  min-height: 100vh; display: flex; flex-direction: column;
+  background: var(--nav-body-bg);
+  color: var(--nav-text);
+}
+[data-theme="dark"] .lobby-root { background: var(--nav-dark); color: #f1f5f9; }
 .lobby-body {
   display: flex; flex-direction: column;
   max-width: 600px; width: 100%;
@@ -67,8 +71,12 @@
 /* ── Codice condivisione ── */
 .lobby-code-box {
   display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
-  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  background: var(--nav-card-bg); border: 1px solid var(--nav-border);
   border-radius: 14px; padding: 14px 20px;
+}
+[data-theme="dark"] .lobby-code-box {
+  background: rgba(255,255,255,0.07);
+  border-color: rgba(255,255,255,0.12);
 }
 .lobby-code-box--sm   { padding: 10px 16px; border-radius: 10px; }
 .lobby-code-label     { font-size: 0.82rem; color: var(--nav-muted); }
@@ -80,11 +88,15 @@
 
 /* ── Pannello partecipanti ── */
 .lobby-panel {
-  background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+  background: var(--nav-card-bg); border: 1px solid var(--nav-border);
   border-radius: 18px; padding: 24px;
 }
+[data-theme="dark"] .lobby-panel {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.1);
+}
 .lobby-panel-title {
-  font-size: 1rem; font-weight: 700; color: #e2e8f0;
+  font-size: 1rem; font-weight: 700; color: var(--nav-text);
   display: flex; align-items: center; gap: 10px; margin-bottom: 16px;
 }
 .lobby-count-badge {
@@ -94,7 +106,7 @@
 }
 .lobby-empty         { color: var(--nav-muted); font-size: 0.9rem; }
 .lobby-students-list { list-style: none; display: flex; flex-direction: column; gap: 10px; padding: 0; margin: 0; }
-.lobby-student-item  { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: #cbd5e1; }
+.lobby-student-item  { display: flex; align-items: center; gap: 12px; font-size: 0.92rem; color: var(--nav-text); }
 .lobby-avatar        {
   width: 34px; height: 34px; border-radius: 50%;
   background-color: rgba(255,0,127,0.18); color: #ff7fc8;
@@ -118,7 +130,7 @@
 /* ── Lobby studente – attesa ── */
 .lobby-spinner-wrap  { padding: 24px 0 8px; }
 .lobby-spinner       { width: 52px; height: 52px; border-width: 4px; }
-.lobby-waiting-title { font-size: clamp(1.1rem, 3vw, 1.4rem); color: #e2e8f0; line-height: 1.4; max-width: 400px; }
+.lobby-waiting-title { font-size: clamp(1.1rem, 3vw, 1.4rem); color: var(--nav-text); line-height: 1.4; max-width: 400px; }
 .lobby-you-are       { color: var(--nav-muted); font-size: 0.9rem; }
 .lobby-avatars-row   { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-top: 8px; }
 .lobby-avatars-label { color: var(--nav-muted); font-size: 0.82rem; }
@@ -127,5 +139,5 @@
 /* ── Stato iniziata (non ancora usato ma preparato) ── */
 .lobby-started       { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; text-align: center; padding: 40px 32px; }
 .lobby-started-icon  { font-size: 4rem; line-height: 1; }
-.lobby-started-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-family: 'Playfair Display', serif; color: #f1f5f9; }
+.lobby-started-title { font-size: clamp(1.6rem, 4vw, 2.2rem); font-family: 'Playfair Display', serif; color: var(--nav-text); }
 .lobby-started-sub   { color: var(--nav-muted); font-size: 1rem; }
