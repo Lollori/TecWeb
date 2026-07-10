@@ -55,20 +55,42 @@ function avatarStyle(cfg) {
     : { backgroundColor: cfg.color };
 }
 
-function applyTheme(isDark, setIsDark) {
-  const next = isDark ? 'light' : 'dark';
-  document.documentElement.dataset.theme = next;
-  localStorage.setItem('theme', next);
-  setIsDark(!isDark);
+function useTheme() {
+  const [isDark, setIsDark] = React.useState(
+    () => document.documentElement.dataset.theme === 'dark'
+  );
+  React.useEffect(() => {
+    function handler(e) { setIsDark(e.detail.isDark); }
+    // storage: cambiamento da un altro documento (altri tab, iframe Editor-Marketplace)
+    function storageHandler(e) {
+      if (e.key !== 'theme' || !e.newValue) return;
+      const dark = e.newValue === 'dark';
+      document.documentElement.dataset.theme = e.newValue;
+      setIsDark(dark);
+    }
+    window.addEventListener('artaround-theme', handler);
+    window.addEventListener('storage', storageHandler);
+    return () => {
+      window.removeEventListener('artaround-theme', handler);
+      window.removeEventListener('storage', storageHandler);
+    };
+  }, []);
+  function toggle() {
+    const next = !isDark;
+    const val = next ? 'dark' : 'light';
+    document.documentElement.dataset.theme = val;
+    localStorage.setItem('theme', val);
+    setIsDark(next);
+    window.dispatchEvent(new CustomEvent('artaround-theme', { detail: { isDark: next } }));
+  }
+  return [isDark, toggle];
 }
 
 /* ── MobileMenu ────────────────────────────────────── */
 
 function MobileMenu({ links, contextLabel }) {
   const [open,   setOpen]   = React.useState(false);
-  const [isDark, setIsDark] = React.useState(
-    () => document.documentElement.dataset.theme === 'dark'
-  );
+  const [isDark, toggleTheme] = useTheme();
   const username = localStorage.getItem('userUsername') || '';
   const role     = localStorage.getItem('userRole')     || '';
   const cfg = ROLE_MAP[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || 'Navigator' };
@@ -120,7 +142,7 @@ function MobileMenu({ links, contextLabel }) {
             <i className="fa-solid fa-house" />
             Menu principale
           </a>
-          <button className="mobile-footer-link" onClick={() => applyTheme(isDark, setIsDark)}>
+          <button className="mobile-footer-link" onClick={toggleTheme}>
             <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
             {isDark ? 'Modalità chiara' : 'Modalità scura'}
           </button>
@@ -137,9 +159,7 @@ function MobileMenu({ links, contextLabel }) {
 /* ── Sidebar ─────────────────────────────────────── */
 
 function Sidebar({ links, contextLabel }) {
-  const [isDark, setIsDark] = React.useState(
-    () => document.documentElement.dataset.theme === 'dark'
-  );
+  const [isDark, toggleTheme] = useTheme();
   const username = localStorage.getItem('userUsername') || '';
   const role     = localStorage.getItem('userRole')     || '';
   const cfg = ROLE_MAP[role] || { letter: username ? username[0].toUpperCase() : '?', color: '#FF007F', label: role || '—' };
@@ -172,7 +192,7 @@ function Sidebar({ links, contextLabel }) {
       </nav>
 
       <div className="sidebar-footer">
-        <button className="dark-toggle" onClick={() => applyTheme(isDark, setIsDark)}>
+        <button className="dark-toggle" onClick={toggleTheme}>
           <span className="toggle-label">{isDark ? 'Modalità chiara' : 'Modalità scura'}</span>
           <i className={`fa-solid ${isDark ? 'fa-sun' : 'fa-moon'}`} />
         </button>
@@ -453,16 +473,20 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
 /* ── VisitaItemScreen ─────────────────────────────────── */
 
 const TONI_CONFIG = [
-  { key: 'semplice', label: 'Semplice', durata: '3 s'  },
-  { key: 'medio',    label: 'Medio',    durata: '15 s' },
-  { key: 'avanzato', label: 'Avanzato', durata: '40 s' },
+  { key: 'semplice', label: 'Semplice' },
+  { key: 'medio',    label: 'Medio'    },
+  { key: 'avanzato', label: 'Avanzato' },
 ];
 
-// Un tono ha fino a 3 varianti di durata (d3/d15/d40): per la riproduzione
-// si preferisce la variante media, con fallback sulle altre se assente.
-function toneText(t) {
+const DURATE_CONFIG = [
+  { key: 'd3',  label: '3 s'  },
+  { key: 'd15', label: '15 s' },
+  { key: 'd40', label: '40 s' },
+];
+
+function toneText(t, dur) {
   if (!t) return '';
-  return t.d15 || t.d3 || t.d40 || '';
+  return t[dur] || '';
 }
 
 function VisitaItemScreen({
@@ -476,6 +500,7 @@ function VisitaItemScreen({
   const [loading,       setLoading]       = React.useState(false);
   const [navigating,    setNavigating]    = React.useState(false);
   const [tono,          setTono]          = React.useState('medio');
+  const [durata,        setDurata]        = React.useState('d15');
   const [chatOpen,      setChatOpen]      = React.useState(false);
   const [composeOpen,   setComposeOpen]   = React.useState(false);
   const [msgText,       setMsgText]       = React.useState('');
@@ -540,9 +565,9 @@ function VisitaItemScreen({
     if (isDocente || !nomeAssegnato || !codice) return;
     fetch(`/api/sessioni/${encodeURIComponent(codice)}/tono`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nome: nomeAssegnato, tono }),
+      body: JSON.stringify({ nome: nomeAssegnato, tono, durata }),
     }).catch(() => {});
-  }, [tono, isDocente, nomeAssegnato, codice]);
+  }, [tono, durata, isDocente, nomeAssegnato, codice]);
 
   // Legge ad alta voce il testo descrittivo dell'item corrente (nel tono
   // selezionato), sintetizzato al volo lato server tramite Edge TTS.
@@ -551,7 +576,7 @@ function VisitaItemScreen({
   // da lì in poi ogni cambio di item/tono la fa ripartire — finché la docente
   // non torna a premere il tasto per il nuovo item, non riparte nulla.
   React.useEffect(() => {
-    const testo = toneText(item?.toni?.[tono]);
+    const testo = toneText(item?.toni?.[tono], durata);
     if (audioRef.current) {
       audioRef.current.pause();
       if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
@@ -583,7 +608,7 @@ function VisitaItemScreen({
         audioRef.current = null;
       }
     };
-  }, [item, tono, ttsMuted, audioAvviato]);
+  }, [item, tono, durata, ttsMuted, audioAvviato]);
 
   function toggleTtsMuted() {
     setTtsMuted(m => !m);
@@ -781,13 +806,23 @@ function VisitaItemScreen({
                       onClick={() => setTono(t.key)}
                     >
                       {t.label}
-                      <span className="visita-tono-dur">{t.durata}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="visita-toni-bar visita-durate-bar">
+                  {DURATE_CONFIG.map(d => (
+                    <button
+                      key={d.key}
+                      className={`visita-tono-btn${durata === d.key ? ' visita-tono-btn--active' : ''}`}
+                      onClick={() => setDurata(d.key)}
+                    >
+                      {d.label}
                     </button>
                   ))}
                 </div>
 
                 <p className="visita-item-text">
-                  {toneText(item.toni?.[tono]) || <em>Nessun contenuto per questo tono.</em>}
+                  {toneText(item.toni?.[tono], durata) || <em>Nessun contenuto per questo tono e durata.</em>}
                 </p>
               </div>
             )}
@@ -947,7 +982,8 @@ function VisitaItemScreen({
               Object.entries(studentTono)
                 .sort((a, b) => b[1].timestamp - a[1].timestamp)
                 .map(([nome, info]) => {
-                  const tonoLabel = TONI_CONFIG.find(t => t.key === info.tono)?.label || info.tono;
+                  const tonoLabel   = TONI_CONFIG.find(t => t.key === info.tono)?.label   || info.tono;
+                  const durataLabel = DURATE_CONFIG.find(d => d.key === info.durata)?.label || info.durata || '';
                   return (
                     <div key={nome} className="visita-chat-msg">
                       <div className="visita-chat-msg-top">
@@ -956,7 +992,10 @@ function VisitaItemScreen({
                           {new Date(info.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
                         </span>
                       </div>
-                      <p className="visita-chat-text">Tono: <strong>{tonoLabel}</strong></p>
+                      <p className="visita-chat-text">
+                        Tono: <strong>{tonoLabel}</strong>
+                        {durataLabel && <> · Durata: <strong>{durataLabel}</strong></>}
+                      </p>
                     </div>
                   );
                 })
@@ -1214,7 +1253,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     <>
       {museoHeader}
       {backBar}
-      <div className="lobby-root lobby-root--dark" style={{ flex: 1, minHeight: 0 }}>
+      <div className="lobby-root" style={{ flex: 1, minHeight: 0 }}>
       <div className="lobby-body">
         <header className="lobby-header">
           <p className="lobby-label">Lobby di Attesa · Docente</p>
@@ -1347,7 +1386,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   );
 
   return (
-    <div className="lobby-root lobby-root--dark">
+    <div className="lobby-root">
       <div className="nav-topbar">
         <button onClick={onBack} className="back-to-marketplace">← Esci</button>
       </div>
@@ -2082,8 +2121,8 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
   const cardStyle = (idx) => ({
     display: 'flex', alignItems: 'center', gap: '12px',
     padding: '12px 16px',
-    background: dragOver === idx ? 'rgba(255,0,127,0.08)' : 'rgba(255,255,255,0.06)',
-    border: `1.5px solid ${dragOver === idx ? 'var(--magenta,#FF007F)' : 'rgba(255,255,255,0.1)'}`,
+    background: dragOver === idx ? 'rgba(255,0,127,0.08)' : 'var(--nav-card-bg)',
+    border: `1.5px solid ${dragOver === idx ? 'var(--nav-magenta,#FF007F)' : 'var(--nav-border)'}`,
     borderRadius: '12px',
     cursor: 'grab',
     transition: 'border-color .15s, background .15s',
@@ -2092,15 +2131,16 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
 
   const arrowBtnStyle = (disabled) => ({
     background: 'none',
-    border: '1px solid rgba(255,255,255,0.15)',
+    border: '1px solid var(--nav-border)',
     borderRadius: '6px', padding: '4px 9px',
     cursor: disabled ? 'default' : 'pointer',
-    color: disabled ? 'rgba(255,255,255,0.2)' : '#94a3b8',
+    color: 'var(--nav-text)',
+    opacity: disabled ? 0.3 : 1,
     fontSize: '0.75rem', lineHeight: 1,
   });
 
   return (
-    <div className="lobby-root lobby-root--dark" style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
+    <div className="lobby-root" style={{ display: 'flex', flexDirection: 'column', minHeight: '100dvh' }}>
       <div className="lobby-back-bar">
         <button className="museo-detail-back" onClick={onBack}>
           <i className="fa-solid fa-arrow-left" /> Indietro
@@ -2111,7 +2151,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
         <header className="lobby-header">
           <p className="lobby-label">Ordina gli items</p>
           <h1 className="lobby-title">{visita.nomeVisita}</h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.88rem', marginTop: '8px' }}>
+          <p style={{ color: 'var(--nav-muted)', fontSize: '0.88rem', marginTop: '8px' }}>
             <i className="fa-solid fa-grip-vertical" style={{ marginRight: '6px' }} />
             Trascina le card o usa ↑↓ per definire l'ordine della visita.
           </p>
@@ -2120,10 +2160,10 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
         {loading ? (
           <div style={{ textAlign: 'center', padding: '40px 16px' }}>
             <div className="nav-spinner" />
-            <p style={{ marginTop: '12px', color: '#94a3b8' }}>Caricamento items…</p>
+            <p style={{ marginTop: '12px', color: 'var(--nav-muted)' }}>Caricamento items…</p>
           </div>
         ) : items.length === 0 ? (
-          <p style={{ textAlign: 'center', color: '#94a3b8', padding: '40px 16px' }}>
+          <p style={{ textAlign: 'center', color: 'var(--nav-muted)', padding: '40px 16px' }}>
             Questa visita non ha items associati.
           </p>
         ) : (
@@ -2139,7 +2179,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
                 onDragEnd={handleDragEnd}
                 style={cardStyle(idx)}
               >
-                <i className="fa-solid fa-grip-vertical" style={{ color: '#64748b', flexShrink: 0 }} />
+                <i className="fa-solid fa-grip-vertical" style={{ color: 'var(--nav-muted)', flexShrink: 0 }} />
                 <span style={{
                   minWidth: '26px', height: '26px', borderRadius: '50%',
                   background: 'var(--magenta,#FF007F)', color: '#fff',

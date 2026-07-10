@@ -10,16 +10,7 @@
     <link rel="stylesheet" href="/css/marketplace.css">
     <link rel="icon" href="/img/MonnaLisaFavicon.png" type="image/png">
     <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;})();</script>
-    <script>
-      // Se questa pagina è incorporata (iframe nel Navigator), il tema cambia
-      // nella finestra genitore: 'storage' avvisa questo documento del nuovo valore.
-      window.addEventListener('storage', function (e) {
-        if (e.key === 'theme' && e.newValue) {
-          document.documentElement.dataset.theme = e.newValue;
-        }
-      });
-    </script>
-    <script>(function(){if(new URLSearchParams(location.search).get('embed')==='marketplace'){document.documentElement.classList.add('embedded');}})();</script>
+<script>(function(){if(new URLSearchParams(location.search).get('embed')==='marketplace'){document.documentElement.classList.add('embedded');}})();</script>
     <style>
       html.embedded .sidebar        { display: none !important; }
       html.embedded .mobile-topbar  { display: none !important; }

@@ -262,8 +262,10 @@
 .visita-msg-fab:hover { transform: scale(1.08); box-shadow: 0 6px 24px rgba(255,0,127,0.55); }
 
 /* ── Mappa in-visita ("sei qui") ── */
-.visita-item-map       { width: 100%; margin: 0 0 20px; padding: 16px; background: var(--nav-dark); color: #f1f5f9; border-radius: 14px; }
-.visita-item-map-title { font-size: 0.85rem; font-weight: 600; margin: 0 0 10px; text-align: center; color: #f1f5f9; }
+.visita-item-map       { width: 100%; margin: 0 0 20px; padding: 16px; background: var(--nav-card-bg); color: var(--nav-text); border: 1px solid var(--nav-border); border-radius: 14px; }
+.visita-item-map-title { font-size: 0.85rem; font-weight: 600; margin: 0 0 10px; text-align: center; color: var(--nav-text); }
+[data-theme="dark"] .visita-item-map { background: var(--nav-dark); color: #f1f5f9; border-color: transparent; }
+[data-theme="dark"] .visita-item-map-title { color: #f1f5f9; }
 .visita-item-map .geo-floorplan-wrap { margin-top: 0; }
 .visita-item-map .geo-floorplan-img  { max-height: 260px; }
 /* Higher-specificity + !important: navigator-geo.css loads after this file and its

@@ -4,7 +4,16 @@ function toggleDarkMode() {
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
     updateDarkToggleUI();
+    // Notifica il Navigator (React) se questa pagina è in un iframe al suo interno
+    window.dispatchEvent(new CustomEvent('artaround-theme', { detail: { isDark: next === 'dark' } }));
 }
+
+// Reagisce ai cambiamenti di tema fatti da altri documenti (altri tab, Navigator, iframe)
+window.addEventListener('storage', function(e) {
+    if (e.key !== 'theme' || !e.newValue) return;
+    document.documentElement.dataset.theme = e.newValue;
+    updateDarkToggleUI();
+});
 
 function updateDarkToggleUI() {
     const isDark = document.documentElement.dataset.theme === 'dark';
