@@ -2291,6 +2291,7 @@ window._showAutoreItemForm = async function (itemId) {
                     <input type="text" id="ifObjectId" class="custom-input"
                            placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
                 </div>
+<<<<<<< HEAD
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…" value="${(item?.image || '').replace(/"/g, '&quot;')}">
@@ -2299,6 +2300,8 @@ window._showAutoreItemForm = async function (itemId) {
                     <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('ifTags', 'es. caravaggio, rinascimento…')}
                 </div>
+=======
+>>>>>>> 2c76e7078345494f5e226c123754cf6011904c60
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
@@ -2454,8 +2457,11 @@ window._showAutoreItemForm = async function (itemId) {
             objectId: objectIdVal || (baseForId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
             toni,
             metadata,
+<<<<<<< HEAD
             image:    document.getElementById('ifImmagine').value.trim(),
             tags:     getTagInputValue('ifTags'),
+=======
+>>>>>>> 2c76e7078345494f5e226c123754cf6011904c60
             pubblica: isPubblicaItem,
         };
 

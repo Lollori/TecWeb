@@ -153,8 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     //GESTIONE SALVATAGGIO FORM (Crea & Aggiorna)
     form.addEventListener('submit', async (e) => {
-        e.preventDefault(); 
-        
+        e.preventDefault();
+
+        const errors = validateItemSelection();
+        if (errors.length > 0) {
+            refreshValidationBanner();
+            document.getElementById('items-validation-banner')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            return;
+        }
+
         const itemIds = [...document.querySelectorAll('#items-checkboxes input[type="checkbox"]:checked')]
             .map(cb => cb.value);
 
@@ -209,6 +216,77 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModale();
     };
 
+    // Mappa id -> item completo, usata dalla validazione
+    let allItemsData = {};
+
+    // Restituisce i toni che un item ha compilati (con almeno una durata non vuota)
+    function getItemTones(item) {
+        const tones = [];
+        const t = item.toni || {};
+        const hasTone = (obj) => obj && (obj.d3?.trim() || obj.d15?.trim() || obj.d40?.trim());
+        if (hasTone(t.semplice))  tones.push('semplice');
+        if (hasTone(t.medio))     tones.push('medio');
+        if (hasTone(t.avanzato))  tones.push('avanzato');
+        return tones;
+    }
+
+    // Aggiornato ogni volta che una checkbox cambia; restituisce array di errori
+    function validateItemSelection() {
+        const checked = [...document.querySelectorAll('#items-checkboxes input[type="checkbox"]:checked')];
+        const byOpera = {};
+        for (const cb of checked) {
+            const item = allItemsData[cb.value];
+            if (!item) continue;
+            const oid = item.operaId;
+            if (!byOpera[oid]) byOpera[oid] = [];
+            byOpera[oid].push(item);
+        }
+
+        const errors = [];
+        for (const [operaId, items] of Object.entries(byOpera)) {
+            if (items.length > 3) {
+                errors.push(`"${operaId}": selezionati ${items.length} items (massimo 3 per opera).`);
+                continue;
+            }
+            const toneCount = {};
+            for (const item of items) {
+                for (const tone of getItemTones(item)) {
+                    toneCount[tone] = (toneCount[tone] || 0) + 1;
+                }
+            }
+            for (const [tone, count] of Object.entries(toneCount)) {
+                if (count > 1) {
+                    errors.push(`"${operaId}": ${count} items con tono <strong>${tone}</strong> (massimo 1 per tono).`);
+                }
+            }
+        }
+        return errors;
+    }
+
+    function refreshValidationBanner() {
+        const banner = document.getElementById('items-validation-banner');
+        const errors = validateItemSelection();
+        if (errors.length === 0) {
+            banner.style.display = 'none';
+            banner.innerHTML = '';
+        } else {
+            banner.style.display = 'block';
+            banner.innerHTML = '<strong>Conflitti rilevati:</strong><ul class="mb-0 mt-1 ps-3">'
+                + errors.map(e => `<li>${e}</li>`).join('')
+                + '</ul>';
+        }
+    }
+
+    // Badge HTML per i toni di un item
+    function toneBadges(item) {
+        const tones = getItemTones(item);
+        if (!tones.length) return '<span style="font-size:0.72rem;color:#94a3b8;margin-left:4px;">(nessun tono)</span>';
+        const colors = { semplice: '#6366f1', medio: '#0ea5e9', avanzato: '#f59e0b' };
+        return tones.map(t =>
+            `<span style="font-size:0.7rem;font-weight:600;padding:1px 7px;border-radius:20px;margin-left:4px;background:${colors[t]}22;color:${colors[t]};border:1px solid ${colors[t]}44;">${t}</span>`
+        ).join('');
+    }
+
     async function loadItemsCheckboxes(selectedIds = []) {
         const container = document.getElementById('items-checkboxes');
         container.innerHTML = '<p class="text-muted small mb-0">Caricamento items...</p>';
@@ -219,13 +297,27 @@ document.addEventListener('DOMContentLoaded', () => {
                 container.innerHTML = '<p class="text-muted small mb-0">Nessun item disponibile per questo museo.</p>';
                 return;
             }
-            container.innerHTML = result.data.map(item => `
-                <div class="form-check mb-1">
+            allItemsData = {};
+            result.data.forEach(item => { allItemsData[item._id] = item; });
+
+            container.innerHTML =
+                '<div id="items-validation-banner" style="display:none;background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:8px 12px;margin-bottom:8px;color:#dc2626;font-size:0.82rem;"></div>'
+                + result.data.map(item => `
+                <div class="form-check mb-1" style="display:flex;align-items:center;flex-wrap:wrap;gap:2px;">
                     <input class="form-check-input" type="checkbox" value="${item._id}" id="item-${item._id}"
                         ${selectedIds.map(String).includes(String(item._id)) ? 'checked' : ''}>
-                    <label class="form-check-label small" for="item-${item._id}">${item.operaId}</label>
+                    <label class="form-check-label small" for="item-${item._id}" style="margin-left:6px;">${item.operaId}</label>
+                    ${toneBadges(item)}
                 </div>
             `).join('');
+
+            // Listener di validazione su ogni checkbox
+            container.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+                cb.addEventListener('change', refreshValidationBanner);
+            });
+
+            // Validazione iniziale (per editing con items già selezionati)
+            refreshValidationBanner();
         } catch (e) {
             container.innerHTML = '<p class="text-danger small mb-0">Errore nel caricamento degli items.</p>';
         }
@@ -255,6 +347,7 @@ document.addEventListener('DOMContentLoaded', () => {
         bsModal.hide();
         form.reset();
         editingId = null;
+        allItemsData = {};
     }
 
     // AVVIO
