@@ -26,6 +26,8 @@ const visitaSchema = new mongoose.Schema({
     acquirenti:       { type: Number,  default: 0 },
     acquirentiIds:    { type: [String], default: [] },
     itemIds:          { type: [String], default: [] },
+    // Tag liberi facoltativi (es. "caravaggio", "rinascimento") per la ricerca nel marketplace.
+    tags:             { type: [String], default: [], index: true },
 });
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);

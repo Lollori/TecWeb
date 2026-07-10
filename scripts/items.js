@@ -29,7 +29,17 @@ const itemSchema = new mongoose.Schema({
     metadata: { type: mongoose.Schema.Types.Mixed, default: {} },
     image:    { type: String, default: '' },
     authorId:   { type: String, required: true },
-    operaId:    { type: String, required: true, index: true },
+    /*
+     * Un item può riferirsi a un'opera specifica (operaId valorizzato) oppure
+     * essere contenuto indipendente non legato a una singola opera — es.
+     * movimenti culturali, stili, artisti, eventi storici (vedi specifiche
+     * progetto). In quel caso operaId resta vuoto e si usa "topic".
+     */
+    contentType: { type: String, enum: ['opera', 'indipendente'], default: 'opera' },
+    operaId:    { type: String, default: '', index: true },
+    topic:      { type: String, default: '' },
+    // Tag liberi facoltativi (es. "caravaggio", "rinascimento") per la ricerca nel marketplace.
+    tags:       { type: [String], default: [], index: true },
     pubblica:   { type: Boolean, default: false },
     acquirenti: { type: Number, default: 0 },
     acquirentiIds: { type: [String], default: [] },

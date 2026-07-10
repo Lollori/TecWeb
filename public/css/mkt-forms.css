@@ -96,6 +96,91 @@ select.custom-input {
     background-size: 14px; padding-right: 40px; cursor: pointer;
 }
 
+/* ── Content type toggle (item legato a un'opera vs contenuto indipendente) ── */
+/* ── Tag input (item e visite: tag liberi facoltativi) ── */
+.tag-input {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 8px 10px;
+    background: white;
+}
+.tag-input:focus-within {
+    border-color: var(--magenta);
+    box-shadow: 0 0 0 3px var(--magenta-glow);
+}
+.tag-input-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.tag-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(255, 0, 127, 0.1);
+    color: var(--magenta);
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 4px 6px 4px 10px;
+    border-radius: 20px;
+}
+.tag-chip button {
+    background: none;
+    border: none;
+    color: inherit;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 2px;
+    opacity: 0.7;
+}
+.tag-chip button:hover { opacity: 1; }
+.tag-input-field {
+    flex: 1;
+    min-width: 140px;
+    border: none;
+    outline: none;
+    font-size: 0.88rem;
+    font-family: inherit;
+    background: transparent;
+    color: var(--text-dark);
+    padding: 4px 2px;
+}
+.tag-input-field::placeholder { color: #94a3b8; }
+
+.content-type-toggle {
+    display: flex;
+    gap: 10px;
+}
+.content-type-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.88rem;
+    cursor: pointer;
+    font-family: inherit;
+    transition: var(--transition);
+}
+.content-type-btn:hover:not(:disabled) { border-color: var(--magenta); color: var(--magenta); }
+.content-type-btn.active {
+    border-color: var(--magenta);
+    background: rgba(255, 0, 127, 0.08);
+    color: var(--magenta);
+}
+.content-type-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
 /* ── Tone editor (creazione/modifica item: 3 toni, 3 durate ciascuno) ── */
 .tone-editor {
     border: 1px solid #e2e8f0;
@@ -217,6 +302,14 @@ select.custom-input {
 .search-box-glass input::placeholder { color: #94a3b8; }
 
 /* ── Dark mode ── */
+[data-theme="dark"] .tag-input { background: #1a2235; border-color: rgba(255,255,255,0.1); }
+[data-theme="dark"] .tag-input-field { color: #e8edf5; }
+[data-theme="dark"] .tag-input-field::placeholder { color: #4a5568; }
+[data-theme="dark"] .tag-chip { background: rgba(255,0,127,0.18); color: var(--magenta-light, #FF3399); }
+
+[data-theme="dark"] .content-type-btn { background: #1a2235; border-color: rgba(255,255,255,0.1); color: #94a3b8; }
+[data-theme="dark"] .content-type-btn.active { background: rgba(255,0,127,0.15); border-color: var(--magenta); color: var(--magenta-light, #FF3399); }
+
 [data-theme="dark"] .tone-editor { background: #10182b; border-color: rgba(255,255,255,0.08); }
 [data-theme="dark"] .tone-editor-tabs { background: #161f38; border-bottom-color: rgba(255,255,255,0.08); }
 [data-theme="dark"] .tone-editor-tab { border-right-color: rgba(255,255,255,0.08); }

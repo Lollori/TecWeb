@@ -950,6 +950,119 @@ function toneText(t) {
     return t.d15 || t.d3 || t.d40 || '';
 }
 
+/* ── Tag input riutilizzabile (item e visite): campo libero, facoltativo,
+   dove premendo Invio o virgola si crea un "chip" rimovibile. Lo stato dei
+   tag per ciascun'istanza è tenuto in _tagInputState, chiave = id del box. ── */
+const _tagInputState = {};
+
+function tagInputHtml(id, placeholder) {
+    return `
+        <div class="tag-input" id="${id}">
+            <div class="tag-input-chips" id="${id}Chips"></div>
+            <input type="text" class="tag-input-field" id="${id}Field"
+                   placeholder="${placeholder || 'Aggiungi un tag e premi Invio (es. caravaggio)'}"
+                   onkeydown="_tagInputKeydown(event,'${id}')"
+                   onblur="_tagInputBlur('${id}')">
+        </div>`;
+}
+
+function initTagInput(id, initialTags) {
+    _tagInputState[id] = (initialTags || []).slice();
+    _renderTagChips(id);
+}
+
+function getTagInputValue(id) {
+    return (_tagInputState[id] || []).slice();
+}
+
+function _renderTagChips(id) {
+    const box = document.getElementById(id + 'Chips');
+    if (!box) return;
+    box.innerHTML = (_tagInputState[id] || []).map((t, i) =>
+        `<span class="tag-chip">#${t}<button type="button" onclick="_removeTagChip('${id}',${i})" aria-label="Rimuovi tag">&times;</button></span>`
+    ).join('');
+}
+
+function _normalizeTag(raw) {
+    return raw.trim().replace(/^#+/, '').toLowerCase().replace(/\s+/g, '-');
+}
+
+function _addTagToInput(id, raw) {
+    const t = _normalizeTag(raw);
+    if (!t) return;
+    if (!_tagInputState[id]) _tagInputState[id] = [];
+    if (!_tagInputState[id].includes(t)) _tagInputState[id].push(t);
+    _renderTagChips(id);
+}
+
+window._tagInputKeydown = function (e, id) {
+    if (e.key === 'Enter' || e.key === ',') {
+        e.preventDefault();
+        _addTagToInput(id, e.target.value);
+        e.target.value = '';
+    } else if (e.key === 'Backspace' && !e.target.value && (_tagInputState[id] || []).length) {
+        _tagInputState[id].pop();
+        _renderTagChips(id);
+    }
+};
+window._tagInputBlur = function (id) {
+    const field = document.getElementById(id + 'Field');
+    if (field && field.value.trim()) {
+        _addTagToInput(id, field.value);
+        field.value = '';
+    }
+};
+window._removeTagChip = function (id, i) {
+    _tagInputState[id].splice(i, 1);
+    _renderTagChips(id);
+};
+
+/* ── Helper: titolo da mostrare per un item — il nome dell'opera collegata,
+   oppure l'argomento per i contenuti indipendenti (movimenti, stili,
+   artisti, eventi storici…). Da usare ovunque si mostri/cerchi un item. ── */
+function itemTitle(it) {
+    if (it?.contentType === 'indipendente') return it.topic || 'Contenuto indipendente';
+    return it?.operaId || '—';
+}
+
+/* ── Helper: chip dei tag (item/visite) mostrati nel marketplace, cliccabili
+   per avviare subito una ricerca su quel tag. ── */
+function tagChipsDisplayHtml(tags) {
+    if (!tags || !tags.length) return '';
+    return `<div class="tag-chips-display">${tags.map(t =>
+        `<button type="button" class="tag-chip-mini" onclick="_searchByTag('${t.replace(/'/g, "\\'")}')">#${t}</button>`
+    ).join('')}</div>`;
+}
+
+window._searchByTag = function (tag) {
+    const field = document.getElementById('mktSearch');
+    if (field) field.value = tag;
+    if (typeof window.applyMktFilter === 'function') window.applyMktFilter();
+};
+
+/* ── Helper: badge HTML per il tipo di contenuto (usato nelle liste item). ── */
+function itemTypeBadge(it) {
+    return it?.contentType === 'indipendente'
+        ? '<span class="badge bg-info text-dark"><i class="fa-solid fa-lightbulb"></i> Indipendente</span>'
+        : '<span class="badge bg-light text-dark border"><i class="fa-solid fa-image"></i> Opera</span>';
+}
+
+/* ── Helper: un tag colorato per ciascun tono che ha almeno una descrizione
+   compilata (3s/15s/40s), usato al posto dell'anteprima testuale nelle
+   liste item — un colpo d'occhio su cosa è già stato scritto. ── */
+function toneBadgesHtml(it) {
+    const toni = it?.toni || {};
+    const livelli = [
+        { key: 'semplice', label: 'Semplice', cls: 'tone-badge--semplice' },
+        { key: 'medio',    label: 'Medio',    cls: 'tone-badge--medio' },
+        { key: 'avanzato', label: 'Avanzato', cls: 'tone-badge--avanzato' },
+    ];
+    return livelli
+        .filter(l => !toneIsEmpty(toni[l.key] || {}))
+        .map(l => `<span class="tone-badge ${l.cls}">${l.label}</span>`)
+        .join('');
+}
+
 /* ── Helper: editor a schede per i 3 toni (una scheda per tono, ciascuna con
    3 caselle di testo — 3s/15s/40s — della stessa dimensione). Un tono si
    considera "completo" solo se tutte e 3 le durate sono compilate; l'autore
@@ -1047,19 +1160,23 @@ function toneIsEmpty(t)    { return !t.d3 && !t.d15 && !t.d40; }
 
 /* Un tono va lasciato completamente vuoto oppure compilato in tutte e 3 le
    durate; l'item è salvabile solo se almeno un tono è completo. */
-function validateToniOrAlert(toniObj) {
-    const entries = Object.entries(toniObj);
-    for (const [key, t] of entries) {
+/* Un tono compilato solo in parte non è ammesso: o tutte e 3 le durate,
+   o nessuna. Non richiede più (da qui) che ci sia almeno un tono completo:
+   quel vincolo si applica solo alla pubblicazione, vedi hasCompleteTone(). */
+function validateToniShapeOrAlert(toniObj) {
+    for (const [key, t] of Object.entries(toniObj)) {
         if (!toneIsEmpty(t) && !toneIsComplete(t)) {
             alert(`Completa tutte e 3 le durate (3s / 15s / 40s) del tono "${key}", oppure lasciale tutte vuote.`);
             return false;
         }
     }
-    if (!entries.some(([, t]) => toneIsComplete(t))) {
-        alert('Completa le 3 durate (3s / 15s / 40s) di almeno un tono.');
-        return false;
-    }
     return true;
+}
+
+/* Vero se almeno un tono ha tutte e 3 le durate compilate — requisito
+   minimo per poter pubblicare un item sul marketplace. */
+function hasCompleteTone(toniObj) {
+    return Object.values(toniObj).some(t => toneIsComplete(t));
 }
 
 /* ── Helper: render tabbed toni panel ─────────────────── */
@@ -1626,6 +1743,10 @@ window._showAutoreVisitaForm = async function (visitaId) {
                            placeholder="es. uffizi_rinascimento" value="${(visita?.nomeMnemonico || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-12">
+                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    ${tagInputHtml('vfTags', 'es. caravaggio, rinascimento…')}
+                </div>
+                <div class="col-12">
                     <label class="custom-label">Items da includere nella visita</label>
                     <div class="detail-tabs mb-3" style="margin-top:8px;">
                         <button type="button" class="tab-btn active" id="vfTabMiei"
@@ -1680,6 +1801,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
     await ensureMuseiAutore();
     populateMuseoSelect('vfMuseo', allMuseiAutore);
     if (isEdit) document.getElementById('vfMuseo').value = visita.codiceIsil || '';
+    initTagInput('vfTags', visita?.tags);
 
     window.toggleVfVisibilita = function (forceValue) {
         const track     = document.getElementById('vfToggleTrack');
@@ -1736,7 +1858,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             return;
         }
         const q = (document.getElementById('vfItemSearch')?.value || '').trim().toLowerCase();
-        const lista = q ? listaCompleta.filter(it => (it.operaId || '').toLowerCase().includes(q)) : listaCompleta;
+        const lista = q ? listaCompleta.filter(it => itemTitle(it).toLowerCase().includes(q)) : listaCompleta;
         if (!lista.length) {
             container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Nessun item corrisponde alla ricerca.</p>`;
             return;
@@ -1755,7 +1877,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                        style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);flex-shrink:0;"
                        onchange="vfToggleItem('${it._id}',this.checked,this);">
                 <span style="font-size:0.88rem;min-width:0;overflow-wrap:anywhere;">
-                    <strong>${it.operaId}</strong>
+                    <strong>${itemTitle(it)}</strong>
                     ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${preview.length >= 60 ? '…' : ''}</span>` : ''}
                 </span>
             </label>`;
@@ -1864,6 +1986,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             autoreId:      SESSION.userId,
             itemIds:       selectedItems,
             opereCount:    selectedItems.length,
+            tags:          getTagInputValue('vfTags'),
         };
 
         if (!body.nomeVisita) { alert('Inserisci il nome della visita.'); return; }
@@ -1920,6 +2043,7 @@ window.resetVisitaForm = function () {
    ============================================================ */
 
 let allAutoreItems = [];
+let _autoreItemsCurrentList = [];
 
 async function initAutoreAggiungiItem() {
     const section = document.getElementById('section-autore-aggiungi-item');
@@ -1984,7 +2108,7 @@ window.filterAutoreItems = function () {
     let filtered = allAutoreItems;
     if (q) filtered = filtered.filter(it => {
         const testo = [
-            it.operaId || '',
+            itemTitle(it),
             toneText(it.toni?.semplice),
             toneText(it.toni?.medio),
             toneText(it.toni?.avanzato),
@@ -2000,6 +2124,7 @@ window.filterAutoreItems = function () {
 function _renderAutoreItemsList(lista) {
     const grid = document.getElementById('autoreItemsListGrid');
     if (!grid) return;
+    _autoreItemsCurrentList = lista;
     if (!lista.length) {
         grid.innerHTML = allAutoreItems.length
             ? '<p class="empty-msg">Nessun item corrisponde ai filtri selezionati.</p>'
@@ -2007,25 +2132,29 @@ function _renderAutoreItemsList(lista) {
         return;
     }
     grid.innerHTML = lista.map(it => {
-        const preview = toneText(it.toni?.semplice);
         return `
         <div class="item-read-card">
-            ${it.image
-                ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">`
-                : ''}
-            <h3 style="margin:0 0 4px;overflow-wrap:break-word;word-break:break-word;">${it.operaId}</h3>
-            <p class="opera-meta" style="overflow-wrap:break-word;word-break:break-word;"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
-            ${preview ? `<p class="description-text" style="font-size:0.85rem;color:#64748b;margin:6px 0 0;overflow-wrap:break-word;word-break:break-word;">${preview}</p>` : ''}
-            <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                ${it.pubblica
-                    ? '<span class="badge bg-success">Pubblico</span>'
-                    : '<span class="badge bg-secondary">Privato</span>'}
-                ${it.metadata?.prezzo > 0 ? `<span class="price-badge">€${it.metadata.prezzo}</span>` : ''}
+            <div class="item-card-clickable" onclick="_showAutoreItemView('${it._id}')">
+                ${it.image
+                    ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">`
+                    : ''}
+                <h3 style="margin:0 0 4px;overflow-wrap:break-word;word-break:break-word;">${itemTitle(it)}</h3>
+                <p class="opera-meta" style="overflow-wrap:break-word;word-break:break-word;"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
+                <div style="margin-top:8px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                    ${toneBadgesHtml(it)}
+                </div>
+                <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    ${itemTypeBadge(it)}
+                    ${it.pubblica
+                        ? '<span class="badge bg-success">Pubblico</span>'
+                        : '<span class="badge bg-secondary">Privato</span>'}
+                    ${it.metadata?.prezzo > 0 ? `<span class="price-badge">€${it.metadata.prezzo}</span>` : ''}
+                </div>
             </div>
             <div style="margin-top:14px;">
                 ${adminActionBtns(
                     `_showAutoreItemForm('${it._id}')`,
-                    `autoreDeleteItem('${it._id}','${(it.operaId || '').replace(/'/g, "\\'")}')`
+                    `autoreDeleteItem('${it._id}','${itemTitle(it).replace(/'/g, "\\'")}')`
                 )}
             </div>
         </div>`;
@@ -2044,6 +2173,62 @@ window.autoreDeleteItem = async function (id, operaId) {
             alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
     } catch (e) { alert('Impossibile contattare il server.'); }
+};
+
+/* ── Vista di sola lettura di un item (click sulla card, non porta alla
+   modifica): mostra la descrizione completa con le frecce del toni-switcher
+   e in più due frecce laterali per scorrere fra gli item della lista
+   corrente, senza dover tornare indietro ogni volta. ── */
+window._showAutoreItemView = function (itemId) {
+    const lista = _autoreItemsCurrentList.length ? _autoreItemsCurrentList : allAutoreItems;
+    const idx   = lista.findIndex(it => it._id === itemId);
+    if (idx === -1) return;
+    const it = lista[idx];
+
+    const section = document.getElementById('section-autore-aggiungi-item');
+    section.innerHTML = `
+        <button class="museo-detail-back" onclick="initAutoreAggiungiItem()">
+            <i class="fa-solid fa-arrow-left"></i> Torna ai miei item
+        </button>
+        <div class="item-view-carousel" data-idx="${idx}">
+            <button type="button" class="item-view-nav item-view-nav--prev"
+                    onclick="_navigateAutoreItemView(-1)" aria-label="Item precedente" ${lista.length < 2 ? 'disabled' : ''}>
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+            <div class="item-view-card glass-card p-5">
+                ${it.image ? `<img src="${it.image}" alt="item" class="item-view-img">` : ''}
+                <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                    ${itemTypeBadge(it)}
+                    ${it.pubblica
+                        ? '<span class="badge bg-success">Pubblico</span>'
+                        : '<span class="badge bg-secondary">Privato</span>'}
+                    ${it.metadata?.prezzo > 0 ? `<span class="price-badge">€${it.metadata.prezzo}</span>` : ''}
+                </div>
+                <h2 class="museo-detail-title" style="margin-bottom:2px;">${itemTitle(it)}</h2>
+                <p class="opera-meta mb-4"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
+                ${renderToni(it, 'view-' + it._id)}
+                <div class="d-flex justify-content-between align-items-center mt-4 pt-3" style="border-top:1px solid #e2e8f0;">
+                    <span style="font-size:0.8rem;color:#94a3b8;">${idx + 1} di ${lista.length}</span>
+                    <button type="button" class="btn-magenta" onclick="_showAutoreItemForm('${it._id}')">
+                        <i class="fa-solid fa-pen-to-square me-2"></i>Modifica
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="item-view-nav item-view-nav--next"
+                    onclick="_navigateAutoreItemView(1)" aria-label="Item successivo" ${lista.length < 2 ? 'disabled' : ''}>
+                <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+    `;
+};
+
+window._navigateAutoreItemView = function (dir) {
+    const lista = _autoreItemsCurrentList.length ? _autoreItemsCurrentList : allAutoreItems;
+    if (lista.length < 2) return;
+    const idxAttr = document.querySelector('.item-view-carousel')?.dataset.idx;
+    let idx = idxAttr !== undefined ? parseInt(idxAttr, 10) : 0;
+    idx = (idx + dir + lista.length) % lista.length;
+    window._showAutoreItemView(lista[idx]._id);
 };
 
 window._showAutoreItemForm = async function (itemId) {
@@ -2068,12 +2253,35 @@ window._showAutoreItemForm = async function (itemId) {
                     </select>
                 </div>
                 <div class="col-md-6">
+                    <label class="custom-label">Tipo di contenuto *</label>
+                    <div class="content-type-toggle" id="ifContentTypeToggle">
+                        <button type="button" class="content-type-btn" data-type="opera"
+                                ${isEdit ? 'disabled' : `onclick="setIfContentType('opera')"`}>
+                            <i class="fa-solid fa-image"></i> Legato a un'opera
+                        </button>
+                        <button type="button" class="content-type-btn" data-type="indipendente"
+                                ${isEdit ? 'disabled' : `onclick="setIfContentType('indipendente')"`}>
+                            <i class="fa-solid fa-lightbulb"></i> Indipendente
+                        </button>
+                    </div>
+                    <input type="hidden" id="ifContentType" value="${item?.contentType === 'indipendente' ? 'indipendente' : 'opera'}">
+                </div>
+                <p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-circle-info me-1"></i>Un item "Indipendente" non è legato a un'opera specifica: usalo per movimenti culturali, stili, artisti, eventi storici e simili.
+                </p>
+                <div class="col-md-6" id="ifOperaWrap">
                     <label class="custom-label">Opera *</label>
                     <select id="ifOpera" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Prima seleziona un museo —</option>
                     </select>
                 </div>
-                ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;"><i class="fa-solid fa-circle-info me-1"></i>Museo e opera non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
+                <div class="col-md-6" id="ifTopicWrap" style="display:none;">
+                    <label class="custom-label">Argomento *</label>
+                    <input type="text" id="ifTopic" class="custom-input"
+                           placeholder="es. Cubismo, Rinascimento fiorentino, Caravaggio…"
+                           value="${(item?.topic || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
+                </div>
+                ${isEdit ? '<p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;"><i class="fa-solid fa-circle-info me-1"></i>Museo, tipo, opera e argomento non sono modificabili: crea un nuovo item per associarne uno diverso.</p>' : ''}
                 <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
                     <i class="fa-solid fa-circle-info me-1"></i>Scegli un tono e compila le sue 3 durate (3s / 15s / 40s). Puoi farne uno, due o tutti e tre.
                 </p>
@@ -2086,6 +2294,10 @@ window._showAutoreItemForm = async function (itemId) {
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…" value="${(item?.image || '').replace(/"/g, '&quot;')}">
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    ${tagInputHtml('ifTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
@@ -2121,6 +2333,29 @@ window._showAutoreItemForm = async function (itemId) {
     await ensureMuseiAutore();
     populateMuseoSelect('ifMuseo', allMuseiAutore);
     wireToneBadges('ifToneEditor', 'if');
+    initTagInput('ifTags', item?.tags);
+
+    window.setIfContentType = function (type) {
+        document.getElementById('ifContentType').value = type;
+        document.querySelectorAll('#ifContentTypeToggle .content-type-btn')
+            .forEach(b => b.classList.toggle('active', b.dataset.type === type));
+        const operaWrap   = document.getElementById('ifOperaWrap');
+        const topicWrap    = document.getElementById('ifTopicWrap');
+        const operaSelect = document.getElementById('ifOpera');
+        const topicInput  = document.getElementById('ifTopic');
+        if (type === 'opera') {
+            operaWrap.style.display = '';
+            topicWrap.style.display = 'none';
+            operaSelect.required = true;
+            topicInput.required  = false;
+        } else {
+            operaWrap.style.display = 'none';
+            topicWrap.style.display = '';
+            operaSelect.required = false;
+            topicInput.required  = true;
+        }
+    };
+    setIfContentType(item?.contentType === 'indipendente' ? 'indipendente' : 'opera');
 
     window.toggleIfVisibilita = function (forceValue) {
         const track     = document.getElementById('ifToggleTrack');
@@ -2181,8 +2416,10 @@ window._showAutoreItemForm = async function (itemId) {
 
     document.getElementById('itemFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const museoIsil  = document.getElementById('ifMuseo').value;
-        const operaId    = document.getElementById('ifOpera').value;
+        const museoIsil   = document.getElementById('ifMuseo').value;
+        const contentType = document.getElementById('ifContentType').value;
+        const operaId      = contentType === 'opera'       ? document.getElementById('ifOpera').value      : '';
+        const topic        = contentType === 'indipendente' ? document.getElementById('ifTopic').value.trim() : '';
         const toni = {
             semplice: readToneFields('if', 'Semplice'),
             medio:    readToneFields('if', 'Medio'),
@@ -2190,23 +2427,35 @@ window._showAutoreItemForm = async function (itemId) {
         };
 
         if (!museoIsil) { alert('Seleziona un museo.'); return; }
-        if (!operaId)   { alert("Seleziona un'opera."); return; }
-        if (!validateToniOrAlert(toni)) return;
+        if (contentType === 'opera') {
+            if (!operaId) { alert("Seleziona un'opera."); return; }
+        } else {
+            if (!topic) { alert('Inserisci un argomento per il contenuto indipendente.'); return; }
+        }
+        if (!validateToniShapeOrAlert(toni)) return;
 
         const isPubblicaItem = SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
+        if (isPubblicaItem && !hasCompleteTone(toni)) {
+            alert('Per pubblicare un item serve almeno un tono con tutte e 3 le durate (3s, 15s, 40s) compilate. Lascialo privato finché non lo completi.');
+            return;
+        }
         const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
         const metadata = {};
         if (prezzo > 0) metadata.prezzo = prezzo;
 
         const objectIdVal = document.getElementById('ifObjectId').value.trim();
+        const baseForId = contentType === 'opera' ? operaId : topic;
         const body = {
             operaId,
+            contentType,
+            topic,
             museumId: museoIsil,
             authorId: SESSION.userId,
-            objectId: objectIdVal || (operaId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
+            objectId: objectIdVal || (baseForId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
             toni,
             metadata,
             image:    document.getElementById('ifImmagine').value.trim(),
+            tags:     getTagInputValue('ifTags'),
             pubblica: isPubblicaItem,
         };
 
@@ -3638,6 +3887,10 @@ window.adminEditVisita = function (id) {
                     <label class="custom-label">Logistica</label>
                     <textarea id="avLogistica" class="custom-input" rows="3">${v.logistica || ''}</textarea>
                 </div>
+                <div class="col-12">
+                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    ${tagInputHtml('avTags', 'es. caravaggio, rinascimento…')}
+                </div>
                 <div class="col-md-6">
                     <label class="custom-label">Museo (ISIL)</label>
                     <input type="text" id="avIsil" class="custom-input" value="${v.codiceIsil || ''}">
@@ -3658,6 +3911,8 @@ window.adminEditVisita = function (id) {
             </form>
         </div>`;
 
+    initTagInput('avTags', v.tags);
+
     document.getElementById('adminVisitaForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const body = {
@@ -3670,6 +3925,7 @@ window.adminEditVisita = function (id) {
             pubblica:      document.getElementById('avPubblica').checked,
             acquirenti:    parseInt(document.getElementById('avAcquirenti').value) || 0,
             autoreId:      v.autoreId,
+            tags:          getTagInputValue('avTags'),
         };
         try {
             const res  = await fetch(`/api/visite/${v._id}`, {
@@ -3793,7 +4049,7 @@ function filterAdminItems() {
 
     let lista = allAdminItems;
     if (q)      lista = lista.filter(it =>
-        (it.operaId  || '').toLowerCase().includes(q) ||
+        itemTitle(it).toLowerCase().includes(q) ||
         (it.museumId || '').toLowerCase().includes(q) ||
         (it.authorId || '').toLowerCase().includes(q));
     if (autore) lista = lista.filter(it => it.authorId === autore);
@@ -3812,13 +4068,13 @@ function renderAdminItems(lista) {
         const preview = toneText(it.toni?.semplice).slice(0, 60);
         return `
         <tr>
-            <td class="fw-bold">${it.operaId || '—'}</td>
+            <td class="fw-bold">${itemTitle(it)} ${itemTypeBadge(it)}</td>
             <td><small class="text-muted">${it.museumId || '—'}</small></td>
             <td><small>${preview}${preview.length >= 60 ? '…' : ''}</small></td>
             <td><small class="text-muted">${it.authorId || '—'}</small></td>
             <td>${adminActionBtns(
                 `adminEditItem('${it._id}')`,
-                `adminDeleteItem('${it._id}','${(it.operaId || '').replace(/'/g, "\\'")}')`
+                `adminDeleteItem('${it._id}','${itemTitle(it).replace(/'/g, "\\'")}')`
             )}</td>
         </tr>`;
     }).join('');
@@ -3850,7 +4106,7 @@ window.adminEditItem = function (id) {
             <i class="fa-solid fa-arrow-left"></i> Torna agli items
         </button>
         <h2 class="museo-detail-title">Modifica Item</h2>
-        <p class="museo-detail-sub">Opera: ${it.operaId || '—'}</p>
+        <p class="museo-detail-sub">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera'}: ${itemTitle(it)} ${itemTypeBadge(it)}</p>
         <div class="glass-card p-5 mt-4">
             <form id="adminItemForm" class="row g-4">
                 <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
@@ -3858,12 +4114,16 @@ window.adminEditItem = function (id) {
                 </p>
                 ${toneEditorHtml('aiToneEditor', 'ai', toni)}
                 <div class="col-md-6">
-                    <label class="custom-label">Opera (ID)</label>
-                    <input type="text" class="custom-input" value="${it.operaId || ''}" disabled>
+                    <label class="custom-label">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera (ID)'}</label>
+                    <input type="text" class="custom-input" value="${itemTitle(it)}" disabled>
                 </div>
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="aiImmagine" class="custom-input" value="${it.image || ''}">
+                </div>
+                <div class="col-12">
+                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    ${tagInputHtml('aiTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 <div class="col-12">
                     <label class="custom-label">Metadata (JSON)</label>
@@ -3878,6 +4138,7 @@ window.adminEditItem = function (id) {
         </div>`;
 
     wireToneBadges('aiToneEditor', 'ai');
+    initTagInput('aiTags', it.tags);
 
     document.getElementById('adminItemForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -3886,7 +4147,11 @@ window.adminEditItem = function (id) {
             medio:    readToneFields('ai', 'Medio'),
             avanzato: readToneFields('ai', 'Avanzato'),
         };
-        if (!validateToniOrAlert(nuoviToni)) return;
+        if (!validateToniShapeOrAlert(nuoviToni)) return;
+        if (it.pubblica && !hasCompleteTone(nuoviToni)) {
+            alert('Questo item è pubblico: serve almeno un tono con tutte e 3 le durate compilate. Rendilo privato dal pannello Autore per salvarlo senza contenuto completo.');
+            return;
+        }
         let metadata;
         try {
             metadata = JSON.parse(document.getElementById('aiMetadata').value || '{}');
@@ -3897,8 +4162,11 @@ window.adminEditItem = function (id) {
         const body = {
             toni: nuoviToni,
             image:    document.getElementById('aiImmagine').value.trim(),
+            tags:     getTagInputValue('aiTags'),
             metadata,
-            operaId:  it.operaId,
+            operaId:     it.operaId,
+            contentType: it.contentType,
+            topic:       it.topic,
             museumId: it.museumId,
             authorId: it.authorId,
         };
@@ -4341,7 +4609,7 @@ function _populateMktOpereSelect(codiceIsil) {
     const source = codiceIsil
         ? allMktItems.filter(it => it.museumId === codiceIsil)
         : allMktItems;
-    const unique = [...new Set(source.map(it => it.operaId))].sort();
+    const unique = [...new Set(source.map(it => it.operaId).filter(Boolean))].sort();
     sel.innerHTML = '<option value="">Tutte le opere</option>' +
         unique.map(op => `<option value="${op}">${op}</option>`).join('');
 }
@@ -4396,7 +4664,7 @@ window.applyMktFilter = function () {
     const museoVal  = document.getElementById('mktFilterMuseo')?.value  || '';
     const operaVal  = document.getElementById('mktFilterOpera')?.value  || '';
     const lingVal   = document.getElementById('mktFilterLinguaggio')?.value || '';
-    const q         = (document.getElementById('mktSearch')?.value || '').toLowerCase();
+    const q         = (document.getElementById('mktSearch')?.value || '').trim().replace(/^#/, '').toLowerCase();
 
     const minEl = document.getElementById('mktRangeMin');
     const maxEl = document.getElementById('mktRangeMax');
@@ -4425,7 +4693,8 @@ window.applyMktFilter = function () {
         lista = lista.filter(v => applyPriceFilter(v.prezzo || 0));
         if (q) lista = lista.filter(v =>
             (v.nomeVisita || '').toLowerCase().includes(q) ||
-            (v.logistica  || '').toLowerCase().includes(q));
+            (v.logistica  || '').toLowerCase().includes(q) ||
+            (v.tags || []).some(t => t.toLowerCase().includes(q)));
         lista = lista.slice().sort((a, b) => {
             const aOwn = SESSION.userId && a.autoreId === SESSION.userId;
             const bOwn = SESSION.userId && b.autoreId === SESSION.userId;
@@ -4440,10 +4709,11 @@ window.applyMktFilter = function () {
         if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
         if (q) lista = lista.filter(it => {
             const allText = [
-                it.operaId || '',
+                itemTitle(it),
                 toneText(it.toni?.semplice),
                 toneText(it.toni?.medio),
                 toneText(it.toni?.avanzato),
+                ...(it.tags || []),
             ].join(' ').toLowerCase();
             return allText.includes(q);
         });
@@ -4479,7 +4749,7 @@ function renderMktPopularCard(tipo) {
             </h3>
             <div style="display:flex;gap:16px;flex-wrap:wrap;">
                 ${top3.map((x, i) => {
-                    const nome   = tipo === 'items' ? x.operaId : x.nomeVisita;
+                    const nome   = tipo === 'items' ? itemTitle(x) : x.nomeVisita;
                     const prezzo = tipo === 'items' ? (x.metadata?.prezzo || 0) : (x.prezzo || 0);
                     const museo  = allMktMusei.find(m =>
                         m.codiceIsil === (tipo === 'items' ? x.museumId : x.codiceIsil));
@@ -4524,8 +4794,10 @@ function renderMktItems(lista, purchasedIds, cartIds = []) {
         return `
         <div class="item-read-card">
             ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
-            <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+            <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
+            <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
             ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+            ${tagChipsDisplayHtml(it.tags)}
             ${renderToni(it, 'mkt-' + it._id)}
             ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
             <ul class="item-metadata-list">
@@ -4580,6 +4852,7 @@ function renderMktVisite(lista, purchasedIds, cartIds = []) {
             ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
             ${v.nomeMnemonico ? `<p class="opera-meta" style="font-size:0.8rem;color:#94a3b8;">${v.nomeMnemonico}</p>` : ''}
             ${v.logistica ? `<p style="font-size:0.88rem;color:#475569;margin-top:8px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;">${v.logistica}</p>` : ''}
+            ${tagChipsDisplayHtml(v.tags)}
             <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                 <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere</span>
                 <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
@@ -4629,16 +4902,18 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
     if (q) {
         purchasedItems = purchasedItems.filter(it => {
             const allText = [
-                it.operaId || '',
+                itemTitle(it),
                 toneText(it.toni?.semplice),
                 toneText(it.toni?.medio),
                 toneText(it.toni?.avanzato),
+                ...(it.tags || []),
             ].join(' ').toLowerCase();
             return allText.includes(q);
         });
         purchasedVisite = purchasedVisite.filter(v =>
             (v.nomeVisita || '').toLowerCase().includes(q) ||
-            (v.logistica  || '').toLowerCase().includes(q));
+            (v.logistica  || '').toLowerCase().includes(q) ||
+            (v.tags || []).some(t => t.toLowerCase().includes(q)));
     }
 
     if (!purchasedItems.length && !purchasedVisite.length) {
@@ -4668,7 +4943,8 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
             return `
             <div class="item-read-card">
                 ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
-                <h3 style="font-weight:700;font-size:1rem;margin-bottom:6px;">${it.operaId}</h3>
+                <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
+                <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 ${renderToni(it, 'acq-' + it._id)}
                 ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
@@ -4824,7 +5100,7 @@ async function initCarrello() {
             return `
             <div class="item-read-card">
                 ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
-                <h3 class="carrello-item-title">${it.operaId}</h3>
+                <h3 class="carrello-item-title">${itemTitle(it)}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
                     ${prezzo > 0 ? `<span class="price-badge">€${prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
