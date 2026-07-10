@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="/css/marketplace.css">
+    <link rel="stylesheet" href="/css/ui-modal.css">
     <link rel="icon" href="/img/MonnaLisaFavicon.png" type="image/png">
     <script>(function(){var t=localStorage.getItem('theme')||'light';document.documentElement.dataset.theme=t;})();</script>
 </head>
@@ -146,6 +147,7 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/ui-modal.js"></script>
 <script>
     const modalEl = document.getElementById('userModal');
     const bsModal = new bootstrap.Modal(modalEl);
@@ -240,7 +242,7 @@
         };
 
         if (!body.username) {
-            alert('Username è obbligatorio.');
+            showAlert('Username è obbligatorio.');
             return;
         }
 
@@ -255,26 +257,26 @@
                 closeModal();
                 loadUtenti();
             } else {
-                alert('Errore: ' + (data.message || 'Creazione fallita.'));
+                showAlert('Errore: ' + (data.message || 'Creazione fallita.'));
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 
     // --- Delete user ---
     async function deleteUtente(id, username) {
-        if (!confirm(`Eliminare l'utente "${username}"?`)) return;
+        if (!(await showConfirm(`Eliminare l'utente "${username}"?`))) return;
         try {
             const res = await fetch(`/api/utenti/${id}`, { method: 'DELETE' });
             const data = await res.json();
             if (data.ok) {
                 loadUtenti();
             } else {
-                alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+                showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     }
 

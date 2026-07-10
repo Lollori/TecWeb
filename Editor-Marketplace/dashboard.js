@@ -996,7 +996,7 @@ function _addTagToInput(id, raw) {
 }
 
 window._tagInputKeydown = function (e, id) {
-    if (e.key === 'Enter' || e.key === ',') {
+    if (e.key === 'Enter' || e.key === ',' || e.key === ' ') {
         e.preventDefault();
         _addTagToInput(id, e.target.value);
         e.target.value = '';
@@ -1034,11 +1034,43 @@ function tagChipsDisplayHtml(tags) {
     ).join('')}</div>`;
 }
 
+/* Click su un tag: filtro ESATTO (solo item/visite che hanno quel tag),
+   non una ricerca testuale libera — svuota il campo "Cerca" perché i due
+   modi di filtrare sono alternativi. */
 window._searchByTag = function (tag) {
+    _mktActiveTag = tag;
     const field = document.getElementById('mktSearch');
-    if (field) field.value = tag;
+    if (field) field.value = '';
     if (typeof window.applyMktFilter === 'function') window.applyMktFilter();
 };
+
+window._clearMktTagFilter = function () {
+    _mktActiveTag = '';
+    if (typeof window.applyMktFilter === 'function') window.applyMktFilter();
+};
+
+/* Digitare nella ricerca libera annulla un eventuale filtro per tag attivo. */
+window._onMktSearchInput = function () {
+    if (_mktActiveTag) _mktActiveTag = '';
+    applyMktFilter();
+};
+
+function _renderMktActiveTagRow() {
+    const row = document.getElementById('mktActiveTagRow');
+    if (!row) return;
+    if (!_mktActiveTag) {
+        row.style.display = 'none';
+        row.innerHTML = '';
+        return;
+    }
+    row.style.display = 'block';
+    row.innerHTML = `
+        <span class="tag-chip-mini" style="background:var(--magenta,#FF007F);color:white;border-color:var(--magenta,#FF007F);cursor:default;">
+            <i class="fa-solid fa-tag" style="margin-right:4px;"></i>#${_mktActiveTag}
+            <button type="button" onclick="_clearMktTagFilter()" aria-label="Rimuovi filtro tag"
+                    style="background:none;border:none;color:inherit;margin-left:6px;cursor:pointer;font-weight:700;">&times;</button>
+        </span>`;
+}
 
 /* ── Helper: badge HTML per il tipo di contenuto (usato nelle liste item). ── */
 function itemTypeBadge(it) {
@@ -1166,7 +1198,7 @@ function toneIsEmpty(t)    { return !t.d3 && !t.d15 && !t.d40; }
 function validateToniShapeOrAlert(toniObj) {
     for (const [key, t] of Object.entries(toniObj)) {
         if (!toneIsEmpty(t) && !toneIsComplete(t)) {
-            alert(`Completa tutte e 3 le durate (3s / 15s / 40s) del tono "${key}", oppure lasciale tutte vuote.`);
+            showAlert(`Completa tutte e 3 le durate (3s / 15s / 40s) del tono "${key}", oppure lasciale tutte vuote.`);
             return false;
         }
     }
@@ -1303,14 +1335,14 @@ function attachFormHandlers() {
             });
             const data = await res.json();
             if (data.ok) {
-                alert('Museo aggiornato!');
+                showAlert('Museo aggiornato!');
                 await loadMuseiCuratore();
                 initModificaMuseo();
             } else {
-                alert('Errore: ' + data.error);
+                showAlert('Errore: ' + data.error);
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 
@@ -1318,7 +1350,7 @@ function attachFormHandlers() {
     if (operaForm) operaForm.addEventListener('submit', async (e) => {
         e.preventDefault();
         const codiceIsil = document.getElementById('selectOpereMuseo').value;
-        if (!codiceIsil) { alert('Seleziona prima un museo.'); return; }
+        if (!codiceIsil) { showAlert('Seleziona prima un museo.'); return; }
 
         const body = {
             codiceIsil,
@@ -1342,8 +1374,8 @@ function attachFormHandlers() {
             creatoDa:   SESSION.userId,
         };
 
-        if (!body.operaId) { alert("Inserisci il titolo dell'opera."); return; }
-        if (!body.tipo)    { alert('Seleziona il tipo di opera.'); return; }
+        if (!body.operaId) { showAlert("Inserisci il titolo dell'opera."); return; }
+        if (!body.tipo)    { showAlert('Seleziona il tipo di opera.'); return; }
 
         try {
             const res  = await fetch('/api/opere', {
@@ -1353,14 +1385,14 @@ function attachFormHandlers() {
             });
             const data = await res.json();
             if (data.ok) {
-                alert('Opera aggiunta con successo!');
+                showAlert('Opera aggiunta con successo!');
                 operaForm.reset();
                 initAggiungiOpere();
             } else {
-                alert('Errore: ' + data.error);
+                showAlert('Errore: ' + data.error);
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 
@@ -1384,15 +1416,15 @@ function attachFormHandlers() {
             });
             const data = await res.json();
             if (data.ok) {
-                alert('Museo aggiunto!');
+                showAlert('Museo aggiunto!');
                 nuovoMuseoForm.reset();
                 await loadMuseiCuratore();
                 switchSection('musei');
             } else {
-                alert('Errore: ' + data.error);
+                showAlert('Errore: ' + data.error);
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 }
@@ -1697,7 +1729,7 @@ function _renderAutoreVisiteList(lista) {
 }
 
 window.autoreDeleteVisita = async function (id, nome) {
-    if (!confirm(`Eliminare la visita "${nome}"?`)) return;
+    if (!(await showConfirm(`Eliminare la visita "${nome}"?`))) return;
     try {
         const res  = await fetch(`/api/visite/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -1705,9 +1737,9 @@ window.autoreDeleteVisita = async function (id, nome) {
             allAutoreVisite = allAutoreVisite.filter(v => v._id !== id);
             _renderAutoreVisiteList(allAutoreVisite);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 window._showAutoreVisitaForm = async function (visitaId) {
@@ -1973,7 +2005,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
     document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
         const codiceIsil = document.getElementById('vfMuseo').value;
-        if (!codiceIsil) { alert('Seleziona un museo.'); return; }
+        if (!codiceIsil) { showAlert('Seleziona un museo.'); return; }
 
         const selectedItems = [..._vfSelectedItemIds];
         const isPubblica = SESSION.role !== 'visitatore' && document.getElementById('vfPubblica').value === 'true';
@@ -1989,7 +2021,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             tags:          getTagInputValue('vfTags'),
         };
 
-        if (!body.nomeVisita) { alert('Inserisci il nome della visita.'); return; }
+        if (!body.nomeVisita) { showAlert('Inserisci il nome della visita.'); return; }
 
         try {
             const res  = isEdit
@@ -2005,13 +2037,13 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 });
             const data = await res.json();
             if (data.ok) {
-                alert(isEdit ? `Visita "${body.nomeVisita}" aggiornata con successo!` : `Visita "${body.nomeVisita}" creata con successo!`);
+                showAlert(isEdit ? `Visita "${body.nomeVisita}" aggiornata con successo!` : `Visita "${body.nomeVisita}" creata con successo!`);
                 await initAutoreAggiungiVisita();
             } else {
-                alert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
+                showAlert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 };
@@ -2162,7 +2194,7 @@ function _renderAutoreItemsList(lista) {
 }
 
 window.autoreDeleteItem = async function (id, operaId) {
-    if (!confirm(`Eliminare l'item di "${operaId}"?`)) return;
+    if (!(await showConfirm(`Eliminare l'item di "${operaId}"?`))) return;
     try {
         const res  = await fetch(`/api/items/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -2170,9 +2202,9 @@ window.autoreDeleteItem = async function (id, operaId) {
             allAutoreItems = allAutoreItems.filter(it => it._id !== id);
             _renderAutoreItemsList(allAutoreItems);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 /* ── Vista di sola lettura di un item (click sulla card, non porta alla
@@ -2291,7 +2323,7 @@ window._showAutoreItemForm = async function (itemId) {
                     <input type="text" id="ifObjectId" class="custom-input"
                            placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6" id="ifImmagineWrap" style="display:none;">
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="ifImmagine" class="custom-input" placeholder="https://…" value="${(item?.image || '').replace(/"/g, '&quot;')}">
                 </div>
@@ -2339,20 +2371,23 @@ window._showAutoreItemForm = async function (itemId) {
         document.getElementById('ifContentType').value = type;
         document.querySelectorAll('#ifContentTypeToggle .content-type-btn')
             .forEach(b => b.classList.toggle('active', b.dataset.type === type));
-        const operaWrap   = document.getElementById('ifOperaWrap');
-        const topicWrap    = document.getElementById('ifTopicWrap');
-        const operaSelect = document.getElementById('ifOpera');
-        const topicInput  = document.getElementById('ifTopic');
+        const operaWrap     = document.getElementById('ifOperaWrap');
+        const topicWrap     = document.getElementById('ifTopicWrap');
+        const operaSelect   = document.getElementById('ifOpera');
+        const topicInput    = document.getElementById('ifTopic');
+        const immagineWrap  = document.getElementById('ifImmagineWrap');
         if (type === 'opera') {
             operaWrap.style.display = '';
             topicWrap.style.display = 'none';
             operaSelect.required = true;
             topicInput.required  = false;
+            immagineWrap.style.display = 'none';
         } else {
             operaWrap.style.display = 'none';
             topicWrap.style.display = '';
             operaSelect.required = false;
             topicInput.required  = true;
+            immagineWrap.style.display = '';
         }
     };
     setIfContentType(item?.contentType === 'indipendente' ? 'indipendente' : 'opera');
@@ -2381,8 +2416,11 @@ window._showAutoreItemForm = async function (itemId) {
     };
     if (isEdit && item.pubblica && SESSION.role !== 'visitatore') window.toggleIfVisibilita(true);
 
+    let _ifOpereCache = [];
+
     async function _loadOpereForMuseo(codiceIsil) {
         const operaSelect = document.getElementById('ifOpera');
+        _ifOpereCache = [];
         if (!codiceIsil) {
             operaSelect.innerHTML = '<option value="">— Prima seleziona un museo —</option>';
             return;
@@ -2395,6 +2433,7 @@ window._showAutoreItemForm = async function (itemId) {
                 operaSelect.innerHTML = '<option value="">Nessuna opera disponibile</option>';
                 return;
             }
+            _ifOpereCache = data.data;
             operaSelect.innerHTML = '<option value="">— Seleziona opera —</option>' +
                 data.data.map(op =>
                     `<option value="${op.operaId}">${op.operaId}${op.autore ? ' — ' + op.autore : ''}</option>`
@@ -2426,17 +2465,17 @@ window._showAutoreItemForm = async function (itemId) {
             avanzato: readToneFields('if', 'Avanzato'),
         };
 
-        if (!museoIsil) { alert('Seleziona un museo.'); return; }
+        if (!museoIsil) { showAlert('Seleziona un museo.'); return; }
         if (contentType === 'opera') {
-            if (!operaId) { alert("Seleziona un'opera."); return; }
+            if (!operaId) { showAlert("Seleziona un'opera."); return; }
         } else {
-            if (!topic) { alert('Inserisci un argomento per il contenuto indipendente.'); return; }
+            if (!topic) { showAlert('Inserisci un argomento per il contenuto indipendente.'); return; }
         }
         if (!validateToniShapeOrAlert(toni)) return;
 
         const isPubblicaItem = SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
         if (isPubblicaItem && !hasCompleteTone(toni)) {
-            alert('Per pubblicare un item serve almeno un tono con tutte e 3 le durate (3s, 15s, 40s) compilate. Lascialo privato finché non lo completi.');
+            showAlert('Per pubblicare un item serve almeno un tono con tutte e 3 le durate (3s, 15s, 40s) compilate. Lascialo privato finché non lo completi.');
             return;
         }
         const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
@@ -2445,6 +2484,9 @@ window._showAutoreItemForm = async function (itemId) {
 
         const objectIdVal = document.getElementById('ifObjectId').value.trim();
         const baseForId = contentType === 'opera' ? operaId : topic;
+        const imageVal = contentType === 'opera'
+            ? (_ifOpereCache.find(op => op.operaId === operaId)?.immagine || '')
+            : document.getElementById('ifImmagine').value.trim();
         const body = {
             operaId,
             contentType,
@@ -2454,7 +2496,7 @@ window._showAutoreItemForm = async function (itemId) {
             objectId: objectIdVal || (baseForId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
             toni,
             metadata,
-            image:    document.getElementById('ifImmagine').value.trim(),
+            image:    imageVal,
             tags:     getTagInputValue('ifTags'),
             pubblica: isPubblicaItem,
         };
@@ -2473,13 +2515,13 @@ window._showAutoreItemForm = async function (itemId) {
                 });
             const data = await res.json();
             if (data.ok) {
-                alert(isEdit ? 'Item aggiornato con successo!' : 'Item creato con successo!');
+                showAlert(isEdit ? 'Item aggiornato con successo!' : 'Item creato con successo!');
                 await initAutoreAggiungiItem();
             } else {
-                alert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
+                showAlert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
-            alert('Impossibile contattare il server.');
+            showAlert('Impossibile contattare il server.');
         }
     });
 };
@@ -3015,7 +3057,7 @@ function renderAdminUtenti(lista) {
 }
 
 window.adminDeleteUtente = async function (id, username) {
-    if (!confirm(`Eliminare l'utente "${username}"?`)) return;
+    if (!(await showConfirm(`Eliminare l'utente "${username}"?`))) return;
     try {
         const res  = await fetch(`/api/utenti/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -3023,9 +3065,9 @@ window.adminDeleteUtente = async function (id, username) {
             allAdminUtenti = allAdminUtenti.filter(u => u._id !== id);
             renderAdminUtenti(allAdminUtenti);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 
@@ -3253,7 +3295,7 @@ function renderAdminMusei(lista) {
 }
 
 window.adminDeleteMuseo = async function (codiceIsil, nome) {
-    if (!confirm(`Eliminare il museo "${nome}"?`)) return;
+    if (!(await showConfirm(`Eliminare il museo "${nome}"?`))) return;
     try {
         const res  = await fetch(`/api/musei/${codiceIsil}`, { method: 'DELETE' });
         const data = await res.json();
@@ -3261,9 +3303,9 @@ window.adminDeleteMuseo = async function (codiceIsil, nome) {
             allAdminMusei = allAdminMusei.filter(m => m.codiceIsil !== codiceIsil);
             renderAdminMusei(allAdminMusei);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 window.adminEditMuseo = function (codiceIsil) {
@@ -3327,9 +3369,9 @@ window.adminEditMuseo = function (codiceIsil) {
                 body: JSON.stringify(body),
             });
             const data = await res.json();
-            if (data.ok) { alert('Museo aggiornato!'); initAdminMusei(); }
-            else alert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
-        } catch (err) { alert('Impossibile contattare il server.'); }
+            if (data.ok) { showAlert('Museo aggiornato!'); initAdminMusei(); }
+            else showAlert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
+        } catch (err) { showAlert('Impossibile contattare il server.'); }
     });
 };
 
@@ -3565,7 +3607,7 @@ function renderAdminOpere(lista) {
 }
 
 window.adminDeleteOpera = async function (id, nome) {
-    if (!confirm(`Eliminare l'opera "${nome}"?`)) return;
+    if (!(await showConfirm(`Eliminare l'opera "${nome}"?`))) return;
     try {
         const res  = await fetch(`/api/opere/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -3573,9 +3615,9 @@ window.adminDeleteOpera = async function (id, nome) {
             allAdminOpere = allAdminOpere.filter(op => op._id !== id);
             renderAdminOpere(allAdminOpere);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 window.adminEditOpera = function (id) {
@@ -3687,9 +3729,9 @@ window.adminEditOpera = function (id) {
                 body: JSON.stringify(body),
             });
             const data = await res.json();
-            if (data.ok) { alert('Opera aggiornata!'); initAdminOpere(); }
-            else alert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
-        } catch (err) { alert('Impossibile contattare il server.'); }
+            if (data.ok) { showAlert('Opera aggiornata!'); initAdminOpere(); }
+            else showAlert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
+        } catch (err) { showAlert('Impossibile contattare il server.'); }
     });
 };
 
@@ -3842,7 +3884,7 @@ function renderAdminVisite(lista) {
 }
 
 window.adminDeleteVisita = async function (id, nome) {
-    if (!confirm(`Eliminare la visita "${nome}"?`)) return;
+    if (!(await showConfirm(`Eliminare la visita "${nome}"?`))) return;
     try {
         const res  = await fetch(`/api/visite/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -3850,9 +3892,9 @@ window.adminDeleteVisita = async function (id, nome) {
             allAdminVisite = allAdminVisite.filter(v => v._id !== id);
             renderAdminVisite(allAdminVisite);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 window.adminEditVisita = function (id) {
@@ -3934,9 +3976,9 @@ window.adminEditVisita = function (id) {
                 body: JSON.stringify(body),
             });
             const data = await res.json();
-            if (data.ok) { alert('Visita aggiornata!'); initAdminVisite(); }
-            else alert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
-        } catch (err) { alert('Impossibile contattare il server.'); }
+            if (data.ok) { showAlert('Visita aggiornata!'); initAdminVisite(); }
+            else showAlert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
+        } catch (err) { showAlert('Impossibile contattare il server.'); }
     });
 };
 
@@ -4081,7 +4123,7 @@ function renderAdminItems(lista) {
 }
 
 window.adminDeleteItem = async function (id, operaId) {
-    if (!confirm(`Eliminare l'item dell'opera "${operaId}"?`)) return;
+    if (!(await showConfirm(`Eliminare l'item dell'opera "${operaId}"?`))) return;
     try {
         const res  = await fetch(`/api/items/${id}`, { method: 'DELETE' });
         const data = await res.json();
@@ -4089,9 +4131,9 @@ window.adminDeleteItem = async function (id, operaId) {
             allAdminItems = allAdminItems.filter(it => it._id !== id);
             renderAdminItems(allAdminItems);
         } else {
-            alert('Errore: ' + (data.error || 'Eliminazione fallita.'));
+            showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
-    } catch (e) { alert('Impossibile contattare il server.'); }
+    } catch (e) { showAlert('Impossibile contattare il server.'); }
 };
 
 window.adminEditItem = function (id) {
@@ -4117,10 +4159,16 @@ window.adminEditItem = function (id) {
                     <label class="custom-label">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera (ID)'}</label>
                     <input type="text" class="custom-input" value="${itemTitle(it)}" disabled>
                 </div>
+                ${it.contentType === 'indipendente' ? `
                 <div class="col-md-6">
                     <label class="custom-label">URL Immagine</label>
                     <input type="url" id="aiImmagine" class="custom-input" value="${it.image || ''}">
                 </div>
+                ` : `
+                <p class="col-12" style="font-size:0.78rem;color:#94a3b8;margin:0;">
+                    <i class="fa-solid fa-circle-info me-1"></i>L'immagine viene ereditata automaticamente dall'opera collegata.
+                </p>
+                `}
                 <div class="col-12">
                     <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('aiTags', 'es. caravaggio, rinascimento…')}
@@ -4149,19 +4197,21 @@ window.adminEditItem = function (id) {
         };
         if (!validateToniShapeOrAlert(nuoviToni)) return;
         if (it.pubblica && !hasCompleteTone(nuoviToni)) {
-            alert('Questo item è pubblico: serve almeno un tono con tutte e 3 le durate compilate. Rendilo privato dal pannello Autore per salvarlo senza contenuto completo.');
+            showAlert('Questo item è pubblico: serve almeno un tono con tutte e 3 le durate compilate. Rendilo privato dal pannello Autore per salvarlo senza contenuto completo.');
             return;
         }
         let metadata;
         try {
             metadata = JSON.parse(document.getElementById('aiMetadata').value || '{}');
         } catch (_) {
-            alert('Il campo Metadata non è un JSON valido.');
+            showAlert('Il campo Metadata non è un JSON valido.');
             return;
         }
         const body = {
             toni: nuoviToni,
-            image:    document.getElementById('aiImmagine').value.trim(),
+            image:    it.contentType === 'indipendente'
+                ? document.getElementById('aiImmagine').value.trim()
+                : it.image,
             tags:     getTagInputValue('aiTags'),
             metadata,
             operaId:     it.operaId,
@@ -4177,9 +4227,9 @@ window.adminEditItem = function (id) {
                 body: JSON.stringify(body),
             });
             const data = await res.json();
-            if (data.ok) { alert('Item aggiornato!'); initAdminItems(); }
-            else alert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
-        } catch (err) { alert('Impossibile contattare il server.'); }
+            if (data.ok) { showAlert('Item aggiornato!'); initAdminItems(); }
+            else showAlert('Errore: ' + (data.error || 'Aggiornamento fallito.'));
+        } catch (err) { showAlert('Impossibile contattare il server.'); }
     });
 };
 
@@ -4423,6 +4473,7 @@ let allMktItems  = [];
 let allMktVisite = [];
 let allMktMusei  = [];
 let mktTab = 'items';
+let _mktActiveTag = '';
 
 function getMktPurchases() {
     let local;
@@ -4533,9 +4584,10 @@ async function initMarketplace() {
                 <div class="col-md-2">
                     <label class="custom-label">Cerca</label>
                     <input type="text" id="mktSearch" class="custom-input"
-                           placeholder="Parola chiave…" oninput="applyMktFilter()">
+                           placeholder="Parola chiave…" oninput="_onMktSearchInput()">
                 </div>
             </div>
+            <div id="mktActiveTagRow" style="display:none;margin-top:12px;"></div>
         </div>
 
         <div class="detail-tabs mb-4">
@@ -4681,6 +4733,7 @@ window.applyMktFilter = function () {
         (prezzoMin <= 0 || price >= prezzoMin) && (!maxIsLimit || price <= prezzoMax);
 
     renderMktPopularCard(mktTab === 'visite' ? 'visite' : mktTab === 'items' ? 'items' : null);
+    _renderMktActiveTagRow();
 
     if (mktTab === 'acquisti') {
         renderMktAcquisti(purchases, museoVal, applyPriceFilter, q);
@@ -4691,7 +4744,9 @@ window.applyMktFilter = function () {
         let lista = allMktVisite.filter(v => !purchases.visite.includes(v._id));
         if (museoVal) lista = lista.filter(v => v.codiceIsil === museoVal);
         lista = lista.filter(v => applyPriceFilter(v.prezzo || 0));
-        if (q) lista = lista.filter(v =>
+        if (_mktActiveTag) {
+            lista = lista.filter(v => (v.tags || []).includes(_mktActiveTag));
+        } else if (q) lista = lista.filter(v =>
             (v.nomeVisita || '').toLowerCase().includes(q) ||
             (v.logistica  || '').toLowerCase().includes(q) ||
             (v.tags || []).some(t => t.toLowerCase().includes(q)));
@@ -4707,7 +4762,9 @@ window.applyMktFilter = function () {
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
         lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
         if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
-        if (q) lista = lista.filter(it => {
+        if (_mktActiveTag) {
+            lista = lista.filter(it => (it.tags || []).includes(_mktActiveTag));
+        } else if (q) lista = lista.filter(it => {
             const allText = [
                 itemTitle(it),
                 toneText(it.toni?.semplice),
@@ -4899,7 +4956,10 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
         purchasedItems  = purchasedItems.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
         purchasedVisite = purchasedVisite.filter(v  => applyPriceFilter(v.prezzo || 0));
     }
-    if (q) {
+    if (_mktActiveTag) {
+        purchasedItems  = purchasedItems.filter(it => (it.tags || []).includes(_mktActiveTag));
+        purchasedVisite = purchasedVisite.filter(v  => (v.tags  || []).includes(_mktActiveTag));
+    } else if (q) {
         purchasedItems = purchasedItems.filter(it => {
             const allText = [
                 itemTitle(it),
@@ -4946,6 +5006,7 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
                 <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
                 <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                ${tagChipsDisplayHtml(it.tags)}
                 ${renderToni(it, 'acq-' + it._id)}
                 ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
                 <ul class="item-metadata-list">
@@ -4973,6 +5034,7 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
                 <h3>${v.nomeVisita}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 ${v.logistica ? `<p style="font-size:0.88rem;color:#475569;margin-top:8px;">${v.logistica}</p>` : ''}
+                ${tagChipsDisplayHtml(v.tags)}
                 <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
                     <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere</span>
                     ${v.prezzo > 0
@@ -5155,8 +5217,8 @@ async function initCarrello() {
         </div>`;
 }
 
-window.svuotaCarrello = function () {
-    if (!confirm('Svuotare il carrello?')) return;
+window.svuotaCarrello = async function () {
+    if (!(await showConfirm('Svuotare il carrello?', { type: 'warning', okText: 'Svuota' }))) return;
     saveMktCart({ items: [], visite: [] });
     initCarrello();
 };
@@ -5164,7 +5226,7 @@ window.svuotaCarrello = function () {
 window.checkoutCarrello = async function () {
     const cart = getMktCart();
     if (!cart.items.length && !cart.visite.length) return;
-    if (!confirm('Confermi l\'acquisto di tutti gli articoli nel carrello?')) return;
+    if (!(await showConfirm('Confermi l\'acquisto di tutti gli articoli nel carrello?'))) return;
 
     const totale = allMktItems.filter(it => cart.items.includes(it._id))
         .reduce((s, it) => s + (it.metadata?.prezzo || 0), 0)
@@ -5185,7 +5247,7 @@ window.checkoutCarrello = async function () {
     saveMktCart({ items: itemsFalliti, visite: visiteFallite });
 
     if (itemsFalliti.length || visiteFallite.length) {
-        alert('Alcuni articoli non sono stati acquistati per un problema di connessione al server. Sono rimasti nel carrello: riprova.');
+        showAlert('Alcuni articoli non sono stati acquistati per un problema di connessione al server. Sono rimasti nel carrello: riprova.');
         initCarrello();
         return;
     }
@@ -5212,22 +5274,21 @@ function mostraModaleAcquistoConfermato(messaggioHtml) {
 
     const overlay = document.createElement('div');
     overlay.id = 'mktSuccessOverlay';
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,7,10,0.65);backdrop-filter:blur(3px);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+    overlay.className = 'ui-modal-backdrop';
     overlay.innerHTML = `
-        <div class="glass-card" style="background:#fff;max-width:420px;width:100%;padding:36px 32px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.35);">
-            <i class="fa-solid fa-circle-check" style="font-size:3rem;color:#FF007F;margin-bottom:16px;display:block;"></i>
-            <h2 style="font-family:'Playfair Display',serif;font-weight:800;font-size:1.5rem;margin-bottom:12px;color:#1e293b;">
-                Fantastico! Acquisto finalizzato.
-            </h2>
-            <p style="color:#64748b;font-size:0.95rem;line-height:1.6;margin-bottom:28px;">
-                ${messaggioHtml}
-            </p>
-            <button class="btn-magenta w-100 justify-content-center" onclick="window._mktGoToAcquisti()">
-                Vai ai miei acquisti
-            </button>
+        <div class="ui-modal-box" role="alertdialog" aria-modal="true">
+            <div class="ui-modal-icon success"><i class="fa-solid fa-circle-check"></i></div>
+            <div class="ui-modal-title">Fantastico! Acquisto finalizzato.</div>
+            <div class="ui-modal-msg">${messaggioHtml}</div>
+            <div class="ui-modal-actions">
+                <button type="button" class="ui-modal-btn ui-modal-btn-primary" onclick="window._mktGoToAcquisti()">
+                    Vai ai miei acquisti
+                </button>
+            </div>
         </div>`;
     overlay.addEventListener('click', (e) => { if (e.target === overlay) goToAcquisti(); });
     document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('show'));
 }
 
 /* ============================================================
@@ -5361,7 +5422,7 @@ window.esportaNavigator = async function (codiceIsil) {
         a.click();
         URL.revokeObjectURL(url);
     } catch (e) {
-        alert('Errore durante l\'esportazione: ' + e.message);
+        showAlert('Errore durante l\'esportazione: ' + e.message);
     }
 };
 
@@ -5381,12 +5442,12 @@ async function _saveQuiz(visitaId, domande) {
             body: JSON.stringify({ quizDomande: domande }),
         });
         const data = await res.json();
-        if (!data.ok) { alert('Errore nel salvataggio del quiz: ' + (data.error || '')); return false; }
+        if (!data.ok) { showAlert('Errore nel salvataggio del quiz: ' + (data.error || '')); return false; }
         const cached = quizCurrentVisite.find(v => v._id === visitaId);
         if (cached) cached.quizDomande = domande;
         return true;
     } catch (e) {
-        alert('Impossibile contattare il server per salvare il quiz.');
+        showAlert('Impossibile contattare il server per salvare il quiz.');
         return false;
     }
 }
@@ -5509,7 +5570,7 @@ function _renderQuizEditor() {
         : '<p class="text-muted" style="padding:16px 0;">Nessuna domanda ancora. Usa il form qui sotto per aggiungerne una.</p>';
 
     editor.innerHTML = `
-        <div class="mb-2 d-flex justify-content-between align-items-center">
+        <div class="mb-2 d-flex justify-content-between align-items-center flex-wrap gap-2">
             <h5 class="fw-bold mb-0">
                 <i class="fa-solid fa-list-check me-2" style="color:var(--magenta)"></i>
                 Domande del Quiz
@@ -5518,6 +5579,9 @@ function _renderQuizEditor() {
                     ${quizDomande.length}
                 </span>
             </h5>
+            <button type="button" class="btn-magenta" onclick="salvaQuiz()">
+                <i class="fa-solid fa-check-double me-2"></i>Salva Quiz
+            </button>
         </div>
         <div id="quizDomandeList" class="mb-4">${domHtml}</div>
         <hr style="border-color:#e2e8f0;margin:24px 0;">
@@ -5584,20 +5648,29 @@ window.highlightCorrettaLabel = function () {
     });
 };
 
+// Salva l'intero quiz (tutte le domande già presenti in quizDomande) e chiude
+// la sezione tornando alla gestione visite — a differenza di salvaQuizDomanda(),
+// che salva solo la singola domanda in lavorazione e resta nell'editor.
+window.salvaQuiz = async function () {
+    if (!(await _saveQuiz(quizCurrentVisitaId, quizDomande))) return;
+    showAlert('Quiz salvato correttamente! Preparati per la visita.');
+    switchSection('autore-aggiungi-visita');
+};
+
 window.salvaQuizDomanda = async function () {
     if (!_quizVisitaHaItems()) {
-        alert('Non è possibile creare un quiz per questa visita perché non contiene ancora nessun item.');
+        showAlert('Non è possibile creare un quiz per questa visita perché non contiene ancora nessun item.');
         return;
     }
 
     const testo = document.getElementById('qfTesto')?.value.trim();
-    if (!testo) { alert('Inserisci il testo della domanda.'); return; }
+    if (!testo) { showAlert('Inserisci il testo della domanda.'); return; }
 
     const opzioni = [0,1,2,3].map(i => document.getElementById(`qfOpzione${i}`)?.value.trim() || '');
-    if (opzioni.some(o => !o)) { alert('Compila tutte e quattro le risposte.'); return; }
+    if (opzioni.some(o => !o)) { showAlert('Compila tutte e quattro le risposte.'); return; }
 
     const correttaEl = document.querySelector('input[name="qfCorretta"]:checked');
-    if (!correttaEl) { alert('Seleziona la risposta corretta.'); return; }
+    if (!correttaEl) { showAlert('Seleziona la risposta corretta.'); return; }
 
     const editIdx = parseInt(document.getElementById('qfEditIndex')?.value ?? '-1');
     const domanda = { testo, opzioni, corretta: parseInt(correttaEl.value) };
@@ -5629,7 +5702,7 @@ window.editQuizDomanda = function (i) {
 };
 
 window.deleteQuizDomanda = async function (i) {
-    if (!confirm('Eliminare questa domanda?')) return;
+    if (!(await showConfirm('Eliminare questa domanda?'))) return;
     const nuoveDomande = quizDomande.slice();
     nuoveDomande.splice(i, 1);
     if (!(await _saveQuiz(quizCurrentVisitaId, nuoveDomande))) return;

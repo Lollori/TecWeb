@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="/css/profile.css">
+    <link rel="stylesheet" href="/css/ui-modal.css">
     <link rel="icon" href="/img/MonnaLisaFavicon.png" type="image/png">
 </head>
 <body>
@@ -45,8 +46,8 @@
                         Contenuti personalizzati in base al tuo profilo, linguaggio e ritmo di visita.
                     </p>
                     <div class="d-flex justify-content-start gap-3 flex-wrap">
-                        <a href="#apps" class="btn btn-magenta btn-lg px-5 fw-bold">INIZIA ORA</a>
-                        <a href="#features" class="btn btn-outline-light btn-lg px-5 fw-bold">SCOPRI DI PIÙ</a>
+                        <a href="#apps" onclick="return scrollToSection('appsHeading', event)" class="btn btn-magenta btn-lg px-5 fw-bold">INIZIA ORA</a>
+                        <a href="#features" onclick="return scrollToSection('featuresHeading', event)" class="btn btn-outline-light btn-lg px-5 fw-bold">SCOPRI DI PIÙ</a>
                     </div>
                 </div>
             </div>
@@ -59,11 +60,11 @@
     <!-- FEATURES SECTION -->
     <section id="features" class="section-features">
         <div class="container">
-            <div class="text-center mb-5">
+            <div id="featuresHeading" class="text-center mb-5">
                 <h2 class="section-title fw-900 text-white mb-3">Tecnologia al servizio dell'arte</h2>
                 <p class="section-subtitle mx-auto">Strumenti intelligenti per una visita museale unica e personalizzata</p>
             </div>
-            <div class="row g-4 justify-content-center">
+            <div id="featuresCards" class="row g-4 justify-content-center">
                 <div class="col-lg-4 col-md-6">
                     <div class="feature-card">
                         <div class="feature-icon-wrapper">
@@ -125,11 +126,11 @@
     <!-- APPS SECTION -->
     <section id="apps" class="section-apps">
         <div class="container">
-            <div class="text-center mb-5">
+            <div id="appsHeading" class="text-center mb-5">
                 <h2 class="section-title fw-900 text-white mb-3">Scegli il tuo percorso</h2>
                 <p class="section-subtitle mx-auto">Due strumenti potenti, un'unica piattaforma integrata</p>
             </div>
-            <div class="row g-4 justify-content-center">
+            <div id="appsCards" class="row g-4 justify-content-center">
                 <div class="col-lg-5 col-md-6">
                     <div class="app-card app-card-navigator">
                         <div class="app-card-icon">
@@ -164,12 +165,32 @@
         </div>
     </section>
 
-    <!-- CTA SECTION -->
-    <section class="section-cta">
+    <!-- TECH STACK SECTION -->
+    <section class="section-tech">
         <div class="container text-center">
-            <h2 class="display-5 fw-900 text-white mb-4">Pronto a trasformare la tua esperienza museale?</h2>
-            <p class="lead text-white-50 mb-5 mx-auto" style="max-width: 600px;">Unisciti a ArtAround e porta l'arte nel futuro con tecnologie generative e adattive.</p>
-            <a href="/login/login.html" class="btn btn-magenta btn-lg px-5 fw-bold">INIZIA GRATIS</a>
+            <p class="tech-stack-label">Tecnologie utilizzate</p>
+            <div class="tech-stack-row">
+                <div class="tech-stack-item">
+                    <i class="fa-brands fa-js"></i>
+                    <span>JavaScript</span>
+                </div>
+                <div class="tech-stack-item">
+                    <i class="fa-brands fa-react"></i>
+                    <span>React</span>
+                </div>
+                <div class="tech-stack-item">
+                    <i class="fa-brands fa-bootstrap"></i>
+                    <span>Bootstrap</span>
+                </div>
+                <div class="tech-stack-item">
+                    <i class="fa-brands fa-node-js"></i>
+                    <span>Node.js</span>
+                </div>
+                <div class="tech-stack-item">
+                    <img src="https://cdn.simpleicons.org/mongodb" alt="MongoDB" class="tech-stack-icon-img">
+                    <span>MongoDB</span>
+                </div>
+            </div>
         </div>
     </section>
 
@@ -186,7 +207,19 @@
         </div>
     </footer>
 
+    <script src="/js/ui-modal.js"></script>
     <script>
+    // Scorre fino al titolo della sezione (non fino al bordo della sezione,
+    // che include ~120px di padding vuoto sopra) così restano visibili sia
+    // il titolo sia il maggior numero possibile di card subito sotto.
+    function scrollToSection(id, event) {
+        const el = document.getElementById(id);
+        if (!el) return true;
+        if (event) event.preventDefault();
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return false;
+    }
+
     // Inizializza tema prima del render
     (function () {
         const theme = localStorage.getItem('theme') || 'dark';
@@ -253,9 +286,9 @@
         }
     }
 
-    function logout(event) {
+    async function logout(event) {
         if (event) event.preventDefault();
-        if (confirm('Sei sicuro di voler uscire?')) {
+        if (await showConfirm('Sei sicuro di voler uscire?', { title: 'Esci', type: 'warning', okText: 'Esci' })) {
             localStorage.clear();
             window.location.href = '/';
         }

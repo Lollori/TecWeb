@@ -676,20 +676,20 @@ function VisitaItemScreen({
     }
   }
 
-  function handleTermina() {
+  async function handleTermina() {
     // Se la visita ha un quiz non ancora avviato, prima di chiudere chiediamo
     // alla docente se vuole farlo partire.
     if (hasQuiz && !quiz) {
       setQuizPromptOpen(true);
       return;
     }
-    if (!window.confirm('Terminare la visita? Tutti i partecipanti verranno disconnessi.')) return;
+    if (!(await showConfirm('Terminare la visita? Tutti i partecipanti verranno disconnessi.'))) return;
     eseguiTermina();
   }
 
-  function handleTerminaSenzaQuiz() {
+  async function handleTerminaSenzaQuiz() {
     setQuizPromptOpen(false);
-    if (!window.confirm('Terminare la visita senza avviare il quiz? Tutti i partecipanti verranno disconnessi.')) return;
+    if (!(await showConfirm('Terminare la visita senza avviare il quiz? Tutti i partecipanti verranno disconnessi.'))) return;
     eseguiTermina();
   }
 
@@ -1204,9 +1204,9 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     try {
       const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/quiz/avvia`, { method: 'POST' });
       const d = await r.json();
-      if (!r.ok || d.error) alert(d.error || 'Impossibile avviare il quiz.');
+      if (!r.ok || d.error) showAlert(d.error || 'Impossibile avviare il quiz.');
     } catch (e) {
-      alert('Impossibile raggiungere il server.');
+      showAlert('Impossibile raggiungere il server.');
     } finally {
       setQuizAvviando(false);
     }
@@ -2438,10 +2438,10 @@ function App() {
         if (attempt < 2) {
           codice = generateCode(visita) + '-' + (Math.floor(Math.random() * 90) + 10);
         } else {
-          alert(data.error || `Errore ${res.status}`);
+          showAlert(data.error || `Errore ${res.status}`);
         }
       } catch (e) {
-        alert(`Impossibile raggiungere il server: ${e.message}`);
+        showAlert(`Impossibile raggiungere il server: ${e.message}`);
         return;
       }
     }
