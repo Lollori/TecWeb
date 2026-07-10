@@ -113,7 +113,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <p class="description-text">${visita.logistica || 'Nessuna indicazione logistica specificata.'}</p>
                 </div>
                 <div class="card-footer">
-                    <span class="tag-bubble"><i class="fa-solid fa-image"></i> ${visita.opereCount || 0} opere incluse</span>
+                    <span class="tag-bubble"><i class="fa-solid fa-image"></i> ${visita.itemIds?.length ?? visita.opereCount ?? 0} items inclusi</span>
                 </div>
             `;
 
@@ -155,12 +155,17 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault(); 
         
+        const itemIds = [...document.querySelectorAll('#items-checkboxes input[type="checkbox"]:checked')]
+            .map(cb => cb.value);
+
         const nuovaVisita = {
             nomeVisita: document.getElementById('nomeVisita').value,
             nomeMnemonico: document.getElementById('nomeMnemonico').value,
             logistica: document.getElementById('logistica').value,
             quizDomanda: document.getElementById('quizDomanda').value,
-            codiceIsil: currentMuseo || '' // Assegniamo codice isil se presente
+            codiceIsil: currentMuseo || '',
+            itemIds,
+            opereCount: itemIds.length
         };
 
         try {
@@ -204,6 +209,28 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModale();
     };
 
+    async function loadItemsCheckboxes(selectedIds = []) {
+        const container = document.getElementById('items-checkboxes');
+        container.innerHTML = '<p class="text-muted small mb-0">Caricamento items...</p>';
+        try {
+            const res = await fetch(`/api/items?museumId=${encodeURIComponent(currentMuseo)}`);
+            const result = await res.json();
+            if (!result.ok || result.data.length === 0) {
+                container.innerHTML = '<p class="text-muted small mb-0">Nessun item disponibile per questo museo.</p>';
+                return;
+            }
+            container.innerHTML = result.data.map(item => `
+                <div class="form-check mb-1">
+                    <input class="form-check-input" type="checkbox" value="${item._id}" id="item-${item._id}"
+                        ${selectedIds.map(String).includes(String(item._id)) ? 'checked' : ''}>
+                    <label class="form-check-label small" for="item-${item._id}">${item.operaId}</label>
+                </div>
+            `).join('');
+        } catch (e) {
+            container.innerHTML = '<p class="text-danger small mb-0">Errore nel caricamento degli items.</p>';
+        }
+    }
+
     function apriModale(visita) {
         if (visita) {
             editingId = visita._id;
@@ -213,11 +240,13 @@ document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('quizDomanda').value = visita.quizDomanda || '';
             const titleEl = modalEl.querySelector('.modal-title');
             if (titleEl) titleEl.innerHTML = `Modifica <span class="text-magenta">Visita</span>`;
+            loadItemsCheckboxes(visita.itemIds || []);
         } else {
             editingId = null;
             form.reset();
             const titleEl = modalEl.querySelector('.modal-title');
             if (titleEl) titleEl.innerHTML = `Dettagli <span class="text-magenta">Visita</span>`;
+            loadItemsCheckboxes([]);
         }
         bsModal.show();
     }
@@ -232,7 +261,3 @@ document.addEventListener('DOMContentLoaded', () => {
     loadVisite();
 
 });
-
-function aggiungiOpera() {
-    // Ancora da definire
-}

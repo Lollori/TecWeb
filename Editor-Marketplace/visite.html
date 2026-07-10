@@ -164,15 +164,12 @@
                             <textarea id="logistica" class="custom-input" rows="3" placeholder="Es: L'entrata del museo è da via Garibaldi 2..." required></textarea>
                         </div>
 
-                        <!-- Sequenza Opere -->
+                        <!-- Items della visita -->
                         <div class="col-12 mt-4">
-                            <label class="custom-label d-block mb-2">Sequenza Opere</label>
-                            <div id="lista-opere" class="bg-light p-3 rounded-3 border border-dashed mb-2">
-                                <!-- Elementi aggiunti da aggiungiOpera() -->
+                            <label class="custom-label d-block mb-2">Items della Visita</label>
+                            <div id="items-checkboxes" class="bg-light p-3 rounded-3 border border-dashed" style="max-height:220px; overflow-y:auto;">
+                                <p class="text-muted small mb-0">Caricamento items...</p>
                             </div>
-                            <button type="button" class="btn-outline-custom btn-sm mt-2" onclick="aggiungiOpera()">
-                                <i class="fa-solid fa-plus me-1"></i> Aggiungi Opera
-                            </button>
                         </div>
 
                         <!-- Quiz Section -->

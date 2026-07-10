@@ -1646,14 +1646,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         </p>
                     </div>
                 </div>
-                <div class="col-12" id="vfOrderSection" style="display:none;min-width:0;max-width:100%;">
-                    <label class="custom-label" style="margin-bottom:4px;">Ordine degli items</label>
-                    <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:0 0 10px;">
-                        <i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.
-                    </p>
-                    <div id="itemsOrderPanel" class="vf-order-scrollbox"
-                         style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;width:100%;min-width:0;box-sizing:border-box;max-height:280px;overflow-y:auto;overflow-x:hidden;padding:2px;"></div>
-                </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <label class="custom-label" style="margin:0;">Visibilità</label>
@@ -1718,8 +1710,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
     _vfSelectedItemIds = new Set(isEdit ? (visita.itemIds || []) : []);
-    _vfOperaSalaMap    = {};
-    _vfRoomGeo         = null;
     _vfLoadToken++;
 
     window.setVfItemTab = function (tab, btn) {
@@ -1788,7 +1778,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
             _vfRoomGeo = null;
             if (!preserveSelection) _vfSelectedItemIds = new Set();
             _renderVfItems();
-            if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
             return;
         }
         if (!preserveSelection) _vfSelectedItemIds = new Set();
@@ -1839,107 +1828,9 @@ window._showAutoreVisitaForm = async function (visitaId) {
         const purchases = getMktPurchases();
         _vfAcquistatiItems = (dPublic || [])
             .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
-        await _vfLoadRoomGeo(codiceIsil);
         _renderVfItems();
-        if (window.vfUpdateOrderPanel) window.vfUpdateOrderPanel();
     }
     window._loadVfItemsForMuseo = _loadVfItemsForMuseo;
-
-    /* ---- ordinamento automatico per vicinanza spaziale (geoJson piantina) ---- */
-
-    async function _vfLoadRoomGeo(codiceIsil) {
-        _vfOperaSalaMap = {};
-        _vfRoomGeo = null;
-        try {
-            const resOpere = await fetch(`/api/opere?codiceIsil=${encodeURIComponent(codiceIsil)}`);
-            const dOpere   = await resOpere.json();
-            (dOpere.ok ? dOpere.data : []).forEach(op => {
-                if (op.sala) _vfOperaSalaMap[op.operaId] = op.sala;
-            });
-        } catch (e) { /* silent */ }
-
-        const floorDefs = Object.values((typeof FLOOR_PLAN_OVERRIDES !== 'undefined' && FLOOR_PLAN_OVERRIDES[codiceIsil]) || {});
-        if (!floorDefs.length) return;
-
-        const rooms = new Map();
-        const corridorSegmentsByFloor = new Map();
-        let entrance = null;
-        await Promise.all(floorDefs.map(async (def, floorIdx) => {
-            if (!def.geoJsonUrl) return;
-            try {
-                const res = await fetch(def.geoJsonUrl);
-                const geo = await res.json();
-                (geo.features || []).forEach(f => {
-                    const roomId = f.properties?.room_id;
-                    if (!roomId || f.geometry?.type !== 'Polygon') return;
-                    if (roomId === 'ingresso') {
-                        const c = dashRingCentroid(f.geometry.coordinates[0]);
-                        entrance = { floor: floorIdx, x: c.x, y: c.y };
-                    } else if (/corridoio/i.test(roomId)) {
-                        // segmento di corridoio: usato per costruire il percorso
-                        // praticabile, non è una sala selezionabile per gli item.
-                        if (!corridorSegmentsByFloor.has(floorIdx)) corridorSegmentsByFloor.set(floorIdx, []);
-                        corridorSegmentsByFloor.get(floorIdx).push(dashPolygonLongAxis(f.geometry.coordinates[0]));
-                    } else if (!DASH_AMENITY_ICONS[roomId]) {
-                        const c = dashRingCentroid(f.geometry.coordinates[0]);
-                        rooms.set(String(roomId), { floor: floorIdx, x: c.x, y: c.y });
-                    }
-                });
-            } catch (e) { /* silent */ }
-        }));
-
-        if (!(entrance && rooms.size)) return;
-
-        const spines = new Map();
-        corridorSegmentsByFloor.forEach((segments, floorIdx) => {
-            const spine = dashBuildCorridorSpine(segments);
-            if (spine) spines.set(floorIdx, spine);
-        });
-
-        _vfRoomGeo = { entrance, rooms, spines };
-    }
-
-    /* Cammino ordinato per vicinanza: parte dall'ingresso, poi sceglie ogni volta
-       l'item non ancora inserito la cui sala è più vicina (camminando lungo il
-       corridoio, se la piantina lo permette — altrimenti in linea d'aria) all'ultima
-       aggiunta. Ritorna null se manca il geoJson o nessun item è localizzabile. */
-    function _vfComputeSpatialOrder(selectedIds) {
-        if (!_vfRoomGeo) return null;
-        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
-        const located = [];
-        const unlocated = [];
-        selectedIds.forEach(id => {
-            const item = allItems.find(it => it._id === id);
-            const sala = item ? _vfOperaSalaMap[item.operaId] : undefined;
-            const pos  = sala != null ? _vfRoomGeo.rooms.get(String(sala)) : undefined;
-            if (pos) located.push({ id, pos });
-            else unlocated.push(id);
-        });
-        if (!located.length) return null;
-
-        const ordered = [];
-        let current = _vfRoomGeo.entrance;
-        const remaining = located.slice();
-        while (remaining.length) {
-            let bestIdx = 0, bestDist = Infinity;
-            remaining.forEach((cand, i) => {
-                let d;
-                if (cand.pos.floor !== current.floor) {
-                    d = 1e9 + i;
-                } else {
-                    const spine = _vfRoomGeo.spines.get(current.floor);
-                    d = spine
-                        ? dashSpineDistance(spine, current, cand.pos)
-                        : Math.hypot(cand.pos.x - current.x, cand.pos.y - current.y);
-                }
-                if (d < bestDist) { bestDist = d; bestIdx = i; }
-            });
-            const chosen = remaining.splice(bestIdx, 1)[0];
-            ordered.push(chosen.id);
-            current = chosen.pos;
-        }
-        return [...ordered, ...unlocated];
-    }
 
     document.getElementById('vfMuseo').addEventListener('change', function () {
         _loadVfItemsForMuseo(this.value, false);
@@ -1949,129 +1840,12 @@ window._showAutoreVisitaForm = async function (visitaId) {
         await _loadVfItemsForMuseo(visita.codiceIsil, true);
     }
 
-    /* ---- drag-and-drop order panel ---- */
-    let _vfDragSrc = null;
-
-    function _vfRenumberCards() {
-        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach((c, i) => {
-            const n = c.querySelector('[data-num]');
-            if (n) n.textContent = i + 1;
-        });
-    }
-
     window.vfToggleItem = function (id, checked, checkbox) {
         if (checked) _vfSelectedItemIds.add(id);
         else         _vfSelectedItemIds.delete(id);
         const lbl = checkbox.closest('label');
         lbl.style.borderColor = checked ? 'var(--magenta,#FF007F)' : '#e2e8f0';
         lbl.style.background  = checked ? 'rgba(255,0,127,0.05)' : '';
-        window.vfUpdateOrderPanel();
-    };
-
-    window.vfUpdateOrderPanel = function () {
-        const section = document.getElementById('vfOrderSection');
-        const panel   = document.getElementById('itemsOrderPanel');
-        if (!section || !panel) return;
-
-        if (!_vfSelectedItemIds.size) {
-            section.style.display = 'none';
-            panel.innerHTML = '';
-            return;
-        }
-        section.style.display = '';
-
-        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
-        const spatialOrder = _vfComputeSpatialOrder([..._vfSelectedItemIds]);
-
-        let newOrder;
-        if (spatialOrder) {
-            newOrder = spatialOrder;
-        } else {
-            const existingIds = [...panel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId);
-            newOrder = [
-                ...existingIds.filter(id => _vfSelectedItemIds.has(id)),
-                ...[..._vfSelectedItemIds].filter(id => !existingIds.includes(id)),
-            ];
-        }
-
-        const hint = document.getElementById('vfOrderHint');
-        if (hint) {
-            hint.innerHTML = spatialOrder
-                ? '<i class="fa-solid fa-route me-1"></i>Ordine suggerito in base alla vicinanza all\'ingresso — puoi comunque trascinare le card per modificarlo.'
-                : '<i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.';
-        }
-
-        panel.innerHTML = newOrder.map((id, i) => {
-            const item = allItems.find(it => it._id === id);
-            if (!item) return '';
-            const preview = toneText(item.toni?.semplice).substring(0, 70);
-            return `
-            <div class="vf-drag-card" data-item-id="${id}" draggable="true"
-                 style="display:flex;align-items:center;gap:12px;padding:10px 16px;
-                        border:1px solid #e2e8f0;border-radius:10px;cursor:grab;
-                        background:var(--card-bg,white);
-                        min-width:0;width:100%;box-sizing:border-box;
-                        transition:box-shadow .15s,border-color .15s,opacity .15s;"
-                 ondragstart="vfDragStart(event,this)"
-                 ondragover="vfDragOver(event,this)"
-                 ondragleave="vfDragLeave(event,this)"
-                 ondrop="vfDrop(event,this)"
-                 ondragend="vfDragEnd(event,this)">
-                <i class="fa-solid fa-grip-vertical" style="color:#cbd5e1;flex-shrink:0;"></i>
-                <span data-num style="min-width:22px;height:22px;border-radius:50%;
-                                       background:var(--magenta,#FF007F);color:#fff;
-                                       display:inline-flex;align-items:center;justify-content:center;
-                                       font-size:0.72rem;font-weight:700;flex-shrink:0;">${i + 1}</span>
-                <div style="flex:1;min-width:0;overflow:hidden;">
-                    <strong style="font-size:0.88rem;overflow-wrap:anywhere;">${item.operaId}</strong>
-                    ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
-                                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
-                </div>
-            </div>`;
-        }).join('');
-    };
-
-    window.vfDragStart = function (e, el) {
-        _vfDragSrc = el;
-        e.dataTransfer.effectAllowed = 'move';
-        setTimeout(() => { el.style.opacity = '0.45'; el.style.cursor = 'grabbing'; }, 0);
-    };
-
-    window.vfDragOver = function (e, el) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (el !== _vfDragSrc) {
-            el.style.borderColor = 'var(--magenta,#FF007F)';
-            el.style.boxShadow   = '0 0 0 2px rgba(255,0,127,0.15)';
-        }
-    };
-
-    window.vfDragLeave = function (e, el) {
-        el.style.borderColor = '#e2e8f0';
-        el.style.boxShadow   = '';
-    };
-
-    window.vfDrop = function (e, el) {
-        e.preventDefault();
-        if (!_vfDragSrc || _vfDragSrc === el) return;
-        const panel = document.getElementById('itemsOrderPanel');
-        const cards = [...panel.querySelectorAll('.vf-drag-card')];
-        const srcIdx = cards.indexOf(_vfDragSrc);
-        const dstIdx = cards.indexOf(el);
-        if (srcIdx < dstIdx) el.parentNode.insertBefore(_vfDragSrc, el.nextSibling);
-        else                  el.parentNode.insertBefore(_vfDragSrc, el);
-        el.style.borderColor = '#e2e8f0';
-        el.style.boxShadow   = '';
-        _vfRenumberCards();
-    };
-
-    window.vfDragEnd = function (e, el) {
-        el.style.opacity = '1';
-        el.style.cursor  = 'grab';
-        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach(c => {
-            c.style.borderColor = '#e2e8f0';
-            c.style.boxShadow   = '';
-        });
     };
 
     document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
@@ -2079,10 +1853,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         const codiceIsil = document.getElementById('vfMuseo').value;
         if (!codiceIsil) { alert('Seleziona un museo.'); return; }
 
-        const orderPanel = document.getElementById('itemsOrderPanel');
-        const selectedItems = (orderPanel && orderPanel.querySelectorAll('.vf-drag-card').length > 0)
-            ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
-            : [..._vfSelectedItemIds];
+        const selectedItems = [..._vfSelectedItemIds];
         const isPubblica = SESSION.role !== 'visitatore' && document.getElementById('vfPubblica').value === 'true';
         const body = {
             nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
@@ -2142,12 +1913,6 @@ window.resetVisitaForm = function () {
     _vfMyItems         = [];
     _vfAcquistatiItems = [];
     _vfSelectedItemIds = new Set();
-    _vfOperaSalaMap    = {};
-    _vfRoomGeo         = null;
-    const orderSection = document.getElementById('vfOrderSection');
-    const orderPanel   = document.getElementById('itemsOrderPanel');
-    if (orderSection) orderSection.style.display = 'none';
-    if (orderPanel)   orderPanel.innerHTML = '';
 };
 
 /* ============================================================
