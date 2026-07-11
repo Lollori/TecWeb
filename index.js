@@ -342,9 +342,11 @@ app.post('/api/sessioni/:codice/join', (req, res) => {
 });
 
 // Docente avvia la visita
-app.post('/api/sessioni/:codice/avvia', (req, res) => {
+app.post('/api/sessioni/:codice/avvia', async (req, res) => {
     const result = sessioni.startSession(req.params.codice);
     if (result.error) return res.status(404).json(result);
+    const session = sessioni.getSession(req.params.codice);
+    if (session?.visitaId) await visite.incrementaEseguita(mongoCredentials, session.visitaId);
     res.json(result);
 });
 

@@ -28,6 +28,9 @@ const visitaSchema = new mongoose.Schema({
     itemIds:          { type: [String], default: [] },
     // Tag liberi facoltativi (es. "caravaggio", "rinascimento") per la ricerca nel marketplace.
     tags:             { type: [String], default: [], index: true },
+    // Numero di volte che la visita è stata avviata su Navigator (vedi
+    // incrementaEseguita, chiamato da /api/sessioni/:codice/avvia).
+    eseguita:         { type: Number, default: 0 },
 });
 
 const Visita = mongoose.models.Visita || mongoose.model("Visita", visitaSchema);
@@ -154,6 +157,19 @@ exports.acquista = async (credentials, id, userId) => {
         if (!visita) return { ok: false, error: "Visita non trovata." };
 
         return { ok: true, data: visita };
+    } catch (e) {
+        console.error(e);
+        return { ok: false, error: e.message };
+    }
+};
+
+// Incrementa il contatore di esecuzioni ogni volta che il docente avvia la
+// visita su Navigator (vedi /api/sessioni/:codice/avvia in index.js).
+exports.incrementaEseguita = async (credentials, id) => {
+    try {
+        await connect(credentials);
+        await Visita.findByIdAndUpdate(id, { $inc: { eseguita: 1 } });
+        return { ok: true };
     } catch (e) {
         console.error(e);
         return { ok: false, error: e.message };

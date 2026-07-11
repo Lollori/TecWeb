@@ -4270,7 +4270,7 @@ async function initAdminAnalytics() {
             </div>
         </div>
 
-        <div class="analytics-block">
+        <div class="analytics-block mb-5">
             <h4 class="analytics-block-title" onclick="toggleAnalyticsBlock('marketplaceBody','marketplaceChevron')">
                 <i class="fa-solid fa-store"></i>Marketplace
                 <i class="fa-solid fa-chevron-down analytics-block-chevron" id="marketplaceChevron"></i>
@@ -4280,6 +4280,13 @@ async function initAdminAnalytics() {
                     <div class="glass-card p-4">
                         <h5 class="fw-bold mb-3">Tag più Utilizzati nel Marketplace</h5>
                         <div id="analyticsTagsChart"></div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold mb-0">Classifica dei Guadagni</h5>
+                        <p class="text-muted mb-3" style="font-size:0.82rem;">I cinque utenti con maggior profitto</p>
+                        <div id="analyticsTopEarners"></div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -4294,6 +4301,21 @@ async function initAdminAnalytics() {
                         <h5 class="fw-bold mb-0">Top 5 Visite nel Carrello</h5>
                         <p class="text-muted mb-3" style="font-size:0.82rem;">I più desiderati</p>
                         <div id="analyticsTopCartVisite"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="analytics-block">
+            <h4 class="analytics-block-title" onclick="toggleAnalyticsBlock('navigatorBody','navigatorChevron')">
+                <i class="fa-solid fa-satellite-dish"></i>Navigator
+                <i class="fa-solid fa-chevron-down analytics-block-chevron" id="navigatorChevron"></i>
+            </h4>
+            <div id="navigatorBody" class="row g-4">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold mb-3">Le visite più avviate</h5>
+                        <div id="analyticsTopEseguite"></div>
                     </div>
                 </div>
             </div>
@@ -4363,7 +4385,7 @@ async function initAdminAnalytics() {
             kpiCard(totalAcquirenti, 'Acquirenti tot.', 'fa-ticket');
 
         const tagCounts = {};
-        [...items, ...visite].forEach(x => (x.tags || []).forEach(t => {
+        [...items.filter(it => it.pubblica), ...visite].forEach(x => (x.tags || []).forEach(t => {
             tagCounts[t] = (tagCounts[t] || 0) + 1;
         }));
         const sortedTags  = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
@@ -4420,6 +4442,58 @@ async function initAdminAnalytics() {
             rankListHtml(topCartItems, it => itemTitle(it));
         document.getElementById('analyticsTopCartVisite').innerHTML =
             rankListHtml(topCartVisite, v => v.nomeVisita || v.nomeMnemonico || 'Senza nome');
+
+        const topEseguite = [...visite]
+            .filter(v => (v.eseguita || 0) > 0)
+            .sort((a, b) => (b.eseguita || 0) - (a.eseguita || 0))
+            .slice(0, 3);
+
+        document.getElementById('analyticsTopEseguite').innerHTML =
+            topEseguite.length
+                ? topEseguite.map((v, i) => {
+                    const rankColors = ['#e91e8c', '#6366f1', '#f59e0b'];
+                    return `
+                    <div class="d-flex align-items-center gap-3 ${i < topEseguite.length - 1 ? 'mb-2 pb-2' : ''}"
+                         ${i < topEseguite.length - 1 ? 'style="border-bottom:1px solid rgba(0,0,0,0.06);"' : ''}>
+                        <div style="width:26px;height:26px;border-radius:50%;background:${rankColors[i]};
+                                    color:#fff;display:flex;align-items:center;justify-content:center;
+                                    font-weight:800;font-size:0.78rem;flex-shrink:0;">${i + 1}</div>
+                        <small class="fw-bold flex-grow-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${v.nomeVisita || v.nomeMnemonico || 'Senza nome'}</small>
+                        <span class="badge" style="background:rgba(233,30,140,0.12);color:#e91e8c;font-size:0.72rem;font-weight:700;">${v.eseguita} esecuzioni</span>
+                    </div>`;
+                }).join('')
+                : '<p class="text-muted mb-0" style="font-size:0.85rem;">Nessuna visita eseguita ancora.</p>';
+
+        const revenueByUser = {};
+        items.forEach(it => {
+            if (it.pubblica && (it.metadata?.prezzo || 0) > 0) {
+                revenueByUser[it.authorId] = (revenueByUser[it.authorId] || 0) + (it.metadata.prezzo * (it.acquirenti || 0));
+            }
+        });
+        visite.forEach(v => {
+            if (v.pubblica && (v.prezzo || 0) > 0) {
+                revenueByUser[v.autoreId] = (revenueByUser[v.autoreId] || 0) + (v.prezzo * (v.acquirenti || 0));
+            }
+        });
+
+        const topEarners = Object.entries(revenueByUser)
+            .filter(([, rev]) => rev > 0)
+            .sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const maxEarned = topEarners[0]?.[1] || 1;
+
+        document.getElementById('analyticsTopEarners').innerHTML =
+            topEarners.length
+                ? `<div class="d-flex align-items-end justify-content-around" style="height:180px;gap:16px;padding-bottom:4px;">
+                    ${topEarners.map(([uid, rev]) => `
+                        <div class="d-flex flex-column align-items-center" style="flex:1 1 0;min-width:0;">
+                            <small class="fw-bold mb-1" style="font-size:0.78rem;white-space:nowrap;">€${rev.toFixed(0)}</small>
+                            <div class="analytics-col-track d-flex align-items-end justify-content-center" style="width:100%;max-width:56px;height:130px;">
+                                <div style="width:100%;height:${Math.max(4, Math.round(rev / maxEarned * 100))}%;background:#e91e8c;border-radius:4px;transition:height .4s;"></div>
+                            </div>
+                            <small class="text-muted mt-2 text-center" style="font-size:0.72rem;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${userMap[uid] || uid}">${userMap[uid] || uid}</small>
+                        </div>`).join('')}
+                   </div>`
+                : '<p class="text-muted">Nessun dato.</p>';
 
     } catch (e) {
         document.getElementById('analyticsKpis').innerHTML =

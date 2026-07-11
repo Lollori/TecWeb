@@ -51,8 +51,9 @@
 }
 .analytics-block-chevron.collapsed { transform: rotate(-90deg); }
 
-/* ── Analytics bar tracks ── */
+/* ── Analytics bar/column tracks ── */
 .analytics-bar-track { background: #e2e8f0; border-radius: 4px; height: 8px; }
+.analytics-col-track { background: #e2e8f0; border-radius: 4px; }
 
 /* ── KPI card ── */
 .kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
@@ -82,6 +83,7 @@
 [data-theme="dark"] .tab-btn:hover  { color: #e8edf5; }
 [data-theme="dark"] .analytics-block-title { color: #e8edf5; border-bottom-color: rgba(255, 255, 255, 0.08); }
 [data-theme="dark"] .analytics-bar-track   { background: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .analytics-col-track   { background: rgba(255, 255, 255, 0.1); }
 
 [data-theme="dark"] .kpi-icon          { color: rgba(255,255,255,0.18); }
 [data-theme="dark"] .kpi-label         { color: #94a3b8; }

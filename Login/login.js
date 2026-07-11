@@ -21,15 +21,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem('userId', data.user.userId);
             localStorage.setItem('userRole', data.user.ruolo);
 
-            alert('Accesso eseguito!');
+            await showAlert('Accesso eseguito!', { type: 'success' });
             const redirect = new URLSearchParams(window.location.search).get('redirect');
             window.location.href = redirect || '/';
         } else {
-            alert('Errore: ' + (data.message || 'Credenziali non valide.'));
+            showAlert('Errore: ' + (data.message || 'Credenziali non valide.'), { type: 'error' });
         }
     } catch (error) {
         console.error('Errore Fetch:', error);
-        alert('Impossibile connettersi al server. Verifica che il server sia attivo.');
+        showAlert('Impossibile connettersi al server. Verifica che il server sia attivo.', { type: 'error' });
     }
 });
 
@@ -53,13 +53,13 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
         const data = await response.json();
 
         if (data.success) {
-            alert('Registrazione completata! Ora puoi accedere.');
+            await showAlert('Registrazione completata! Ora puoi accedere.', { type: 'success' });
             document.getElementById('goToLogin').click();
         } else {
-            alert('Errore: ' + (data.message || 'Registrazione fallita.'));
+            showAlert('Errore: ' + (data.message || 'Registrazione fallita.'), { type: 'error' });
         }
     } catch (error) {
         console.error('Errore Fetch:', error);
-        alert('Impossibile connettersi al server. Verifica che il server sia attivo.');
+        showAlert('Impossibile connettersi al server. Verifica che il server sia attivo.', { type: 'error' });
     }
 });
