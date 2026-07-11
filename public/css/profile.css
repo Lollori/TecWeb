@@ -18,6 +18,23 @@
     box-shadow: 0 8px 24px rgba(30, 41, 59, 0.1);
 }
 
+/* Da disconnessi #nav-profile-placeholder resta vuoto: senza questa regola
+   il gap del flex container si somma comunque, allargando la pillola oltre
+   l'icona e lasciandola storta a sinistra invece che centrata. */
+#nav-profile-placeholder:empty {
+    display: none;
+}
+
+/* Da disconnessi niente pillola: solo l'icona nuda, senza sfondo/bordo/ombra. */
+.nav-user-card:has(#nav-profile-placeholder:empty) {
+    padding: 0;
+    background: none;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+}
+
 .nav-avatar {
     width: 38px;
     height: 38px;
@@ -43,6 +60,9 @@
     color: rgba(255, 255, 255, 0.55);
     transition: color 0.2s;
     line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nav-theme-icon:hover {
