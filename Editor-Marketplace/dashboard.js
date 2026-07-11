@@ -4481,29 +4481,32 @@ function saveMktPurchases(p) {
     localStorage.setItem('purchases_' + SESSION.userId, JSON.stringify(p));
 }
 
-function getMktCart() {
+// Il carrello vive solo sul server (collection Cart): niente localStorage,
+// così è davvero indipendente da browser/dispositivo e sempre aggiornato.
+async function getMktCart() {
     try {
-        return JSON.parse(localStorage.getItem('cart_' + SESSION.userId) || '{"items":[],"visite":[]}');
-    } catch { return { items: [], visite: [] }; }
+        const res  = await fetch(`/api/carts/${SESSION.userId}`);
+        const data = await res.json();
+        if (data.ok) return { items: data.data.items || [], visite: data.data.visite || [] };
+    } catch {}
+    return { items: [], visite: [] };
 }
 
-function saveMktCart(c) {
-    localStorage.setItem('cart_' + SESSION.userId, JSON.stringify(c));
-    updateMktCartBadge();
-    // Sincronizza lato server (best-effort) così l'admin può aggregare i
-    // carrelli di tutti gli utenti in Analytics — il localStorage resta
-    // comunque la fonte di verità immediata per l'utente corrente.
-    fetch(`/api/carts/${SESSION.userId}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(c),
-    }).catch(() => {});
+async function saveMktCart(c) {
+    try {
+        await fetch(`/api/carts/${SESSION.userId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(c),
+        });
+    } catch {}
+    await updateMktCartBadge();
 }
 
-function updateMktCartBadge() {
+async function updateMktCartBadge() {
     const badge = document.getElementById('mktCartBadge');
     if (!badge) return;
-    const c = getMktCart();
+    const c = await getMktCart();
     const count = c.items.length + c.visite.length;
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
@@ -4640,7 +4643,7 @@ async function initMarketplace() {
 
     _populateMktOpereSelect('');
     applyMktFilter();
-    updateMktCartBadge();
+    await updateMktCartBadge();
 }
 
 function _populateMktOpereSelect(codiceIsil) {
@@ -4700,7 +4703,7 @@ window.setMktTab = function (tab, btn) {
     applyMktFilter();
 };
 
-window.applyMktFilter = function () {
+window.applyMktFilter = async function () {
     const museoVal  = document.getElementById('mktFilterMuseo')?.value  || '';
     const operaVal  = document.getElementById('mktFilterOpera')?.value  || '';
     const lingVal   = document.getElementById('mktFilterLinguaggio')?.value || '';
@@ -4743,7 +4746,7 @@ window.applyMktFilter = function () {
             const bOwn = SESSION.userId && b.autoreId === SESSION.userId;
             return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
-        renderMktVisite(lista, purchases.visite, getMktCart().visite);
+        renderMktVisite(lista, purchases.visite, (await getMktCart()).visite);
     } else {
         let lista = allMktItems.filter(it => !purchases.items.includes(it._id));
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
@@ -4767,7 +4770,7 @@ window.applyMktFilter = function () {
             const bOwn = SESSION.userId && b.authorId === SESSION.userId;
             return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
-        renderMktItems(lista, purchases.items, getMktCart().items);
+        renderMktItems(lista, purchases.items, (await getMktCart()).items);
     }
 };
 
@@ -5072,17 +5075,17 @@ async function finalizzaAcquistoItem(id) {
     return false;
 }
 
-window.aggiungiAlCarrello = function (tipo, id) {
-    const c = getMktCart();
+window.aggiungiAlCarrello = async function (tipo, id) {
+    const c = await getMktCart();
     if (!c[tipo].includes(id)) c[tipo].push(id);
-    saveMktCart(c);
+    await saveMktCart(c);
     applyMktFilter();
 };
 
-window.rimuoviDalCarrello = function (tipo, id) {
-    const c = getMktCart();
+window.rimuoviDalCarrello = async function (tipo, id) {
+    const c = await getMktCart();
     c[tipo] = c[tipo].filter(x => x !== id);
-    saveMktCart(c);
+    await saveMktCart(c);
     if (document.getElementById('section-carrello')?.style.display !== 'none') initCarrello();
     applyMktFilter();
 };
@@ -5107,7 +5110,7 @@ async function initCarrello() {
         } catch (_) { /* si procede coi dati eventualmente già in cache */ }
     }
 
-    const cart = getMktCart();
+    const cart = await getMktCart();
     const cartItems  = allMktItems.filter(it => cart.items.includes(it._id));
     const cartVisite = allMktVisite.filter(v  => cart.visite.includes(v._id));
     const totale = cartItems.reduce((s, it) => s + (it.metadata?.prezzo || 0), 0)
@@ -5207,12 +5210,12 @@ async function initCarrello() {
 
 window.svuotaCarrello = async function () {
     if (!(await showConfirm('Svuotare il carrello?', { type: 'warning', okText: 'Svuota' }))) return;
-    saveMktCart({ items: [], visite: [] });
+    await saveMktCart({ items: [], visite: [] });
     initCarrello();
 };
 
 window.checkoutCarrello = async function () {
-    const cart = getMktCart();
+    const cart = await getMktCart();
     if (!cart.items.length && !cart.visite.length) return;
     if (!(await showConfirm('Confermi l\'acquisto di tutti gli articoli nel carrello?'))) return;
 
@@ -5232,7 +5235,7 @@ window.checkoutCarrello = async function () {
 
     // Solo gli acquisti confermati dal server vengono rimossi dal carrello:
     // quelli falliti restano per permettere di ritentare.
-    saveMktCart({ items: itemsFalliti, visite: visiteFallite });
+    await saveMktCart({ items: itemsFalliti, visite: visiteFallite });
 
     if (itemsFalliti.length || visiteFallite.length) {
         showAlert('Alcuni articoli non sono stati acquistati per un problema di connessione al server. Sono rimasti nel carrello: riprova.');
