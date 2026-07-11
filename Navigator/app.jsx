@@ -502,6 +502,22 @@ function findBestItem(items, tono, durata) {
   return tonoMatch || items[0];
 }
 
+/* ── Comandi vocali ────────────────────────────────────────────
+   Vocabolario controllato per l'assistente vocale della visita. Questa è
+   solo la definizione dei comandi riconosciuti (usata in futuro dal
+   matcher che li confronta col testo trascritto) — l'esecuzione delle
+   azioni corrispondenti (cambio tono/durata, salto d'item, apertura mappa,
+   indicazioni logistiche, ecc.) è la fase successiva, non ancora presente:
+   per ora il microfono si limita a trascrivere il parlato in testo, vedi
+   handleVoiceTranscript in VisitaItemScreen.
+   ───────────────────────────────────────────────────────────── */
+const VOICE_COMMANDS = {
+  esplorazione: ['dimmi di più', 'dimmi di meno', "cos'è questo"],
+  adattamento:  ['più semplice', 'troppo semplice', 'non capisco'],
+  dettagli:     ["chi è l'autore", 'qual è lo stile'],
+  logistica:    ["dov'è l'uscita", "dov'è la toilette"],
+};
+
 function VisitaItemScreen({
   operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
@@ -532,10 +548,18 @@ function VisitaItemScreen({
   // l'altro (solo itemId cambia). Mutuamente esclusivi, ma possono essere
   // entrambi chiusi (null).
   const [activePanel,   setActivePanel]   = React.useState('mappa');
+  // Comandi vocali: solo trascrizione per ora (vedi handleVoiceTranscript).
+  const [micOn,            setMicOn]            = React.useState(false);
+  const [micSupported]     = React.useState(() =>
+    typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition)
+  );
+  const [voiceTranscript,  setVoiceTranscript]  = React.useState('');
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
+  const recognitionRef = React.useRef(null);
+  const micOnRef = React.useRef(false);
 
   React.useEffect(() => {
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
@@ -549,6 +573,70 @@ function VisitaItemScreen({
     document.body.style.overflow = 'hidden';
     return () => { document.body.style.overflow = prevOverflow; };
   }, []);
+
+  // Comandi vocali (solo trascrizione per ora): un'unica istanza di
+  // SpeechRecognition per tutta la durata dello schermo, riavviata
+  // automaticamente finché il microfono resta "acceso" — i browser
+  // interrompono il riconoscimento continuo dopo un po' di silenzio anche
+  // con continuous:true, quindi senza il riavvio in onend il microfono si
+  // spegnerebbe da solo invece di restare attivo fino alla pressione
+  // successiva del pulsante, come richiesto.
+  React.useEffect(() => {
+    if (!micSupported) return;
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SR();
+    recognition.lang = 'it-IT';
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onresult = (e) => {
+      let finalText = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const res = e.results[i];
+        if (res.isFinal) finalText += res[0].transcript;
+      }
+      const testo = finalText.trim();
+      if (testo) {
+        setVoiceTranscript(testo);
+        handleVoiceTranscript(testo);
+      }
+    };
+    recognition.onerror = () => { /* silenzioso: onend riprova comunque */ };
+    recognition.onend = () => {
+      if (micOnRef.current) {
+        try { recognition.start(); } catch (_) { /* già avviato */ }
+      }
+    };
+
+    recognitionRef.current = recognition;
+    return () => {
+      micOnRef.current = false;
+      try { recognition.stop(); } catch (_) {}
+      recognitionRef.current = null;
+    };
+  }, [micSupported]);
+
+  // Punto di innesto per la fase successiva: qui il testo trascritto andrà
+  // confrontato con VOICE_COMMANDS (matching per categoria: esplorazione,
+  // adattamento, dettagli, logistica) per determinare l'azione da eseguire
+  // (cambio tono/durata, salto item, apertura mappa, indicazioni logistiche…).
+  // Per ora si limita a rendere disponibile il testo trascritto in UI.
+  function handleVoiceTranscript(testo) {
+    console.log('[voce] trascritto:', testo);
+  }
+
+  function toggleMic() {
+    if (!micSupported || !recognitionRef.current) return;
+    const next = !micOn;
+    setMicOn(next);
+    micOnRef.current = next;
+    if (next) {
+      setVoiceTranscript('');
+      try { recognitionRef.current.start(); } catch (_) {}
+    } else {
+      try { recognitionRef.current.stop(); } catch (_) {}
+    }
+  }
 
   // Carica tutti gli item del gruppo opera corrente
   React.useEffect(() => {
@@ -724,6 +812,15 @@ function VisitaItemScreen({
           {visitaNome ? `${visitaNome} · ` : ''}Item {currentIdx + 1} di {totalItems}
         </p>
         <div className="visita-item-header-actions">
+          {micSupported && (
+            <button
+              className={`visita-mic-toggle${micOn ? ' visita-mic-toggle--active' : ''}`}
+              onClick={toggleMic}
+              title={micOn ? 'Disattiva comandi vocali' : 'Attiva comandi vocali'}
+            >
+              <i className={`fa-solid ${micOn ? 'fa-microphone' : 'fa-microphone-slash'}`} />
+            </button>
+          )}
           {isDocente && (
             <button
               className={`visita-chat-toggle${itemsMenuOpen ? ' visita-chat-toggle--active' : ''}`}
@@ -850,6 +947,13 @@ function VisitaItemScreen({
                     </button>
                   ))}
                 </div>
+
+                {micOn && (
+                  <p className="visita-voice-transcript">
+                    <i className="fa-solid fa-microphone me-1" />
+                    {voiceTranscript || 'In ascolto…'}
+                  </p>
+                )}
 
                 <p className="visita-item-text">
                   {toneText(activeItem.toni?.[tono], durata) || <em>Nessun contenuto per questo tono e durata.</em>}
