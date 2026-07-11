@@ -306,6 +306,21 @@
   50%       { fill: rgba(255,0,127,0.12); }
 }
 
+/* Evidenziazione di una sala amenity (uscita/bagni) su richiesta di un
+   comando vocale logistico — stessa pulsazione della sala target normale. */
+.geo-room-overlay .geo-amenity-polygon.geo-amenity-polygon--target {
+  fill: rgba(255,0,127,0.35) !important; stroke: var(--nav-magenta) !important; stroke-width: 2.5 !important;
+  animation: geo-target-pulse 1.8s ease-in-out infinite;
+}
+.geo-amenity-marker--target {
+  background: var(--nav-magenta) !important;
+  animation: geo-marker-pulse 1.8s ease-in-out infinite;
+}
+@keyframes geo-marker-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,0,127,0.5), 0 2px 8px rgba(0,0,0,0.35); }
+  50%       { box-shadow: 0 0 0 8px rgba(255,0,127,0), 0 2px 8px rgba(0,0,0,0.35); }
+}
+
 /* ── Dark mode ── */
 [data-theme="dark"] .visita-item-header,
 [data-theme="dark"] .visita-item-nav,

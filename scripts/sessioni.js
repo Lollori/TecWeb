@@ -33,7 +33,9 @@ function getSession(codice) {
 function joinSession(codice, nomeRichiesto, ruolo) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata. Controlla il codice.' };
-  if (session.stato === 'iniziata') return { error: 'La visita è già iniziata.' };
+  // Ci si può unire anche a visita già iniziata: il client si sincronizza da
+  // solo con lo stato corrente (opera/tono/quiz/audio) tramite il messaggio
+  // 'stato-iniziale' che riceve appena apre la connessione SSE (addClient).
   session.studentCount++;
   let nome = (nomeRichiesto || '').trim() || `Studente ${session.studentCount}`;
   if (session.studenti.some(s => s.nome === nome)) nome = `${nome} (${session.studentCount})`;

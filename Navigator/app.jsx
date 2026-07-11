@@ -503,13 +503,12 @@ function findBestItem(items, tono, durata) {
 }
 
 /* ── Comandi vocali ────────────────────────────────────────────
-   Vocabolario controllato per l'assistente vocale della visita. Questa è
-   solo la definizione dei comandi riconosciuti (usata in futuro dal
-   matcher che li confronta col testo trascritto) — l'esecuzione delle
-   azioni corrispondenti (cambio tono/durata, salto d'item, apertura mappa,
-   indicazioni logistiche, ecc.) è la fase successiva, non ancora presente:
-   per ora il microfono si limita a trascrivere il parlato in testo, vedi
-   handleVoiceTranscript in VisitaItemScreen.
+   Vocabolario controllato per l'assistente vocale della visita, con le
+   azioni associate (vedi handleVoiceTranscript in VisitaItemScreen):
+   - esplorazione: aumenta/diminuisci la durata della spiegazione, o la ripete
+   - adattamento:  rende il tono più semplice o più avanzato
+   - dettagli:     risponde su autore/stile dell'opera corrente
+   - logistica:    indica il piano più vicino di uscita/bagni e lo mostra in mappa
    ───────────────────────────────────────────────────────────── */
 const VOICE_COMMANDS = {
   esplorazione: ['dimmi di più', 'dimmi di meno', "cos'è questo"],
@@ -517,6 +516,39 @@ const VOICE_COMMANDS = {
   dettagli:     ["chi è l'autore", 'qual è lo stile'],
   logistica:    ["dov'è l'uscita", "dov'è la toilette"],
 };
+
+// Normalizza il testo trascritto per un matching tollerante: minuscolo,
+// accenti rimossi ("più" → "piu", "è" → "e") e punteggiatura/apostrofi
+// appiattiti a spazi, così frasi dette in modo leggermente diverso
+// ("cos'è questo" / "cosa è questo" / "cos e questo?") vengono comunque
+// riconosciute.
+function normalizeVoiceText(s) {
+  return (s || '')
+    .toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+// Confronta il testo trascritto col vocabolario controllato e restituisce
+// { categoria, azione } della prima corrispondenza, o null se non riconosciuto.
+function matchVoiceCommand(testo) {
+  const t = normalizeVoiceText(testo);
+  if (!t) return null;
+  if (t.includes('di piu'))                                    return { categoria: 'esplorazione', azione: 'aumenta' };
+  if (t.includes('di meno'))                                   return { categoria: 'esplorazione', azione: 'diminuisci' };
+  if (t.includes('ripeti') || t.includes('cos e questo') || (t.includes('cosa') && t.includes('questo')))
+                                                                return { categoria: 'esplorazione', azione: 'ripeti' };
+  if (t.includes('troppo semplice'))                           return { categoria: 'adattamento', azione: 'avanza' };
+  if (t.includes('piu semplice') || t.includes('non capisco')) return { categoria: 'adattamento', azione: 'semplifica' };
+  if (t.includes('autore'))                                    return { categoria: 'dettagli', azione: 'autore' };
+  if (t.includes('stile'))                                     return { categoria: 'dettagli', azione: 'stile' };
+  if (t.includes('uscita'))                                    return { categoria: 'logistica', azione: 'uscita' };
+  if (t.includes('bagno') || t.includes('bagni') || t.includes('toilette') || t.includes('toilet'))
+                                                                return { categoria: 'logistica', azione: 'bagno' };
+  return null;
+}
 
 function VisitaItemScreen({
   operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
@@ -548,18 +580,31 @@ function VisitaItemScreen({
   // l'altro (solo itemId cambia). Mutuamente esclusivi, ma possono essere
   // entrambi chiusi (null).
   const [activePanel,   setActivePanel]   = React.useState('mappa');
-  // Comandi vocali: solo trascrizione per ora (vedi handleVoiceTranscript).
+  // Comandi vocali: mic on/off, testo trascritto e azione riconosciuta.
   const [micOn,            setMicOn]            = React.useState(false);
   const [micSupported]     = React.useState(() =>
     typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition)
   );
   const [voiceTranscript,  setVoiceTranscript]  = React.useState('');
+  // Comando logistico attivo ("dov'è l'uscita/la toilette"): quale stanza
+  // evidenziare in mappa e su quale piano — sovrascrive temporaneamente
+  // l'evidenziazione della sala dell'opera corrente. Si azzera cambiando opera.
+  const [logisticsTarget,  setLogisticsTarget]  = React.useState(null);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
+  // Canale audio separato da audioRef (usato per la narrazione sincronizzata
+  // dalla docente): le risposte ai comandi vocali sono personali e devono
+  // sempre essere udibili, a prescindere da "Avvia audio"/muto della docente.
+  const assistantAudioRef = React.useRef(null);
   const recognitionRef = React.useRef(null);
   const micOnRef = React.useRef(false);
+  // La callback di SpeechRecognition viene creata una sola volta al mount
+  // (vedi effect sotto) e chiuderebbe su uno stato ormai vecchio se chiamasse
+  // handleVoiceTranscript direttamente — passa invece sempre dall'ultima
+  // versione della funzione tramite questo ref, aggiornato ad ogni render.
+  const handleVoiceTranscriptRef = React.useRef(() => {});
 
   React.useEffect(() => {
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
@@ -571,16 +616,22 @@ function VisitaItemScreen({
   React.useEffect(() => {
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = prevOverflow; };
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      if (assistantAudioRef.current) {
+        assistantAudioRef.current.pause();
+        if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
+        assistantAudioRef.current = null;
+      }
+    };
   }, []);
 
-  // Comandi vocali (solo trascrizione per ora): un'unica istanza di
-  // SpeechRecognition per tutta la durata dello schermo, riavviata
-  // automaticamente finché il microfono resta "acceso" — i browser
-  // interrompono il riconoscimento continuo dopo un po' di silenzio anche
-  // con continuous:true, quindi senza il riavvio in onend il microfono si
-  // spegnerebbe da solo invece di restare attivo fino alla pressione
-  // successiva del pulsante, come richiesto.
+  // Comandi vocali: un'unica istanza di SpeechRecognition per tutta la
+  // durata dello schermo, riavviata automaticamente finché il microfono
+  // resta "acceso" — i browser interrompono il riconoscimento continuo dopo
+  // un po' di silenzio anche con continuous:true, quindi senza il riavvio
+  // in onend il microfono si spegnerebbe da solo invece di restare attivo
+  // fino alla pressione successiva del pulsante, come richiesto.
   React.useEffect(() => {
     if (!micSupported) return;
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -598,7 +649,9 @@ function VisitaItemScreen({
       const testo = finalText.trim();
       if (testo) {
         setVoiceTranscript(testo);
-        handleVoiceTranscript(testo);
+        // Passa sempre dal ref: questa callback è fissata al mount, il ref
+        // punta invece sempre alla versione più recente della funzione.
+        handleVoiceTranscriptRef.current(testo);
       }
     };
     recognition.onerror = () => { /* silenzioso: onend riprova comunque */ };
@@ -616,14 +669,146 @@ function VisitaItemScreen({
     };
   }, [micSupported]);
 
-  // Punto di innesto per la fase successiva: qui il testo trascritto andrà
-  // confrontato con VOICE_COMMANDS (matching per categoria: esplorazione,
-  // adattamento, dettagli, logistica) per determinare l'azione da eseguire
-  // (cambio tono/durata, salto item, apertura mappa, indicazioni logistiche…).
-  // Per ora si limita a rendere disponibile il testo trascritto in UI.
-  function handleVoiceTranscript(testo) {
-    console.log('[voce] trascritto:', testo);
+  // Risponde vocalmente a una richiesta dell'utente (canale indipendente
+  // dalla narrazione sincronizzata, sempre udibile).
+  function speakAssistant(text) {
+    if (assistantAudioRef.current) {
+      assistantAudioRef.current.pause();
+      if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
+      assistantAudioRef.current = null;
+    }
+    fetch('/api/tts', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text }),
+    })
+      .then(r => { if (!r.ok) throw new Error('tts fallita'); return r.blob(); })
+      .then(blob => {
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+        assistantAudioRef.current = audio;
+        audio.play().catch(() => {});
+      })
+      .catch(() => {});
   }
+
+  // "Dov'è l'uscita?" / "Dov'è la toilette?" — cerca su tutti i piani del
+  // museo la sala amenity richiesta (room_id 'U' per l'uscita, 'bagno' per
+  // le toilette), sceglie il piano più vicino a quello dell'opera corrente,
+  // lo annuncia a voce e apre la mappa su quel piano evidenziando la sala.
+  async function locateAmenity(kind) {
+    const label = kind === 'U' ? "L'uscita" : 'La toilette';
+    if (!activeItem?.museumId || !operaGroup?.operaId) {
+      speakAssistant(`${label}: mappa non disponibile al momento.`);
+      return;
+    }
+    try {
+      const [rMuseo, rOpere] = await Promise.all([
+        fetch(`/api/musei/${encodeURIComponent(activeItem.museumId)}`),
+        fetch(`/api/opere?codiceIsil=${encodeURIComponent(activeItem.museumId)}`),
+      ]);
+      const [dMuseo, dOpere] = await Promise.all([rMuseo.json(), rOpere.json()]);
+      const museo = dMuseo.ok ? applyFloorPlanOverrides(dMuseo.data) : null;
+      const piani = museo?.mappaInterna || [];
+      if (!piani.length) { speakAssistant(`${label}: mappa non disponibile per questo museo.`); return; }
+
+      const opera = (dOpere.data || []).find(o => o.operaId === operaGroup.operaId);
+      const salaOpera = opera?.sala != null ? String(opera.sala) : null;
+
+      let operaFloorIdx = null;
+      const foundFloors = [];
+      for (let i = 0; i < piani.length; i++) {
+        const piano = piani[i];
+        if (!piano.geoJsonUrl) continue;
+        try {
+          const res  = await fetch(piano.geoJsonUrl);
+          const geo  = await res.json();
+          const feats = geo.features || [];
+          if (salaOpera != null && operaFloorIdx === null && feats.some(f => f.properties?.room_id === salaOpera)) {
+            operaFloorIdx = i;
+          }
+          if (feats.some(f => f.properties?.room_id === kind)) foundFloors.push(i);
+        } catch (_) { /* prova il prossimo piano */ }
+      }
+
+      if (!foundFloors.length) {
+        speakAssistant(`Non ho trovato ${kind === 'U' ? "l'uscita" : 'i bagni'} sulla mappa di questo museo.`);
+        return;
+      }
+      const refIdx = operaFloorIdx != null ? operaFloorIdx : 0;
+      const nearestIdx = foundFloors.reduce((best, i) =>
+        Math.abs(i - refIdx) < Math.abs(best - refIdx) ? i : best, foundFloors[0]);
+      const pianoLabel = piani[nearestIdx]?.piano || `piano ${nearestIdx + 1}`;
+
+      speakAssistant(`${label} più vicina si trova al ${pianoLabel}. Controlla la mappa.`);
+      setActivePanel('mappa');
+      setLogisticsTarget({ roomId: kind, piano: piani[nearestIdx]?.piano });
+    } catch (_) {
+      speakAssistant('Non sono riuscito a recuperare le indicazioni.');
+    }
+  }
+
+  // Confronta il testo trascritto col vocabolario controllato (matchVoiceCommand)
+  // ed esegue l'azione corrispondente. Aggiornata ad ogni render (vedi
+  // handleVoiceTranscriptRef sopra), così vede sempre tono/durata/opera correnti.
+  function handleVoiceTranscript(testo) {
+    const match = matchVoiceCommand(testo);
+    if (!match) return; // frase non riconosciuta: resta silenzioso, il testo resta comunque visibile in UI
+    const { categoria, azione } = match;
+
+    if (categoria === 'esplorazione') {
+      if (azione === 'ripeti') {
+        const testoCorrente = toneText(activeItem?.toni?.[tono], durata);
+        speakAssistant(testoCorrente || 'Nessuna spiegazione disponibile per questa opera.');
+        return;
+      }
+      const order = DURATE_CONFIG.map(d => d.key);
+      const idx = order.indexOf(durata);
+      const nextIdx = Math.max(0, Math.min(order.length - 1, idx + (azione === 'aumenta' ? 1 : -1)));
+      if (nextIdx === idx) {
+        speakAssistant(azione === 'aumenta' ? 'Questa è già la spiegazione più lunga disponibile.' : 'Questa è già la spiegazione più breve disponibile.');
+        return;
+      }
+      const nuovaDurata = order[nextIdx];
+      setDurata(nuovaDurata);
+      speakAssistant(toneText(activeItem?.toni?.[tono], nuovaDurata) || 'Nessun contenuto disponibile per questa durata.');
+
+    } else if (categoria === 'adattamento') {
+      const order = TONI_CONFIG.map(t => t.key);
+      const idx = order.indexOf(tono);
+      const nextIdx = Math.max(0, Math.min(order.length - 1, idx + (azione === 'avanza' ? 1 : -1)));
+      if (nextIdx === idx) {
+        speakAssistant(azione === 'avanza' ? 'Questo è già il tono più avanzato disponibile.' : 'Questo è già il tono più semplice disponibile.');
+        return;
+      }
+      const nuovoTono = order[nextIdx];
+      setTono(nuovoTono);
+      speakAssistant(toneText(activeItem?.toni?.[nuovoTono], durata) || 'Nessun contenuto disponibile per questo tono.');
+
+    } else if (categoria === 'dettagli') {
+      if (azione === 'autore') {
+        speakAssistant(operaInfo?.autore ? `L'autore è ${operaInfo.autore}.` : "Non ho informazioni sull'autore di quest'opera.");
+      } else {
+        const stile = operaInfo?.tecnica || operaInfo?.tipo;
+        speakAssistant(stile ? `Lo stile è: ${stile}.` : 'Non ho informazioni sullo stile di quest\'opera.');
+      }
+
+    } else if (categoria === 'logistica') {
+      locateAmenity(azione === 'uscita' ? 'U' : 'bagno');
+    }
+  }
+
+  // Il ref punta sempre all'ultima versione di handleVoiceTranscript (che
+  // chiude su tono/durata/activeItem/operaInfo correnti) — vedi commento
+  // sulla dichiarazione del ref più sopra.
+  React.useEffect(() => {
+    handleVoiceTranscriptRef.current = handleVoiceTranscript;
+  });
+
+  // Il comando logistico resta valido solo per l'opera per cui è stato
+  // chiesto: cambiando opera si torna a evidenziare la sua sala normalmente.
+  React.useEffect(() => {
+    setLogisticsTarget(null);
+  }, [operaGroup]);
 
   function toggleMic() {
     if (!micSupported || !recognitionRef.current) return;
@@ -637,6 +822,31 @@ function VisitaItemScreen({
       try { recognitionRef.current.stop(); } catch (_) {}
     }
   }
+
+  // Precarica le immagini di TUTTE le opere della visita non appena questa
+  // viene avviata (sia per la docente che per ogni studente, ognuno sul
+  // proprio dispositivo), così la navigazione tra un'opera e l'altra è
+  // fluida — l'immagine è già in cache invece di scaricarsi solo quando ci
+  // si arriva sopra. Gira una sola volta per visita (chiave sull'elenco
+  // completo dei gruppi opera, non sull'item corrente), in background e
+  // senza bloccare né rifare nulla se una singola immagine fallisce.
+  React.useEffect(() => {
+    if (!visitaItems.length) return;
+    let cancelled = false;
+    const allIds = visitaItems.flatMap(g => g.itemIds || []);
+    Promise.allSettled(allIds.map(id =>
+      fetch(`/api/items/${encodeURIComponent(id)}`).then(r => r.json()).then(d => d.data)
+    )).then(results => {
+      if (cancelled) return;
+      results.forEach(res => {
+        if (res.status === 'fulfilled' && res.value?.image) {
+          const img = new Image();
+          img.src = res.value.image;
+        }
+      });
+    });
+    return () => { cancelled = true; };
+  }, [visitaItems]);
 
   // Carica tutti gli item del gruppo opera corrente
   React.useEffect(() => {
@@ -664,22 +874,23 @@ function VisitaItemScreen({
     setActiveItem(findBestItem(allItems, tono, durata));
   }, [allItems, tono, durata]);
 
-  // Fallback per l'immagine: molti item non hanno un campo "image" proprio
-  // valorizzato (es. creati prima dell'autofill dall'opera, o content type
-  // "indipendente" senza URL inserito) — in quel caso recuperiamo l'immagine
-  // dell'opera collegata, così la scheda "Opera" mostra comunque qualcosa
-  // invece di restare vuota.
-  const [operaFallbackImg, setOperaFallbackImg] = React.useState('');
+  // Dati dell'opera collegata all'item corrente: servono sia come fallback
+  // per l'immagine (molti item non hanno un campo "image" proprio valorizzato
+  // — es. creati prima dell'autofill dall'opera, o content type
+  // "indipendente" senza URL inserito), sia per rispondere ai comandi vocali
+  // "Dettagli" (chi è l'autore / qual è lo stile).
+  const [operaInfo, setOperaInfo] = React.useState(null);
+  const operaFallbackImg = operaInfo?.immagine || '';
   React.useEffect(() => {
-    setOperaFallbackImg('');
-    if (activeItem?.image || !activeItem?.museumId || !operaGroup?.operaId) return;
+    setOperaInfo(null);
+    if (!activeItem?.museumId || !operaGroup?.operaId) return;
     let cancelled = false;
     fetch(`/api/opere?codiceIsil=${encodeURIComponent(activeItem.museumId)}`)
       .then(r => r.json())
       .then(d => {
         if (cancelled) return;
         const op = (d.data || []).find(o => o.operaId === operaGroup.operaId);
-        if (op?.immagine) setOperaFallbackImg(op.immagine);
+        if (op) setOperaInfo(op);
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -940,7 +1151,11 @@ function VisitaItemScreen({
                 </div>
 
                 {activePanel === 'mappa' && (
-                  <VisitaItemRoomMap museumId={activeItem.museumId} operaId={operaGroup?.operaId || activeItem.operaId} />
+                  <VisitaItemRoomMap
+                    museumId={activeItem.museumId}
+                    operaId={operaGroup?.operaId || activeItem.operaId}
+                    logisticsTarget={logisticsTarget}
+                  />
                 )}
                 {activePanel === 'opera' && (activeItem.image || operaFallbackImg) && (
                   <img
@@ -1473,6 +1688,22 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   const [visitaNome,        setVisitaNome]        = React.useState('');
   const [quiz,              setQuiz]              = React.useState(null);
   const [audioAvviato,      setAudioAvviato]      = React.useState(false);
+  const [visitaItems,       setVisitaItems]       = React.useState([]);
+
+  // Elenco ordinato dei gruppi opera della visita: serve a VisitaItemScreen
+  // per precaricare le immagini di tutte le opere non appena la visita parte.
+  React.useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}`);
+        const d = await r.json();
+        const groups = d.ok ? (d.data?.operaGroups || []) : [];
+        if (!cancelled) setVisitaItems(groups); // [{ operaId, itemIds }]
+      } catch (_) {}
+    })();
+    return () => { cancelled = true; };
+  }, [codice]);
 
   React.useEffect(() => {
     const es = new EventSource(`/api/sessioni/${encodeURIComponent(codice)}/stream`);
@@ -1536,6 +1767,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       quiz={quiz}
       onRispondiQuiz={handleRispondiQuiz}
       audioAvviato={audioAvviato}
+      visitaItems={visitaItems}
     />
   );
 
@@ -1926,7 +2158,7 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
    nothing if the museum has no geoJson floor plan or the
    opera's sala isn't found in it (only shown "se disponibile").
 ───────────────────────────────────────────────────────── */
-function VisitaItemRoomMap({ museumId, operaId }) {
+function VisitaItemRoomMap({ museumId, operaId, logisticsTarget = null }) {
   const [sala,     setSala]     = React.useState(null);
   const [museo,    setMuseo]    = React.useState(null);
   const [floorDef, setFloorDef] = React.useState(null);
@@ -1953,12 +2185,30 @@ function VisitaItemRoomMap({ museumId, operaId }) {
       .catch(() => setMuseo(null));
   }, [museumId]);
 
+  // Stanza/piano da evidenziare: normalmente la sala dell'opera corrente, ma
+  // un comando vocale logistico ("dov'è l'uscita/la toilette") la sostituisce
+  // temporaneamente con l'amenity richiesta sul piano più vicino già scelto
+  // in VisitaItemScreen — qui basta caricare direttamente quel piano invece
+  // di ricercare la sala tra tutti i piani.
+  const targetRoomId = logisticsTarget?.roomId ?? (sala != null ? String(sala) : null);
+
   React.useEffect(() => {
     setFloorDef(null);
     setGeoJson(null);
-    if (!museo?.mappaInterna?.length || sala == null) return;
+    if (!museo?.mappaInterna?.length) return;
     let cancelled = false;
     (async () => {
+      if (logisticsTarget) {
+        const piano = museo.mappaInterna.find(p => p.piano === logisticsTarget.piano) || museo.mappaInterna[0];
+        if (!piano?.geoJsonUrl) return;
+        try {
+          const res = await fetch(piano.geoJsonUrl);
+          const geo = await res.json();
+          if (!cancelled) { setFloorDef(piano); setGeoJson(geo); }
+        } catch (_) { /* mappa non disponibile per quel piano */ }
+        return;
+      }
+      if (sala == null) return;
       for (const piano of museo.mappaInterna) {
         if (!piano.geoJsonUrl) continue;
         try {
@@ -1973,7 +2223,7 @@ function VisitaItemRoomMap({ museumId, operaId }) {
       }
     })();
     return () => { cancelled = true; };
-  }, [museo, sala]);
+  }, [museo, sala, logisticsTarget]);
 
   if (!floorDef || !geoJson) return null;
 
@@ -1985,7 +2235,9 @@ function VisitaItemRoomMap({ museumId, operaId }) {
     <div className="visita-item-map">
       <p className="visita-item-map-title">
         <i className="fa-solid fa-map-location-dot" style={{ marginRight: '6px' }} />
-        Ti trovi in: {roomDisplayName(String(sala))}
+        {logisticsTarget
+          ? <>Stai cercando: {AMENITY_ICONS[logisticsTarget.roomId]?.label || 'Punto di interesse'}</>
+          : <>Ti trovi in: {roomDisplayName(String(sala))}</>}
       </p>
       <div className="geo-floorplan-wrap">
         <img className="geo-floorplan-img" src={floorDef.url} alt={floorDef.piano || 'Planimetria'} />
@@ -1998,10 +2250,16 @@ function VisitaItemRoomMap({ museumId, operaId }) {
           {geoJson.features.map(f => {
             const roomId = f.properties.room_id;
             const points = f.geometry.coordinates[0].map(([x, y]) => `${x},${-y}`).join(' ');
+            const isTarget = targetRoomId != null && roomId === targetRoomId;
             if (AMENITY_ICONS[roomId]) {
-              return <polygon key={f.properties.fid} points={points} className="geo-amenity-polygon" />;
+              return (
+                <polygon
+                  key={f.properties.fid}
+                  points={points}
+                  className={`geo-amenity-polygon${isTarget ? ' geo-amenity-polygon--target' : ''}`}
+                />
+              );
             }
-            const isTarget = roomId === String(sala);
             return (
               <polygon
                 key={f.properties.fid}
@@ -2013,13 +2271,14 @@ function VisitaItemRoomMap({ museumId, operaId }) {
         </svg>
         {geoJson.features.filter(f => AMENITY_ICONS[f.properties.room_id]).map(f => {
           const amenity  = AMENITY_ICONS[f.properties.room_id];
+          const isTarget = targetRoomId != null && f.properties.room_id === targetRoomId;
           const centroid = ringCentroid(f.geometry.coordinates[0]);
           const left = (centroid.x / (floorDef.imgWidth  || 437)) * 100;
           const top  = (centroid.y / (floorDef.imgHeight || 600)) * 100;
           return (
             <div
               key={f.properties.fid}
-              className="geo-amenity-marker"
+              className={`geo-amenity-marker${isTarget ? ' geo-amenity-marker--target' : ''}`}
               style={{ left: `${left}%`, top: `${top}%` }}
               title={amenity.label}
             >
