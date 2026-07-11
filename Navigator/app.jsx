@@ -664,6 +664,27 @@ function VisitaItemScreen({
     setActiveItem(findBestItem(allItems, tono, durata));
   }, [allItems, tono, durata]);
 
+  // Fallback per l'immagine: molti item non hanno un campo "image" proprio
+  // valorizzato (es. creati prima dell'autofill dall'opera, o content type
+  // "indipendente" senza URL inserito) — in quel caso recuperiamo l'immagine
+  // dell'opera collegata, così la scheda "Opera" mostra comunque qualcosa
+  // invece di restare vuota.
+  const [operaFallbackImg, setOperaFallbackImg] = React.useState('');
+  React.useEffect(() => {
+    setOperaFallbackImg('');
+    if (activeItem?.image || !activeItem?.museumId || !operaGroup?.operaId) return;
+    let cancelled = false;
+    fetch(`/api/opere?codiceIsil=${encodeURIComponent(activeItem.museumId)}`)
+      .then(r => r.json())
+      .then(d => {
+        if (cancelled) return;
+        const op = (d.data || []).find(o => o.operaId === operaGroup.operaId);
+        if (op?.immagine) setOperaFallbackImg(op.immagine);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [activeItem, operaGroup]);
+
   React.useEffect(() => {
     const added = messages.length - prevLenRef.current;
     if (added > 0 && isDocente && !chatOpen) setUnread(u => u + added);
@@ -921,8 +942,16 @@ function VisitaItemScreen({
                 {activePanel === 'mappa' && (
                   <VisitaItemRoomMap museumId={activeItem.museumId} operaId={operaGroup?.operaId || activeItem.operaId} />
                 )}
-                {activePanel === 'opera' && activeItem.image && (
-                  <img className="visita-item-img" src={activeItem.image} alt={operaGroup?.operaId || activeItem.operaId} />
+                {activePanel === 'opera' && (activeItem.image || operaFallbackImg) && (
+                  <img
+                    className="visita-item-img"
+                    src={activeItem.image || operaFallbackImg}
+                    alt={operaGroup?.operaId || activeItem.operaId}
+                    onError={(e) => { e.target.style.display = 'none'; }}
+                  />
+                )}
+                {activePanel === 'opera' && !activeItem.image && !operaFallbackImg && (
+                  <p className="visita-item-empty">Nessuna immagine disponibile per questa opera.</p>
                 )}
 
                 <div className="visita-toni-bar">

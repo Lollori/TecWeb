@@ -1979,9 +1979,18 @@ window._showAutoreVisitaForm = async function (visitaId) {
         }
 
         _vfMyItems = dOwn || [];
+        // Verifica l'acquisto direttamente sugli item appena scaricati per QUESTO
+        // museo (hanno già acquirentiIds dal DB, sono la fonte di verità), invece
+        // di affidarsi solo a getMktPurchases()/allMktItems — quella cache globale
+        // resta vuota finché non si visita almeno una volta il Marketplace nella
+        // sessione corrente, quindi da "Nuova Visita" gli item acquistati a volte
+        // non comparivano affatto. Il localStorage resta un fallback ottimistico
+        // per un acquisto appena fatto e non ancora rispecchiato in questa fetch.
         const purchases = getMktPurchases();
         _vfAcquistatiItems = (dPublic || [])
-            .filter(it => purchases.items.includes(it._id) && it.authorId !== SESSION.userId);
+            .filter(it => it.authorId !== SESSION.userId && (
+                (it.acquirentiIds || []).includes(SESSION.userId) || purchases.items.includes(it._id)
+            ));
         _renderVfItems();
     }
     window._loadVfItemsForMuseo = _loadVfItemsForMuseo;
