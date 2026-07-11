@@ -1,6 +1,6 @@
 /* ============================================================
-   Marketplace – Dashboard: tab navigazione museo, analytics,
-   KPI, donut chart, pictograph, view-toggle, print.
+   Marketplace – Dashboard: tab navigazione museo, analytics KPI,
+   view-toggle, print.
    ============================================================ */
 
 /* ── Museo detail header ── */
@@ -36,36 +36,38 @@
 .tab-btn:hover  { color: var(--text-dark); }
 .tab-btn.active { color: var(--magenta); border-bottom-color: var(--magenta); }
 
+/* ── Analytics: sezioni collassabili (Attività Recenti, Marketplace, …) ── */
+.analytics-block-title {
+    display: flex; align-items: center; gap: 10px;
+    font-weight: 800; font-size: 1.1rem;
+    color: var(--text-dark); margin-bottom: 20px;
+    padding-bottom: 12px; cursor: pointer; user-select: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.06);
+}
+.analytics-block-title i:first-child { color: var(--magenta); font-size: 1rem; }
+.analytics-block-chevron {
+    margin-left: auto; font-size: 0.85rem !important;
+    color: var(--text-muted) !important; transition: transform 0.2s ease;
+}
+.analytics-block-chevron.collapsed { transform: rotate(-90deg); }
+
 /* ── Analytics bar tracks ── */
 .analytics-bar-track { background: #e2e8f0; border-radius: 4px; height: 8px; }
-.analytics-col-track { background: #e2e8f0; border-radius: 4px; }
 
 /* ── KPI card ── */
 .kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
 .kpi-label { font-size: 0.82rem; color: #64748b; }
 
-/* ── Donut chart ── */
-.donut-title       { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.donut-center-val  { fill: #1e293b; }
-.donut-legend-text { font-size: 0.7rem; color: #64748b; }
-.donut-legend-val  { color: #1e293b; }
-
-/* ── Pictograph ── */
-.picto-wrap  { display: flex; flex-direction: column; gap: 10px; }
-.picto-row   { display: flex; align-items: center; gap: 10px; }
-.picto-label {
-    font-size: 0.78rem; font-weight: 600; color: #475569;
-    min-width: 110px; flex-shrink: 0; text-align: right;
+/* Sfondo magenta smorzato (translucido, non a tinta piena): inverte lo
+   schema del glass-card senza un rosa troppo acceso. */
+.kpi-card {
+    background: rgba(255, 0, 127, 0.5);
+    border-color: rgba(255, 0, 127, 0.3);
+    box-shadow: 0 8px 24px var(--magenta-glow, rgba(255,0,127,0.25));
 }
-.picto-dots  { display: flex; flex-wrap: wrap; gap: 5px; flex: 1; }
-.picto-dot   { font-size: 0.82rem; color: #6366f1; }
-.picto-count { font-size: 0.75rem; font-weight: 700; color: #94a3b8; min-width: 20px; text-align: right; }
-.picto-key {
-    font-size: 0.7rem; color: #94a3b8;
-    margin-top: 6px; padding-top: 8px;
-    border-top: 1px solid rgba(0,0,0,0.06);
-    display: flex; align-items: center; gap: 5px;
-}
+.kpi-card .kpi-icon  { color: rgba(255,255,255,0.85); }
+.kpi-card .kpi-value { color: #ffffff; }
+.kpi-card .kpi-label { color: rgba(255,255,255,0.85); font-weight: 600; }
 
 /* ── View-toggle (tabella / griglia) ── */
 .view-toggle-btn {
@@ -78,20 +80,18 @@
 /* ── Dark mode ── */
 [data-theme="dark"] .detail-tabs    { border-bottom-color: rgba(255, 255, 255, 0.08); }
 [data-theme="dark"] .tab-btn:hover  { color: #e8edf5; }
-
-[data-theme="dark"] .analytics-bar-track { background: rgba(255, 255, 255, 0.1); }
-[data-theme="dark"] .analytics-col-track { background: rgba(255, 255, 255, 0.1); }
+[data-theme="dark"] .analytics-block-title { color: #e8edf5; border-bottom-color: rgba(255, 255, 255, 0.08); }
+[data-theme="dark"] .analytics-bar-track   { background: rgba(255, 255, 255, 0.1); }
 
 [data-theme="dark"] .kpi-icon          { color: rgba(255,255,255,0.18); }
 [data-theme="dark"] .kpi-label         { color: #94a3b8; }
-[data-theme="dark"] .donut-title       { color: #64748b; }
-[data-theme="dark"] .donut-center-val  { fill: #e2e8f0; }
-[data-theme="dark"] .donut-legend-text { color: #94a3b8; }
-[data-theme="dark"] .donut-legend-val  { color: #e2e8f0; }
-
-[data-theme="dark"] .picto-label { color: #cbd5e1; }
-[data-theme="dark"] .picto-count { color: #64748b; }
-[data-theme="dark"] .picto-key   { border-top-color: rgba(255,255,255,0.06); }
+[data-theme="dark"] .kpi-card {
+    background: rgba(255, 0, 127, 0.4);
+    border-color: rgba(255, 0, 127, 0.3);
+}
+[data-theme="dark"] .kpi-card .kpi-icon  { color: rgba(255,255,255,0.85); }
+[data-theme="dark"] .kpi-card .kpi-value { color: #ffffff; }
+[data-theme="dark"] .kpi-card .kpi-label { color: rgba(255,255,255,0.85); }
 
 [data-theme="dark"] .view-toggle-btn.vt-inactive { background: #1a2235; color: #94a3b8; }
 

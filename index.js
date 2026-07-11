@@ -34,6 +34,13 @@ try {
     console.error('[index.js] ERRORE nel caricare scripts/items.js:', e.message);
 }
 
+let carts;
+try {
+    carts = require(global.rootDir + '/scripts/carts.js');
+} catch(e) {
+    console.error('[index.js] ERRORE nel caricare scripts/carts.js:', e.message);
+}
+
 const sessioni = require(global.rootDir + '/scripts/sessioni.js');
 const tts = require(global.rootDir + '/scripts/tts.js');
 
@@ -282,6 +289,26 @@ app.delete('/api/items/:id', async function (req, res) {
 
 app.post('/api/items/:id/acquista', async function (req, res) {
     const result = await items.acquista(mongoCredentials, req.params.id, req.body.userId);
+    res.json(result);
+});
+
+/* ========================== */
+/* API CARRELLI                */
+/* ========================== */
+
+// Solo per aggregazione lato admin (analytics) — nessun filtro per utente.
+app.get('/api/carts', async function (_req, res) {
+    const result = await carts.getAll(mongoCredentials);
+    res.json(result);
+});
+
+app.get('/api/carts/:userId', async function (req, res) {
+    const result = await carts.getOne(mongoCredentials, req.params.userId);
+    res.json(result);
+});
+
+app.put('/api/carts/:userId', async function (req, res) {
+    const result = await carts.save(mongoCredentials, req.params.userId, req.body);
     res.json(result);
 });
 

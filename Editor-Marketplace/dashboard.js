@@ -3418,22 +3418,16 @@ async function initAdminOpere() {
         <!-- Pannello filtri -->
         <div id="adminOpereFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
             <div class="row g-3 align-items-end">
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="custom-label mb-1" style="font-size:0.82rem;">Tipo</label>
                     <select id="filterOpereTipo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
                         <option value="">Tutti i tipi</option>
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ISIL)</label>
                     <select id="filterOpereMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
                         <option value="">Tutti i musei</option>
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Licenza</label>
-                    <select id="filterOpereLicenza" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
-                        <option value="">Tutte le licenze</option>
                     </select>
                 </div>
                 <div class="col-12 d-flex justify-content-end">
@@ -3448,9 +3442,9 @@ async function initAdminOpere() {
         <div id="adminOpereContent">
             <div class="glass-card p-4">
                 <table class="table table-hover mb-0">
-                    ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo', 'Licenza'])}
+                    ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo'])}
                     <tbody id="adminOpereBody">
-                        <tr><td colspan="6" class="text-center text-muted py-4">
+                        <tr><td colspan="5" class="text-center text-muted py-4">
                             <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
                         </td></tr>
                     </tbody>
@@ -3473,7 +3467,6 @@ async function initAdminOpere() {
 function _populateAdminOpereFilters(lista) {
     const tipi    = [...new Set(lista.map(op => op.tipo).filter(Boolean))].sort();
     const musei   = [...new Set(lista.map(op => op.codiceIsil).filter(Boolean))].sort();
-    const licenze = [...new Set(lista.map(op => op.licenza).filter(Boolean))].sort();
     const sel = (id, opts, label) => {
         const el = document.getElementById(id);
         if (el) el.innerHTML = `<option value="">${label}</option>` +
@@ -3481,7 +3474,6 @@ function _populateAdminOpereFilters(lista) {
     };
     sel('filterOpereTipo',    tipi,    'Tutti i tipi');
     sel('filterOpereMuseo',   musei,   'Tutti i musei');
-    sel('filterOpereLicenza', licenze, 'Tutte le licenze');
 }
 
 window.toggleAdminOpereFilters = function () {
@@ -3494,7 +3486,7 @@ window.toggleAdminOpereFilters = function () {
 };
 
 window.resetAdminOpereFilters = function () {
-    ['filterOpereTipo', 'filterOpereMuseo', 'filterOpereLicenza'].forEach(id => {
+    ['filterOpereTipo', 'filterOpereMuseo'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = '';
     });
@@ -3514,7 +3506,6 @@ function filterAdminOpere() {
     const q       = (document.getElementById('searchAdminOpere')?.value  || '').toLowerCase();
     const tipo    =  document.getElementById('filterOpereTipo')?.value    || '';
     const museo   =  document.getElementById('filterOpereMuseo')?.value   || '';
-    const licenza =  document.getElementById('filterOpereLicenza')?.value || '';
 
     let lista = allAdminOpere;
     if (q)       lista = lista.filter(op =>
@@ -3523,7 +3514,6 @@ function filterAdminOpere() {
         (op.tipo    || '').toLowerCase().includes(q));
     if (tipo)    lista = lista.filter(op => op.tipo    === tipo);
     if (museo)   lista = lista.filter(op => op.codiceIsil === museo);
-    if (licenza) lista = lista.filter(op => op.licenza === licenza);
     renderAdminOpere(lista);
 }
 
@@ -3559,7 +3549,6 @@ function renderAdminOpere(lista) {
                         <small class="text-muted">${op.autore || '—'}</small>
                         <div class="d-flex flex-wrap gap-1 mt-2">
                             ${op.tipo    ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.tipo}</span>` : ''}
-                            ${op.licenza ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.licenza}</span>` : ''}
                             ${op.codiceIsil ? `<span class="tag-bubble" style="font-size:0.72rem;">${op.codiceIsil}</span>` : ''}
                         </div>
                     </div>
@@ -3583,13 +3572,13 @@ function renderAdminOpere(lista) {
     container.innerHTML = `
         <div class="glass-card p-4">
             <table class="table table-hover mb-0">
-                ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo', 'Licenza'])}
+                ${adminTableHeader(['Titolo', 'Autore', 'Tipo', 'Museo'])}
                 <tbody id="adminOpereBody"></tbody>
             </table>
         </div>`;
     const tbody = document.getElementById('adminOpereBody');
     if (!lista.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted py-4">Nessuna opera trovata.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-muted py-4">Nessuna opera trovata.</td></tr>';
         return;
     }
     tbody.innerHTML = lista.map(op => `
@@ -3598,7 +3587,6 @@ function renderAdminOpere(lista) {
             <td>${op.autore || '—'}</td>
             <td>${op.tipo    ? `<span class="tag-bubble" style="font-size:0.78rem;">${op.tipo}</span>`    : '—'}</td>
             <td><small class="text-muted">${op.codiceIsil || '—'}</small></td>
-            <td>${op.licenza ? `<span class="tag-bubble" style="font-size:0.78rem;">${op.licenza}</span>` : '—'}</td>
             <td>${adminActionBtns(
                 `adminEditOpera('${op._id}')`,
                 `adminDeleteOpera('${op._id}','${(op.operaId || '').replace(/'/g, "\\'")}')`
@@ -3652,7 +3640,7 @@ window.adminEditOpera = function (id) {
                     <label class="custom-label">Datazione</label>
                     <input type="text" id="aoDatazione" class="custom-input" value="${op.datazione || ''}">
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="custom-label">Linguaggio</label>
                     <select id="aoLinguaggio" class="custom-input">
                         ${['semplice','infantile','medio','specialistico'].map(v =>
@@ -3660,19 +3648,12 @@ window.adminEditOpera = function (id) {
                         ).join('')}
                     </select>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label class="custom-label">Lunghezza</label>
                     <select id="aoLunghezza" class="custom-input">
                         ${[['15s','15 secondi'],['1min','1 minuto'],['4min','4 minuti']].map(([v,l]) =>
                             `<option value="${v}" ${op.lunghezza === v ? 'selected' : ''}>${l}</option>`
                         ).join('')}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label class="custom-label">Licenza</label>
-                    <select id="aoLicenza" class="custom-input">
-                        <option value="gratuita" ${op.licenza === 'gratuita' ? 'selected' : ''}>Gratuita</option>
-                        <option value="premium"  ${op.licenza === 'premium'  ? 'selected' : ''}>Premium</option>
                     </select>
                 </div>
                 <div class="col-12">
@@ -3714,7 +3695,7 @@ window.adminEditOpera = function (id) {
             datazione:  document.getElementById('aoDatazione').value.trim(),
             linguaggio: document.getElementById('aoLinguaggio').value,
             lunghezza:  document.getElementById('aoLunghezza').value,
-            licenza:    document.getElementById('aoLicenza').value,
+            licenza:    op.licenza,
             immagine:   document.getElementById('aoImmagine').value.trim(),
             descrizione:document.getElementById('aoDescrizione').value.trim(),
             testo:      document.getElementById('aoTesto').value.trim(),
@@ -4034,7 +4015,7 @@ async function initAdminItems() {
         <!-- Tabella -->
         <div class="glass-card p-4">
             <table class="table table-hover mb-0">
-                ${adminTableHeader(['Opera', 'Museo', 'Contenuto', 'Autore'])}
+                ${adminTableHeader(['Opera', 'Museo', 'Tono', 'Autore'])}
                 <tbody id="adminItemsBody">
                     <tr><td colspan="5" class="text-center text-muted py-4">
                         <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento…
@@ -4107,12 +4088,11 @@ function renderAdminItems(lista) {
         return;
     }
     tbody.innerHTML = lista.map(it => {
-        const preview = toneText(it.toni?.semplice).slice(0, 60);
         return `
         <tr>
-            <td class="fw-bold">${itemTitle(it)} ${itemTypeBadge(it)}</td>
+            <td class="fw-bold">${itemTitle(it)}<div class="mt-1">${itemTypeBadge(it)}</div></td>
             <td><small class="text-muted">${it.museumId || '—'}</small></td>
-            <td><small>${preview}${preview.length >= 60 ? '…' : ''}</small></td>
+            <td>${toneBadgesHtml(it) || '<small class="text-muted">—</small>'}</td>
             <td><small class="text-muted">${it.authorId || '—'}</small></td>
             <td>${adminActionBtns(
                 `adminEditItem('${it._id}')`,
@@ -4148,7 +4128,8 @@ window.adminEditItem = function (id) {
             <i class="fa-solid fa-arrow-left"></i> Torna agli items
         </button>
         <h2 class="museo-detail-title">Modifica Item</h2>
-        <p class="museo-detail-sub">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera'}: ${itemTitle(it)} ${itemTypeBadge(it)}</p>
+        <p class="museo-detail-sub mb-1">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera'}: ${itemTitle(it)}</p>
+        <div class="mb-2">${itemTypeBadge(it)}</div>
         <div class="glass-card p-5 mt-4">
             <form id="adminItemForm" class="row g-4">
                 <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
@@ -4249,63 +4230,126 @@ async function initAdminAnalytics() {
                 <i class="fa-solid fa-file-pdf me-1"></i> Esporta PDF
             </button>
         </div>
+
         <div id="analyticsKpis" class="row g-4 mb-5">
             <div class="col-12 text-center text-muted py-4">
                 <i class="fa-solid fa-spinner fa-spin me-2"></i>Caricamento dati…
             </div>
         </div>
-        <div class="row g-4">
-            <div class="col-md-6 d-flex flex-column gap-4">
-                <div class="glass-card p-4">
-                    <h5 class="fw-bold mb-3">Distribuzione Visite</h5>
-                    <div id="analyticsVisteChart" class="d-flex justify-content-around align-items-center gap-3"></div>
+
+        <div class="analytics-block mb-5">
+            <h4 class="analytics-block-title" onclick="toggleAnalyticsBlock('recentActivityBody','recentActivityChevron')">
+                <i class="fa-solid fa-clock-rotate-left"></i>Attività Recenti
+                <i class="fa-solid fa-chevron-down analytics-block-chevron" id="recentActivityChevron"></i>
+            </h4>
+            <div id="recentActivityBody" class="row g-4">
+                <div class="col-md-3">
+                    <div class="glass-card p-3">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-image me-1" style="color:#e91e8c;"></i>Opere</h6>
+                        <div id="recentOpere"></div>
+                    </div>
                 </div>
-                <div class="glass-card p-3">
-                    <h6 class="fw-bold mb-2">Orari Consigliati per la Visita <small class="text-muted fw-normal" style="font-size:0.68rem;">(dati stimati)</small></h6>
-                    <div id="analyticsOrariChart"></div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-building-columns me-1" style="color:#e91e8c;"></i>Musei</h6>
+                        <div id="recentMusei"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-layer-group me-1" style="color:#e91e8c;"></i>Items</h6>
+                        <div id="recentItems"></div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="glass-card p-3">
+                        <h6 class="fw-bold mb-3"><i class="fa-solid fa-route me-1" style="color:#e91e8c;"></i>Visite</h6>
+                        <div id="recentVisite"></div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-6">
-                <div class="glass-card p-4">
-                    <h5 class="fw-bold mb-3">Opere per Visita</h5>
-                    <div id="analyticsOpereChart"></div>
+        </div>
+
+        <div class="analytics-block">
+            <h4 class="analytics-block-title" onclick="toggleAnalyticsBlock('marketplaceBody','marketplaceChevron')">
+                <i class="fa-solid fa-store"></i>Marketplace
+                <i class="fa-solid fa-chevron-down analytics-block-chevron" id="marketplaceChevron"></i>
+            </h4>
+            <div id="marketplaceBody" class="row g-4">
+                <div class="col-12">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold mb-3">Tag più Utilizzati nel Marketplace</h5>
+                        <div id="analyticsTagsChart"></div>
+                    </div>
                 </div>
-            </div>
-            <div class="col-12">
-                <div class="glass-card p-4">
-                    <h5 class="fw-bold mb-3">Entrate Totali per Utente</h5>
-                    <div id="analyticsRevenueChart"></div>
+                <div class="col-md-6">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold mb-0">Top 5 Items nel Carrello</h5>
+                        <p class="text-muted mb-3" style="font-size:0.82rem;">I più desiderati</p>
+                        <div id="analyticsTopCartItems"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="glass-card p-4">
+                        <h5 class="fw-bold mb-0">Top 5 Visite nel Carrello</h5>
+                        <p class="text-muted mb-3" style="font-size:0.82rem;">I più desiderati</p>
+                        <div id="analyticsTopCartVisite"></div>
+                    </div>
                 </div>
             </div>
         </div>`;
 
     try {
-        const [rU, rM, rOp, rV, rIt] = await Promise.all([
+        const [rU, rM, rOp, rV, rIt, rC] = await Promise.all([
             fetch('/api/utenti'), fetch('/api/musei'),
             fetch('/api/opere'),  fetch('/api/visite'), fetch('/api/items'),
+            fetch('/api/carts'),
         ]);
-        const [dU, dM, dOp, dV, dIt] = await Promise.all([
-            rU.json(), rM.json(), rOp.json(), rV.json(), rIt.json(),
+        const [dU, dM, dOp, dV, dIt, dC] = await Promise.all([
+            rU.json(), rM.json(), rOp.json(), rV.json(), rIt.json(), rC.json(),
         ]);
 
         const utenti  = dU.ok  ? dU.data  : [];
         const musei   = dM.ok  ? dM.data  : [];
         const opere   = dOp.ok ? dOp.data : [];
         const visite  = dV.ok  ? dV.data  : [];
+        const allCarts = dC.ok ? dC.data : [];
         const items   = dIt.ok ? dIt.data : [];
 
-        const visPubliche     = visite.filter(v => v.pubblica).length;
-        const visGratuite     = visite.filter(v => !v.prezzo || v.prezzo === 0).length;
-        const totalAcquirenti = visite.reduce((s, v) => s + (v.acquirenti || 0), 0);
+        const userMap = {};
+        utenti.forEach(u => { userMap[u.userId] = u.username || u.userId; });
 
-        const roleCount = { curatore: 0, autore: 0, visitatore: 0, admin: 0 };
-        utenti.forEach(u => { if (roleCount[u.ruolo] !== undefined) roleCount[u.ruolo]++; else roleCount[u.ruolo] = 1; });
+        // L'_id di Mongo incorpora un timestamp di creazione: ordinandolo
+        // in modo decrescente si ottengono le aggiunte più recenti senza
+        // bisogno di un campo createdAt dedicato negli schemi.
+        const mostRecent = (list) => [...list].sort((a, b) => (a._id < b._id ? 1 : -1)).slice(0, 3);
+
+        const recentListHtml = (list, nameFn, creatorFn) => {
+            if (!list.length) return '<p class="text-muted mb-0" style="font-size:0.85rem;">Nessun dato.</p>';
+            return list.map((x, i) => `
+                <div class="d-flex justify-content-between align-items-center gap-2 ${i < list.length - 1 ? 'mb-2 pb-2' : ''}"
+                     ${i < list.length - 1 ? 'style="border-bottom:1px solid rgba(0,0,0,0.06);"' : ''}>
+                    <small class="fw-bold" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nameFn(x)}</small>
+                    <small class="text-muted flex-shrink-0" style="font-size:0.72rem;">${userMap[creatorFn(x)] || creatorFn(x) || '—'}</small>
+                </div>`).join('');
+        };
+
+        document.getElementById('recentOpere').innerHTML =
+            recentListHtml(mostRecent(opere), op => op.operaId, op => op.creatoDa);
+        document.getElementById('recentMusei').innerHTML =
+            recentListHtml(mostRecent(musei), m => m.nome, m => m.curatoreId);
+        document.getElementById('recentItems').innerHTML =
+            recentListHtml(mostRecent(items), it => itemTitle(it), it => it.authorId);
+        document.getElementById('recentVisite').innerHTML =
+            recentListHtml(mostRecent(visite), v => v.nomeVisita || v.nomeMnemonico || 'Senza nome', v => v.autoreId);
+
+        const totalAcquirenti = visite.reduce((s, v) => s + (v.acquirenti || 0), 0);
 
         const kpiCard = (val, label, icon) => `
             <div class="col-6 col-md-4 col-lg-2">
-                <div class="glass-card p-3 text-center">
+                <div class="glass-card kpi-card p-3 text-center">
                     <i class="fa-solid ${icon} mb-2 d-block kpi-icon"></i>
-                    <span class="d-block fw-bold h3 mb-1" style="color:#e91e8c;line-height:1;">${val}</span>
+                    <span class="d-block fw-bold h3 mb-1 kpi-value" style="line-height:1;">${val}</span>
                     <small class="kpi-label">${label}</small>
                 </div>
             </div>`;
@@ -4318,102 +4362,79 @@ async function initAdminAnalytics() {
             kpiCard(items.length,    'Items',            'fa-layer-group') +
             kpiCard(totalAcquirenti, 'Acquirenti tot.', 'fa-ticket');
 
-        document.getElementById('analyticsVisteChart').innerHTML =
-            visite.length
-                ? adminPieDonut([
-                    { label: 'Pubbliche', value: visPubliche,                 color: '#e91e8c' },
-                    { label: 'Private',   value: visite.length - visPubliche, color: '#334155' },
-                  ], 'Stato') +
-                  adminPieDonut([
-                    { label: 'Gratuite',    value: visGratuite,                 color: '#22c55e' },
-                    { label: 'A pagamento', value: visite.length - visGratuite, color: '#f59e0b' },
-                  ], 'Prezzo')
-                : '<p class="text-muted text-center w-100">Nessun dato.</p>';
-
-        const orariConsigliati = [
-            { medaglia: '🥇', orario: '17:00–18:00', affluenza: 30 },
-            { medaglia: '🥈', orario: '09:00–10:00', affluenza: 35 },
-            { medaglia: '🥉', orario: '14:00–15:00', affluenza: 40 },
-        ];
-
-        document.getElementById('analyticsOrariChart').innerHTML =
-            `<p class="text-muted mb-2" style="font-size:0.78rem;">Fasce orarie con minore affluenza prevista</p>` +
-            orariConsigliati.map(o => `
-                <div class="d-flex align-items-center gap-2 mb-2 p-2" style="background:rgba(34,197,94,0.08);border-radius:10px;">
-                    <span style="font-size:1.1rem;line-height:1;">${o.medaglia}</span>
-                    <span class="fw-bold flex-grow-1" style="font-size:0.78rem;">${o.orario}</span>
-                    <span class="badge" style="background:#22c55e;font-size:0.68rem;font-weight:600;">${o.affluenza}% affluenza</span>
-                </div>`).join('');
-
-        const opereCounts = visite.map(v => ({
-            nome:  v.nomeVisita || v.nomeMnemonico || 'Senza nome',
-            count: v.opereCount || (v.itemIds || []).length,
+        const tagCounts = {};
+        [...items, ...visite].forEach(x => (x.tags || []).forEach(t => {
+            tagCounts[t] = (tagCounts[t] || 0) + 1;
         }));
-        const avgOpere = opereCounts.length
-            ? opereCounts.reduce((s, o) => s + o.count, 0) / opereCounts.length
-            : 0;
-        const sortedOpere = [...opereCounts].sort((a, b) => b.count - a.count);
-        const maxOpere = sortedOpere[0]?.count || 1;
+        const sortedTags  = Object.entries(tagCounts).sort((a, b) => b[1] - a[1]).slice(0, 8);
+        const maxTagCount = sortedTags[0]?.[1] || 1;
 
-        document.getElementById('analyticsOpereChart').innerHTML =
-            sortedOpere.length
-                ? `<p class="text-muted mb-1">Media: <b style="color:#e91e8c;">${avgOpere.toFixed(1)}</b> opere per visita</p>
-                   <p class="mb-3">
-                     <small class="text-muted"><span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#22c55e;"></span> sopra media &nbsp; <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#f59e0b;"></span> sotto media</small>
-                   </p>` +
-                  sortedOpere.map(o => `
+        document.getElementById('analyticsTagsChart').innerHTML =
+            sortedTags.length
+                ? sortedTags.map(([tag, count]) => `
                     <div class="mb-3">
                         <div class="d-flex justify-content-between mb-1">
-                            <small class="fw-bold">${o.nome}</small>
-                            <small class="text-muted">${o.count}</small>
+                            <small class="fw-bold">#${tag}</small>
+                            <small class="text-muted">${count}</small>
                         </div>
                         <div class="analytics-bar-track">
-                            <div style="width:${maxOpere ? Math.round(o.count / maxOpere * 100) : 0}%;background:${o.count >= avgOpere ? '#22c55e' : '#f59e0b'};border-radius:4px;height:8px;transition:width .4s;"></div>
+                            <div style="width:${Math.round(count / maxTagCount * 100)}%;background:#e91e8c;border-radius:4px;height:8px;transition:width .4s;"></div>
                         </div>
                     </div>`).join('')
-                : '<p class="text-muted">Nessun dato.</p>';
+                : '<p class="text-muted">Nessun tag utilizzato.</p>';
 
-        const userMap = {};
-        utenti.forEach(u => { userMap[u.userId] = u.username || u.userId; });
+        // Leaderboard numerata (diversa dalle barre del grafico tag) per gli
+        // articoli più presenti nei carrelli di tutti gli utenti.
+        const rankListHtml = (rows, nameFn) => {
+            if (!rows.length) return '<p class="text-muted mb-0" style="font-size:0.85rem;">Nessun dato.</p>';
+            const rankColors = ['#e91e8c', '#6366f1', '#f59e0b', '#94a3b8', '#94a3b8'];
+            return rows.map(([entity, count], i) => `
+                <div class="d-flex align-items-center gap-3 ${i < rows.length - 1 ? 'mb-2 pb-2' : ''}"
+                     ${i < rows.length - 1 ? 'style="border-bottom:1px solid rgba(0,0,0,0.06);"' : ''}>
+                    <div style="width:26px;height:26px;border-radius:50%;background:${rankColors[i]};
+                                color:#fff;display:flex;align-items:center;justify-content:center;
+                                font-weight:800;font-size:0.78rem;flex-shrink:0;">${i + 1}</div>
+                    <small class="fw-bold flex-grow-1" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${nameFn(entity)}</small>
+                    <span class="badge" style="background:rgba(233,30,140,0.12);color:#e91e8c;font-size:0.72rem;font-weight:700;">${count}× nel carrello</span>
+                </div>`).join('');
+        };
 
-        const sellerIds = new Set([
-            ...items.filter(it => it.pubblica && (it.metadata?.prezzo || 0) > 0).map(it => it.authorId),
-            ...visite.filter(v => v.pubblica && (v.prezzo || 0) > 0).map(v => v.autoreId),
-        ].filter(Boolean));
-
-        const revenueByUser = {};
-        sellerIds.forEach(id => { revenueByUser[id] = 0; });
-        items.forEach(it => {
-            if (sellerIds.has(it.authorId)) revenueByUser[it.authorId] += (it.metadata?.prezzo || 0) * (it.acquirenti || 0);
+        const cartItemCounts   = {};
+        const cartVisitaCounts = {};
+        allCarts.forEach(c => {
+            (c.items  || []).forEach(id => { cartItemCounts[id]   = (cartItemCounts[id]   || 0) + 1; });
+            (c.visite || []).forEach(id => { cartVisitaCounts[id] = (cartVisitaCounts[id] || 0) + 1; });
         });
-        visite.forEach(v => {
-            if (sellerIds.has(v.autoreId)) revenueByUser[v.autoreId] += (v.prezzo || 0) * (v.acquirenti || 0);
-        });
 
-        const revenueRows = Object.entries(revenueByUser)
-            .map(([uid, rev]) => [userMap[uid] || uid, rev])
-            .sort((a, b) => b[1] - a[1]);
-        const maxRevenue = revenueRows[0]?.[1] || 1;
+        const topCartItems = Object.entries(cartItemCounts)
+            .sort((a, b) => b[1] - a[1]).slice(0, 5)
+            .map(([id, count]) => [items.find(it => it._id === id), count])
+            .filter(([it]) => it);
 
-        document.getElementById('analyticsRevenueChart').innerHTML =
-            revenueRows.length
-                ? `<div class="d-flex align-items-end" style="height:200px;gap:20px;overflow-x:auto;padding-bottom:4px;">
-                    ${revenueRows.map(([label, val]) => `
-                        <div class="d-flex flex-column align-items-center" style="flex:0 0 auto;width:64px;">
-                            <small class="fw-bold mb-1" style="font-size:0.72rem;white-space:nowrap;">€${val.toFixed(0)}</small>
-                            <div class="analytics-col-track d-flex align-items-end justify-content-center" style="width:32px;height:140px;">
-                                <div style="width:100%;height:${maxRevenue ? Math.max(3, Math.round(val / maxRevenue * 100)) : 0}%;background:#e91e8c;border-radius:4px;transition:height .4s;"></div>
-                            </div>
-                            <small class="text-muted mt-2 text-center" style="font-size:0.7rem;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${label}">${label}</small>
-                        </div>`).join('')}
-                   </div>`
-                : '<p class="text-muted">Nessun dato.</p>';
+        const topCartVisite = Object.entries(cartVisitaCounts)
+            .sort((a, b) => b[1] - a[1]).slice(0, 5)
+            .map(([id, count]) => [visite.find(v => v._id === id), count])
+            .filter(([v]) => v);
+
+        document.getElementById('analyticsTopCartItems').innerHTML =
+            rankListHtml(topCartItems, it => itemTitle(it));
+        document.getElementById('analyticsTopCartVisite').innerHTML =
+            rankListHtml(topCartVisite, v => v.nomeVisita || v.nomeMnemonico || 'Senza nome');
 
     } catch (e) {
         document.getElementById('analyticsKpis').innerHTML =
             '<div class="col-12 text-center text-danger py-4">Errore nel caricamento dei dati.</div>';
     }
 }
+
+window.toggleAnalyticsBlock = function (bodyId, chevronId) {
+    const body    = document.getElementById(bodyId);
+    const chevron = document.getElementById(chevronId);
+    if (!body) return;
+    const collapsed = body.style.display === 'none';
+    body.style.display = collapsed ? '' : 'none';
+    if (chevron) chevron.classList.toggle('collapsed', !collapsed);
+};
 
 // Sfrutta la stampa del browser (con CSS dedicato) per generare il PDF:
 // nessuna libreria esterna, il salvataggio come PDF è a carico della finestra di stampa.
@@ -4422,47 +4443,6 @@ function exportAnalyticsPDF() {
     document.title = `Analytics ArtAround - ${new Date().toLocaleDateString('it-IT')}`;
     window.addEventListener('afterprint', () => { document.title = originalTitle; }, { once: true });
     window.print();
-}
-
-/* ============================================================
-   ADMIN PIE DONUT — SVG semplice per analytics
-   ============================================================ */
-
-function adminPieDonut(slices, title) {
-    const total = slices.reduce((s, d) => s + d.value, 0);
-    if (!total) return `<div class="text-center text-muted small py-2">${title}<br>Nessun dato</div>`;
-
-    const size = 120, cx = 60, cy = 60, R = 50, r = 30;
-    let angle = -90;
-    const paths = slices.map(d => {
-        const sweep = (d.value / total) * 360;
-        const a1 = angle * Math.PI / 180;
-        const a2 = (angle + sweep - 1.5) * Math.PI / 180;
-        angle += sweep;
-        const large = sweep > 180 ? 1 : 0;
-        const x1 = cx + R * Math.cos(a1), y1 = cy + R * Math.sin(a1);
-        const x2 = cx + R * Math.cos(a2), y2 = cy + R * Math.sin(a2);
-        const xi1 = cx + r * Math.cos(a2), yi1 = cy + r * Math.sin(a2);
-        const xi2 = cx + r * Math.cos(a1), yi2 = cy + r * Math.sin(a1);
-        return `<path d="M${x1},${y1} A${R},${R} 0 ${large} 1 ${x2},${y2} L${xi1},${yi1} A${r},${r} 0 ${large} 0 ${xi2},${yi2} Z" fill="${d.color}">
-            <title>${d.label}: ${d.value} (${Math.round(d.value/total*100)}%)</title></path>`;
-    }).join('');
-
-    const legend = slices.map(d => `
-        <div class="d-flex align-items-center gap-1 justify-content-center">
-            <span style="width:7px;height:7px;border-radius:50%;background:${d.color};display:inline-block;flex-shrink:0;"></span>
-            <span class="donut-legend-text">${d.label} <b class="donut-legend-val">${d.value}</b></span>
-        </div>`).join('');
-
-    return `
-        <div class="text-center">
-            <div class="donut-title">${title}</div>
-            <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;margin:0 auto 8px;">
-                ${paths}
-                <text x="${cx}" y="${cy + 5}" text-anchor="middle" font-size="15" font-weight="700" class="donut-center-val">${total}</text>
-            </svg>
-            <div class="d-flex flex-column gap-1">${legend}</div>
-        </div>`;
 }
 
 /* ============================================================
@@ -4510,6 +4490,14 @@ function getMktCart() {
 function saveMktCart(c) {
     localStorage.setItem('cart_' + SESSION.userId, JSON.stringify(c));
     updateMktCartBadge();
+    // Sincronizza lato server (best-effort) così l'admin può aggregare i
+    // carrelli di tutti gli utenti in Analytics — il localStorage resta
+    // comunque la fonte di verità immediata per l'utente corrente.
+    fetch(`/api/carts/${SESSION.userId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(c),
+    }).catch(() => {});
 }
 
 function updateMktCartBadge() {
