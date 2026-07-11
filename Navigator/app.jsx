@@ -1416,13 +1416,13 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
 
         <button
           className="inizia-btn"
-          disabled={studenti.length === 0 || avviando}
+          disabled={avviando}
           onClick={handleAvvia}
         >
           {avviando
             ? 'Avvio in corso…'
             : studenti.length === 0
-              ? 'Inizia Visita (nessuno connesso)'
+              ? 'Inizia Visita da solo/a'
               : `Inizia Visita con ${studenti.length} partecipant${studenti.length === 1 ? 'e' : 'i'}`
           }
         </button>
