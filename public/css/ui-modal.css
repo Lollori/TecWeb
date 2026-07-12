@@ -57,6 +57,18 @@
 .ui-modal-icon.info     { background: rgba(99, 102, 241, 0.12); color: #6366f1; }
 .ui-modal-icon.question { background: var(--magenta-subtle, rgba(255, 0, 127, 0.12)); color: var(--magenta, #FF007F); }
 
+/* Clessidra che si ribalta di continuo, per i popup con un conto alla
+   rovescia: imita lo scorrere del tempo invece di un'icona statica. */
+.ui-modal-icon--hourglass i {
+    display: inline-block;
+    animation: ui-modal-hourglass-flip 2.4s ease-in-out infinite;
+}
+@keyframes ui-modal-hourglass-flip {
+    0%, 40%  { transform: rotate(0deg); }
+    50%, 90% { transform: rotate(180deg); }
+    100%     { transform: rotate(360deg); }
+}
+
 .ui-modal-title {
     color: #fff;
     font-weight: 800;

@@ -576,6 +576,7 @@ function VisitaItemScreen({
   const [ttsMuted,      setTtsMuted]      = React.useState(false);
   const [ttsLoading,    setTtsLoading]    = React.useState(false);
   const [ascoltoPopupOpen, setAscoltoPopupOpen] = React.useState(false);
+  const [ascoltoPopupTitolo, setAscoltoPopupTitolo] = React.useState('Non puoi andare avanti');
   const [ascoltoCountdown, setAscoltoCountdown] = React.useState(60);
   // 'mappa' | 'opera' | null — la visita inizia con la mappa aperta; da qui in
   // poi lo stato resta quello scelto dall'utente man mano che si avanza tra
@@ -1019,6 +1020,15 @@ function VisitaItemScreen({
     setTtsMuted(m => !m);
   }
 
+  // "Ferma audio" è sempre permesso; "Avvia audio" invece va bloccato (stesso
+  // popup di "avanti") se qualche studente sta ancora ascoltando dell'altro,
+  // per non fargli sentire due audio sovrapposti.
+  function handleAudioButtonClick() {
+    if (audioAvviato) { onFermaAudio(); return; }
+    if (inAscolto) { mostraPopupAscolto('Non puoi avviare un nuovo audio'); return; }
+    onAvviaAudio(tono, durata);
+  }
+
   async function navigate(direction) {
     if (navigating) return;
     if ((direction === 'avanti' || direction === 'next') && inAscolto) {
@@ -1054,12 +1064,15 @@ function VisitaItemScreen({
     } finally { setNavigating(false); setItemsMenuOpen(false); }
   }
 
-  // Popup "non puoi andare avanti" con conto alla rovescia di 60s — puramente
-  // informativo: dopo i 60s si chiude da solo ma la docente può già ritentare
-  // prima (il blocco vero è lato server, su inAscolto).
+  // Popup "ci sono studenti in ascolto" con conto alla rovescia di 60s —
+  // puramente informativo: dopo i 60s si chiude da solo ma la docente può
+  // già ritentare prima (il blocco vero è lato server, su inAscolto). Stesso
+  // popup sia per "avanti" bloccato che per un secondo audio bloccato, solo
+  // il titolo cambia in base a cosa stava provando a fare.
   const ascoltoCountdownRef = React.useRef(null);
-  function mostraPopupAscolto() {
+  function mostraPopupAscolto(titolo = 'Non puoi andare avanti') {
     if (ascoltoCountdownRef.current) clearInterval(ascoltoCountdownRef.current);
+    setAscoltoPopupTitolo(titolo);
     setAscoltoCountdown(60);
     setAscoltoPopupOpen(true);
     ascoltoCountdownRef.current = setInterval(() => {
@@ -1304,7 +1317,7 @@ function VisitaItemScreen({
           <button
             type="button"
             className={`visita-audio-btn${audioAvviato ? ' visita-audio-btn--avviato' : ''}`}
-            onClick={() => audioAvviato ? onFermaAudio() : onAvviaAudio(tono, durata)}
+            onClick={handleAudioButtonClick}
           >
             <i className={`fa-solid ${audioAvviato ? 'fa-stop' : 'fa-volume-high'}`} />
             {audioAvviato ? 'Ferma audio' : 'Avvia audio per tutti'}
@@ -1399,8 +1412,10 @@ function VisitaItemScreen({
       {isDocente && ascoltoPopupOpen && (
         <div className="ui-modal-backdrop show" onClick={() => setAscoltoPopupOpen(false)}>
           <div className="ui-modal-box" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
-            <div className="ui-modal-icon warning"><i className="fa-solid fa-triangle-exclamation" /></div>
-            <div className="ui-modal-title">Non puoi andare avanti</div>
+            <div className="ui-modal-icon warning ui-modal-icon--hourglass">
+              <i className={`fa-solid ${ascoltoCountdown > 40 ? 'fa-hourglass-start' : ascoltoCountdown > 20 ? 'fa-hourglass-half' : 'fa-hourglass-end'}`} />
+            </div>
+            <div className="ui-modal-title">{ascoltoPopupTitolo}</div>
             <div className="ui-modal-msg">
               Ci sono ancora studenti in ascolto!<br />
               Attendi qualche secondo e riprova.<br />
