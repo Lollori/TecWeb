@@ -970,7 +970,11 @@ function VisitaItemScreen({
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
         audioRef.current = audio;
-        if (!isDocente) audio.onended = () => { if (nomeAssegnato && codice) reportAscolto(false); };
+        // Quando l'audio finisce da solo, il pulsante deve tornare su "Avvia
+        // audio" per tutti: la docente è l'unica a poterlo far ripartire, per
+        // cui è lei a triggerare il fermaAudio che lo sincronizza via SSE.
+        if (isDocente) audio.onended = () => onFermaAudio?.();
+        else audio.onended = () => { if (nomeAssegnato && codice) reportAscolto(false); };
         if (audioAvviatoRef.current && !ttsMutedRef.current) {
           audio.play()
             .then(() => { if (!isDocente && nomeAssegnato && codice) reportAscolto(true); })
