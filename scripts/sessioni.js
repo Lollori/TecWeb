@@ -20,6 +20,15 @@ function createSession(codice, visitaId, visitaNome, museoIsil, operaGroups, has
     hasQuiz: !!hasQuiz,
     quiz: null,
     audioAvviato: false,
+    // Tono/durata scelti dalla docente per la narrazione sincronizzata
+    // ("Avvia audio per tutti") — trasmessi agli studenti così sentono lo
+    // stesso contenuto che ha avviato lei, non un default locale.
+    tono: null,
+    durata: null,
+    // Nomi degli studenti che stanno ascoltando la narrazione sincronizzata
+    // in questo momento: finché non è vuoto la docente non può passare
+    // all'item successivo (vedi navigaItem).
+    studentiInAscolto: new Set(),
   });
   // Auto-cleanup after 4 hours
   setTimeout(() => sessions.delete(codice), 4 * 60 * 60 * 1000);
@@ -49,6 +58,9 @@ function startSession(codice) {
   if (!session) return { error: 'Sessione non trovata.' };
   session.stato = 'iniziata';
   session.audioAvviato = false;
+  session.tono = null;
+  session.durata = null;
+  session.studentiInAscolto.clear();
   const currentOperaGroup = session.operaGroups[session.currentItemIdx] || null;
   broadcast(codice, {
     tipo: 'visita-iniziata',
@@ -72,8 +84,15 @@ function navigaItem(codice, direction, index) {
   else if (direction === 'avanti' || direction === 'next')   newIdx = Math.min(total - 1, newIdx + 1);
   else if (direction === 'indietro' || direction === 'prev') newIdx = Math.max(0, newIdx - 1);
   if (newIdx === session.currentItemIdx) return { ok: true, currentItemIdx: newIdx, noChange: true };
+  // Il blocco vale solo per l'avanzamento: tornare indietro non disturba
+  // nessuno, quindi resta sempre permesso anche a studenti in ascolto.
+  if (newIdx > session.currentItemIdx && session.studentiInAscolto.size > 0) {
+    return { error: 'Ci sono ancora studenti in ascolto.', code: 'STUDENTI_IN_ASCOLTO' };
+  }
   session.currentItemIdx = newIdx;
   session.audioAvviato = false;
+  session.tono = null;
+  session.durata = null;
   const currentOperaGroup = session.operaGroups[newIdx];
   broadcast(codice, {
     tipo: 'item-cambiato',
@@ -84,12 +103,43 @@ function navigaItem(codice, direction, index) {
   return { ok: true, currentItemIdx: newIdx };
 }
 
-function avviaAudio(codice) {
+function avviaAudio(codice, tono, durata) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   if (session.stato !== 'iniziata') return { error: 'Visita non ancora iniziata.' };
   session.audioAvviato = true;
-  broadcast(codice, { tipo: 'audio-avviato', currentItemIdx: session.currentItemIdx });
+  session.tono = tono || null;
+  session.durata = durata || null;
+  broadcast(codice, {
+    tipo: 'audio-avviato',
+    currentItemIdx: session.currentItemIdx,
+    tono: session.tono,
+    durata: session.durata,
+  });
+  return { ok: true };
+}
+
+// Ferma la narrazione sincronizzata per tutti (docente inclusa): la docente
+// potrà poi farla ripartire, con lo stesso tono/durata o un altro.
+function fermaAudio(codice) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  session.audioAvviato = false;
+  session.studentiInAscolto.clear();
+  broadcast(codice, { tipo: 'audio-fermato' });
+  return { ok: true };
+}
+
+// Uno studente segnala se sta ascoltando o meno la narrazione sincronizzata:
+// la docente non può passare all'item successivo finché l'insieme non è
+// vuoto (vedi navigaItem). Verso il client basta un booleano, non i nomi.
+function setAscolto(codice, nome, ascolto) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (!nome) return { error: 'Nome mancante.' };
+  if (ascolto) session.studentiInAscolto.add(nome);
+  else session.studentiInAscolto.delete(nome);
+  broadcast(codice, { tipo: 'ascolto-cambiato', inAscolto: session.studentiInAscolto.size > 0 });
   return { ok: true };
 }
 
@@ -108,9 +158,12 @@ function addClient(codice, res) {
     currentItemIdx: session.currentItemIdx,
     totalItems: session.operaGroups.length,
     studentTono: session.studentTono,
+    tono: session.tono,
+    durata: session.durata,
     hasQuiz: session.hasQuiz,
     quiz: publicQuiz(session.quiz),
     audioAvviato: session.audioAvviato,
+    inAscolto: session.studentiInAscolto.size > 0,
   })}\n\n`);
   return true;
 }
@@ -241,6 +294,6 @@ function terminaQuiz(codice) {
 }
 
 module.exports = {
-  createSession, getSession, joinSession, startSession, addClient, navigaItem, avviaAudio,
-  closeSession, sendMessage, setStudentTono, avviaQuiz, rispondiQuiz, terminaQuiz,
+  createSession, getSession, joinSession, startSession, addClient, navigaItem, avviaAudio, fermaAudio,
+  closeSession, sendMessage, setStudentTono, avviaQuiz, rispondiQuiz, terminaQuiz, setAscolto,
 };

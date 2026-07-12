@@ -555,7 +555,8 @@ function VisitaItemScreen({
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
   hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0,
   onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
-  audioAvviato = false, onAvviaAudio,
+  audioAvviato = false, onAvviaAudio, onFermaAudio, syncTono = null, syncDurata = null,
+  inAscolto = false,
 }) {
   const [allItems,      setAllItems]      = React.useState([]);
   const [activeItem,    setActiveItem]    = React.useState(null);
@@ -574,6 +575,8 @@ function VisitaItemScreen({
   const [quizPromptOpen, setQuizPromptOpen] = React.useState(false);
   const [ttsMuted,      setTtsMuted]      = React.useState(false);
   const [ttsLoading,    setTtsLoading]    = React.useState(false);
+  const [ascoltoPopupOpen, setAscoltoPopupOpen] = React.useState(false);
+  const [ascoltoCountdown, setAscoltoCountdown] = React.useState(60);
   // 'mappa' | 'opera' | null — la visita inizia con la mappa aperta; da qui in
   // poi lo stato resta quello scelto dall'utente man mano che si avanza tra
   // gli item, dato che VisitaItemScreen non viene rimontato tra un item e
@@ -874,6 +877,18 @@ function VisitaItemScreen({
     setActiveItem(findBestItem(allItems, tono, durata));
   }, [allItems, tono, durata]);
 
+  // Allinea lo studente al tono/durata scelti dalla docente ogni volta che
+  // lei avvia la narrazione sincronizzata ("Avvia audio per tutti"), invece
+  // di riprodurre il tono locale di default ('medio'). Da qui in poi lo
+  // studente resta comunque libero di cambiare tono per sé (voce/comandi):
+  // questo effetto riparte solo quando la docente avvia un nuovo audio, non
+  // ad ogni render, quindi non sovrascrive scelte successive dello studente.
+  React.useEffect(() => {
+    if (isDocente || !syncTono) return;
+    setTono(syncTono);
+    if (syncDurata) setDurata(syncDurata);
+  }, [syncTono, syncDurata, isDocente]);
+
   // Dati dell'opera collegata all'item corrente: servono sia come fallback
   // per l'immagine (molti item non hanno un campo "image" proprio valorizzato
   // — es. creati prima dell'autofill dall'opera, o content type
@@ -919,12 +934,19 @@ function VisitaItemScreen({
     }).catch(() => {});
   }, [tono, durata, isDocente, nomeAssegnato, codice]);
 
-  // Legge ad alta voce il testo descrittivo dell'item corrente (nel tono
-  // selezionato), sintetizzato al volo lato server tramite Edge TTS.
-  // Non parte mai da sola: resta in attesa finché la docente non preme
-  // "Avvia audio" (audioAvviato, sincronizzato via SSE a tutti i partecipanti);
-  // da lì in poi ogni cambio di item/tono la fa ripartire — finché la docente
-  // non torna a premere il tasto per il nuovo item, non riparte nulla.
+  // audioAvviato/ttsMuted appena letti dentro la .then() asincrona di sotto
+  // sarebbero quelli al momento in cui l'effetto è partito (closure stale):
+  // questi ref restano sempre aggiornati al valore corrente.
+  const audioAvviatoRef = React.useRef(audioAvviato);
+  const ttsMutedRef     = React.useRef(ttsMuted);
+  React.useEffect(() => { audioAvviatoRef.current = audioAvviato; }, [audioAvviato]);
+  React.useEffect(() => { ttsMutedRef.current = ttsMuted; }, [ttsMuted]);
+
+  // Carica una nuova sintesi vocale (Edge TTS) solo quando cambia davvero il
+  // contenuto da leggere — opera, tono o durata. "Ferma audio"/"Avvia audio"
+  // della docente NON tocca questo effetto: lo gestisce quello sotto, che
+  // mette in pausa/riprende lo stesso file invece di rigenerarlo da capo,
+  // così riprende esattamente da dove si era fermato.
   React.useEffect(() => {
     const testo = toneText(activeItem?.toni?.[tono], durata);
     if (audioRef.current) {
@@ -933,7 +955,8 @@ function VisitaItemScreen({
       audioRef.current = null;
     }
     setTtsLoading(false);
-    if (ttsMuted || !testo || !audioAvviato) return;
+    if (!isDocente && nomeAssegnato && codice) reportAscolto(false);
+    if (!testo) return;
     let cancelled = false;
     setTtsLoading(true);
     fetch('/api/tts', {
@@ -946,7 +969,12 @@ function VisitaItemScreen({
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
         audioRef.current = audio;
-        audio.play().catch(() => {});
+        if (!isDocente) audio.onended = () => { if (nomeAssegnato && codice) reportAscolto(false); };
+        if (audioAvviatoRef.current && !ttsMutedRef.current) {
+          audio.play()
+            .then(() => { if (!isDocente && nomeAssegnato && codice) reportAscolto(true); })
+            .catch(() => {});
+        }
       })
       .catch(() => {})
       .finally(() => { if (!cancelled) setTtsLoading(false); });
@@ -957,8 +985,35 @@ function VisitaItemScreen({
         if (audioRef.current.src) URL.revokeObjectURL(audioRef.current.src);
         audioRef.current = null;
       }
+      if (!isDocente && nomeAssegnato && codice) reportAscolto(false);
     };
-  }, [activeItem, tono, durata, ttsMuted, audioAvviato]);
+  }, [activeItem, tono, durata]);
+
+  // Mette in pausa o riprende l'audio GIÀ CARICATO in risposta a "Ferma
+  // audio"/"Avvia audio" (docente) o al muto (studente) — senza toccare il
+  // file: riprende esattamente dal punto in cui si era fermato.
+  React.useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (audioAvviato && !ttsMuted) {
+      audio.play()
+        .then(() => { if (!isDocente && nomeAssegnato && codice) reportAscolto(true); })
+        .catch(() => {});
+    } else {
+      audio.pause();
+      if (!isDocente && nomeAssegnato && codice) reportAscolto(false);
+    }
+  }, [audioAvviato, ttsMuted]);
+
+  // POST fire-and-forget: comunica alla docente se questo studente sta
+  // ascoltando la narrazione sincronizzata in questo momento, per bloccare
+  // "avanti" finché tutti non hanno finito (vedi handleNavigaAvanti/popup).
+  function reportAscolto(ascolto) {
+    fetch(`/api/sessioni/${encodeURIComponent(codice)}/ascolto`, {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ nome: nomeAssegnato, ascolto }),
+    }).catch(() => {});
+  }
 
   function toggleTtsMuted() {
     setTtsMuted(m => !m);
@@ -966,25 +1021,61 @@ function VisitaItemScreen({
 
   async function navigate(direction) {
     if (navigating) return;
+    if ((direction === 'avanti' || direction === 'next') && inAscolto) {
+      mostraPopupAscolto();
+      return;
+    }
     setNavigating(true);
     try {
-      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
+      const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ direction }),
       });
+      const d = await r.json();
+      if (d.code === 'STUDENTI_IN_ASCOLTO') mostraPopupAscolto();
     } finally { setNavigating(false); }
   }
 
   async function jumpToItem(idx) {
     if (navigating || idx === currentIdx) { setItemsMenuOpen(false); return; }
+    if (idx > currentIdx && inAscolto) {
+      setItemsMenuOpen(false);
+      mostraPopupAscolto();
+      return;
+    }
     setNavigating(true);
     try {
-      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
+      const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/naviga`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ index: idx }),
       });
+      const d = await r.json();
+      if (d.code === 'STUDENTI_IN_ASCOLTO') mostraPopupAscolto();
     } finally { setNavigating(false); setItemsMenuOpen(false); }
   }
+
+  // Popup "non puoi andare avanti" con conto alla rovescia di 60s — puramente
+  // informativo: dopo i 60s si chiude da solo ma la docente può già ritentare
+  // prima (il blocco vero è lato server, su inAscolto).
+  const ascoltoCountdownRef = React.useRef(null);
+  function mostraPopupAscolto() {
+    if (ascoltoCountdownRef.current) clearInterval(ascoltoCountdownRef.current);
+    setAscoltoCountdown(60);
+    setAscoltoPopupOpen(true);
+    ascoltoCountdownRef.current = setInterval(() => {
+      setAscoltoCountdown(s => {
+        if (s <= 1) {
+          clearInterval(ascoltoCountdownRef.current);
+          setAscoltoPopupOpen(false);
+          return 0;
+        }
+        return s - 1;
+      });
+    }, 1000);
+  }
+  React.useEffect(() => () => {
+    if (ascoltoCountdownRef.current) clearInterval(ascoltoCountdownRef.current);
+  }, []);
 
   async function eseguiTermina() {
     setTerminating(true);
@@ -1213,11 +1304,10 @@ function VisitaItemScreen({
           <button
             type="button"
             className={`visita-audio-btn${audioAvviato ? ' visita-audio-btn--avviato' : ''}`}
-            onClick={onAvviaAudio}
-            disabled={audioAvviato}
+            onClick={() => audioAvviato ? onFermaAudio() : onAvviaAudio(tono, durata)}
           >
-            <i className={`fa-solid ${audioAvviato ? 'fa-check' : 'fa-volume-high'}`} />
-            {audioAvviato ? 'Audio avviato' : 'Avvia audio per tutti'}
+            <i className={`fa-solid ${audioAvviato ? 'fa-stop' : 'fa-volume-high'}`} />
+            {audioAvviato ? 'Ferma audio' : 'Avvia audio per tutti'}
           </button>
         </div>
       )}
@@ -1299,6 +1389,28 @@ function VisitaItemScreen({
             <button className="quiz-prompt-btn quiz-prompt-btn--primary" onClick={handleAvviaQuizDaPrompt} disabled={quizAvviando}>
               {quizAvviando ? 'Avvio in corso…' : 'Avvia Quiz'}
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Blocco "avanti": ci sono ancora studenti in ascolto — stesso stile
+          (ui-modal.css) di tutti gli altri popup del sito, non quello del
+          prompt quiz. */}
+      {isDocente && ascoltoPopupOpen && (
+        <div className="ui-modal-backdrop show" onClick={() => setAscoltoPopupOpen(false)}>
+          <div className="ui-modal-box" role="alertdialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
+            <div className="ui-modal-icon warning"><i className="fa-solid fa-triangle-exclamation" /></div>
+            <div className="ui-modal-title">Non puoi andare avanti</div>
+            <div className="ui-modal-msg">
+              Ci sono ancora studenti in ascolto!<br />
+              Attendi qualche secondo e riprova.<br />
+              <strong style={{ fontSize: '1.3rem' }}>{ascoltoCountdown}s</strong>
+            </div>
+            <div className="ui-modal-actions">
+              <button type="button" className="ui-modal-btn ui-modal-btn-primary" onClick={() => setAscoltoPopupOpen(false)}>
+                Ho capito
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -1449,6 +1561,9 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
   const [quizAvviando,     setQuizAvviando]     = React.useState(false);
   const [quizTerminandoOra, setQuizTerminandoOra] = React.useState(false);
   const [audioAvviato,     setAudioAvviato]     = React.useState(false);
+  // Almeno uno studente sta ascoltando la narrazione sincronizzata in questo
+  // momento: finché è true, "avanti" resta bloccato (vedi navigate()).
+  const [inAscolto,        setInAscolto]        = React.useState(false);
   const closedRef = React.useRef(false);
 
   React.useEffect(() => {
@@ -1464,6 +1579,7 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.studentTono)                     setStudentTono(data.studentTono);
         setHasQuiz(!!data.hasQuiz);
         setAudioAvviato(!!data.audioAvviato);
+        setInAscolto(!!data.inAscolto);
         if (data.quiz) {
           setQuiz(data.quiz);
           setRespondedCount(data.quiz.risposte ? Object.keys(data.quiz.risposte).length : 0);
@@ -1477,6 +1593,9 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
         setHasQuiz(!!data.hasQuiz);
         setAudioAvviato(false);
+        setInAscolto(false);
+      } else if (data.tipo === 'ascolto-cambiato') {
+        setInAscolto(!!data.inAscolto);
       } else if (data.tipo === 'item-cambiato') {
         setCurrentOperaGroup(data.currentOperaGroup);
         setCurrentItemIdx(data.currentItemIdx);
@@ -1484,6 +1603,9 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
         setAudioAvviato(false);
       } else if (data.tipo === 'audio-avviato') {
         setAudioAvviato(true);
+      } else if (data.tipo === 'audio-fermato') {
+        setAudioAvviato(false);
+        setInAscolto(false);
       } else if (data.tipo === 'nuovo-messaggio') {
         setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp }]);
       } else if (data.tipo === 'tono-cambiato') {
@@ -1541,9 +1663,24 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
     }
   }
 
-  async function handleAvviaAudio() {
+  async function handleAvviaAudio(tono, durata) {
+    // Aggiornamento ottimistico: non aspetta il giro di ritorno da SSE per
+    // reagire sul dispositivo della docente stessa, che altrimenti sentirebbe
+    // un ritardo prima che l'audio riparta.
+    setAudioAvviato(true);
     try {
-      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/audio`, { method: 'POST' });
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/audio`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tono, durata }),
+      });
+    } catch (_) { /* silent */ }
+  }
+
+  async function handleFermaAudio() {
+    // Idem: ferma subito in locale, la conferma via SSE arriva comunque dopo.
+    setAudioAvviato(false);
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/audio/stop`, { method: 'POST' });
     } catch (_) { /* silent */ }
   }
 
@@ -1615,6 +1752,8 @@ function LobbyDocente({ codice, visitaNome, museo, onClose }) {
       quizTerminandoOra={quizTerminandoOra}
       audioAvviato={audioAvviato}
       onAvviaAudio={handleAvviaAudio}
+      onFermaAudio={handleFermaAudio}
+      inAscolto={inAscolto}
     />
   );
 
@@ -1689,6 +1828,11 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   const [quiz,              setQuiz]              = React.useState(null);
   const [audioAvviato,      setAudioAvviato]      = React.useState(false);
   const [visitaItems,       setVisitaItems]       = React.useState([]);
+  // Tono/durata scelti dalla docente per la narrazione sincronizzata: senza
+  // questi lo studente riprodurrebbe il proprio tono locale di default
+  // ('medio'), disallineato da quello che la docente ha effettivamente avviato.
+  const [docenteTono,       setDocenteTono]       = React.useState(null);
+  const [docenteDurata,     setDocenteDurata]     = React.useState(null);
 
   // Elenco ordinato dei gruppi opera della visita: serve a VisitaItemScreen
   // per precaricare le immagini di tutte le opere non appena la visita parte.
@@ -1718,6 +1862,8 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
         if (data.quiz)                            setQuiz(data.quiz);
         setAudioAvviato(!!data.audioAvviato);
+        setDocenteTono(data.tono || null);
+        setDocenteDurata(data.durata || null);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
       } else if (data.tipo === 'visita-iniziata') {
@@ -1727,13 +1873,21 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         if (data.currentItemIdx    !== undefined) setCurrentItemIdx(data.currentItemIdx);
         if (data.totalItems        !== undefined) setTotalItems(data.totalItems);
         setAudioAvviato(false);
+        setDocenteTono(null);
+        setDocenteDurata(null);
       } else if (data.tipo === 'item-cambiato') {
         setCurrentOperaGroup(data.currentOperaGroup);
         setCurrentItemIdx(data.currentItemIdx);
         setTotalItems(data.totalItems);
         setAudioAvviato(false);
+        setDocenteTono(null);
+        setDocenteDurata(null);
       } else if (data.tipo === 'audio-avviato') {
         setAudioAvviato(true);
+        setDocenteTono(data.tono || null);
+        setDocenteDurata(data.durata || null);
+      } else if (data.tipo === 'audio-fermato') {
+        setAudioAvviato(false);
       } else if (data.tipo === 'quiz-iniziato') {
         setQuiz(data);
       } else if (data.tipo === 'quiz-terminato') {
@@ -1767,6 +1921,8 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       quiz={quiz}
       onRispondiQuiz={handleRispondiQuiz}
       audioAvviato={audioAvviato}
+      syncTono={docenteTono}
+      syncDurata={docenteDurata}
       visitaItems={visitaItems}
     />
   );

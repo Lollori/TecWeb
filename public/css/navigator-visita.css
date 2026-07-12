@@ -114,8 +114,9 @@
 }
 .visita-audio-btn:hover:not(:disabled) { background: #cc0066; border-color: #cc0066; }
 .visita-audio-btn--avviato {
-  background: transparent; color: var(--nav-muted); border-color: var(--nav-border); cursor: default;
+  background: transparent; color: #ef4444; border-color: #ef4444;
 }
+.visita-audio-btn--avviato:hover { background: rgba(239, 68, 68, 0.1); }
 
 /* ── Nav bar (docente) ── */
 .visita-item-nav {

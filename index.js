@@ -373,7 +373,25 @@ app.post('/api/sessioni/:codice/tono', (req, res) => {
 // Docente avvia in modo sincrono la lettura audio dell'item corrente per
 // tutti i partecipanti (fino a questo momento nessun client riproduce nulla)
 app.post('/api/sessioni/:codice/audio', (req, res) => {
-    const result = sessioni.avviaAudio(req.params.codice);
+    const result = sessioni.avviaAudio(req.params.codice, req.body?.tono, req.body?.durata);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Docente ferma la narrazione sincronizzata per tutti (potrà poi farla
+// ripartire con lo stesso tono o sceglierne un altro).
+app.post('/api/sessioni/:codice/audio/stop', (req, res) => {
+    const result = sessioni.fermaAudio(req.params.codice);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+// Studente segnala se sta ascoltando o meno la narrazione sincronizzata:
+// finché almeno uno studente è in ascolto, la docente non può passare
+// all'item successivo (vedi navigaItem).
+app.post('/api/sessioni/:codice/ascolto', (req, res) => {
+    const { nome, ascolto } = req.body;
+    const result = sessioni.setAscolto(req.params.codice, nome, !!ascolto);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });
