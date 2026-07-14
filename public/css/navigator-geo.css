@@ -245,7 +245,7 @@
   border-top: 2px solid rgba(255,0,127,0.35);
   border-radius: 18px 18px 0 0;
   box-shadow: 0 -8px 40px rgba(0,0,0,0.65);
-  max-height: 50vh;
+  max-height: 75vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
