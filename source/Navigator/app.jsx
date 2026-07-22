@@ -18,6 +18,19 @@ function App() {
   React.useEffect(() => { museiRef.current = musei; }, [musei]);
 
   React.useEffect(() => {
+    if (!lobby?.codice) return;
+    if (screen !== 'lobby-docente' && screen !== 'lobby-studente') return;
+    refreshNavLock(lobby.codice);
+    const interval = setInterval(() => refreshNavLock(lobby.codice), 5000);
+    const releaseOnUnload = () => releaseNavLock(lobby.codice);
+    window.addEventListener('beforeunload', releaseOnUnload);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('beforeunload', releaseOnUnload);
+    };
+  }, [screen, lobby?.codice]);
+
+  React.useEffect(() => {
     (async () => {
       const saved = loadNavSession();
       if (saved?.codice && saved?.role) {
@@ -216,19 +229,6 @@ function App() {
 
   // Unica via d'uscita per i partecipanti: il pulsante "Esci" dentro la visita
   // (o la chiusura da parte della docente). Un reload non deve mai passare di qui.
-  React.useEffect(() => {
-    if (!lobby?.codice) return;
-    if (screen !== 'lobby-docente' && screen !== 'lobby-studente') return;
-    refreshNavLock(lobby.codice);
-    const interval = setInterval(() => refreshNavLock(lobby.codice), 5000);
-    const releaseOnUnload = () => releaseNavLock(lobby.codice);
-    window.addEventListener('beforeunload', releaseOnUnload);
-    return () => {
-      clearInterval(interval);
-      window.removeEventListener('beforeunload', releaseOnUnload);
-    };
-  }, [screen, lobby?.codice]);
-
   const exitStudente = () => { if (lobby?.codice) releaseNavLock(lobby.codice); clearNavSession(); setLobby(null); setScreen('musei'); };
 
   if (screen === 'lobby-studente') return (
