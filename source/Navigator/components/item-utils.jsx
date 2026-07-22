@@ -32,7 +32,7 @@ const VOICE_COMMANDS = {
   esplorazione: ['dimmi di più', 'dimmi di meno', "cos'è questo"],
   adattamento:  ['più semplice', 'troppo semplice', 'non capisco'],
   dettagli:     ["chi è l'autore", 'qual è lo stile'],
-  logistica:    ["dov'è l'uscita", "dov'è la toilette", "dove sono le scale"],
+  logistica:    ["dov'è l'uscita", "dov'è la toilette", "dove sono le scale", "dov'è l'ascensore", "dov'è la caffetteria", "dov'è l'ingresso"],
 };
 
 
@@ -61,5 +61,20 @@ function matchVoiceCommand(testo) {
   if (t.includes('bagno') || t.includes('bagni') || t.includes('toilette') || t.includes('toilet'))
                                                                 return { categoria: 'logistica', azione: 'bagno' };
   if (t.includes('scala') || t.includes('scale'))              return { categoria: 'logistica', azione: 'scale' };
+  if (t.includes('ascensore'))                                 return { categoria: 'logistica', azione: 'ascensore' };
+  if (t.includes('caffetteria') || t.includes('caffe') || t.includes('bar'))
+                                                                return { categoria: 'logistica', azione: 'caffetteria' };
+  if (t.includes('ingresso') || t.includes('entrata'))         return { categoria: 'logistica', azione: 'ingresso' };
+  // "dov'è/dove si trova/dove sono + nome opera" — nessuna delle logistiche
+  // sopra ha fatto match, quindi il resto della frase è considerato il nome
+  // dell'opera cercata (accordo su singolare/plurale gestito dal chiamante).
+  const doveMatch = t.match(/^dov\s*e\b\s*(.*)/);
+  if (doveMatch) {
+    let query = doveMatch[1].trim()
+      .replace(/^(si trova|sono|e)\s+/, '')
+      .replace(/^(il|lo|la|i|gli|le|l)\s+/, '')
+      .trim();
+    if (query) return { categoria: 'logistica', azione: 'opera', query };
+  }
   return null;
 }

@@ -168,8 +168,14 @@ function VisitaItemScreen({
   }
 
 
-  const AMENITY_LABELS = { U: "L'uscita", bagno: 'La toilette', scale: 'Le scale' };
-  const AMENITY_LABELS_NOT_FOUND = { U: "l'uscita", bagno: 'i bagni', scale: 'le scale' };
+  const AMENITY_LABELS = {
+    U: "L'uscita", bagno: 'La toilette', scale: 'Le scale',
+    ascensore: "L'ascensore", caffetteria: 'La caffetteria', ingresso: "L'ingresso",
+  };
+  const AMENITY_LABELS_NOT_FOUND = {
+    U: "l'uscita", bagno: 'i bagni', scale: 'le scale',
+    ascensore: "l'ascensore", caffetteria: 'la caffetteria', ingresso: "l'ingresso",
+  };
 
   async function locateAmenity(kind) {
     const label = AMENITY_LABELS[kind] || 'Il punto richiesto';
@@ -218,6 +224,66 @@ function VisitaItemScreen({
       speakAssistant(`${label} più vicina si trova al ${pianoLabel}. Controlla la mappa.`);
       setActivePanel('mappa');
       setLogisticsTarget({ roomId: kind, piano: piani[nearestIdx]?.piano });
+    } catch (_) {
+      speakAssistant('Non sono riuscito a recuperare le indicazioni.');
+    }
+  }
+
+
+  async function locateOpera(query) {
+    if (!activeItem?.museumId) {
+      speakAssistant('Mappa non disponibile al momento.');
+      return;
+    }
+    try {
+      const [rMuseo, rOpere] = await Promise.all([
+        fetch(`/api/musei/${encodeURIComponent(activeItem.museumId)}`),
+        fetch(`/api/opere?codiceIsil=${encodeURIComponent(activeItem.museumId)}`),
+      ]);
+      const [dMuseo, dOpere] = await Promise.all([rMuseo.json(), rOpere.json()]);
+      const museo = dMuseo.ok ? applyFloorPlanOverrides(dMuseo.data) : null;
+      const piani = museo?.mappaInterna || [];
+      const opere = dOpere.data || [];
+
+      const nq = normalizeVoiceText(query);
+      const found = opere.find(o => normalizeVoiceText(o.operaId) === nq)
+        || opere.find(o => {
+          const no = normalizeVoiceText(o.operaId);
+          return no && (no.includes(nq) || nq.includes(no));
+        });
+
+      if (!found) {
+        speakAssistant(`Non ho trovato nessun'opera chiamata "${query}" in questo museo.`);
+        return;
+      }
+      const sala = found.sala != null && String(found.sala).trim() ? String(found.sala) : null;
+      if (!sala) {
+        speakAssistant(`${found.operaId} si trova in questo museo, ma non conosco la sala esatta.`);
+        return;
+      }
+
+      let floorIdx = null;
+      for (let i = 0; i < piani.length; i++) {
+        const piano = piani[i];
+        if (!piano.geoJsonUrl) continue;
+        try {
+          const res  = await fetch(piano.geoJsonUrl);
+          const geo  = await res.json();
+          const feats = geo.features || [];
+          if (feats.some(f => f.properties?.room_id === sala)) { floorIdx = i; break; }
+        } catch (_) {  }
+      }
+
+      if (floorIdx == null) {
+        speakAssistant(`${found.operaId} si trova nella sala ${sala}.`);
+        setActivePanel('mappa');
+        setLogisticsTarget({ roomId: sala, piano: null });
+        return;
+      }
+      const pianoLabel = piani[floorIdx]?.piano || `piano ${floorIdx + 1}`;
+      speakAssistant(`${found.operaId} si trova nella sala ${sala}, al ${pianoLabel}.`);
+      setActivePanel('mappa');
+      setLogisticsTarget({ roomId: sala, piano: piani[floorIdx]?.piano });
     } catch (_) {
       speakAssistant('Non sono riuscito a recuperare le indicazioni.');
     }
@@ -276,7 +342,11 @@ function VisitaItemScreen({
       }
 
     } else if (categoria === 'logistica') {
-      locateAmenity(azione === 'uscita' ? 'U' : azione);
+      if (azione === 'opera') {
+        locateOpera(match.query);
+      } else {
+        locateAmenity(azione === 'uscita' ? 'U' : azione);
+      }
     }
   }
 
@@ -427,8 +497,11 @@ function VisitaItemScreen({
         audioRef.current = audio;
 
 
-        if (isDocente) audio.onended = () => onFermaAudio?.();
-        else audio.onended = () => { if (nomeAssegnato && codice) reportAscolto(false); };
+        // L'audio per tutti resta attivo (audioAvviato) fino a un fermo esplicito
+        // del docente o al cambio opera (che lo resetta lato server): non deve
+        // spegnersi da solo alla fine della narrazione, altrimenti uno studente
+        // che cambia tono in autonomia perde la riproduzione automatica.
+        if (!isDocente) audio.onended = () => { if (nomeAssegnato && codice) reportAscolto(false); };
         if (audioAvviatoRef.current && !ttsMutedRef.current) {
           audio.play()
             .then(() => { if (!isDocente && nomeAssegnato && codice) reportAscolto(true); })
