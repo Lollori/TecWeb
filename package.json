@@ -1,4 +1,8 @@
 {
+  "scripts": {
+    "start": "node source/index.js",
+    "dev": "nodemon source/index.js"
+  },
   "nodemonConfig": {
     "legacyWatch": true
   },
