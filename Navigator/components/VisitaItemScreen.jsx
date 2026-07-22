@@ -55,6 +55,11 @@ function VisitaItemScreen({
   const assistantAudioRef = React.useRef(null);
   const recognitionRef = React.useRef(null);
   const micOnRef = React.useRef(false);
+  // Ricorda se la narrazione principale era in riproduzione quando
+  // l'assistente ha iniziato a parlare, per farla ripartire da dove si era
+  // fermata una volta finita la risposta ("ducking", come un navigatore che
+  // abbassa la radio) — evita che le due voci si sovrappongano.
+  const narrationWasPlayingRef = React.useRef(false);
   // La callback di SpeechRecognition viene creata una sola volta al mount
   // (vedi effect sotto) e chiuderebbe su uno stato ormai vecchio se chiamasse
   // handleVoiceTranscript direttamente — passa invece sempre dall'ultima
@@ -125,13 +130,29 @@ function VisitaItemScreen({
   }, [micSupported]);
 
   // Risponde vocalmente a una richiesta dell'utente (canale indipendente
-  // dalla narrazione sincronizzata, sempre udibile).
+  // dalla narrazione sincronizzata, sempre udibile). Se la narrazione
+  // principale sta suonando la mette in pausa (senza perdere il punto in cui
+  // era arrivata) e la fa ripartire da sola non appena la risposta finisce,
+  // fallisce o viene sostituita da un nuovo comando — così non si sovrappongono mai.
   function speakAssistant(text) {
+    if (audioRef.current && !audioRef.current.paused) {
+      narrationWasPlayingRef.current = true;
+      audioRef.current.pause();
+    }
     if (assistantAudioRef.current) {
       assistantAudioRef.current.pause();
       if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
       assistantAudioRef.current = null;
     }
+
+    const resumeNarrationIfNeeded = () => {
+      if (!narrationWasPlayingRef.current) return;
+      narrationWasPlayingRef.current = false;
+      if (audioRef.current && audioAvviatoRef.current && !ttsMutedRef.current) {
+        audioRef.current.play().catch(() => {});
+      }
+    };
+
     fetch('/api/tts', {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ text }),
@@ -141,9 +162,11 @@ function VisitaItemScreen({
         const url = URL.createObjectURL(blob);
         const audio = new Audio(url);
         assistantAudioRef.current = audio;
-        audio.play().catch(() => {});
+        audio.onended = resumeNarrationIfNeeded;
+        audio.onerror = resumeNarrationIfNeeded;
+        audio.play().catch(resumeNarrationIfNeeded);
       })
-      .catch(() => {});
+      .catch(resumeNarrationIfNeeded);
   }
 
   // "Dov'è l'uscita?" / "Dov'è la toilette?" — cerca su tutti i piani del
@@ -225,7 +248,13 @@ function VisitaItemScreen({
       }
       const nuovaDurata = order[nextIdx];
       setDurata(nuovaDurata);
-      speakAssistant(toneText(activeItem?.toni?.[tono], nuovaDurata) || 'Nessun contenuto disponibile per questa durata.');
+      // Se la narrazione principale è attiva se ne occupa già lei (il suo
+      // effect dipende da tono/durata e la ricarica automaticamente) — qui
+      // parliamo solo quando altrimenti resterebbe silenzio (audio non
+      // avviato dalla docente, o in muto).
+      if (!audioAvviato || ttsMuted) {
+        speakAssistant(toneText(activeItem?.toni?.[tono], nuovaDurata) || 'Nessun contenuto disponibile per questa durata.');
+      }
 
     } else if (categoria === 'adattamento') {
       const order = TONI_CONFIG.map(t => t.key);
@@ -237,7 +266,9 @@ function VisitaItemScreen({
       }
       const nuovoTono = order[nextIdx];
       setTono(nuovoTono);
-      speakAssistant(toneText(activeItem?.toni?.[nuovoTono], durata) || 'Nessun contenuto disponibile per questo tono.');
+      if (!audioAvviato || ttsMuted) {
+        speakAssistant(toneText(activeItem?.toni?.[nuovoTono], durata) || 'Nessun contenuto disponibile per questo tono.');
+      }
 
     } else if (categoria === 'dettagli') {
       if (azione === 'autore') {
