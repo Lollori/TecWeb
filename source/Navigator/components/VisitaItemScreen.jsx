@@ -50,6 +50,11 @@ function VisitaItemScreen({
 
 
   const narrationWasPlayingRef = React.useRef(false);
+  // Spegne il microfono da solo dopo 2s senza voce rilevata (non silenzio
+  // grezzo: onspeechstart/onspeechend usano il voice-activity-detection del
+  // browser, che già scarta il rumore di sottofondo — un rumore non azzera
+  // il timer di spegnimento a meno che non venga scambiato per voce).
+  const silenceTimerRef = React.useRef(null);
 
 
   const handleVoiceTranscriptRef = React.useRef(() => {});
@@ -95,6 +100,21 @@ function VisitaItemScreen({
         handleVoiceTranscriptRef.current(testo);
       }
     };
+    recognition.onspeechstart = () => {
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+    };
+    recognition.onspeechend = () => {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = setTimeout(() => {
+        silenceTimerRef.current = null;
+        micOnRef.current = false;
+        setMicOn(false);
+        try { recognition.stop(); } catch (_) {}
+      }, 2000);
+    };
     recognition.onerror = () => {  };
     recognition.onend = () => {
       if (micOnRef.current) {
@@ -105,6 +125,7 @@ function VisitaItemScreen({
     recognitionRef.current = recognition;
     return () => {
       micOnRef.current = false;
+      if (silenceTimerRef.current) { clearTimeout(silenceTimerRef.current); silenceTimerRef.current = null; }
       try { recognition.stop(); } catch (_) {}
       recognitionRef.current = null;
     };
@@ -147,8 +168,11 @@ function VisitaItemScreen({
   }
 
 
+  const AMENITY_LABELS = { U: "L'uscita", bagno: 'La toilette', scale: 'Le scale' };
+  const AMENITY_LABELS_NOT_FOUND = { U: "l'uscita", bagno: 'i bagni', scale: 'le scale' };
+
   async function locateAmenity(kind) {
-    const label = kind === 'U' ? "L'uscita" : 'La toilette';
+    const label = AMENITY_LABELS[kind] || 'Il punto richiesto';
     if (!activeItem?.museumId || !operaGroup?.operaId) {
       speakAssistant(`${label}: mappa non disponibile al momento.`);
       return;
@@ -183,7 +207,7 @@ function VisitaItemScreen({
       }
 
       if (!foundFloors.length) {
-        speakAssistant(`Non ho trovato ${kind === 'U' ? "l'uscita" : 'i bagni'} sulla mappa di questo museo.`);
+        speakAssistant(`Non ho trovato ${AMENITY_LABELS_NOT_FOUND[kind] || 'il punto richiesto'} sulla mappa di questo museo.`);
         return;
       }
       const refIdx = operaFloorIdx != null ? operaFloorIdx : 0;
@@ -202,7 +226,10 @@ function VisitaItemScreen({
 
   function handleVoiceTranscript(testo) {
     const match = matchVoiceCommand(testo);
-    if (!match) return; 
+    if (!match) {
+      speakAssistant('Non ho capito, puoi ripetere?');
+      return;
+    }
     const { categoria, azione } = match;
 
     if (categoria === 'esplorazione') {
@@ -249,7 +276,7 @@ function VisitaItemScreen({
       }
 
     } else if (categoria === 'logistica') {
-      locateAmenity(azione === 'uscita' ? 'U' : 'bagno');
+      locateAmenity(azione === 'uscita' ? 'U' : azione);
     }
   }
 
@@ -266,6 +293,7 @@ function VisitaItemScreen({
   function toggleMic() {
     if (!micSupported || !recognitionRef.current) return;
     const next = !micOn;
+    if (silenceTimerRef.current) { clearTimeout(silenceTimerRef.current); silenceTimerRef.current = null; }
     setMicOn(next);
     micOnRef.current = next;
     if (next) {

@@ -25,6 +25,7 @@ function App() {
           const r = await fetch(`/api/sessioni/${encodeURIComponent(saved.codice)}`);
           const d = await r.json();
           if (d.ok) {
+            acquireNavLock(saved.codice, saved.role);
             if (saved.role === 'docente') {
               if (saved.museoIsil) {
                 try {
@@ -177,6 +178,7 @@ function App() {
         });
         const data = await res.json();
         if (res.ok && !data.error) {
+          acquireNavLock(codice, 'docente');
           setLobby({ codice, visitaNome: visita.nomeVisita });
           saveNavSession({ role: 'docente', codice, visitaNome: visita.nomeVisita, museoIsil: museo.codiceIsil });
           window.history.pushState({ screen: 'lobby-docente' }, '', window.location.href);
@@ -214,7 +216,20 @@ function App() {
 
   // Unica via d'uscita per i partecipanti: il pulsante "Esci" dentro la visita
   // (o la chiusura da parte della docente). Un reload non deve mai passare di qui.
-  const exitStudente = () => { clearNavSession(); setLobby(null); setScreen('musei'); };
+  React.useEffect(() => {
+    if (!lobby?.codice) return;
+    if (screen !== 'lobby-docente' && screen !== 'lobby-studente') return;
+    refreshNavLock(lobby.codice);
+    const interval = setInterval(() => refreshNavLock(lobby.codice), 5000);
+    const releaseOnUnload = () => releaseNavLock(lobby.codice);
+    window.addEventListener('beforeunload', releaseOnUnload);
+    return () => {
+      clearInterval(interval);
+      window.removeEventListener('beforeunload', releaseOnUnload);
+    };
+  }, [screen, lobby?.codice]);
+
+  const exitStudente = () => { if (lobby?.codice) releaseNavLock(lobby.codice); clearNavSession(); setLobby(null); setScreen('musei'); };
 
   if (screen === 'lobby-studente') return (
     <LobbyStudente
@@ -236,7 +251,7 @@ function App() {
   // Unica via d'uscita per la docente: "Annulla sessione" (prima dell'avvio) o
   // "Termina visita" (durante), entrambi passano per onClose. Niente sidebar
   // qui sotto (Musei/Marketplace/Unisciti) — non deve esistere un'uscita implicita.
-  const closeSession = () => { clearNavSession(); setLobby(null); setScreen('visite'); };
+  const closeSession = () => { if (lobby?.codice) releaseNavLock(lobby.codice); clearNavSession(); setLobby(null); setScreen('visite'); };
 
   if (screen === 'lobby-docente') return (
     <LobbyDocente codice={lobby.codice} visitaNome={lobby.visitaNome} museo={museo} onClose={closeSession} />

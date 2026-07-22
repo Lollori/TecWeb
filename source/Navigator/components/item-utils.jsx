@@ -32,7 +32,7 @@ const VOICE_COMMANDS = {
   esplorazione: ['dimmi di più', 'dimmi di meno', "cos'è questo"],
   adattamento:  ['più semplice', 'troppo semplice', 'non capisco'],
   dettagli:     ["chi è l'autore", 'qual è lo stile'],
-  logistica:    ["dov'è l'uscita", "dov'è la toilette"],
+  logistica:    ["dov'è l'uscita", "dov'è la toilette", "dove sono le scale"],
 };
 
 
@@ -60,5 +60,6 @@ function matchVoiceCommand(testo) {
   if (t.includes('uscita'))                                    return { categoria: 'logistica', azione: 'uscita' };
   if (t.includes('bagno') || t.includes('bagni') || t.includes('toilette') || t.includes('toilet'))
                                                                 return { categoria: 'logistica', azione: 'bagno' };
+  if (t.includes('scala') || t.includes('scale'))              return { categoria: 'logistica', azione: 'scale' };
   return null;
 }
