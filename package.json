@@ -1,7 +1,7 @@
 {
   "scripts": {
-    "start": "node source/index.js",
-    "dev": "nodemon source/index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js"
   },
   "nodemonConfig": {
     "legacyWatch": true

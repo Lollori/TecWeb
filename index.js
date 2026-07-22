@@ -1,4 +1,6 @@
-global.rootDir = __dirname ;
+const path = require('path');
+
+global.rootDir = path.join(__dirname, 'source');
 global.startDate = null;
 
 const users = require(global.rootDir + '/scripts/users.js');
@@ -43,7 +45,6 @@ const tts = require(global.rootDir + '/scripts/tts.js');
 
 const express = require('express');
 const cors = require('cors')
-const path = require('path');
 
 
 let app = express(); 
@@ -62,7 +63,7 @@ app.use(cors())
 app.enable('trust proxy');
 
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.sendFile(path.join(global.rootDir, 'index.html'));
 });
 
 
