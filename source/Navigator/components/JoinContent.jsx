@@ -8,6 +8,11 @@ function JoinContent({ onJoined }) {
     if (!trimmed || joining) return;
     setJoining(true);
     setJoinError(null);
+    if (!acquireNavLock(trimmed, 'studente')) {
+      setJoinError('Questo browser sta già partecipando a questa visita in un\'altra scheda.');
+      setJoining(false);
+      return;
+    }
     try {
       const nomeAccount = localStorage.getItem('userUsername') || '';
       const ruoloAccount = localStorage.getItem('userRole') || '';
@@ -17,11 +22,13 @@ function JoinContent({ onJoined }) {
       });
       const data = await res.json();
       if (!res.ok || data.error) {
+        releaseNavLock(trimmed);
         setJoinError(data.error || 'Codice non trovato. Riprova.');
       } else {
         onJoined(trimmed, data.nome, data.museoIsil);
       }
     } catch (_) {
+      releaseNavLock(trimmed);
       setJoinError('Impossibile connettersi al server. Riprova.');
     } finally {
       setJoining(false);
