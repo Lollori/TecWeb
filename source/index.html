@@ -222,7 +222,8 @@
 
     // Inizializza tema prima del render
     (function () {
-        const theme = localStorage.getItem('theme') || 'dark';
+        let theme = localStorage.getItem('theme');
+        if (!theme) { theme = 'dark'; localStorage.setItem('theme', theme); }
         document.documentElement.dataset.theme = theme;
     })();
 
