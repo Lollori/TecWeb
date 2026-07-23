@@ -61,7 +61,7 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
     <>
       {}
       <div className="geo-floorplan-wrap">
-        <img
+        <img loading="lazy"
           className="geo-floorplan-img"
           src={pianoItem?.url}
           alt={pianoItem?.piano || 'Planimetria'}
@@ -162,7 +162,7 @@ function RoomFloorPlan({ pianoItem, museoIsil, dot }) {
             <div className="geo-opera-list">
               {roomOpere.map(o => (
                 <div key={o._id} className="geo-opera-card">
-                  {o.immagine && <img className="geo-opera-img" src={o.immagine} alt={o.operaId} />}
+                  {o.immagine && <img loading="lazy" className="geo-opera-img" src={o.immagine} alt={o.operaId} />}
                   <div className="geo-opera-body">
                     <p className="geo-opera-title">{o.operaId}</p>
                     {o.autore && <p className="geo-opera-meta">{o.autore}{o.datazione ? ` · ${o.datazione}` : ''}</p>}
@@ -272,7 +272,7 @@ function VisitaItemRoomMap({ museumId, operaId, logisticsTarget = null }) {
             : <>Planimetria museo</>}
       </p>
       <div className="geo-floorplan-wrap">
-        <img className="geo-floorplan-img" src={floorDef.url} alt={floorDef.piano || 'Planimetria'} />
+        <img loading="lazy" className="geo-floorplan-img" src={floorDef.url} alt={floorDef.piano || 'Planimetria'} />
         <svg
           className="geo-room-overlay"
           viewBox={viewBox}

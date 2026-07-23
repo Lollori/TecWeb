@@ -60,7 +60,7 @@ function renderVisMusei(lista) {
              onclick="showVisMuseoDetail('${m.codiceIsil}')">
             <div style="position:relative;flex-shrink:0;height:200px;">
                 ${m.immagineCopertina
-                    ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                    ? `<img loading="lazy" class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                        <div class="museo-card-img-placeholder"
                             style="display:none;position:absolute;inset:0;">
@@ -109,7 +109,7 @@ window.showVisMuseoDetail = function (codiceIsil) {
         ${mapActionsHtml(museo)}
         <div class="glass-card p-4" style="margin-top:24px;">
             ${museo.immagineCopertina
-                ? `<img src="${museo.immagineCopertina}" alt="${museo.nome}"
+                ? `<img loading="lazy" src="${museo.immagineCopertina}" alt="${museo.nome}"
                        style="width:100%;max-height:320px;object-fit:cover;border-radius:12px;margin-bottom:20px;"
                        onerror="this.style.display='none'">`
                 : ''
@@ -218,7 +218,7 @@ function renderVisOpere(lista) {
         return `
         <div class="opera-read-card scroll-card-clickable" onclick="showVisOperaDetail(${idx})">
             ${op.immagine
-                ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
+                ? `<img loading="lazy" src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
                 : ''}
             <h3>${op.operaId}</h3>
             ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
@@ -252,7 +252,7 @@ window.showVisOperaDetail = async function (idx) {
         </p>
         <div class="glass-card p-4" style="margin-top:24px;">
             ${opera.immagine
-                ? `<img src="${opera.immagine}" alt="${opera.operaId}"
+                ? `<img loading="lazy" src="${opera.immagine}" alt="${opera.operaId}"
                        style="width:100%;max-height:320px;object-fit:cover;border-radius:12px;margin-bottom:20px;"
                        onerror="this.style.display='none'">`
                 : ''}

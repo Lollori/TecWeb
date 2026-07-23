@@ -13,7 +13,7 @@ function VisiteScreen({ museo, visite, onBack, onAvvia }) {
         <div className="museo-mini-identity">
           {museo.immagineCopertina && (
             <div className="museo-mini-cover">
-              <img src={museo.immagineCopertina} alt={museo.nome} />
+              <img loading="lazy" src={museo.immagineCopertina} alt={museo.nome} />
             </div>
           )}
           <div className="museo-mini-info">

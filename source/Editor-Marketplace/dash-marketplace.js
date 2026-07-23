@@ -387,7 +387,7 @@ function renderMktItems(lista, purchasedIds, cartIds = []) {
         const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
         return `
         <div class="item-read-card">
-            ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+            ${it.image ? `<img loading="lazy" src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
             <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
             <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
             ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
@@ -539,7 +539,7 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
             const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
             return `
             <div class="item-read-card">
-                ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                ${it.image ? `<img loading="lazy" src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
                 <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
                 <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
@@ -695,7 +695,7 @@ async function initCarrello() {
             const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
             return `
             <div class="item-read-card">
-                ${it.image ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                ${it.image ? `<img loading="lazy" src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
                 <h3 class="carrello-item-title">${itemTitle(it)}</h3>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;gap:8px;">

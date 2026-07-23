@@ -383,7 +383,7 @@ async function dashHandleRoomClick(museoIsil, roomId, poly, svgEl) {
                 <div class="dash-opera-list">
                     ${opere.map(o => `
                         <div class="dash-opera-card">
-                            ${o.immagine ? `<img class="dash-opera-img" src="${o.immagine}" alt="" onerror="this.style.display='none'">` : ''}
+                            ${o.immagine ? `<img loading="lazy" class="dash-opera-img" src="${o.immagine}" alt="" onerror="this.style.display='none'">` : ''}
                             <div class="dash-opera-body">
                                 <p class="dash-opera-name">${o.operaId}</p>
                                 ${o.autore ? `<p class="dash-opera-meta">${o.autore}${o.datazione ? ' · ' + o.datazione : ''}</p>` : ''}

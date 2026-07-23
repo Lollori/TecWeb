@@ -45,7 +45,7 @@ function renderMusei(lista) {
         <div class="item-card museo-card" style="cursor:pointer"
              onclick="showMuseoDetail('${m.codiceIsil}')">
             ${m.immagineCopertina
-                ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                ? `<img loading="lazy" class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
                        onerror="this.style.display='none'">`
                 : `<div class="museo-card-img-placeholder"><i class="fa fa-building-columns"></i></div>`
             }
@@ -118,7 +118,7 @@ function _renderOpereDetail(lista) {
         return `
             <div class="opera-read-card scroll-card-clickable"
                  onclick="showOperaItems(${idx}, '${codiceIsil}')">
-                ${op.immagine ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
+                ${op.immagine ? `<img loading="lazy" src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">` : ''}
                 <h3>${op.operaId}</h3>
                 ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}
                 ${op.datazione ? `<p class="opera-meta"><i class="fa-solid fa-calendar"></i> ${op.datazione}</p>` : ''}

@@ -316,7 +316,7 @@ function renderAdminMusei(lista) {
             <div class="glass-card" style="display:flex;flex-direction:column;overflow:hidden;">
                 <div style="position:relative;height:200px;flex-shrink:0;background:#f0f0f0;overflow:hidden;">
                     ${m.immagineCopertina
-                        ? `<img src="${m.immagineCopertina}" alt="${m.nome}"
+                        ? `<img loading="lazy" src="${m.immagineCopertina}" alt="${m.nome}"
                                 style="width:100%;height:100%;object-fit:cover;"
                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                            <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">
@@ -610,7 +610,7 @@ function renderAdminOpere(lista) {
             <div class="glass-card" style="display:flex;flex-direction:column;overflow:hidden;">
                 <div style="height:180px;flex-shrink:0;background:#f0f0f0;overflow:hidden;">
                     ${op.immagine
-                        ? `<img src="${op.immagine}" alt="${op.operaId}"
+                        ? `<img loading="lazy" src="${op.immagine}" alt="${op.operaId}"
                                 style="width:100%;height:100%;object-fit:cover;"
                                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
                            <div style="display:none;width:100%;height:100%;align-items:center;justify-content:center;background:linear-gradient(135deg,#f3f4f6,#e5e7eb);">

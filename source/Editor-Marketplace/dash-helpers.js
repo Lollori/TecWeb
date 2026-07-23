@@ -301,7 +301,7 @@ function renderItemCard(item) {
     return `
         <div class="item-read-card">
             ${item.image
-                ? `<img src="${item.image}" alt="item" onerror="this.style.display='none'">`
+                ? `<img loading="lazy" src="${item.image}" alt="item" onerror="this.style.display='none'">`
                 : ''}
             ${renderToni(item)}
             ${Object.keys(item.metadata || {}).length ? `

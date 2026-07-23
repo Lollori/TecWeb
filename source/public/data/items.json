@@ -1,434 +1,1055 @@
 [
   {
-    "museumId": "IT-TO0576",
-    "operaId": "Statua di Ramesse II",
-    "objectId": "ramesse-ii-scheda",
-    "toni": {
-      "semplice": {
-        "d3": "Questa statua gigante mostra un antico re d'Egitto chiamato Ramesse II. È fatta di pietra dura e colorata di rosso.",
-        "d15": "",
-        "d40": ""
-      },
-      "medio": {
-        "d3": "",
-        "d15": "La statua raffigura il faraone Ramesse II seduto in trono con la doppia corona. È realizzata in granito rosso di Assuan e fu scoperta a Tebe nel 1820 dalla spedizione franco-toscana di Drovetti. Alta 194 cm, è una delle opere più imponenti del museo.",
-        "d40": ""
-      },
-      "avanzato": {
-        "d3": "",
-        "d15": "",
-        "d40": "Esemplare di statuaria regale egizia del Nuovo Regno, la scultura in granito rosso di Assuan raffigura Ramesse II (XIX Dinastia, ca. 1279–1213 a.C.) in posizione frontale e seduta su trono cubiforme, con la doppia corona pschent e i tradizionali attributi del potere faraonico. Scoperta nel 1820 dalla spedizione Drovetti a Tebe (Karnak), costituisce uno dei rari esemplari di scultura monumentale in granito rosso di provenienza tebana. Le sue dimensioni (h. 194 cm) e la qualità d'intaglio del granito ignifugo ne fanno uno dei pezzi di maggiore rilevanza dell'intera collezione egizia torinese, testimonianza del gusto celebrativo della propaganda regia ramesside."
-      }
-    },
-    "metadata": {
-      "materiale": "Granito rosso di Assuan",
-      "altezza": "194 cm",
-      "periodo": "XIX Dinastia, regno di Ramesse II",
-      "tecnica": "Scultura in granito",
-      "provenienza": "Tebe (Karnak)",
-      "prezzo": 0
-    },
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg/800px-Museo_Egizio_Torino_-_Statua_di_Ramesse_II.jpg",
-    "authorId": "e9o1w5g3hk",
-    "pubblica": true
-  },
-  {
-    "museumId": "IT-TO0576",
-    "operaId": "Statua di Ramesse II",
-    "objectId": "ramesse-ii-iconografia",
-    "toni": {
-      "semplice": {
-        "d3": "Il re porta una corona speciale che unisce due regni: l'Alto e il Basso Egitto. È come avere due corone in una sola!",
-        "d15": "",
-        "d40": ""
-      },
-      "medio": {
-        "d3": "",
-        "d15": "Il faraone indossa la corona doppia pschent, simbolo dell'unificazione dell'Alto e Basso Egitto. Sul pettorale è inciso il cartiglio con il prenome di Ramesse: Usermaatre Setepenre, che significa 'Ra è potente nella verità, eletto di Ra'.",
-        "d40": ""
-      },
-      "avanzato": {
-        "d3": "",
-        "d15": "",
-        "d40": "Il programma iconografico del manufatto esibisce gli attributi canonici della regalità egizia: la corona pschent (sekhemty), sintesi della hedjet bianca dell'Alto Egitto e della deshret rossa del Basso Egitto, sancisce il ruolo del sovrano come unificatore del Paese a Due Terre (Tawy). Il cartiglio inciso sul pettorale riporta il prenome di Ramesse II, Usermaatre Setepenre ('Ra è potente nella verità, eletto di Ra'), formula adottata sistematicamente per legittimare il potere divino del faraone. La barba posticcia intrecciata e il nemes completano l'apparato regalia tipico della statuaria ramesside."
-      }
-    },
-    "metadata": {
-      "soggetto": "Ritratto regale",
-      "attributi": "Corona pschent, barba rituale, cartiglio",
-      "stato_conservazione": "Ottimo",
-      "note_restauro": "Restauro conservativo 1989",
-      "prezzo": 2
-    },
-    "image": "",
-    "authorId": "f4q8y2c7mt",
-    "pubblica": true
-  },
-  {
-    "museumId": "IT-TO0576",
-    "operaId": "Libro dei Morti di Hunefer",
-    "objectId": "hunefer-analisi",
-    "toni": {
-      "semplice": {
-        "d3": "Questo vecchio rotolo di carta speciale racconta cosa succede dopo la morte, con tante figure colorate disegnate a mano.",
-        "d15": "",
-        "d40": ""
-      },
-      "medio": {
-        "d3": "",
-        "d15": "Il papiro contiene 78 capitoli del Libro dei Morti con illustrazioni policrome di grande qualità. La scena più famosa mostra il giudizio di Osiride: il cuore di Hunefer viene pesato su una bilancia contro la piuma di Maat per capire se ha vissuto bene.",
-        "d40": ""
-      },
-      "avanzato": {
-        "d3": "",
-        "d15": "",
-        "d40": "Il rotolo papiraceo di Hunefer (XIX Dinastia, ca. 1275 a.C.) è tra gli esemplari canonici del Libro dei Morti (pert em hru, 'Libro dell'uscita alla luce del giorno') in scrittura ieratica e geroglifica, con 78 capitoli corredati da vignette policrome in tempera. La scena psicostasica al capitolo 125 rappresenta la pesatura del cuore (ib) sull'astina di una bilancia contrapposta alla piuma di Maat: l'esito negativo comporterebbe la devorazione da parte di Ammit, con la conseguente seconda morte spirituale. Il manufatto esibisce una coerenza compositiva e una resa cromatica raramente conservata in esemplari dello stesso periodo, con pigmenti a base di ocra, lapislazzuli e malachite."
-      }
-    },
-    "metadata": {
-      "materiale": "Papiro",
-      "lunghezza": "500 cm",
-      "altezza": "39 cm",
-      "periodo": "XIX Dinastia, ca. 1275 a.C.",
-      "scrittura": "Ieratica e geroglifica",
-      "prezzo": 0
-    },
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Hunefer.jpg/800px-Hunefer.jpg",
-    "authorId": "e9o1w5g3hk",
-    "pubblica": true
-  },
-  {
-    "museumId": "IT-TO0576",
-    "operaId": "Libro dei Morti di Hunefer",
-    "objectId": "hunefer-contesto",
-    "toni": {
-      "semplice": {
-        "d3": "Hunefer era un importante lavoratore del re d'Egitto. Questo rotolo speciale fu fatto apposta per lui quando morì.",
-        "d15": "",
-        "d40": ""
-      },
-      "medio": {
-        "d3": "",
-        "d15": "Hunefer era uno scriba reale durante il regno di Seti I. Il suo papiro è tra i meglio conservati al mondo. Fu trovato nella sua tomba a Tebe e questa copia torinese è una delle riproduzioni più fedeli realizzate nel XIX secolo.",
-        "d40": ""
-      },
-      "avanzato": {
-        "d3": "",
-        "d15": "",
-        "d40": "La committenza del papiro è attribuita a Hunefer, scriba reale (sesh nesu) al servizio di Seti I (XIX Dinastia), come documentato dall'iscrizione dedicatoria nel colophon. La collocazione originaria nella tomba tebana del defunto ne conferma la funzione di corredo funerario personalizzato, redatto secondo le prescrizioni canoniche della tradizione libraria del Nuovo Regno. Il testo, vergato in scrittura ieratica corsiva con titoli in geroglifico, costituisce un riferimento per gli studi di paleografia e per la storia delle raccolte egittologiche europee dell'Ottocento, periodo in cui esemplari analoghi furono sistematicamente acquisiti da istituzioni museali di tutta Europa."
-      }
-    },
-    "metadata": {
-      "committente": "Hunefer, scriba reale di Seti I",
-      "collocazione_originale": "Tomba di Hunefer, Tebe",
-      "tecnica_illustrazione": "Tempera su papiro",
-      "prezzo": 3
-    },
-    "image": "",
-    "authorId": "f4q8y2c7mt",
-    "pubblica": true
-  },
-  {
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
-    "objectId": "venere-analisi-tecnica",
+    "objectId": "venere-nascita-semplice",
     "toni": {
       "semplice": {
-        "d3": "Venere è una donna bellissima che esce dal mare su una grande conchiglia. È uno dei quadri più famosi del mondo!",
-        "d15": "",
-        "d40": ""
+        "d3": "Venere nasce dal mare su una grande conchiglia. Il vento la spinge dolcemente verso la riva.",
+        "d15": "Venere, la dea dell'amore, è appena nata dal mare e galleggia su una grande conchiglia. A sinistra un vento caldo, chiamato Zefiro, soffia per spingerla verso la spiaggia. A destra una ragazza la aspetta con un mantello pieno di fiori per coprirla. Botticelli ha dipinto questo quadro più di 500 anni fa ed è ancora oggi uno dei più amati al mondo.",
+        "d40": "Questo bellissimo quadro racconta la nascita della dea Venere, che secondo il mito antico nacque direttamente dalla schiuma del mare. Botticelli la dipinge in piedi su una conchiglia enorme, con i lunghi capelli dorati mossi dal vento che le coprono il corpo. Sulla sinistra vediamo due figure abbracciate: sono Zefiro, il vento di primavera, e la ninfa Clori, che insieme soffiano per spingere Venere verso la terraferma. Sulla destra una fanciulla, una delle Ore che accompagnano le stagioni, corre ad accoglierla con un manto ricamato di fiori pronto per coprirla. Tutto intorno c'è un mare calmo e ordinato, quasi decorativo, che fa sembrare la scena più un sogno che la realtà. Il quadro fu dipinto a Firenze quando in città regnava la famiglia dei Medici, grandi amanti dell'arte, e ancora oggi migliaia di persone ogni giorno vengono agli Uffizi solo per vederlo dal vivo."
       },
       "medio": {
         "d3": "",
-        "d15": "La dea Venere emerge dal mare su una grande conchiglia, simbolo di nascita e purezza. Botticelli ha usato colori preziosi come il lapislazzuli per i blu e il verderame per i verdi. Il dipinto è esposto alla Galleria degli Uffizi di Firenze.",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La tavola a tempera (172,5 × 278,9 cm) di Sandro Botticelli (ca. 1484–1486), commissionata da Lorenzo di Pierfrancesco de' Medici per la villa di Castello, esibisce una straordinaria raffinatezza tecnica. L'analisi stratigrafìca ha individuato lapislazzuli ultrafino per le velature azzurre, verderame per i toni verdi e biacca di piombo per le lumeggiature delle carnagioni; la preparazione a gesso fine e colla animale è caratteristica della tradizione fiorentina quattrocentesca. La Venere anadiomene richiama la Venere Pudica di tradizione ellenistica, reinterpretata in chiave neoplatonica mediceo-polizianesca: la nudità non è sensuale ma metafisica, identificando Venere Celeste con la Humanitas."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Tempera su tavola",
       "dimensioni": "172,5 × 278,9 cm",
-      "collocazione": "Sala di Botticelli, Uffizi",
-      "commissione": "Lorenzo di Pierfrancesco de' Medici",
-      "prezzo": 4
+      "periodo": "ca. 1484-1486",
+      "sala": "10-14",
+      "prezzo": 0
     },
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/26/Sandro_Botticelli_046.jpg/800px-Sandro_Botticelli_046.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg/960px-La_nascita_di_Venere_%28Botticelli%29.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
-    "objectId": "venere-iconografia",
+    "objectId": "venere-nascita-medio",
     "toni": {
       "semplice": {
-        "d3": "Nella scena c'è il vento che soffia forte e una donna che aspetta Venere con un bellissimo mantello pieno di fiori.",
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Venere emerge dal mare su una conchiglia spinta da Zefiro e Clori.",
+        "d15": "Botticelli dipinge la nascita di Venere emersa dalla schiuma marina, in equilibrio su una conchiglia. Zefiro e la ninfa Clori la spingono a riva con il loro soffio, mentre una delle Ore la accoglie con un manto fiorito. La fonte letteraria principale sono le Stanze di Poliziano, poeta di corte alla corte medicea.",
+        "d40": "Realizzata per Lorenzo di Pierfrancesco de' Medici intorno al 1484-1486, la tavola raffigura il momento in cui Venere, appena nata dalla schiuma del mare, approda sulla riva di Cipro. La composizione è organizzata in tre gruppi: la coppia di venti a sinistra, la dea al centro in equilibrio instabile sulla conchiglia, e l'Ora che la accoglie a destra con un manto ricamato di fiordalisi. Il linearismo elegante delle figure, i contorni sinuosi e l'assenza quasi totale di ombreggiatura volumetrica derivano dalla formazione dell'artista presso Filippo Lippi, mentre l'ispirazione letteraria proviene dalle Stanze per la giostra di Angelo Poliziano. Il dipinto, insieme alla Primavera, faceva probabilmente parte dell'arredo della villa di Castello e riflette il gusto neoplatonico della cerchia medicea per i miti classici reinterpretati in chiave filosofica."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "172,5 × 278,9 cm",
+      "periodo": "ca. 1484-1486",
+      "sala": "10-14",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg/960px-La_nascita_di_Venere_%28Botticelli%29.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Nascita di Venere",
+    "objectId": "venere-nascita-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "Zefiro abbracciato alla ninfa Clori soffia vento caldo per spingere Venere verso riva. A destra, una delle Ore la accoglie con un manto decorato di fiori. La posa di Venere ricorda le antiche statue greche della Venere Pudica.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Anadiomene su conchiglia, sintesi di Venus Pudica e neoplatonismo mediceo.",
+        "d15": "La tavola rielabora il modello classico della Venus Anadiomene attraverso una sintassi lineare gotico-fiorentina priva di modellato chiaroscurale. L'iconografia, mediata dalle Stanze di Poliziano, sovrappone alla nudità la dimensione filosofica della Humanitas neoplatonica cara al circolo ficiniano.",
+        "d40": "L'opera (tempera su tavola, 172,5 × 278,9 cm, ca. 1484-1486) costituisce il vertice della sintesi tra fonti letterarie classiche e filtro neoplatonico nell'ambiente mediceo. La posa di Venere cita direttamente il tipo statuario della Venus Pudica di tradizione prassitelica, nota a Firenze attraverso repliche marmoree e glittica antica, ma la resa pittorica rifiuta il modellato chiaroscurale in favore di un linearismo di ascendenza tardogotica, debitore della formazione dell'artista presso Filippo Lippi. Il gruppo di Zefiro e Clori (o Aura), avvinti in un abbraccio dal ritmo sinuoso, e l'Ora recante il manto fiorito, derivano dalla rilettura delle Stanze per la giostra di Poliziano, sovrapposta a suggestioni ovidiane. L'assenza di profondità atmosferica, la superficie del mare trattata a motivi decorativi quasi araldici e la sproporzione anatomica del collo e delle spalle di Venere sono stati letti dalla critica come scelte stilistiche coerenti con l'intento di rappresentare non la carne ma l'idea platonica di bellezza celeste, in linea con l'esegesi ficiniana diffusa nella cerchia di Lorenzo di Pierfrancesco de' Medici."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "172,5 × 278,9 cm",
+      "periodo": "ca. 1484-1486",
+      "sala": "10-14",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg/960px-La_nascita_di_Venere_%28Botticelli%29.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Primavera",
+    "objectId": "primavera-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Tanti personaggi ballano in un giardino pieno di fiori e arance, è l'arrivo della primavera.",
+        "d15": "In questo quadro grandissimo ci sono nove personaggi in un bosco di aranci pieno di fiori. Al centro c'è Venere, la dea dell'amore. A destra tre ragazze, le Grazie, ballano insieme. A sinistra Mercurio allontana le nuvole con il suo bastone magico. È uno dei quadri più amati del mondo.",
+        "d40": "Immagina un giardino incantato dove non finisce mai la primavera: alberi di arance carichi di frutti dorati, un prato pieno di centinaia di fiori diversi, e tanti personaggi mitologici che si muovono come in una danza. Al centro, sotto un arco naturale di rami, sta Venere, la dea dell'amore, che sembra dare il benvenuto a chi guarda il quadro. Sopra di lei un piccolo Cupido bendato sta per scoccare una freccia. A destra vediamo tre ragazze bellissime che danzano tenendosi per mano: sono le Tre Grazie. Ancora più a destra, un vento chiamato Zefiro insegue una ninfa che si trasforma in Flora, la dea dei fiori, riconoscibile dal vestito coperto di petali. A sinistra il dio Mercurio, con i sandali alati, alza il suo bastone per disperdere le nuvole dal cielo. Botticelli ha dipinto in questo quadro più di 500 specie diverse di piante e fiori, quasi tutte esistenti davvero in Toscana."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La struttura compositiva articola tre gruppi figurativi: Zefiro abbracciato a Clori (o Aura) insuffla il vento primaverile; Venere emerge in equilibrio instabile dalla conchiglia volutiforme; a destra un'Ora porge il manto istoriato con fiordalisi e anemoni. La fonte iconografica primaria è nelle Stanze di Angelo Poliziano (1475–1478). La deformazione anatomica del collo allungato, le proporzioni irrealistiche delle dita e il ritmo astratto delle onde rivelano la persistenza del lessico gotico internazionale nel vocabolario formale di Botticelli, in tensione con il recupero classicista promosso dall'accademia medicea."
+        "d40": ""
       }
     },
     "metadata": {
-      "fonti_letterarie": "Stanze di Angelo Poliziano (1475–1478)",
-      "stile": "Gotico internazionale, Primo Rinascimento",
-      "simbolismo": "Neoplatonismo mediceo, Venere Celeste",
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "203 × 314 cm",
+      "periodo": "1477-1478",
+      "sala": "10-14",
       "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/960px-Botticelli-primavera.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "La Primavera",
-    "objectId": "primavera-botanica",
+    "objectId": "primavera-medio",
     "toni": {
       "semplice": {
-        "d3": "In questo quadro ci sono tantissimi fiori e piante veri della Toscana. Al centro si vede Venere, la dea dell'amore.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
-        "d3": "",
-        "d15": "Il giardino dipinto contiene oltre 500 specie botaniche quasi tutte autoctone della Toscana. Al centro Venere presiede la scena. A destra le Tre Grazie danzano, mentre Mercurio disperde le nuvole con il suo caduceo magico.",
-        "d40": ""
+        "d3": "Allegoria della primavera con Venere, le Tre Grazie, Mercurio e la metamorfosi di Clori in Flora.",
+        "d15": "La Primavera raffigura un giardino sempre in fiore popolato da nove figure mitologiche. Al centro Venere presiede la scena sotto un arco di alloro; a destra Zefiro insegue Clori, che si trasforma in Flora, dea della primavera; le Tre Grazie danzano e Mercurio disperde le nuvole con il caduceo. Il giardino contiene oltre 500 specie botaniche identificate dagli studiosi.",
+        "d40": "Dipinta per Lorenzo di Pierfrancesco de' Medici tra il 1477 e il 1478, la Primavera sviluppa un complesso programma allegorico ispirato alle Stanze di Poliziano e ai Fasti di Ovidio. La narrazione si legge da destra a sinistra: Zefiro afferra la ninfa Clori, dalla cui bocca escono fiori, trasformandola in Flora, personificazione della primavera fiorita; al centro Venere, sotto un arco vegetale che la incornicia come una Madonna laica, presiede la composizione con Cupido che scocca una freccia sopra di lei; a sinistra le Tre Grazie danzano in una coreografia di ascendenza classica, mentre Mercurio, riconoscibile dai calzari alati e dal caduceo, allontana le nubi autunnali per proteggere il giardino perenne. L'identificazione di oltre 500 specie vegetali autoctone della Toscana ha portato gli studiosi a ipotizzare una collaborazione con naturalisti dell'epoca, mentre il significato ultimo dell'allegoria resta oggetto di dibattito tra letture neoplatoniche e celebrazioni matrimoniali di casa Medici."
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La Primavera (ca. 1477–1478, tempera su tavola, 203 × 314 cm) è stata oggetto di un'analisi botanica sistematica che ha portato all'identificazione di oltre 500 specie vegetali, quasi esclusivamente autoctone della flora tosco-appenninica. Il programma iconografico, ispirato alle Stanze di Poliziano e alle Elegie di Claudiano, articola sull'asse verticale il registro divino (Cupido, Venere, Mercurio) e su quello orizzontale i personaggi mitologici stagionali: le Tre Grazie in danza rappresentano Castità, Amore e Bellezza, mentre la sequenza Zefiro–Clori–Flora traduce in forma pittorica la metamorfosi ovidiana (Fasti, V). Il dato botanico eccezionale suggerisce una collaborazione con i naturalisti dell'Orto dei Semplici fiorentino."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Tempera su tavola",
       "dimensioni": "203 × 314 cm",
-      "periodo": "1477–1478",
-      "commissione": "Lorenzo di Pierfrancesco de' Medici",
-      "specie_botaniche": "oltre 500 identificate",
+      "periodo": "1477-1478",
+      "sala": "10-14",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/960px-Botticelli-primavera.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Primavera",
+    "objectId": "primavera-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Allegoria polizianesca-ovidiana su asse verticale divino e orizzontale stagionale.",
+        "d15": "Il programma iconografico, mediato dalle Stanze di Poliziano e dai Fasti ovidiani, articola sull'asse verticale il registro divino (Cupido, Venere, Hortus conclusus) e su quello orizzontale la sequenza metamorfica Zefiro-Clori-Flora, in dialogo con le Tre Grazie di ascendenza senecana e classica.",
+        "d40": "La Primavera (tempera su tavola, 203 × 314 cm, 1477-1478 ca.) rappresenta uno dei vertici della sperimentazione allegorica del primo Rinascimento fiorentino in ambiente mediceo-polizianesco. La struttura compositiva, priva di un unico punto di fuga prospettico e organizzata per giustapposizione di gruppi autonomi, privilegia un ritmo lineare continuo che lega le nove figure in una sequenza da leggersi da destra a sinistra secondo il registro ovidiano della metamorfosi (Fasti, V, 195-212): Zefiro afferra Clori, dalla cui bocca fuoriescono fiori nell'atto della trasfigurazione in Flora. Al centro, Venere assume una posa di ascendenza dell'iconografia mariana dell'Hortus conclusus, laicizzata in chiave neoplatonica come Venus Humanitas. Le Tre Grazie, in una coreografia derivata da fonti tardoantiche note tramite Seneca e testi ficiniani, rappresentano la triade Castità-Amore-Bellezza. L'identificazione botanica di oltre 500 specie vegetali autoctone toscane, di rara precisione scientifica per l'epoca, ha alimentato ipotesi di collaborazione con circoli naturalistici legati all'Orto dei Semplici, mentre l'esegesi neoplatonica di Ernst Gombrich resta il riferimento storiografico più influente per l'interpretazione filosofica dell'opera."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "203 × 314 cm",
+      "periodo": "1477-1478",
+      "sala": "10-14",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/960px-Botticelli-primavera.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Pallade e il Centauro",
+    "objectId": "pallade-centauro-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Una dea guerriera afferra per i capelli un centauro, mezzo uomo e mezzo cavallo.",
+        "d15": "La dea Pallade Atena, vestita con rami d'ulivo intrecciati, afferra per i capelli un centauro, una creatura per metà uomo e per metà cavallo. Il quadro racconta come la ragione e la saggezza riescano a controllare gli istinti più selvaggi, rappresentati dal centauro.",
+        "d40": "In questo dipinto vediamo una scena piena di significato nascosto: una donna forte e determinata, la dea greca Pallade Atena, tiene per i capelli una creatura strana, metà uomo e metà cavallo, chiamata centauro nella mitologia greca. Il suo vestito è decorato con rami intrecciati di ulivo, pianta simbolo di pace e sapienza. Il centauro invece rappresenta gli istinti animaleschi e la forza bruta, tutto ciò che è irrazionale nell'uomo. Il messaggio del quadro è che la ragione, la cultura e la saggezza (Pallade) devono sempre riuscire a tenere a freno la parte più selvaggia e istintiva di noi (il centauro). Sullo sfondo si vede un paesaggio marino con delle navi, e alcuni studiosi pensano che il quadro fosse legato a eventi politici della Firenze di quel tempo, in particolare al ritorno al potere della famiglia Medici."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "207 × 148 cm",
+      "periodo": "ca. 1482",
+      "sala": "10-14",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Botticelli%2C_pallade_e_il_centauro_00.jpg/960px-Botticelli%2C_pallade_e_il_centauro_00.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Pallade e il Centauro",
+    "objectId": "pallade-centauro-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Pallade Atena doma un centauro: allegoria del trionfo della ragione sull'istinto.",
+        "d15": "Botticelli raffigura Pallade Atena, avvolta da rami d'ulivo simbolo di saggezza e pace, che afferra per i capelli un centauro sottomesso. L'allegoria contrappone la virtù razionale alla brutalità istintiva, con un probabile riferimento politico agli equilibri di potere fiorentini sotto Lorenzo il Magnifico.",
+        "d40": "Databile al 1482 circa, il dipinto sviluppa un'allegoria morale in cui la dea Pallade, identificabile con la Sapienza e la Castità, sottomette con un gesto quasi delicato il centauro, simbolo della sensualità e degli istinti primordiali. L'alabarda che Pallade regge nella mano destra e i rami d'ulivo intrecciati sul vestito e sul braccio rimandano al lessico araldico mediceo, in particolare al motto 'Pallas' associato a Lorenzo il Magnifico. Sullo sfondo, un paesaggio portuale con navi è stato letto come riferimento alla politica di pacificazione perseguita da Lorenzo dopo la Congiura dei Pazzi del 1478, con la ragione di stato che doma le pulsioni distruttive della guerra. Il dipinto faceva probabilmente parte, insieme alla Primavera, dell'arredo di una camera della villa medicea di Castello."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "207 × 148 cm",
+      "periodo": "ca. 1482",
+      "sala": "10-14",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Botticelli%2C_pallade_e_il_centauro_00.jpg/960px-Botticelli%2C_pallade_e_il_centauro_00.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Pallade e il Centauro",
+    "objectId": "pallade-centauro-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Allegoria morale mediceo-neoplatonica sulla Sapienza che doma l'istinto centauresco.",
+        "d15": "L'impresa araldica dei rami di diamante intrecciati con l'ulivo, riferibile al motto 'Pallas' di Lorenzo de' Medici, colloca l'opera nel contesto della propaganda politica post-Congiura dei Pazzi, sovrapponendo alla lettura neoplatonica della Sapienza dominatrice degli istinti un sottotesto di legittimazione del potere signorile.",
+        "d40": "Il dipinto (tempera su tavola, 207 × 148 cm, ca. 1482) presenta una delle più dense stratificazioni allegoriche del corpus botticelliano. L'iconografia di Pallade, identificata con la virtù della Sapienza e della Castità, che sottomette con un tocco quasi carezzevole il centauro, si radica nella tradizione neoplatonica fiorentina che vedeva nella ragione lo strumento di dominio sulle passioni sensibili. L'intreccio di rami di diamante e foglie d'ulivo che decora la veste e il braccio della dea costituisce un'impresa araldica direttamente riconducibile a Lorenzo il Magnifico, di cui è documentato l'uso del motto 'Pallas', suggerendo una lettura politica dell'opera come celebrazione della pax medicea successiva alla Congiura dei Pazzi (1478) e al conflitto con Napoli e il Papato. Il paesaggio portuale sullo sfondo, con vascelli ancorati in acque calme, rinforza il tema della pacificazione dopo la tempesta bellica. L'opera, insieme alla Primavera, è stata storicamente collocata nell'appartamento nuziale della villa di Castello, ipotesi che ne motiverebbe anche la funzione encomiastica e didascalica."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "dimensioni": "207 × 148 cm",
+      "periodo": "ca. 1482",
+      "sala": "10-14",
       "prezzo": 5
     },
-    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3c/Botticelli-primavera.jpg/800px-Botticelli-primavera.jpg",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f0/Botticelli%2C_pallade_e_il_centauro_00.jpg/960px-Botticelli%2C_pallade_e_il_centauro_00.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Annunciazione",
+    "objectId": "annunciazione-leonardo-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Un angelo porta un messaggio importante a Maria in un giardino pieno di fiori.",
+        "d15": "L'angelo Gabriele arriva davanti a Maria per dirle una notizia speciale: diventerà la mamma di Gesù. La scena avviene in un bel giardino con tanti fiori, e dietro di loro si vede un paesaggio con montagne lontane, dipinto con colori sempre più chiari e sfumati.",
+        "d40": "Questo quadro racconta un momento molto importante della storia cristiana: l'angelo Gabriele, con grandi ali colorate, arriva dal cielo per portare un annuncio a Maria, una giovane donna seduta a leggere vicino a un leggio di marmo. L'angelo le dice che diventerà la madre di Gesù. Maria alza una mano quasi sorpresa mentre ascolta. Tutto intorno a loro c'è un giardino curatissimo, pieno di fiori dipinti con grande precisione, quasi come se un vero botanico avesse guidato la mano del pittore. Dietro le due figure si apre un paesaggio che si perde in lontananza tra montagne sempre più chiare e sfumate, una tecnica che il pittore, il giovanissimo Leonardo da Vinci, userà e perfezionerà per tutta la vita. Quest'opera è tra le prime firmate da Leonardo, realizzata quando aveva poco più di vent'anni e lavorava ancora nella bottega del suo maestro Verrocchio."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio e tempera su tavola",
+      "periodo": "ca. 1472-1475",
+      "sala": "15",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Annunciazione",
+    "objectId": "annunciazione-leonardo-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Opera giovanile di Leonardo: l'angelo Gabriele annuncia a Maria in un giardino fiorito.",
+        "d15": "L'Annunciazione, tra le prime opere autografe di Leonardo da Vinci, mostra l'angelo Gabriele inginocchiato davanti a Maria in un giardino minuziosamente dipinto. Il leggio marmoreo cita un'opera scultorea del Verrocchio, bottega in cui Leonardo era allora attivo, mentre il paesaggio sullo sfondo anticipa lo sfumato atmosferico maturo dell'artista.",
+        "d40": "Realizzata tra il 1472 e il 1475 quando Leonardo era ancora nella bottega di Andrea del Verrocchio, l'Annunciazione rivela già una ricerca naturalistica sorprendente per un'opera giovanile. Il leggio marmoreo su cui è appoggiata Maria riprende un modello scultoreo del monumento funebre di Piero e Giovanni de' Medici realizzato dal Verrocchio, prova della circolazione di modelli all'interno della bottega. Il prato fiorito in primo piano, popolato da specie botaniche riconoscibili con precisione quasi scientifica, testimonia l'interesse precoce di Leonardo per l'osservazione diretta della natura. Sullo sfondo, il paesaggio si dissolve per gradazioni tonali progressive verso l'orizzonte, prefigurazione della tecnica dello sfumato che l'artista svilupperà pienamente negli anni successivi. Alcuni studiosi hanno notato un errore prospettico nel braccio destro di Maria, probabilmente dovuto a un punto di vista laterale previsto per l'originaria collocazione dell'opera."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio e tempera su tavola",
+      "periodo": "ca. 1472-1475",
+      "sala": "15",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Annunciazione",
+    "objectId": "annunciazione-leonardo-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Opera giovanile verrocchiesca con anticipazioni proto-sfumate e citazione scultorea del leggio.",
+        "d15": "Attribuita a Leonardo negli anni della bottega verrocchiesca, l'opera esibisce un'anomalia prospettica nel braccio destro della Vergine, letta come indizio di una collocazione originaria a visione laterale. Il naturalismo botanico del prato e la dissoluzione atmosferica dello sfondo prefigurano procedimenti tecnici pienamente maturati solo nella produzione successiva.",
+        "d40": "L'Annunciazione (olio e tempera su tavola, ca. 1472-1475), attribuita a Leonardo negli anni della sua formazione presso Andrea del Verrocchio, costituisce un caso di studio privilegiato per la ricostruzione del passaggio tra pratica di bottega e affermazione di un linguaggio autonomo. Il leggio marmoreo, citazione diretta dal sarcofago di Piero e Giovanni de' Medici scolpito dal Verrocchio in San Lorenzo, documenta la circolazione interna di repertori formali nella bottega fiorentina. L'anomalia prospettica riscontrabile nell'allungamento innaturale del braccio destro della Vergine ha portato la critica a ipotizzare una fruizione originaria dell'opera da un punto di vista defilato verso destra, forse collocata in un ambiente specifico non più identificabile. Il trattamento del paesaggio, con la dissoluzione progressiva dei piani verso l'orizzonte per gradazioni tonali di blu sempre più tenui, costituisce un embrione della tecnica dello sfumato aereo che troverà piena teorizzazione nei trattati leonardeschi successivi. Il naturalismo botanico del prato fiorito, di precisione quasi erbaristica, è stato posto in relazione con i primi taccuini di osservazione naturalistica dell'artista."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio e tempera su tavola",
+      "periodo": "ca. 1472-1475",
+      "sala": "15",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Annunciazione_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Adorazione dei Magi",
+    "objectId": "adorazione-magi-leonardo-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Un quadro non finito di Leonardo mostra i Re Magi che portano regali a Gesù bambino.",
+        "d15": "Questo dipinto racconta l'arrivo dei tre Re Magi che portano doni al piccolo Gesù appena nato, seduto in braccio a Maria. Leonardo però non riuscì a finirlo: le figure sono disegnate ma non colorate del tutto, e questo ci fa vedere come lavorava, disegno dopo disegno.",
+        "d40": "Guardando bene questo quadro, si nota subito qualcosa di strano: sembra quasi un disegno più che un dipinto finito, con tante figure abbozzate in marrone e ocra invece che colorate. Questo perché Leonardo da Vinci lo lasciò incompiuto quando dovette partire per Milano nel 1482. Al centro vediamo Maria con Gesù bambino in braccio, mentre i Re Magi si inginocchiano per offrire i loro doni preziosi. Intorno a loro c'è una grande folla di persone e cavalli agitati, alcuni dei quali sembrano quasi combattere, mentre sullo sfondo si vedono rovine antiche e altre figure a cavallo. Nonostante non sia mai stato completato, gli esperti lo considerano importantissimo perché ci mostra esattamente come Leonardo costruiva le sue composizioni passo dopo passo, partendo da schizzi veloci fino ad arrivare a disegni sempre più dettagliati."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (abbozzo)",
+      "periodo": "1481 (incompiuta)",
+      "sala": "15",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Adorazione dei Magi",
+    "objectId": "adorazione-magi-leonardo-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Abbozzo incompiuto di Leonardo che rivoluziona la composizione dell'Adorazione dei Magi.",
+        "d15": "Commissionata dai monaci di San Donato a Scopeto, l'Adorazione fu interrotta da Leonardo alla partenza per Milano nel 1482. Rimasta alla fase di abbozzo monocromo, mostra una composizione piramidale affollata di figure e animali in movimento, con rovine classiche sullo sfondo che introducono un tema archeologico inedito per l'epoca.",
+        "d40": "L'Adorazione dei Magi fu commissionata a Leonardo nel 1481 dai monaci agostiniani di San Donato a Scopeto, ma l'artista la lasciò allo stadio di abbozzo preparatorio in terra d'ombra e biacca quando si trasferì alla corte sforzesca di Milano l'anno seguente. Nonostante l'incompiutezza, l'opera è considerata rivoluzionaria per l'impianto compositivo: la Vergine con il Bambino, posta al centro in una struttura piramidale, è circondata da una folla concitata di figure che esprimono stupore, venerazione e agitazione attraverso pose e gesti estremamente vari, in netta rottura con la staticità delle Adorazioni quattrocentesche precedenti. Sullo sfondo si intravedono rovine architettoniche classiche in disfacimento, forse allusive al crollo del paganesimo di fronte alla nuova era cristiana, e una scena di cavalieri in combattimento che anticipa gli studi successivi per la Battaglia di Anghiari. L'opera venne infine completata da Filippino Lippi per il medesimo convento, mentre la versione leonardesca, acquisita dagli Uffizi, resta preziosa testimonianza del metodo progettuale dell'artista."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (abbozzo)",
+      "periodo": "1481 (incompiuta)",
+      "sala": "15",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Adorazione dei Magi",
+    "objectId": "adorazione-magi-leonardo-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Abbozzo monocromo su commissione scopetina, paradigma del metodo progettuale leonardesco.",
+        "d15": "L'incompiutezza dell'opera, ferma allo stadio di imprimitura a terra d'ombra, consente un'analisi diretta del processo compositivo leonardesco: dalla concitazione della folla circostante alle rovine classiche sullo sfondo, l'opera rompe con la stasi iconografica quattrocentesca dell'Adorazione anticipando soluzioni dinamiche della maturità.",
+        "d40": "Commissionata nel 1481 dai monaci agostiniani di San Donato a Scopeto e interrotta l'anno seguente per il trasferimento dell'artista a Milano, l'Adorazione dei Magi rimane allo stadio di abbozzo su imprimitura a terra d'ombra e biacca, condizione che ne fa un documento privilegiato per lo studio del metodo compositivo leonardesco basato su una progressiva stratificazione grafica. La struttura piramidale centrata sulla Vergine, aperta a una corona semicircolare di astanti in pose fortemente diversificate, segna una rottura netta con la tradizione compositiva quattrocentesca dell'Adorazione, statica e frontale, sostituendola con un dinamismo emotivo che anticipa soluzioni sviluppate negli studi per la Battaglia di Anghiari. Le rovine architettoniche classiche sullo sfondo, di ascendenza forse mantegnesca, sono state interpretate come allegoria della caduta del paganesimo dinanzi all'avvento cristiano, mentre la scena di cavalieri in lotta al margine destro introduce un registro di violenza inedito nel soggetto iconografico. L'opera fu infine sostituita, per la committenza originaria, da una redazione di Filippino Lippi oggi conservata nello stesso museo, offrendo un raro confronto diretto fra progetto leonardesco non finito ed esecuzione integrale coeva."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (abbozzo)",
+      "periodo": "1481 (incompiuta)",
+      "sala": "15",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg/960px-Leonardo_da_Vinci_-_Adorazione_dei_Magi_-_Google_Art_Project.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Tondo Doni",
-    "objectId": "tondo-doni-scheda",
+    "objectId": "tondo-doni-semplice",
     "toni": {
       "semplice": {
-        "d3": "Questo quadro tondo mostra la Sacra Famiglia: Maria, Giuseppe e il piccolo Gesù, dipinti da un grande scultore che sapeva anche dipingere benissimo.",
-        "d15": "",
-        "d40": ""
+        "d3": "Un quadro rotondo mostra Maria, Giuseppe e il piccolo Gesù, dipinto da Michelangelo.",
+        "d15": "Questo quadro tondo, chiamato 'tondo', mostra la Sacra Famiglia: Maria prende in braccio Gesù bambino passandolo a Giuseppe. È l'unico quadro dipinto su tavola che sappiamo per certo essere di Michelangelo, che era soprattutto famoso come scultore.",
+        "d40": "Michelangelo è conosciuto soprattutto come scultore, l'autore del David e della Cappella Sistina, ma questo tondo (cioè un quadro di forma circolare) è l'unica sua opera dipinta su tavola di cui siamo assolutamente certi. Al centro vediamo Maria seduta a terra che si gira per prendere in braccio il piccolo Gesù dalle mani di Giuseppe, in una posa complicata e torcigliata che sembra quasi un movimento di danza. I corpi sono così muscolosi e scolpiti che sembrano statue più che persone dipinte, proprio perché Michelangelo pensava sempre come uno scultore anche quando usava i pennelli. Sullo sfondo, dietro un muretto basso, si vede un gruppo di uomini nudi seduti, il cui significato resta un mistero anche per gli studiosi più esperti. Anche la cornice originale, intagliata con teste di profeti, fu disegnata appositamente per questo capolavoro, commissionato dal ricco mercante fiorentino Agnolo Doni."
       },
       "medio": {
         "d3": "",
-        "d15": "Il Tondo Doni è l'unico dipinto su tavola sicuramente attribuito a Michelangelo. Raffigura la Sacra Famiglia con corpi torniti quasi scultorei, e sullo sfondo un gruppo di nudi maschili la cui interpretazione resta dibattuta.",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "Il Tondo Doni (ca. 1506–1508, tempera su tavola), commissionato da Agnolo Doni, costituisce l'unica opera pittorica autografa e sicuramente documentata di Michelangelo Buonarroti. La torsione elicoidale delle figure, la resa plastica ottenuta tramite un cangiantismo cromatico acceso e la cornice originale intagliata con teste profetiche anticipano soluzioni compositive poi sviluppate nella volta della Cappella Sistina."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Tempera su tavola",
-      "periodo": "1506–1508",
+      "periodo": "1504-1506",
       "sala": "25",
-      "prezzo": 4
+      "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Tondo_Doni_2021.jpg/960px-Tondo_Doni_2021.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Tondo Doni",
+    "objectId": "tondo-doni-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Unico dipinto su tavola sicuramente autografo di Michelangelo, con figure quasi scultoree.",
+        "d15": "Il Tondo Doni, commissionato da Agnolo Doni, è l'unica opera pittorica certamente autografa di Michelangelo. Raffigura la Sacra Famiglia con corpi torniti e muscolosi, quasi statuari, mentre sullo sfondo un gruppo di nudi maschili resta di interpretazione dibattuta. La cornice intagliata originale, con teste profetiche, fa parte integrante dell'opera.",
+        "d40": "Realizzato tra il 1504 e il 1506 per il matrimonio del mercante fiorentino Agnolo Doni con Maddalena Strozzi, il Tondo Doni traduce in pittura la concezione scultorea del corpo tipica di Michelangelo. La torsione elicoidale delle figure principali, unita a un cangiantismo cromatico acceso nei panneggi, crea un effetto di monumentalità plastica che anticipa soluzioni poi sviluppate nella volta della Cappella Sistina, eseguita pochi anni dopo. Il gruppo di ignudi sullo sfondo, separato dalla scena sacra da un muretto, ha ricevuto interpretazioni contrastanti: dall'allusione al paganesimo pre-cristiano, alla rappresentazione dell'umanità in attesa del battesimo, fino a una semplice esibizione di virtuosismo anatomico. La cornice lignea originale, intagliata con cinque teste profetiche e decorazioni a grottesche, fu concepita in stretto dialogo con il dipinto stesso, dimostrando l'attenzione dell'artista anche per la componente scultorea dell'allestimento complessivo dell'opera."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1504-1506",
+      "sala": "25",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Tondo_Doni_2021.jpg/960px-Tondo_Doni_2021.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
-    "operaId": "La Venere di Urbino",
-    "objectId": "venere-urbino-scheda",
+    "operaId": "Tondo Doni",
+    "objectId": "tondo-doni-avanzato",
     "toni": {
       "semplice": {
-        "d3": "Una bella donna è distesa su un letto e ci guarda dritta negli occhi. È uno dei quadri più famosi di Tiziano.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "La Venere di Urbino di Tiziano mostra una figura femminile distesa in una camera rinascimentale, con due ancelle sullo sfondo intente a cercare vesti in un cassone. Il dipinto fu commissionato per celebrare un matrimonio.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Sintesi scultoreo-pittorica proto-manierista con cangiantismo e ignudi enigmatici.",
+        "d15": "La torsione a spirale del gruppo sacro e il cangiantismo cromatico acceso costituiscono una traduzione pittorica dei principi scultorei michelangioleschi, in tensione dialettica con l'iconografia enigmatica degli ignudi retrostanti, la cui esegesi oscilla tra lettura teologica (l'umanità sub lege ante gratiam) e mero esercizio di bravura anatomica.",
+        "d40": "Il Tondo Doni (tempera su tavola, diametro 120 cm, 1504-1506), commissionato da Agnolo Doni per le nozze con Maddalena Strozzi, rappresenta un caso paradigmatico di traduzione dei principi della scultura nella pratica pittorica michelangiolesca. La disposizione elicoidale delle tre figure sacre, con la torsione della Vergine nell'atto di ricevere il Bambino da Giuseppe, sviluppa un principio compositivo serpentinato che troverà applicazione sistematica nella successiva produzione scultorea e pittorica dell'artista, dalla volta sistina al Genio della Vittoria. Il cangiantismo, tecnica per cui l'ombra di un colore è resa non tramite scurimento ma tramite un colore complementare o accostato, produce un effetto di brillantezza quasi metallica nei panneggi, accentuando la resa plastica delle vesti. Il gruppo di cinque ignudi sullo sfondo, separati dalla scena principale da un basso muretto, ha generato un'ampia letteratura esegetica: dall'interpretazione di Panofsky come rappresentazione dell'umanità pagana in attesa della grazia battesimale, alla lettura come mera esibizione accademica di variazioni sul nudo maschile. La cornice originale, intagliata con teste profetiche e maschere grottesche attribuite a un intagliatore fiorentino coevo, integra strutturalmente l'opera in un dispositivo scultoreo-pittorico unitario, raro esempio di sopravvivenza di un apparato ornamentale rinascimentale coerente con il dipinto che racchiude."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1504-1506",
+      "sala": "25",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Tondo_Doni_2021.jpg/960px-Tondo_Doni_2021.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Venere di Urbino",
+    "objectId": "venere-urbino-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Una donna è distesa su un letto e ci guarda dritto negli occhi, dipinta da Tiziano.",
+        "d15": "Tiziano dipinge una bella donna distesa su un letto in una stanza elegante. Ci guarda direttamente negli occhi, come se ci avesse invitato lei stessa a entrare. Sullo sfondo due ancelle cercano vestiti dentro un grande baule. Ai piedi della donna dorme un cagnolino, simbolo di fedeltà.",
+        "d40": "In questo famosissimo quadro Tiziano dipinge una giovane donna distesa comodamente su un letto, in una stanza di una casa nobile del Rinascimento. Quello che colpisce di più è il suo sguardo: guarda dritto verso di noi, come se fosse davvero presente nella stanza insieme a chi osserva il quadro, invece di stare immobile in una posa distante come spesso accadeva nei dipinti di quell'epoca. Ai suoi piedi dorme tranquillo un piccolo cane, animale che nell'arte simboleggia da sempre la fedeltà, forse un dono di nozze. Sullo sfondo, in una stanza separata, due donne di servizio frugano dentro un grande baule di legno alla ricerca di abiti, forse per il corredo della sposa. Il quadro fu commissionato per celebrare un matrimonio importante, quello del duca di Urbino, ed è diventato nei secoli uno dei modelli più copiati e discussi nella storia della pittura del nudo femminile."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La Venere di Urbino (1538, olio su tela) di Tiziano Vecellio rielabora il modello della Venere dormiente di Giorgione trasferendo la figura da un paesaggio idealizzato a un interno domestico contemporaneo, con evidente valenza allegorica nuziale legata alla commissione di Guidobaldo II Della Rovere. Lo sguardo diretto della figura verso l'osservatore, insieme al cane addormentato ai suoi piedi, simbolo di fedeltà coniugale, colloca l'opera al centro del dibattito storiografico sulla rappresentazione del nudo femminile nel Cinquecento veneziano."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Olio su tela",
       "periodo": "1538",
       "sala": "28",
-      "prezzo": 5
+      "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg/960px-Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Venere di Urbino",
+    "objectId": "venere-urbino-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Nudo femminile in interno domestico, commissionato per celebrare un matrimonio ducale.",
+        "d15": "La Venere di Urbino mostra una figura femminile distesa in un interno rinascimentale contemporaneo, con due ancelle sullo sfondo intente a cercare vesti in un cassone. Commissionato da Guidobaldo II Della Rovere, il dipinto fu concepito con valenza allegorica nuziale, e il cane addormentato ai piedi della donna simboleggia la fedeltà coniugale.",
+        "d40": "Dipinta nel 1538 per Guidobaldo II Della Rovere, futuro duca di Urbino, la Venere di Urbino rielabora il modello della Venere dormiente di Giorgione trasferendo la figura da un paesaggio idealizzato a un interno domestico contemporaneo, con evidente valenza allegorica legata alla commissione nuziale. Lo sguardo diretto della figura verso l'osservatore, del tutto inedito rispetto ai modelli di nudo mitologico precedenti, insieme al cane addormentato ai suoi piedi, simbolo di fedeltà coniugale, e alle ancelle indaffarate con un cassone nuziale sullo sfondo, colloca l'opera al centro del dibattito storiografico sulla rappresentazione del nudo femminile nel Cinquecento veneziano: da un lato letta come immagine erotica di committenza privata, dall'altro come esortazione morale alla fedeltà rivolta alla giovane sposa."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1538",
+      "sala": "28",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg/960px-Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "La Venere di Urbino",
+    "objectId": "venere-urbino-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Riscrittura domestica del modello giorgionesco, snodo del dibattito su erotismo e paraenesi coniugale.",
+        "d15": "La traslazione della Venere dormiente giorgionesca da un locus amoenus paesaggistico a un interno borghese contemporaneo, unita allo sguardo diretto della figura verso l'osservatore, sovverte il paradigma del nudo mitologico distanziato, aprendo lo storico dibattito critico tra lettura erotico-privata e funzione paraenetica legata alla committenza nuziale roveresca.",
+        "d40": "Commissionata nel 1538 da Guidobaldo II Della Rovere, la Venere di Urbino (olio su tela, 119 × 165 cm) costituisce una riscrittura radicale del prototipo della Venere dormiente attribuita a Giorgione e completata da Tiziano stesso, oggi a Dresda. La traslazione dello schema compositivo da un paesaggio arcadico a un interno contemporaneo di palazzo veneziano, corredato di dettagli domestici quali il cassone nuziale (cassapanca) e le ancelle indaffarate, opera una secolarizzazione del soggetto che elimina ogni pretesto mitologico esplicito, pur mantenendone il titolo. Lo sguardo diretto e consapevole della figura verso l'osservatore, elemento di assoluta novità iconografica, ha alimentato una storiografia critica polarizzata: da un lato la lettura di Erwin Panofsky e successivamente di Rona Goffen come immagine paraenetica destinata a istruire la giovane sposa Giulia Varano sui doveri coniugali, simboleggiati dal cane fedele addormentato; dall'altro l'interpretazione di matrice più recente che ne sottolinea la funzione di oggetto di piacere estetico e sensuale per la committenza maschile aristocratica, secondo modalità di fruizione privata tipiche del collezionismo cinquecentesco. L'opera esercitò un'influenza determinante sulla tradizione successiva del nudo disteso, da Velázquez a Manet con la sua Olympia."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1538",
+      "sala": "28",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bb/Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg/960px-Tiziano_-_Venere_di_Urbino_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna del Cardellino",
+    "objectId": "madonna-cardellino-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria è seduta con in braccio Gesù bambino e San Giovannino, che tiene un uccellino.",
+        "d15": "Raffaello dipinge Maria seduta in un bel paesaggio con due bambini: Gesù e il piccolo San Giovannino, che tiene in mano un cardellino, un piccolo uccello. I tre formano un triangolo perfetto, e i loro sguardi e gesti li legano dolcemente insieme.",
+        "d40": "In questo dolcissimo quadro Raffaello dipinge la Vergine Maria seduta su una roccia in un paesaggio verde e tranquillo. Con lei ci sono due bambini: Gesù, in piedi appoggiato al suo ginocchio, e il piccolo San Giovannino, il futuro San Giovanni Battista, che tiene in mano un cardellino, un uccellino dal piumaggio colorato. Gesù allunga la mano per accarezzare l'uccellino, mentre Maria osserva la scena con un libro in grembo, come se fosse stata interrotta nella lettura. Le tre figure sono disposte a formare un triangolo perfetto, una composizione molto amata nel Rinascimento perché dava un senso di equilibrio e armonia. Il cardellino non è lì per caso: si nutre di spine e insetti, e per questo nell'arte cristiana rappresenta un piccolo indizio di ciò che accadrà a Gesù da grande, la sua sofferenza sulla croce. Il dipinto fu un regalo di nozze per un amico di Raffaello, un ricco mercante fiorentino."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1505-1506",
+      "sala": "35",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg/960px-Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Madonna del Cardellino",
-    "objectId": "madonna-cardellino-scheda",
+    "objectId": "madonna-cardellino-medio",
     "toni": {
       "semplice": {
-        "d3": "Maria è seduta con in braccio Gesù bambino e un altro bimbo, san Giovannino, che tiene in mano un piccolo uccellino.",
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Schema piramidale leonardesco per la Sacra Conversazione tra Maria, Gesù e San Giovannino.",
+        "d15": "La Madonna del Cardellino, dipinta per le nozze di Lorenzo Nasi, sviluppa uno schema piramidale di ascendenza leonardesca in cui le tre figure sono unite da sguardi e gesti reciproci. Il cardellino, associato iconograficamente alla Passione di Cristo, introduce un elemento premonitore nella scena altrimenti serena e idillica.",
+        "d40": "Realizzata tra il 1505 e il 1506 per le nozze di Lorenzo Nasi, la Madonna del Cardellino rappresenta uno dei vertici della cosiddetta 'maniera dolce' di Raffaello durante il soggiorno fiorentino, periodo in cui l'artista assimilò profondamente le innovazioni compositive di Leonardo da Vinci. Lo schema piramidale, con il vertice nel volto della Vergine e la base allargata dai due bambini, crea un equilibrio geometrico assoluto, mentre la rete di sguardi e gesti tra le tre figure produce un effetto di intimità e naturalezza inedito rispetto ai modelli quattrocenteschi. Il cardellino, rapace di insetti e semi spinosi, era associato nell'iconografia cristiana alla corona di spine e quindi alla futura Passione di Cristo, introducendo così una nota malinconica premonitrice in una scena altrimenti di sereno affetto familiare. L'opera fu gravemente danneggiata dal crollo della casa Nasi durante l'alluvione del 1548 e successivamente restaurata più volte, l'ultima delle quali negli anni 2000 con tecniche diagnostiche avanzate che ne hanno rivelato lo stato di conservazione sottostante ai restauri storici."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1505-1506",
+      "sala": "35",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg/960px-Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna del Cardellino",
+    "objectId": "madonna-cardellino-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "La Madonna del Cardellino di Raffaello raffigura la Vergine con Gesù Bambino e San Giovannino in un paesaggio toscano. Il cardellino simboleggia la futura Passione di Cristo.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Assimilazione leonardesca nella maniera fiorentina raffaellesca, con premonizione passionale del cardellino.",
+        "d15": "Lo schema piramidale a base larga, debitore delle sperimentazioni leonardesche coeve sulla Sant'Anna, si combina con una rete gestuale e di sguardi di matrice quasi teatrale, mentre il cardellino, attributo passionale codificato dall'iconografia trecentesca, introduce un registro semantico dissonante rispetto alla serenità apparente della sacra conversazione domestica.",
+        "d40": "La Madonna del Cardellino (olio su tavola, 107 × 77 cm, 1505-1506), commissionata da Lorenzo Nasi in occasione delle proprie nozze, si colloca nella fase fiorentina della produzione raffaellesca, segnata da un'assimilazione profonda delle soluzioni leonardesche allora in elaborazione, in particolare lo schema piramidale sperimentato nei cartoni per la Sant'Anna. La costruzione geometrica, con il vertice nel capo della Vergine e la base ampliata dalle figure di Gesù e San Giovannino, è animata da una fitta rete di sguardi incrociati e gesti connettivi che superano la rigidità compositiva del primo Rinascimento fiorentino, introducendo un registro di naturalezza affettiva mutuato dall'osservazione diretta. Il cardellino, iconograficamente codificato fin dal Trecento come attributo passionale in virtù della sua dieta a base di spine e semi di cardo, opera una dissonanza semantica rispetto all'apparente serenità della scena, anticipando il destino sacrificale di Cristo. Le vicende conservative dell'opera, gravemente danneggiata nel crollo della casa Nasi durante l'alluvione dell'Arno del 1547-48 e ricomposta da oltre diciassette frammenti, hanno reso il dipinto un caso di studio privilegiato per le indagini diagnostiche di restauro, che negli anni duemila ne hanno permesso una lettura stratigrafica approfondita."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1505-1506",
+      "sala": "35",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg/960px-Raffaello_Sanzio_-_Madonna_del_Cardellino_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà di Santa Trinita",
+    "objectId": "maesta-santa-trinita-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Una grande tavola dorata mostra Maria in trono con Gesù bambino, circondata da angeli.",
+        "d15": "Questa enorme tavola dorata mostra Maria seduta su un trono con il piccolo Gesù in braccio, circondata da otto angeli. Lo sfondo dorato era tipico dei quadri molto antichi, ma qui il pittore, Cimabue, comincia a dare più volume ai corpi rispetto ai quadri precedenti.",
+        "d40": "Immagina un'immensa tavola alta più di quattro metri, tutta dorata, dove al centro siede Maria su un grande trono decorato, con il piccolo Gesù benedicente in grembo. Intorno a loro ci sono otto angeli disposti simmetricamente, come guardie d'onore, mentre sotto il trono quattro profeti dell'Antico Testamento osservano la scena da piccole aperture ad arco. Questo dipinto fu realizzato da Cimabue, un pittore che lavorò a Firenze quasi 750 anni fa, in un periodo in cui l'arte era ancora molto influenzata dallo stile bizantino, cioè quello arrivato dall'Impero Romano d'Oriente, fatto di figure piatte e sfondi dorati senza profondità. Ma Cimabue comincia timidamente a cambiare le cose: le vesti di Maria, per esempio, sembrano avvolgere un corpo vero sotto la stoffa, con delle pieghe che danno un'idea di volume. Per questo motivo Cimabue è considerato uno dei primi pittori a preparare la strada per Giotto, il suo allievo, che poi rivoluzionerà completamente la pittura."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La Madonna del Cardellino (1505–1506, olio su tavola) di Raffaello Sanzio, dipinta per le nozze di Lorenzo Nasi, sviluppa uno schema piramidale di ascendenza leonardesca in cui le tre figure sono unite da sguardi e gesti reciproci. Il cardellino, rapace di insetti associato iconograficamente alla Passione, introduce un elemento premonitore nella scena altrimenti idillica. L'opera fu gravemente danneggiata dal crollo della casa Nasi nel 1548 e restaurata più volte, l'ultima delle quali con tecniche diagnostiche avanzate."
+        "d40": ""
       }
     },
     "metadata": {
-      "tecnica": "Olio su tavola",
-      "periodo": "1505–1506",
-      "sala": "35",
-      "prezzo": 3
+      "tecnica": "Tempera e oro su tavola",
+      "periodo": "ca. 1280-1290",
+      "sala": "2",
+      "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg/960px-Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Maestà di Santa Trinita",
-    "objectId": "maesta-santa-trinita-scheda",
+    "objectId": "maesta-santa-trinita-medio",
     "toni": {
       "semplice": {
-        "d3": "Una grande tavola dorata mostra Maria seduta su un trono con Gesù bambino, circondata da angeli.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
-        "d3": "",
-        "d15": "La Maestà di Cimabue, proveniente dalla chiesa di Santa Trinita a Firenze, mostra ancora i modi della pittura bizantina ma con una maggiore attenzione al volume dei corpi, anticipando la svolta di Giotto.",
-        "d40": ""
+        "d3": "Passaggio dalla maniera greca bizantina verso un timido naturalismo pre-giottesco.",
+        "d15": "Proveniente dalla chiesa di Santa Trinita a Firenze, la Maestà di Cimabue mostra ancora i modi della pittura bizantina, con fondo oro e figure frontali, ma con una maggiore attenzione al volume dei corpi sotto le vesti, anticipando la svolta rivoluzionaria che il suo allievo Giotto porterà a compimento pochi anni dopo.",
+        "d40": "Dipinta intorno al 1280-1290 per l'altare maggiore della chiesa vallombrosana di Santa Trinita a Firenze, la Maestà di Cimabue segna il punto di passaggio tra la tradizione bizantina della maniera greca, dominante nella pittura italiana duecentesca, e le prime istanze di naturalismo che troveranno piena maturazione in Giotto. Il trono a fughe prospettiche, benché ancora incoerenti e non unificate in un unico punto di vista, introduce un tentativo di costruzione spaziale tridimensionale del tutto assente nei modelli bizantini precedenti. Il panneggio della veste della Vergine, che accenna a un volume corporeo sottostante attraverso un sistema di pieghe a v rovesciata, rivela lo studio diretto di modelli scultorei duecenteschi, forse di ambito pisano. La disposizione simmetrica degli otto angeli e dei quattro profeti veterotestamentari nel registro inferiore mantiene ancora una rigida gerarchia compositiva di ascendenza orientale, ma la torsione appena accennata dei corpi angelici introduce una vitalità formale che sarà pienamente sviluppata dalla generazione successiva di pittori fiorentini."
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La Maestà di Santa Trinita (ca. 1280–1290, tempera e oro su tavola) di Cenni di Pepo detto Cimabue segna il punto di passaggio tra la tradizione bizantina della maniera greca e le prime istanze di naturalismo che troveranno piena maturazione in Giotto. Il trono a fughe prospettiche, benché ancora incoerenti, e il panneggio che accenna a un volume corporeo sotto le vesti della Vergine indicano un tentativo di superamento della bidimensionalità icastica bizantina."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Tempera e oro su tavola",
-      "periodo": "ca. 1280–1290",
+      "periodo": "ca. 1280-1290",
       "sala": "2",
-      "prezzo": 0
+      "prezzo": 2
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg/960px-Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
-    "operaId": "Autoritratto con collare di pelliccia",
-    "objectId": "durer-autoritratto-scheda",
+    "operaId": "Maestà di Santa Trinita",
+    "objectId": "maesta-santa-trinita-avanzato",
     "toni": {
       "semplice": {
-        "d3": "In questo quadro un giovane pittore tedesco ha disegnato se stesso con una bella pelliccia, quasi come un re.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "L'autoritratto di Albrecht Dürer con collare di pelliccia lo mostra frontale e solenne, in una posa che ricorda le immagini sacre, a testimonianza della nuova consapevolezza del ruolo dell'artista nel Rinascimento tedesco.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Snodo dialettico tra maniera greca e nascente volumetria pre-giottesca nel trono a fughe incoerenti.",
+        "d15": "Il trono a fughe prospettiche non ancora unificate, il panneggio a pieghe angolari di possibile matrice scultorea pisana e la torsione appena percettibile del registro angelico documentano il progressivo allentamento della sintassi iconica bizantina, di cui l'opera resta l'ultimo grande esempio fiorentino prima della rivoluzione giottesca.",
+        "d40": "La Maestà di Santa Trinita (tempera e oro su tavola, 385 × 223 cm, ca. 1280-1290), proveniente dall'altare maggiore della chiesa vallombrosana da cui prende il nome, rappresenta il vertice e insieme il limite della sintassi figurativa della maniera greca in ambito fiorentino tardo-duecentesco. Il trono ligneo, costruito attraverso una sequenza di archi acuti in scorcio che tentano, senza ancora riuscirvi pienamente, una coerenza prospettica unitaria, costituisce un tentativo pionieristico di ambientazione spaziale tridimensionale estraneo al lessico iconico bizantino. Il panneggio della veste mariana, organizzato in un sistema di pieghe angolari a v rovesciata di possibile derivazione dalla scultura duecentesca pisana (Nicola e Giovanni Pisano), suggerisce un dialogo diretto tra Cimabue e la coeva rinascita plastica toscana. La disposizione simmetrica e gerarchica degli otto angeli, ancora debitrice dell'iconografia orientale della Theotokos in trono, è tuttavia percorsa da una torsione appena accennata dei corpi che introduce un principio di individuazione fisionomica e posturale destinato a essere sviluppato sistematicamente da Giotto, allievo diretto di Cimabue secondo la testimonianza di Cennino Cennini e Giorgio Vasari. L'opera, insieme alla coeva Madonna Rucellai di Duccio e alla Madonna di Ognissanti di Giotto, oggi tutte conservate nella medesima sala degli Uffizi, permette un confronto diretto e ineguagliabile sull'evoluzione della pittura fiorentina e senese a cavallo tra Due e Trecento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera e oro su tavola",
+      "periodo": "ca. 1280-1290",
+      "sala": "2",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/eb/Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg/960px-Cimabue_-_Maest%C3%A0_di_Santa_Trinita.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto con collare di pelliccia",
+    "objectId": "durer-autoritratto-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Un giovane pittore tedesco si disegna con una bella pelliccia, come se fosse un re.",
+        "d15": "Albrecht Dürer si dipinge frontale e serio, con una pelliccia elegante, quasi come le antiche immagini sacre di Gesù. Voleva mostrare che anche i pittori, non solo i re o i santi, meritavano rispetto e ammirazione.",
+        "d40": "In questo autoritratto, il pittore tedesco Albrecht Dürer si dipinge guardando dritto verso di noi, con una posa frontale e simmetrica che di solito veniva usata solo per rappresentare Gesù Cristo nelle icone sacre. Indossa una elegante pelliccia marrone e i suoi lunghi capelli ricci sono pettinati con estrema cura. Accanto al suo volto compare una firma e una data scritte come se fossero un'iscrizione importante, quasi sacra. Con questo quadro, dipinto quando l'artista aveva circa 28 anni, Dürer vuole dire una cosa molto coraggiosa per la sua epoca: un pittore non è solo un semplice artigiano che lavora con le mani, ma un artista geniale, degno della stessa dignità di un re o di un santo. Questa idea, molto diffusa in Italia durante il Rinascimento, era ancora nuova nel Nord Europa, e Dürer fu tra i primi a portarla con orgoglio nella sua Germania natale."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "L'Autoritratto con collare di pelliccia (1500, olio su tavola) di Albrecht Dürer adotta uno schema compositivo frontale e simmetrico storicamente riservato alle immagini di Cristo Pantocratore, in un'operazione di autocelebrazione senza precedenti nella ritrattistica nordeuropea. La firma e la data, disposte come un'iscrizione quasi sacra, insieme alla resa minuziosa della capigliatura e della pelliccia, rivelano l'assimilazione di modelli fiamminghi fusi con l'ambizione teorica dell'artista rinascimentale italiano."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Olio su tavola",
       "periodo": "1500",
       "sala": "20",
-      "prezzo": 2
+      "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Durer_selfportrait_28.jpg/960px-Durer_selfportrait_28.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto con collare di pelliccia",
+    "objectId": "durer-autoritratto-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Autoritratto frontale in posa cristologica, manifesto della dignità dell'artista rinascimentale.",
+        "d15": "L'autoritratto di Dürer con collare di pelliccia lo mostra frontale e solenne, in una posa che ricorda le immagini sacre di Cristo Pantocratore. La firma e la data, poste come un'iscrizione quasi liturgica, testimoniano la nuova consapevolezza del ruolo dell'artista maturata nel Rinascimento tedesco sotto l'influsso del modello italiano.",
+        "d40": "Dipinto nel 1500, quando l'artista aveva ventotto anni, l'Autoritratto con collare di pelliccia adotta uno schema compositivo frontale e rigorosamente simmetrico storicamente riservato alle immagini devozionali di Cristo Pantocratore, operazione di autocelebrazione senza precedenti nella ritrattistica nordeuropea del tempo. La resa minuziosa della capigliatura, pettinata con cura quasi geometrica, e della pelliccia, dipinta con straordinaria attenzione tattile ai singoli peli, rivela l'assimilazione di modelli pittorici fiamminghi appresi durante i viaggi di formazione dell'artista. La firma e la data, disposte simmetricamente ai lati del volto come un'iscrizione sacra, insieme al monogramma AD ormai divenuto un vero e proprio marchio personale, rivendicano per l'artista una dignità intellettuale paragonabile a quella riconosciuta ai pittori italiani del Rinascimento, ambizione teorica che Dürer avrebbe portato avanti anche nei suoi trattati sulle proporzioni e sulla prospettiva."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1500",
+      "sala": "20",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Durer_selfportrait_28.jpg/960px-Durer_selfportrait_28.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto con collare di pelliccia",
+    "objectId": "durer-autoritratto-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Traslazione del paradigma iconico cristologico nell'autorappresentazione dell'artista-intellettuale nordico.",
+        "d15": "L'assunzione dello schema compositivo del Salvator Mundi, unita al monogramma-marchio e all'iscrizione dedicatoria in forma quasi liturgica, colloca l'opera nel solco della rivendicazione teorica della dignitas pictoris, di matrice italiana, trapiantata da Dürer nel contesto della bottega artigianale nordeuropea.",
+        "d40": "L'Autoritratto con collare di pelliccia (olio su tavola, 67 × 49 cm, 1500) adotta uno schema compositivo frontale e simmetrico storicamente riservato alle immagini del Salvator Mundi o del Cristo Pantocratore, operazione iconografica di eccezionale ardire nella ritrattistica nordeuropea di fine Quattrocento. La resa minuziosa della capigliatura, disposta con simmetria quasi geometrica, e della pelliccia, trattata con un virtuosismo tattile debitore della tradizione fiamminga di Jan van Eyck, si fondono con l'ambizione teorica, di matrice italiana e in particolare albertiana, di rivendicare per il pittore una dignitas intellettuale pari a quella del filosofo o del teologo, in contrasto con lo statuto artigianale tradizionalmente riservato al pittore nelle corporazioni nordeuropee. La firma e la data, disposte come un'iscrizione dedicatoria quasi sacra ai lati del volto, insieme al monogramma AD che Dürer utilizzò sistematicamente come vero e proprio marchio di autenticazione commerciale, anticipano le riflessioni teoriche sulla funzione dell'artista che l'autore avrebbe sviluppato nei trattati sulle proporzioni del corpo umano e sulla misurazione geometrica, opere che lo collocano tra i principali teorici dell'arte del Rinascimento nordico."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1500",
+      "sala": "20",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Durer_selfportrait_28.jpg/960px-Durer_selfportrait_28.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Doppio ritratto dei Duchi di Urbino",
+    "objectId": "duchi-urbino-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Due ritratti mostrano il duca e la duchessa di Urbino, con un bel paesaggio dietro di loro.",
+        "d15": "Piero della Francesca dipinge il duca Federico da Montefeltro e sua moglie Battista Sforza, uno di fronte all'altra, di profilo. Dietro di loro si vede lo stesso paesaggio che continua da un quadro all'altro, dipinto con colori chiari e una luce limpidissima.",
+        "d40": "Questi due piccoli quadri, pensati per stare uno accanto all'altro come le due facce di una medaglia, ritraggono il duca Federico da Montefeltro e sua moglie Battista Sforza, entrambi di profilo. Il duca viene mostrato sempre dal lato sinistro del viso perché in un torneo aveva perso l'occhio destro e parte del naso, quindi Piero della Francesca lo dipinge in modo da nascondere questo difetto. Dietro le due figure si estende un paesaggio con colline, fiumi e piccoli villaggi che sembra continuare senza interruzione da un quadro all'altro, come se i due duchi fossero seduti alla finestra della stessa stanza a guardare lo stesso orizzonte. La luce è chiarissima e uniforme, quasi cristallina, una caratteristica tipica di questo pittore, che era anche un grande studioso di matematica e prospettiva."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "ca. 1465-1472",
+      "sala": "7",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Piero_della_Francesca_044.jpg/960px-Piero_della_Francesca_044.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Doppio ritratto dei Duchi di Urbino",
-    "objectId": "duchi-urbino-scheda",
+    "objectId": "duchi-urbino-medio",
     "toni": {
       "semplice": {
-        "d3": "Due ritratti mostrano il duca e la duchessa di Urbino, uno di fronte all'altro, con un bellissimo paesaggio dietro di loro.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
-        "d3": "",
-        "d15": "Il Dittico dei Duchi di Urbino di Piero della Francesca ritrae Federico da Montefeltro e Battista Sforza di profilo, secondo la tradizione delle medaglie celebrative, con uno sfondo paesaggistico continuo tra i due pannelli.",
-        "d40": ""
+        "d3": "Ritratti di profilo su modello numismatico, con paesaggio continuo tra i due pannelli.",
+        "d15": "Il dittico ritrae Federico da Montefeltro e Battista Sforza di profilo, secondo la tradizione delle medaglie celebrative rinascimentali. Il profilo sinistro del duca nasconde l'occhio destro perduto in un torneo, mentre lo sfondo paesaggistico continuo tra i due pannelli crea un effetto di unità atmosferica notevole per l'epoca.",
+        "d40": "Il Dittico dei Duchi di Urbino, databile al 1465-1472 circa, applica alla ritrattistica dinastica i principi prospettici e luministici propri della trattatistica matematica di Piero della Francesca. Il profilo rigoroso di Federico da Montefeltro, che nasconde l'occhio destro perduto in un torneo e mostra il caratteristico naso rotto, deriva dalla tradizione della medaglistica celebrativa antica e rinascimentale, mentre il continuum atmosferico del paesaggio sullo sfondo dei due pannelli dimostra l'assimilazione della prospettiva aerea di ascendenza fiamminga, filtrata attraverso il rigore geometrico proprio della scuola urbinate. Sul retro dei due pannelli sono dipinti i Trionfi dei duchi su carri trainati da animali simbolici, completando un programma iconografico celebrativo della dinastia Montefeltro."
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "Il Dittico dei Duchi di Urbino (ca. 1473–1475, tempera su tavola) di Piero della Francesca applica alla ritrattistica dinastica i principi prospettici e luministici propri della sua trattatistica matematica. Il profilo rigoroso di Federico da Montefeltro, che nasconde l'occhio destro perduto in un torneo, e il continuum atmosferico del paesaggio sullo sfondo dei due pannelli dimostrano l'assimilazione della prospettiva aerea fiamminga filtrata attraverso il rigore geometrico della scuola urbinate."
+        "d40": ""
       }
     },
     "metadata": {
       "tecnica": "Tempera su tavola",
-      "periodo": "ca. 1473–1475",
+      "periodo": "ca. 1465-1472",
       "sala": "7",
-      "prezzo": 4
+      "prezzo": 2
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Piero_della_Francesca_044.jpg/960px-Piero_della_Francesca_044.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
-    "operaId": "Venere de' Medici",
-    "objectId": "venere-medici-scheda",
+    "operaId": "Doppio ritratto dei Duchi di Urbino",
+    "objectId": "duchi-urbino-avanzato",
     "toni": {
       "semplice": {
-        "d3": "Questa statua di marmo bianco mostra la dea Venere che si copre pudicamente. È stata ammirata per secoli da artisti e viaggiatori.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "La Venere de' Medici è una copia romana in marmo di un originale greco ellenistico. Fu una delle sculture antiche più celebri e ammirate durante il Grand Tour settecentesco, custodita nella Tribuna degli Uffizi.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Ritrattistica dinastica su matrice numismatica, con prospettiva aerea di sintesi fiammingo-urbinate.",
+        "d15": "Il profilo assoluto, di ascendenza numismatica antica e quattrocentesca, funge da dispositivo correttivo dell'imperfezione fisica del duca, mentre il continuum paesaggistico tra i due pannelli, unito ai Trionfi dinastici sul verso, costruisce un programma encomiastico integrato di rara coerenza teorica per la trattatistica prospettica pierfrancescana.",
+        "d40": "Il Dittico dei Duchi di Urbino (tempera su tavola, ciascun pannello 47 × 33 cm, ca. 1465-1472) rappresenta l'applicazione più compiuta dei principi geometrico-prospettici della trattatistica di Piero della Francesca al genere della ritrattistica dinastica. Il profilo assoluto, mutuato dalla tradizione della medaglistica celebrativa romana e riproposto nel Quattrocento italiano come formula di rappresentazione del potere, assolve qui anche a una funzione correttiva, occultando l'occhio destro e la porzione di naso perduti da Federico da Montefeltro in un torneo cavalleresco. Il continuum atmosferico del paesaggio, che collega otticamente i due pannelli attraverso una prospettiva aerea di derivazione fiamminga (con probabile conoscenza diretta o mediata della pittura di Van Eyck), costituisce una delle prime applicazioni sistematiche di tale tecnica in territorio italiano. Sul verso dei due pannelli, i Trionfi dei duchi su carri trainati rispettivamente da cavalli bianchi (Federico) e unicorni (Battista Sforza, già defunta al momento dell'esecuzione, come suggerito dall'incarnato pallido), accompagnati da personificazioni delle virtù cardinali, completano un programma iconografico encomiastico di rara coerenza teorica, concepito come apparato dinastico portatile secondo la tradizione dei dittici devozionali e celebrativi del primo Rinascimento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "ca. 1465-1472",
+      "sala": "7",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Piero_della_Francesca_044.jpg/960px-Piero_della_Francesca_044.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Venere de' Medici",
+    "objectId": "venere-medici-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Una statua di marmo bianco mostra Venere che si copre pudicamente con le mani.",
+        "d15": "Questa statua di marmo bianco rappresenta la dea Venere che si copre con le mani in un gesto di pudore. È una copia romana antica di una statua greca ancora più vecchia, ed è stata ammirata per secoli da artisti e viaggiatori di tutta Europa.",
+        "d40": "Questa elegante statua in marmo bianco raffigura la dea Venere nell'atto di coprirsi pudicamente con le mani, in una posa chiamata 'Venere Pudica' che è diventata un modello seguito da migliaia di artisti nei secoli successivi. La statua che vediamo oggi è una copia romana, realizzata circa duemila anni fa, di un'opera greca ancora più antica ormai perduta. Per tantissimo tempo, soprattutto nel Settecento, questa scultura è stata considerata uno dei simboli assoluti della bellezza ideale: i giovani nobili europei che facevano il cosiddetto 'Grand Tour', un lungo viaggio culturale in Italia, consideravano una tappa obbligatoria vedere questa statua dal vivo. Era conservata in una sala speciale a forma di ottagono chiamata la Tribuna, progettata apposta per contenere le opere più preziose della collezione medicea, e veniva continuamente copiata in gesso per essere studiata nelle accademie d'arte di tutta Europa."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "La Venere de' Medici (copia romana in marmo, I secolo a.C., da originale ellenistico di ambito prassitelico) rappresenta il tipo della Venus Pudica, con il gesto delle mani a velare pudicamente il corpo. Collocata nella Tribuna, ottagono progettato dal Buontalenti per Francesco I de' Medici, divenne canone di bellezza ideale per generazioni di artisti neoclassici e tappa imprescindibile del Grand Tour, celebrata da Canova e ripetutamente copiata in gesso nelle accademie d'arte europee."
+        "d40": ""
       }
     },
     "metadata": {
@@ -437,60 +1058,308 @@
       "sala": "18 (Tribuna)",
       "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg/960px-Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Venere de' Medici",
+    "objectId": "venere-medici-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Copia romana in marmo del tipo Venus Pudica, celebrata durante il Grand Tour settecentesco.",
+        "d15": "La Venere de' Medici è una copia romana in marmo di un originale greco ellenistico, esempio del tipo iconografico della Venus Pudica. Fu una delle sculture antiche più celebri e ammirate durante il Grand Tour settecentesco, custodita nella Tribuna degli Uffizi, ottagono appositamente progettato per le opere più preziose della collezione medicea.",
+        "d40": "La Venere de' Medici, copia romana in marmo del I secolo a.C. da un originale ellenistico di ambito prassitelico, rappresenta il tipo iconografico della Venus Pudica, caratterizzato dal gesto delle mani che velano pudicamente il corpo nudo. Collocata nella Tribuna, l'ottagono progettato dal Buontalenti per Francesco I de' Medici come scrigno delle meraviglie della collezione granducale, la statua divenne canone di bellezza ideale per generazioni di artisti neoclassici, celebrata anche da Antonio Canova, e tappa imprescindibile del Grand Tour settecentesco compiuto dai rampolli dell'aristocrazia europea. La sua fama fu tale da renderla uno dei soggetti più ripetutamente copiati in gesso nelle accademie d'arte di tutta Europa, contribuendo in maniera decisiva alla diffusione del gusto classicista tra Sette e Ottocento."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Marmo (copia romana)",
+      "periodo": "I secolo a.C.",
+      "sala": "18 (Tribuna)",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg/960px-Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Venere de' Medici",
+    "objectId": "venere-medici-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Replica di ambito prassitelico, canone della recezione neoclassica e paradigma pedagogico accademico.",
+        "d15": "L'attribuzione a Cleomene figlio di Apollodoro, incisa sulla base, la colloca nel filone delle repliche di età augustea da originali ellenistici derivati dall'Afrodite Cnidia prassitelica, mentre la sua fortuna critica settecentesca, culminata nell'elogio wincklemanniano, ne fece paradigma della bellezza ideale e riferimento pedagogico imprescindibile per l'Accademia neoclassica europea.",
+        "d40": "La Venere de' Medici (marmo, altezza 153 cm, copia romana del I secolo a.C. da un originale ellenistico), recante sulla base la firma, probabilmente non originale, di Cleomene figlio di Apollodoro ateniese, si inserisce nel vasto filone delle repliche di età imperiale derivate dal tipo prassitelico dell'Afrodite Cnidia, rielaborato secondo la variante della Venus Pudica con gesto di velamento pudico delle mani. Giunta a Firenze da Roma nel 1677 per volontà del cardinale Ferdinando de' Medici, fu collocata nella Tribuna buontalentiana, spazio ottagonale concepito come compendio simbolico del microcosmo mediceo, dove costituì per oltre un secolo il fulcro della sala insieme ai cosiddetti Filosofi e Lottatori antichi. La sua fortuna critica raggiunse l'apice nel Settecento grazie all'elogio di Johann Joachim Winckelmann, che ne fece paradigma della bellezza ideale greca nella sua Storia dell'arte dell'antichità, consacrandola tappa canonica del Grand Tour e modello di riferimento imprescindibile per la formazione accademica degli scultori neoclassici, da Canova in avanti, attraverso la sistematica produzione di calchi in gesso destinati alle accademie di belle arti di tutta Europa."
+      }
+    },
+    "metadata": {
+      "tecnica": "Marmo (copia romana)",
+      "periodo": "I secolo a.C.",
+      "sala": "18 (Tribuna)",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg/960px-Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Bacco",
+    "objectId": "bacco-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Un giovane con una corona di foglie d'uva ci offre un bicchiere di vino.",
+        "d15": "Caravaggio dipinge il dio del vino Bacco come un ragazzo vero, con una corona di foglie d'uva in testa. Ci guarda con aria un po' stanca mentre ci offre un calice di vino. Davanti a lui c'è un cesto di frutta dipinto con dettagli così realistici da sembrare vera.",
+        "d40": "In questo quadro Caravaggio dipinge il dio del vino Bacco non come una figura irreale e perfetta, ma come un vero ragazzo in carne e ossa, forse un modello che l'artista conosceva davvero. Il giovane indossa solo un lenzuolo bianco drappeggiato e una corona di foglie di vite, e ci guarda con occhi un po' stanchi e le guance leggermente arrossate, come se avesse già bevuto un bicchiere di troppo. Con una mano regge un calice di vino, offrendocelo quasi come un invito. Davanti a lui, su un tavolo, c'è un cesto pieno di frutta dipinta con una precisione incredibile: si vedono persino delle piccole ammaccature e i primi segni di marciume su una mela, dettagli che rendono la scena estremamente realistica, quasi si potesse toccare la frutta con le dita. Questo modo di dipingere con tanta attenzione ai particolari reali, anche quelli meno perfetti, è una delle caratteristiche che resero Caravaggio uno dei pittori più rivoluzionari della storia dell'arte."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1598",
+      "sala": "43",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Baco%2C_por_Caravaggio.jpg/960px-Baco%2C_por_Caravaggio.jpg",
     "authorId": "e9o1w5g3hk",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Bacco",
-    "objectId": "bacco-caravaggio-scheda",
+    "objectId": "bacco-medio",
     "toni": {
       "semplice": {
-        "d3": "Un giovane con una corona di foglie d'uva ci offre un bicchiere di vino, guardandoci con aria un po' stanca.",
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Il dio del vino trasfigurato in modello di studio realistico, con natura morta di virtuosismo illusionistico.",
+        "d15": "Il Bacco di Caravaggio raffigura il dio del vino come un giovane in carne e ossa, con dettagli realistici come la frutta quasi marcia e le unghie sporche, tipici del naturalismo caravaggesco. Il pallore malsano e la posa da modello di studio evidenziano il rifiuto dell'idealizzazione classicista.",
+        "d40": "Il Bacco, databile al 1597-1598 circa, trasfigura il soggetto mitologico in una posa da modello di studio, evidenziata dalle unghie annerite e dal pallore leggermente malsano del giovane, elementi che testimoniano l'adesione del pittore a un naturalismo privo di idealizzazione classicista. La natura morta di frutta in primo piano, con margini di decomposizione resi con virtuosismo illusionistico quasi tattile, funge da vanitas memento mori e da manifesto programmatico della nuova poetica caravaggesca, fondata sull'osservazione diretta del vero anche nei suoi aspetti meno lusinghieri. Il calice di vino torbido offerto direttamente allo spettatore crea un rapporto di immediato coinvolgimento fisico, tipico delle prime opere da cavalletto realizzate dall'artista per la committenza colta romana, in particolare per il cardinale Francesco Maria del Monte."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1598",
+      "sala": "43",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Baco%2C_por_Caravaggio.jpg/960px-Baco%2C_por_Caravaggio.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Bacco",
+    "objectId": "bacco-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "Il Bacco di Caravaggio raffigura il dio del vino come un giovane in carne e ossa, con dettagli realistici come la frutta quasi marcia e le unghie sporche, tipici del naturalismo caravaggesco.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Vanitas mitologica desublimata, manifesto del naturalismo tenebrista di committenza del Monte.",
+        "d15": "La desublimazione del soggetto bacchico in un modello di studio dal pallore malsano, unita al virtuosismo illusionistico della natura morta in decomposizione, costituisce un manifesto programmatico del naturalismo caravaggesco delle origini, elaborato nell'ambiente colto e antiquario del cardinale Francesco Maria del Monte.",
+        "d40": "Il Bacco (olio su tela, 95 × 85 cm, ca. 1597-1598), realizzato per la committenza del cardinale Francesco Maria del Monte, primo protettore romano di Caravaggio, opera una sistematica desublimazione del soggetto mitologico attraverso l'adozione di un modello dal pallore itterico e dalle unghie annerite, elementi che rifiutano ogni idealizzazione classicista in favore di un naturalismo di matrice lombarda applicato a un tema di ascendenza colta e antiquaria. La natura morta di frutta in primo piano, con la resa illusionistica dei primi segni di decomposizione su una mela bacata, costituisce non solo un virtuosistico esercizio di verosimiglianza ma anche un dispositivo semantico di vanitas, memento dell'inesorabile decadimento della carne e del piacere sensuale rappresentato dal vino stesso. Il calice offerto direttamente verso lo spettatore, con il vino reso torbido da una velatura pittorica volutamente imperfetta, instaura un rapporto di coinvolgimento fisico diretto che caratterizza le prime opere da cavalletto dell'artista, concepite per la fruizione ravvicinata e privata tipica del collezionismo colto della Roma di fine Cinquecento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1598",
+      "sala": "43",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Baco%2C_por_Caravaggio.jpg/960px-Baco%2C_por_Caravaggio.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Medusa",
+    "objectId": "medusa-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Uno scudo dipinto mostra la testa di Medusa nell'attimo esatto in cui viene tagliata.",
+        "d15": "Caravaggio dipinge la testa della Medusa, un mostro della mitologia greca con serpenti al posto dei capelli, proprio nel momento in cui viene decapitata. Il volto è contorto in un urlo di dolore e sorpresa, con gli occhi ancora spalancati.",
+        "d40": "Questo dipinto è particolare perché non è fatto su una tela normale, ma su uno scudo cerimoniale di forma convessa, come quelli usati nelle parate. Sopra vi è raffigurata la testa della Medusa, un mostro femminile della mitologia greca che aveva serpenti velenosi al posto dei capelli e che poteva trasformare in pietra chiunque la guardasse negli occhi. Caravaggio sceglie di rappresentarla proprio nell'istante esatto in cui viene decapitata dall'eroe Perseo: il sangue schizza dal collo reciso, la bocca è spalancata in un urlo che sembra quasi di poter sentire, e gli occhi restano fissi e spaventati. Questo modo di catturare un momento così drammatico e violento, reso con un realismo quasi fotografico, è tipico dello stile di Caravaggio, che amava rappresentare le emozioni più forti nel loro istante più intenso."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "Il Bacco (ca. 1596–1597, olio su tela) di Michelangelo Merisi da Caravaggio trasfigura il soggetto mitologico in una posa da modello di studio, evidenziata dalle unghie annerite e dal pallore malsano del giovane, elementi che testimoniano l'adesione del pittore a un naturalismo privo di idealizzazione classicista. La natura morta di frutta in primo piano, con margini di decomposizione resi con virtuosismo illusionistico, funge da vanitas memento e da manifesto della nuova poetica caravaggesca."
+        "d40": ""
       }
     },
     "metadata": {
-      "tecnica": "Olio su tela",
-      "periodo": "ca. 1596–1597",
+      "tecnica": "Olio su tela applicata a scudo convesso",
+      "periodo": "ca. 1597",
+      "sala": "43",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Medusa_by_Caravaggio.jpg/960px-Medusa_by_Caravaggio.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Medusa",
+    "objectId": "medusa-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Testa gorgonica su scudo cerimoniale, colta nell'istante drammatico della decapitazione.",
+        "d15": "Il dipinto raffigura la testa di Medusa appena decapitata dall'eroe Perseo, con il volto contorto in un urlo che coglie l'attimo esatto della morte. Realizzato su uno scudo convesso in legno di pioppo, fu commissionato dal cardinale Francesco Maria del Monte come dono per il granduca di Toscana Ferdinando I de' Medici.",
+        "d40": "La Medusa, dipinta su uno scudo cerimoniale convesso in legno di pioppo, fu commissionata dal cardinale Francesco Maria del Monte come dono diplomatico per il granduca di Toscana Ferdinando I de' Medici, tramite il quale l'opera giunse infine agli Uffizi. Caravaggio sceglie di rappresentare il mito della Gorgone nell'istante immediatamente successivo alla decapitazione per mano di Perseo, con il sangue che ancora schizza dal collo reciso e il volto contorto in un urlo che coglie con crudo realismo l'attimo esatto della morte, mentre gli occhi restano sbarrati nel loro potere pietrificante anche da recisi. La superficie convessa dello scudo, sfruttata per accentuare l'effetto di sporgenza tridimensionale della testa verso l'osservatore, testimonia la straordinaria capacità dell'artista di adattare la propria ricerca naturalistica a un supporto non convenzionale, trasformando un oggetto di rappresentanza cerimoniale in un manifesto del nuovo linguaggio tenebrista."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela applicata a scudo convesso",
+      "periodo": "ca. 1597",
+      "sala": "43",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Medusa_by_Caravaggio.jpg/960px-Medusa_by_Caravaggio.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Medusa",
+    "objectId": "medusa-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Dono diplomatico mediceo su supporto convesso, paradigma dell'adattamento tenebrista a oggetto cerimoniale.",
+        "d15": "La scelta del supporto convesso in legno di pioppo, sfruttato per accentuare l'illusione di sporgenza tridimensionale della testa recisa verso l'osservatore, trasforma un oggetto di rappresentanza aulica in manifesto del naturalismo tenebrista, nel contesto della diplomazia culturale tra il cardinale del Monte e la corte medicea.",
+        "d40": "La Medusa (olio su tela applicata su scudo convesso in legno di pioppo, diametro 55 cm, ca. 1597), commissionata dal cardinale Francesco Maria del Monte come dono diplomatico destinato al granduca di Toscana Ferdinando I de' Medici, costituisce un caso esemplare di adattamento della ricerca naturalistica caravaggesca a un supporto cerimoniale non convenzionale. La superficie convessa dello scudo, tradizionalmente destinata a oggetti di parata e rappresentanza aristocratica, viene sfruttata dall'artista per amplificare l'effetto di sporgenza illusionistica della testa gorgonica verso lo spazio dell'osservatore, in un procedimento che dialoga con la tradizione degli scudi dipinti rinascimentali, incluso il perduto prototipo vasariano attribuito a Leonardo da Vinci secondo la testimonianza di Vasari stesso. La scelta di rappresentare il mito nell'istante immediatamente successivo alla decapitazione per mano di Perseo, con il sangue ancora fuoriuscente dal collo reciso e il volto contorto in un urlo di terrore che coglie con crudezza fisiologica l'attimo esatto della morte, si inserisce nella poetica caravaggesca dell'istante colto nella sua massima tensione emotiva, qui ulteriormente complicata dal paradosso concettuale di uno sguardo pietrificante reso innocuo proprio dalla morte del suo portatore."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela applicata a scudo convesso",
+      "periodo": "ca. 1597",
       "sala": "43",
       "prezzo": 6
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Medusa_by_Caravaggio.jpg/960px-Medusa_by_Caravaggio.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
     "operaId": "Ritratto di Eleonora di Toledo",
-    "objectId": "eleonora-toledo-scheda",
+    "objectId": "eleonora-toledo-semplice",
     "toni": {
       "semplice": {
-        "d3": "Una nobildonna vestita con un abito elegantissimo tiene per mano il suo bambino. Il vestito è ricamato con tantissimi dettagli.",
-        "d15": "",
-        "d40": ""
+        "d3": "Una nobildonna con un abito elegantissimo tiene per mano il suo bambino.",
+        "d15": "Bronzino dipinge Eleonora di Toledo, moglie del duca di Firenze, insieme al figlio Giovanni. Il suo vestito è ricamato con disegni preziosissimi fatti di fili d'oro e melagrane, dettagli che dovettero richiedere settimane di lavoro paziente.",
+        "d40": "In questo ritratto vediamo Eleonora di Toledo, la moglie del duca di Firenze Cosimo I de' Medici, seduta accanto al figlio Giovanni che le si stringe al fianco. Quello che colpisce di più è il suo abito: un vestito sontuoso ricamato con un disegno a melagrane fatto di fili d'oro e velluto nero, dipinto con una precisione incredibile, quasi filo per filo, come se il pittore avesse voluto far vedere ogni singolo dettaglio del ricamo. Il pittore, Agnolo Bronzino, era il ritrattista ufficiale della corte medicea, e il suo compito era mostrare al mondo intero quanto fosse ricca e potente la famiglia che governava Firenze. Per questo il vestito, i gioielli e persino l'espressione compostissima di Eleonora sono importanti tanto quanto il suo volto: tutto serve a comunicare autorità, ricchezza e stabilità della famiglia regnante."
       },
       "medio": {
         "d3": "",
-        "d15": "Il ritratto di Eleonora di Toledo del Bronzino mostra la moglie di Cosimo I de' Medici in un sontuoso abito di broccato, simbolo del potere e della ricchezza della corte medicea.",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "Il Ritratto di Eleonora di Toledo con il figlio Giovanni (ca. 1545, olio su tavola) di Agnolo Bronzino codifica il linguaggio del ritratto di corte manierista fiorentino, in cui la resa minuziosa e quasi calligrafica del tessuto in broccato veneziano assume valore emblematico pari a quello del volto, funzionale alla costruzione dell'immagine dinastica e del potere mediceo attraverso il fasto materiale."
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "ca. 1545",
+      "sala": "29",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg/960px-Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Ritratto di Eleonora di Toledo",
+    "objectId": "eleonora-toledo-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Ritratto di corte manierista, con l'abito in broccato come emblema del potere mediceo.",
+        "d15": "Il ritratto di Eleonora di Toledo del Bronzino mostra la moglie di Cosimo I de' Medici in un sontuoso abito di broccato con disegno a melagrane, simbolo del potere e della ricchezza della corte medicea. Il figlio Giovanni, accanto a lei, rafforza il messaggio dinastico dell'immagine ufficiale.",
+        "d40": "Il Ritratto di Eleonora di Toledo con il figlio Giovanni, databile al 1545 circa, codifica il linguaggio del ritratto di corte manierista fiorentino, in cui la resa minuziosa e quasi calligrafica del tessuto in broccato veneziano, con il caratteristico disegno a melagrane su fondo nero, assume valore emblematico pari a quello del volto, funzionale alla costruzione dell'immagine dinastica e del potere mediceo attraverso il fasto materiale. Bronzino, ritrattista ufficiale della corte di Cosimo I, elabora uno stile di gelida perfezione formale in cui l'espressione impassibile della duchessa e la levigatezza quasi smaltata dell'incarnato contribuiscono a costruire un'immagine di autorità sovrumana, distante e inaccessibile, coerente con la propaganda dinastica del nuovo ducato mediceo consolidatosi dopo il 1537."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
       }
     },
     "metadata": {
@@ -499,38 +1368,503 @@
       "sala": "29",
       "prezzo": 3
     },
-    "image": "",
-    "authorId": "e9o1w5g3hk",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg/960px-Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
     "pubblica": true
   },
   {
     "museumId": "IT-FI0082",
-    "operaId": "Annunciazione",
-    "objectId": "annunciazione-leonardo-scheda",
+    "operaId": "Ritratto di Eleonora di Toledo",
+    "objectId": "eleonora-toledo-avanzato",
     "toni": {
       "semplice": {
-        "d3": "Un angelo porta un messaggio importante a Maria, mentre dietro di loro c'è un giardino e un paesaggio lontano.",
+        "d3": "",
         "d15": "",
         "d40": ""
       },
       "medio": {
         "d3": "",
-        "d15": "L'Annunciazione di Leonardo da Vinci, una delle sue prime opere, mostra l'angelo Gabriele inginocchiato davanti a Maria in un giardino curatissimo, con un paesaggio sfumato che si perde all'orizzonte.",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Iconografia dinastica post-1537, con levigatezza smaltata come strumento di distanziamento sovrano.",
+        "d15": "La resa calligrafica del broccato a melagrane, elevata a valore semantico pari al volto, e la levigatezza impassibile dell'incarnato costituiscono gli strumenti retorici principali con cui Bronzino costruisce un'immagine di autorità sovrumana, funzionale al consolidamento propagandistico del ducato mediceo nel decennio successivo al 1537.",
+        "d40": "Il Ritratto di Eleonora di Toledo con il figlio Giovanni (olio su tavola, 115 × 96 cm, ca. 1545) rappresenta il vertice della codificazione manierista del ritratto di corte fiorentino elaborata da Agnolo Bronzino, pittore ufficiale della corte di Cosimo I de' Medici dal 1539. La resa quasi calligrafica del tessuto in broccato di manifattura probabilmente spagnola, con il caratteristico disegno a melagrane su fondo di velluto nero, assume nell'economia dell'immagine un valore semantico equiparabile a quello del volto stesso, in una strategia rappresentativa in cui il fasto materiale diviene veicolo primario della propaganda dinastica del nuovo ducato consolidatosi dopo la battaglia di Montemurlo del 1537. La levigatezza dell'incarnato, trattato con una tecnica pittorica che elimina ogni traccia di pennellata visibile fino a produrre un effetto quasi smaltato, insieme all'espressione impassibile e distante della duchessa, costruisce un'immagine di autorità sovrumana e inaccessibile, coerente con il nuovo statuto assolutistico della signoria medicea. Alcuni studi diagnostici hanno inoltre rivelato che l'abito effettivamente indossato da Eleonora al momento della posa differisce da quello rappresentato, suggerendo una possibile scelta iconografica successiva legata a un abito funerario o cerimoniale di particolare valore simbolico per la memoria dinastica."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "ca. 1545",
+      "sala": "29",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/75/Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg/960px-Agnolo_Bronzino_-_Eleonora_of_Toledo_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Battaglia di San Romano",
+    "objectId": "battaglia-san-romano-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Cavalieri con lance colorate combattono in una battaglia dipinta come un puzzle geometrico.",
+        "d15": "Paolo Uccello dipinge una battaglia tra cavalieri fiorentini, con lance spezzate sparse a terra che sembrano disegnate con un righello. Il pittore amava così tanto la prospettiva, cioè la tecnica per dare profondità ai disegni, da passare notti intere a studiarla.",
+        "d40": "In questo quadro pieno di colori vivaci vediamo tanti cavalieri armati che combattono a cavallo durante una battaglia. Quello che salta subito all'occhio sono le lance spezzate sparse per terra, disegnate seguendo linee precisissime che sembrano tracciate con un righello, come se formassero una specie di griglia geometrica. Questo perché il pittore, Paolo Uccello, era ossessionato dalla prospettiva, una tecnica matematica appena scoperta che permetteva di dipingere oggetti che sembrano allontanarsi davvero nello spazio. Si racconta che passasse notti intere a fare calcoli e disegni solo per studiare come rappresentare correttamente lance, scudi e cavalli in prospettiva. Il quadro fa parte di una serie di tre grandi tavole che raccontano una vittoria dell'esercito fiorentino, ed era probabilmente appeso nella camera da letto di un membro della famiglia Medici."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
         "d40": ""
       },
       "avanzato": {
         "d3": "",
         "d15": "",
-        "d40": "L'Annunciazione (ca. 1472–1475, olio e tempera su tavola), opera giovanile attribuita a Leonardo da Vinci nella bottega del Verrocchio, mostra già la ricerca di resa atmosferica nello sfondo paesaggistico dissolto per gradazioni tonali, prefigurazione dello sfumato maturo. Il leggio marmoreo, ripreso dal monumento funebre di Piero e Giovanni de' Medici del Verrocchio, e l'accurata resa botanica del prato fiorito rivelano l'osservazione naturalistica già caratteristica del giovane Leonardo."
+        "d40": ""
       }
     },
     "metadata": {
-      "tecnica": "Olio e tempera su tavola",
-      "periodo": "ca. 1472–1475",
-      "sala": "15",
-      "prezzo": 5
+      "tecnica": "Tempera su tavola",
+      "periodo": "ca. 1438",
+      "sala": "7",
+      "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg/960px-Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Battaglia di San Romano",
+    "objectId": "battaglia-san-romano-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Pannello centrale del trittico sulla battaglia, studio ossessivo della prospettiva geometrica.",
+        "d15": "Pannello centrale del celebre trittico sulla battaglia di San Romano, raffigurante il disarcionamento di Bernardino della Ciarda, capolavoro per lo studio della prospettiva geometrica nel primo Rinascimento. Le lance spezzate a terra, disposte secondo linee di fuga precise, tradiscono l'interesse quasi ossessivo di Paolo Uccello per la scienza prospettica.",
+        "d40": "La Battaglia di San Romano, databile al 1438 circa, costituisce il pannello centrale di un trittico oggi diviso tra gli Uffizi, il Louvre e la National Gallery di Londra, commissionato per celebrare la vittoria fiorentina su Siena del 1432. Il momento raffigurato è il disarcionamento del condottiero senese Bernardino della Ciarda per mano di Niccolò da Tolentino, comandante delle truppe fiorentine riconoscibile dal grande copricapo rosso. Le lance spezzate disposte a terra secondo rigorose linee di fuga convergenti, insieme alla resa quasi cubista dei cavalli e delle armature, tradiscono l'interesse ossessivo di Paolo Uccello per la scienza prospettica appena teorizzata da Brunelleschi e Alberti, applicata qui con un rigore geometrico che sacrifica in parte il naturalismo a favore di un'astrazione formale sorprendentemente moderna. Vasari racconta che l'artista passasse notti intere a studiare i punti di fuga, tanto da essere richiamato a letto dalla moglie con la celebre esclamazione sulla dolcezza della prospettiva."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "ca. 1438",
+      "sala": "7",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg/960px-Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Battaglia di San Romano",
+    "objectId": "battaglia-san-romano-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Formalizzazione geometrica quasi protocubista della battaglia, tra committenza medicea e teoria brunelleschiana.",
+        "d15": "La riduzione della scena bellica a un reticolo di linee di fuga convergenti, applicato a lance, armature e anatomie equine, rappresenta un'applicazione radicale e quasi dogmatica dei principi prospettici albertiani e brunelleschiani, in una tensione irrisolta tra rigore geometrico e naturalismo narrativo che ne fa un unicum nella pittura fiorentina del primo Quattrocento.",
+        "d40": "La Battaglia di San Romano (tempera su tavola, 182 × 320 cm, ca. 1438), pannello centrale di un trittico oggi smembrato tra Uffizi, Louvre e National Gallery di Londra, fu commissionata dalla famiglia Bartolini Salimbeni, per poi essere probabilmente incamerata dai Medici, a celebrazione della vittoria fiorentina su Siena nella battaglia del 1432. Il momento narrativo, il disarcionamento del condottiero senese Bernardino della Ciarda per mano del comandante fiorentino Niccolò da Tolentino, viene tradotto da Paolo Uccello in un rigoroso reticolo prospettico in cui le lance spezzate, disposte a terra secondo linee di fuga geometricamente calcolate, e i corpi dei cavalli, ridotti a solidi quasi stereometrici, costituiscono un'applicazione radicale e sistematica dei principi teorizzati da Filippo Brunelleschi nella sua dimostrazione prospettica e formalizzati da Leon Battista Alberti nel De pictura del 1435. Questa ossessione geometrica, documentata anche aneddoticamente da Giorgio Vasari nell'episodio della moglie che richiamava l'artista a letto mentre egli esclamava la dolcezza della prospettiva, produce un effetto di astrazione formale che sacrifica la coerenza naturalistica dello spazio narrativo (evidente nella sproporzione tra figure e paesaggio di sfondo) a favore di una costruzione quasi decorativa e ornamentale, anticipando per certi versi sensibilità formali che la critica novecentesca ha avvicinato, con le dovute cautele storiche, a esperienze cubiste."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "ca. 1438",
+      "sala": "7",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e3/Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg/960px-Uccello_%E2%80%94_the_Battle_of_San_Romano.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna dal collo lungo",
+    "objectId": "madonna-collo-lungo-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria ha un collo lunghissimo ed elegante mentre tiene in braccio Gesù bambino.",
+        "d15": "Il Parmigianino dipinge Maria con un collo stranamente allungato e un corpo dalle proporzioni allungate ed eleganti. Gesù bambino sembra quasi troppo grande e adulto per essere in braccio a sua madre. Tutto nel quadro sembra allungato, sottile e raffinato.",
+        "d40": "Guardando questo quadro, la prima cosa che si nota è il collo di Maria, incredibilmente lungo e sottile, da cui il dipinto prende il suo nome popolare. Anche le sue dita, il suo corpo e le pieghe della veste sono allungati in modo innaturale, quasi come se fossero fatti di un materiale elastico. In braccio tiene Gesù bambino, ma il piccolo sembra stranamente pesante e adulto per le sue dimensioni, quasi come un corpo di un ragazzo più grande. Accanto a Maria un gruppo di angeli si stringe tutto da un lato del quadro, mentre dall'altro lato, in lontananza, si vede una minuscola figura di un uomo con una colonna, forse un profeta. Il pittore, Francesco Mazzola detto il Parmigianino, non voleva rappresentare la realtà così com'è, ma cercava un'eleganza estrema e quasi innaturale, tipica di uno stile chiamato Manierismo, molto diffuso in Italia dopo Michelangelo e Raffaello."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (incompiuta)",
+      "periodo": "1534-1540",
+      "sala": "74",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg/960px-Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna dal collo lungo",
+    "objectId": "madonna-collo-lungo-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Icona del Manierismo, con allungamento elegante delle proporzioni e composizione asimmetrica.",
+        "d15": "Icona universale del Manierismo, la Madonna dal collo lungo è resa indimenticabile dall'elegante allungamento delle proporzioni della Vergine, dalla fluidità delle linee e dalla complessa e asimmetrica composizione. Rimasta incompiuta, mostra a destra un profeta minuscolo accanto a una fila di colonne senza capitelli.",
+        "d40": "Rimasta incompiuta alla morte del Parmigianino nel 1540, la Madonna dal collo lungo rappresenta uno dei manifesti più eloquenti dell'estetica manierista, fondata sul rifiuto consapevole della proporzione naturale in favore di un'eleganza formale estremizzata (la 'maniera'). L'allungamento del collo di Maria, delle sue dita affusolate e del corpo del Bambino, quasi adulto nelle proporzioni nonostante l'età infantile, produce un effetto di grazia astratta e quasi disincarnata. Il gruppo compatto di angeli addossati a sinistra crea uno squilibrio compositivo intenzionale rispetto al vuoto della parte destra, dove una fila di colonne prive di capitelli, mai completata, e la minuscola figura di un profeta con un rotolo, contribuiscono a un senso di spazio dilatato e volutamente irrisolto, coerente con la ricerca di artificiosità raffinata tipica della corrente manierista parmense."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (incompiuta)",
+      "periodo": "1534-1540",
+      "sala": "74",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg/960px-Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna dal collo lungo",
+    "objectId": "madonna-collo-lungo-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Manifesto manierista dell'artificiosità grafica, incompiuto per morte dell'autore nel 1540.",
+        "d15": "L'allungamento antinaturalistico delle figure, lo squilibrio compositivo intenzionale tra il gruppo angelico addossato a sinistra e il vuoto architettonico incompiuto a destra, e la citazione colonnare priva di capitelli, mai completata, costituiscono gli elementi di un manifesto manierista dell'artificiosità grafica, rimasto sospeso dalla morte prematura dell'autore.",
+        "d40": "La Madonna dal collo lungo (olio su tavola, 216 × 132 cm, 1534-1540, incompiuta), commissionata da Elena Baiardi per la cappella di famiglia in Santa Maria dei Servi a Parma, rappresenta la formulazione più radicale ed esplicita dell'estetica manierista del Parmigianino, fondata su una deliberata infrazione del canone proporzionale classico in favore di un'eleganza grafica astratta e disincarnata (la maniera, teorizzata poi da Vasari come categoria estetica autonoma). L'allungamento serpentinato del collo e delle dita della Vergine, unito alla resa quasi adulta e sproporzionatamente pesante del corpo del Bambino addormentato in grembo, produce una tensione formale tra grazia lineare e disagio percettivo che è stata letta dalla critica sia come raffinatezza cortese sia come inquietudine religiosa post-tridentina. Lo squilibrio compositivo tra il gruppo compatto degli angeli, addensati sul lato sinistro in un accumulo quasi claustrofobico, e il vuoto architettonico sulla destra, popolato da una fila di colonne prive di capitelli mai completate e dalla minuscola figura di un profeta con un rotolo (forse Girolamo), rimasto privo della scritta prevista, documenta lo stato di incompiutezza dell'opera al momento della morte dell'artista nel 1540, offrendo un raro caso di studio sul processo creativo manierista lasciato in sospeso."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola (incompiuta)",
+      "periodo": "1534-1540",
+      "sala": "74",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg/960px-Parmigianino_-_Madonna_dal_collo_lungo_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Giuditta che decapita Oloferne",
+    "objectId": "giuditta-oloferne-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Una donna coraggiosa taglia la testa a un generale nemico per salvare la sua città.",
+        "d15": "Artemisia Gentileschi dipinge Giuditta, un'eroina biblica, mentre decapita il generale Oloferne con l'aiuto della sua ancella. La scena è violenta e piena di forza, con il sangue che schizza sul letto bianco.",
+        "d40": "Questo quadro racconta una storia della Bibbia: Giuditta, una coraggiosa vedova ebrea, si intrufola nell'accampamento nemico per salvare la sua città assediata. Riesce a farsi invitare nella tenda del generale nemico Oloferne, lo fa ubriacare e, mentre lui dorme, insieme alla sua fedele ancella gli taglia la testa con una spada. La pittrice, Artemisia Gentileschi, dipinge questo momento con una forza e un realismo incredibili: si vede il sangue schizzare sulle lenzuola bianche, i muscoli tesi delle due donne che tengono ferma la vittima, l'espressione di sforzo sui loro volti. Artemisia era una delle pochissime donne pittrici famose della sua epoca, e molti studiosi pensano che abbia messo in questo quadro tutta la sua rabbia e la sua forza, dopo aver subito lei stessa una grave violenza da un altro pittore quando era giovane."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1620",
+      "sala": "89",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg/960px-Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Giuditta che decapita Oloferne",
+    "objectId": "giuditta-oloferne-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Scena biblica di straordinaria violenza, capolavoro caravaggesco al femminile di Artemisia Gentileschi.",
+        "d15": "Scena biblica di straordinaria violenza e realismo, tra le opere più celebri di Artemisia Gentileschi e capolavoro della pittura caravaggesca al femminile. Giuditta e la sua ancella tengono ferma la vittima in uno sforzo fisico condiviso, in una composizione dal forte impatto tenebrista.",
+        "d40": "Databile al 1620 circa, la Giuditta che decapita Oloferne di Artemisia Gentileschi rielabora un soggetto già trattato da Caravaggio, ma con una forza fisica e una partecipazione emotiva del tutto originali. Le due donne, Giuditta e la sua ancella Abra, sono raffigurate mentre compiono lo sforzo muscolare condiviso di immobilizzare e decapitare il generale assiro, in una composizione a diagonali serrate illuminata da un forte chiaroscuro tenebrista di ascendenza caravaggesca. Il sangue reso con crudo naturalismo, che schizza sulle lenzuola bianche in getti quasi grafici, contribuisce a un pathos raramente eguagliato nella pittura barocca. La critica ha spesso letto quest'opera, dipinta pochi anni dopo il processo per stupro subito dall'artista ad opera del pittore Agostino Tassi, come una sublimazione pittorica di rabbia e rivalsa personale, sebbene tale lettura biografica sia stata negli ultimi decenni ridimensionata a favore di un'analisi più strettamente stilistica e professionale della produzione dell'artista."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1620",
+      "sala": "89",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg/960px-Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Giuditta che decapita Oloferne",
+    "objectId": "giuditta-oloferne-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Rielaborazione caravaggesca al femminile, tra pathos tenebrista e storiografia post-processuale.",
+        "d15": "La composizione a diagonali serrate e il pathos fisico condiviso tra Giuditta e l'ancella, in dialogo critico con il precedente caravaggesco, hanno alimentato una storiografia oscillante tra lettura biografica post-processuale (il processo Tassi del 1612) e riconsiderazione strettamente professionale della cifra stilistica dell'artista nell'ambito della committenza granducale fiorentina.",
+        "d40": "La Giuditta che decapita Oloferne (olio su tela, 199 × 162 cm, ca. 1620), eseguita da Artemisia Gentileschi durante il soggiorno fiorentino presso la corte di Cosimo II de' Medici, rielabora criticamente il precedente iconografico caravaggesco del medesimo soggetto, oggi a Capodimonte, radicalizzandone la componente di sforzo fisico condiviso tra le due protagoniste femminili. La composizione, organizzata su diagonali serrate che convergono sul punto di intersezione della spada, e il trattamento tenebrista della luce, con il volto di Oloferne parzialmente in ombra a intensificare il pathos della scena, dimostrano una piena assimilazione del linguaggio caravaggesco filtrato attraverso l'esperienza dell'artista nell'ambiente artistico romano e successivamente in quello fiorentino. La ricezione critica dell'opera è stata a lungo condizionata da una lettura biografista, che ha posto in relazione diretta la violenza rappresentata con il processo per stupro subito dall'artista nel 1612 ad opera di Agostino Tassi, collega del padre Orazio Gentileschi; tale lettura, sebbene suggestiva, è stata negli studi più recenti ridimensionata a favore di un'analisi che valorizza la piena padronanza tecnica e la strategia professionale dell'artista nel proporsi come pittrice di soggetti storici e biblici di grande formato, genere tradizionalmente riservato ai colleghi maschi."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "ca. 1620",
+      "sala": "89",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg/960px-Judit_decapitando_a_Holofernes%2C_por_Artemisia_Gentileschi.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto",
+    "objectId": "rembrandt-autoritratto-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Rembrandt si dipinge da vecchio, con un viso stanco ma pieno di saggezza.",
+        "d15": "In questo autoritratto Rembrandt si dipinge da anziano, un anno prima di morire. Il suo viso è segnato dal tempo, ma dipinto con una libertà e una sincerità straordinarie, senza nessuna vanità o abbellimento.",
+        "d40": "Questo è uno degli ultimissimi autoritratti che il grande pittore olandese Rembrandt dipinse di sé stesso, realizzato quando ormai era anziano e povero, un anno prima della sua morte. A differenza di tanti altri ritratti dell'epoca, dove le persone si facevano dipingere sempre più belle e giovani di quanto fossero davvero, qui Rembrandt si mostra esattamente come è: un uomo anziano, con il viso segnato da rughe profonde, gli occhi stanchi ma ancora vivissimi e penetranti. La pennellata è libera, quasi grezza, con colori applicati a volte direttamente con il pollice o con il manico del pennello, invece che con la punta morbida delle setole. Questo modo di dipingere, che sembra quasi incompiuto se visto da vicino, crea però da lontano un effetto di straordinaria vita e presenza. Rembrandt aveva perso quasi tutto nella sua vita: la moglie, i figli, la ricchezza, ma non aveva mai smesso di dipingere sé stesso con assoluta onestà."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1668-1669",
+      "sala": "44",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg/960px-Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto",
+    "objectId": "rembrandt-autoritratto-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Ultimo autoritratto di Rembrandt, di straordinaria introspezione e libertà pittorica.",
+        "d15": "Uno degli ultimi autoritratti di Rembrandt, dipinto l'anno prima della morte, di straordinaria introspezione e libertà pittorica nella resa della materia. La pennellata densa e materica, applicata anche con la spatola, rinuncia a ogni idealizzazione per restituire con sincerità il volto segnato dall'età e dalle difficoltà della vita.",
+        "d40": "Dipinto nel 1668-1669, pochi mesi prima della morte dell'artista, questo autoritratto rappresenta il culmine della ricerca introspettiva che Rembrandt condusse su sé stesso per oltre quarant'anni, attraverso una serie di circa cento tra dipinti, incisioni e disegni. La tecnica pittorica, ormai libera da ogni convenzione accademica, applica il colore in spessi strati materici, talvolta stesi con la spatola o con le dita, creando una superficie ruvida e vibrante che a distanza ravvicinata appare quasi astratta, ma che da una giusta distanza restituisce con straordinaria efficacia la carne viva del volto anziano. Rembrandt, ormai in declino economico e sociale dopo la bancarotta del 1656 e la morte di quasi tutta la sua famiglia, rifiuta ogni abbellimento vanitoso, mostrando con crudo realismo le rughe, il naso arrossato e lo sguardo stanco ma ancora acutissimo, in quella che la critica ha definito una delle più alte testimonianze di sincerità introspettiva nella storia della ritrattistica occidentale."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1668-1669",
+      "sala": "44",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg/960px-Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Autoritratto",
+    "objectId": "rembrandt-autoritratto-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Culmine tardo della serie autoritrattistica, con materia pittorica come veicolo di verità esistenziale.",
+        "d15": "L'applicazione materica del colore, stesa con spatola e dita in spessi strati che a distanza ricompongono la carne viva del volto, costituisce nella produzione tarda di Rembrandt lo strumento tecnico attraverso cui la superficie pittorica stessa diviene sede di un'indagine esistenziale priva di ogni mediazione idealizzante o sociale.",
+        "d40": "L'Autoritratto del 1668-1669, databile a pochi mesi dalla morte dell'artista, rappresenta la conclusione di un percorso di autoanalisi pittorica sviluppato da Rembrandt lungo oltre quattro decenni attraverso una serie di circa cento tra dipinti, incisioni e disegni, senza equivalenti nella storia dell'arte occidentale per continuità e radicalità introspettiva. La tecnica esecutiva, giunta in questa fase tarda a una libertà quasi anticipatrice della pittura materica novecentesca, applica il colore in spessi impasti stesi con la spatola e talvolta direttamente con le dita, costruendo una superficie che, se osservata da vicino, si scompone in una texture quasi astratta, per ricomporsi in un'immagine di sconvolgente vitalità fisiognomica alla giusta distanza di visione. Il contesto biografico, segnato dalla bancarotta del 1656, dalla vendita all'asta dei suoi beni e dalla morte della compagna Hendrickje e del figlio Titus, informa la lettura tradizionale dell'opera come testimonianza di un'accettazione stoica del declino, sebbene la critica più recente inviti a considerare anche la dimensione strettamente professionale e commerciale degli autoritratti tardi, spesso realizzati per un mercato collezionistico che ne apprezzava proprio la cifra stilistica libera e sperimentale."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1668-1669",
+      "sala": "44",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg/960px-Rembrandt%2C_Self-portrait%2C_1668%E2%80%931669%2C_Galleria_degli_Uffizi%2C_Florence.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna delle Arpie",
+    "objectId": "madonna-arpie-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria è in piedi su un piedistallo con Gesù in braccio, tra due santi e strane figure alla base.",
+        "d15": "Andrea del Sarto dipinge Maria in trono con Gesù bambino, affiancata da due santi. Alla base del piedistallo ci sono delle figure scolpite scambiate per arpie, mostri mitologici, che danno il nome a questo dipinto molto famoso a Firenze.",
+        "d40": "In questo grande dipinto vediamo Maria in piedi su un alto piedistallo di pietra, con il piccolo Gesù in braccio, mentre a destra e sinistra due santi la guardano con devozione: san Francesco e san Giovanni Evangelista. Ma la parte più curiosa del quadro si trova proprio alla base del piedistallo, dove sono scolpite delle strane figure con corpo di uccello e volto umano. Per secoli tutti hanno pensato che si trattasse di arpie, i mostri della mitologia greca, e per questo il quadro ha preso il soprannome di 'Madonna delle Arpie', anche se in realtà secondo alcuni studiosi quelle figure potrebbero rappresentare qualcos'altro, forse locuste bibliche. Il pittore, Andrea del Sarto, era considerato ai suoi tempi 'il pittore senza errori' per la sua tecnica perfetta, ed era molto ammirato anche dai giovani artisti che in quegli anni stavano diventando famosi a Firenze."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1517",
+      "sala": "26",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg/960px-Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna delle Arpie",
+    "objectId": "madonna-arpie-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Pala d'altare del classicismo fiorentino, nota per le figure alla base scambiate per arpie.",
+        "d15": "Pala d'altare che prende il nome dalle figure alla base del piedistallo, scambiate erroneamente per arpie; capolavoro del classicismo fiorentino del primo Cinquecento. Andrea del Sarto, detto 'il pittore senza errori', raffigura la Vergine con Gesù tra san Francesco e san Giovanni Evangelista.",
+        "d40": "Firmata e datata 1517, la Madonna delle Arpie fu dipinta da Andrea del Sarto per il convento fiorentino di San Francesco dei Macci ed è considerata il capolavoro della sua piena maturità classicista. Il soprannome popolare deriva dalle figure a corpo di uccello e volto umano scolpite sul piedistallo su cui poggia la Vergine, tradizionalmente identificate con le arpie della mitologia greca, sebbene un'interpretazione filologica più recente le abbia messe in relazione con le locuste descritte nell'Apocalisse di Giovanni, coerentemente con la presenza dell'Evangelista tra le figure sacre. La composizione piramidale, equilibrata e di grande compostezza classica, unita a un uso sapiente dello sfumato di ascendenza leonardesca e a una tavolozza cromatica raffinata, valsero all'artista l'appellativo, tramandato da Vasari, di 'pittore senza errori', per la perfezione tecnica priva di sbavature che caratterizzò l'intera sua produzione."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1517",
+      "sala": "26",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg/960px-Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna delle Arpie",
+    "objectId": "madonna-arpie-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Sacra conversazione del classicismo andreasartiano, tra esegesi apocalittica e sprezzatura tecnica vasariana.",
+        "d15": "La rilettura filologica delle figure basamentali come locuste apocalittiche anziché arpie classiche, unita all'equilibrio piramidale di ascendenza leonardesca e alla sprezzatura tecnica celebrata da Vasari, colloca l'opera al vertice della sacra conversazione fiorentina del primo Cinquecento, in un momento di sintesi tra classicismo raffaellesco e primi accenni di tensione manierista.",
+        "d40": "La Madonna delle Arpie (olio su tavola, 208 × 178 cm, firmata e datata 1517), realizzata da Andrea del Sarto per il convento di San Francesco dei Macci a Firenze, costituisce il vertice della fase classicista dell'artista, in equilibrio tra l'assimilazione della compostezza raffaellesca e i primi segnali di una tensione formale che preluderà agli sviluppi manieristi della generazione successiva, tra cui si formarono nella sua bottega Pontormo e Rosso Fiorentino. Il soprannome tradizionale, derivato dalle figure a corpo aviario e volto umano scolpite sul plinto del piedistallo, tradizionalmente lette come arpie di ascendenza dantesca o classica, è stato riconsiderato dalla critica filologica novecentesca (in particolare da Sydney Freedberg) come possibile riferimento alle locuste demoniache descritte nell'Apocalisse di Giovanni (9, 3-10), lettura coerente con la presenza iconografica di san Giovanni Evangelista tra le figure sacre affiancate alla Vergine, insieme a san Francesco. La perfezione tecnica dell'esecuzione, priva di pentimenti visibili e caratterizzata da una sprezzatura coloristica already alla maniera vasariana definita 'senza errori', valse all'artista una fama contemporanea straordinaria, tale da essere indicato da Michelangelo stesso, secondo l'aneddoto riportato da Vasari, come il pittore da temere di più tra i giovani fiorentini attivi a Roma."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1517",
+      "sala": "26",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg/960px-Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
   }

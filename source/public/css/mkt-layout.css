@@ -56,7 +56,7 @@
 }
 
 /* ── Detail scroll box ── */
-.detail-scroll-box { max-height: calc(100vh - 380px); overflow-y: auto; padding-right: 4px; }
+.detail-scroll-box { padding-right: 4px; }
 
 /* ── Dashboard stats ── */
 .quick-stats { display: flex; gap: 30px; }

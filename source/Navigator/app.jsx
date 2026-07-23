@@ -325,7 +325,7 @@ function App() {
               {filteredMusei.map(m => (
                 <button key={m.codiceIsil} className="picker-card" onClick={() => selectMuseo(m.codiceIsil)}>
                   {m.immagineCopertina
-                    ? <img src={m.immagineCopertina} alt={m.nome} className="picker-card-img" />
+                    ? <img loading="lazy" src={m.immagineCopertina} alt={m.nome} className="picker-card-img" />
                     : <div className="picker-card-placeholder"><span>{m.nome[0]}</span></div>
                   }
                   <div className="picker-card-body">

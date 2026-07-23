@@ -57,7 +57,7 @@ function _renderAutoreMuseiGrid(lista) {
              onclick="showAutoreMuseoDetail('${m.codiceIsil}')">
             <div style="position:relative;flex-shrink:0;height:200px;">
                 ${m.immagineCopertina
-                    ? `<img class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
+                    ? `<img loading="lazy" class="museo-card-img" src="${m.immagineCopertina}" alt="${m.nome}"
                            onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                        <div class="museo-card-img-placeholder"
                             style="display:none;position:absolute;inset:0;">
@@ -153,7 +153,7 @@ window.showAutoreTab = async function (type, codiceIsil, btn) {
                 <div class="opera-read-card scroll-card-clickable"
                      onclick="showAutoreOperaItemsInMusei(${i}, '${codiceIsil}')">
                     ${op.immagine
-                        ? `<img src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
+                        ? `<img loading="lazy" src="${op.immagine}" alt="${op.operaId}" onerror="this.style.display='none'">`
                         : ''}
                     <h3>${op.operaId}</h3>
                     ${op.autore    ? `<p class="opera-meta"><i class="fa-solid fa-palette"></i> ${op.autore}</p>` : ''}

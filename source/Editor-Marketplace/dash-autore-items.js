@@ -89,7 +89,7 @@ function _renderAutoreItemsList(lista) {
         <div class="item-read-card">
             <div class="item-card-clickable" onclick="_showAutoreItemView('${it._id}')">
                 ${it.image
-                    ? `<img src="${it.image}" alt="item" onerror="this.style.display='none'">`
+                    ? `<img loading="lazy" src="${it.image}" alt="item" onerror="this.style.display='none'">`
                     : ''}
                 <h3 style="margin:0 0 4px;overflow-wrap:break-word;word-break:break-word;">${itemTitle(it)}</h3>
                 <p class="opera-meta" style="overflow-wrap:break-word;word-break:break-word;"><i class="fa-solid fa-building-columns"></i> ${it.museumId || '—'}</p>
@@ -146,7 +146,7 @@ window._showAutoreItemView = function (itemId) {
                 <i class="fa-solid fa-chevron-left"></i>
             </button>
             <div class="item-view-card glass-card p-5">
-                ${it.image ? `<img src="${it.image}" alt="item" class="item-view-img">` : ''}
+                ${it.image ? `<img loading="lazy" src="${it.image}" alt="item" class="item-view-img">` : ''}
                 <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
                     ${itemTypeBadge(it)}
                     ${it.pubblica
