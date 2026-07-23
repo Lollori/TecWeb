@@ -9,11 +9,10 @@
 
 
 ## Nome del gruppo: 
-Pizza Capricciosa
+Pizza Capricciosa 
 
 
-## Membri del gruppo 
-_(ripetere le righe seguenti secondo necessità)_  
+## Membri del gruppo:  
 
 * Nome e cognome: Lorenzo Ricci, matricola: 0001044327, mail: lorenzo.ricci27@studio.unibo.it
 * Nome e cognome: Maria Paola Klein Serini, matricola:  0001069177, mail: maria.kleinserini@studio.unibo.it
@@ -45,21 +44,21 @@ _ Al massimo 15 giorni dopo la data di sottomissione del file README_
 * _creare una directory source all'interno della directory html_
 * _Cambiare i permessi di accesso a questi file a 755 e 644_
 * _Creare una directory per applicazione più una directory per la applicazione server-side_
-* _Descrivere qui l'organizzazione interna di queste directory: nella root sono presenti il README e index.js (punto di ingresso dell'applicazione), all'interno di source sono presenti: Editor-Marketplace 
+* _Descrivere qui l'organizzazione interna di queste directory: nella root sono presenti il README e index.js (punto di ingresso dell'applicazione), all'interno di source sono presenti: Editor-Marketplace (che contiene i vari moduli JS per l'applicazione Editor-Marketplace); Navigator (che contiene i componenti JSX React per l'applicazione Navigator); scripts (per i moduli JS del backend); public (che contiene le cartelle con i file CSS, i dati in formato JSON, le mappe GeoJSON e immagini come il favicon e quelle presenti nel menu' principale)
 
   
-## Tecnologie utilizzate
-_Inserire qui il linguaggio utilizzato, il o i framework utilizzati e ogni pacchetto NPM installato a parte quelli preinstallati_
+## Tecnologie utilizzate:
 
-#### Server-side: Node.js, Express
+#### Server-side: Node.js, Express, MongoDB, EdgeTTS, CORS
 
-#### Applicazione marketplace: HTML, CSS, JavaScript (vanilla)
+#### Applicazione marketplace: HTML, CSS (Bootstrap), JavaScript (vanilla)
 
-#### Applicazione navigator: CSS, JavaScript (React JSX per la precisione)
+#### Applicazione navigator: CSS (Bootstrap), JavaScript (React JSX per la precisione), HTML
 
 
 ## Contributo individuale
-#### Lorenzo Ricci: -Implementazione della pagina principale dell'editor-marketplace, creazione di cards per la gestione di musei, opere e items + grafica coerente col menu' principale dell'applicazione
+#### Lorenzo Ricci: 
+-Implementazione della pagina principale dell'editor-marketplace, creazione di cards per la gestione di musei, opere e items + grafica coerente col menu' principale dell'applicazione
 -Implementazione della pagina principale del navigator e implementazione delle sessioni per gestire le visite coordinate tra insegnanti e studenti + grafica coerente col menu' principale dell'applicazione 
 -Implementazione nell'editor-marketplace del form di creazione delle visite, creato per aggiungere item, assegnare nomi mnemonici e nomi univoci, possibilita' di pubblicarle sul marketplace (a una determinata cifra) o tenerle private (con Leonardo) 
 -Implementazione di sezione per aggiungere items alle varie opere
@@ -68,7 +67,9 @@ _Inserire qui il linguaggio utilizzato, il o i framework utilizzati e ogni pacch
 -Implementazione della chat e renderizzazione di immagini, items e mappe all'interno delle visite (con appositi bottoni)
 -Implementazione della schermata di riordinamento degli items di una visita prima di farla partire all'interno del navigator
 
-#### Maria Paola Klein Serini: 1. Login & Registrazione
+
+#### Maria Paola Klein Serini: 
+1. Login & Registrazione
     * Sviluppo completo del sistema di login e registrazione (sia lato backend che frontend).
 
 2. Marketplace (Editor) & sezione dedicata all’utente admin
@@ -90,6 +91,7 @@ _Inserire qui il linguaggio utilizzato, il o i framework utilizzati e ogni pacch
     * Definizione della grafica generale (navbar, stili, menu a tendina per l'aggiunta di contenuti) e inserimento di pop-up coerenti con il design del sito.
     * Creazione della schermata home
     * Scrittura del file CSS iniziale per lo stile della schermata home
+
 
 #### Leonardo Rocco Monaco: 
 1. Sezione "Visite" form CRUD per visite guidate con schema Mongoose Visita (nome, logistica, quiz, opereCount, codiceIsil) (con Lorenzo)
