@@ -20,6 +20,17 @@ async function _saveQuiz(visitaId, domande) {
     }
 }
 
+function _isVisitaOwnedByMe(v) {
+    if (v.autoreId === SESSION.userId) return true;
+    if (Array.isArray(v.acquirentiIds) && v.acquirentiIds.includes(SESSION.userId)) return true;
+    let localPurchases = [];
+    try {
+        const raw = JSON.parse(localStorage.getItem('purchases_' + SESSION.userId) || '{"items":[],"visite":[]}');
+        localPurchases = raw.visite || [];
+    } catch {}
+    return localPurchases.includes(v._id);
+}
+
 async function initCuratoreQuiz() {
     const section = document.getElementById('section-curatore-quiz');
 
@@ -41,7 +52,7 @@ async function initCuratoreQuiz() {
     section.innerHTML = `
         <div class="mb-5">
             <h1 class="page-title">Gestione Quiz</h1>
-            <p class="text-muted mb-0">Crea domande a scelta multipla per il quiz finale di una visita Navigator — qualsiasi visita, non solo le tue.</p>
+            <p class="text-muted mb-0">Crea domande a scelta multipla per il quiz finale di una tua visita Navigator: una visita che hai creato tu, o che hai acquistato nel marketplace.</p>
         </div>
         <div class="glass-card p-5">
             <div class="mb-4">
@@ -54,7 +65,7 @@ async function initCuratoreQuiz() {
         </div>`;
 
     let allVisite = [];
-    let museiMap   = {};
+    let museiMap  = {};
     try {
         const [rVisite, rMusei] = await Promise.all([
             fetch('/api/visite'),
@@ -64,12 +75,14 @@ async function initCuratoreQuiz() {
         if (dVisite.ok) allVisite = dVisite.data;
         if (dMusei.ok) dMusei.data.forEach(m => { museiMap[m.codiceIsil] = m.nome; });
     } catch {}
+
+    allVisite = allVisite.filter(v => Array.isArray(v.itemIds) && v.itemIds.length > 0 && _isVisitaOwnedByMe(v));
     quizCurrentVisite = allVisite;
 
     const sel = document.getElementById('quizSelectVisita');
     if (!sel) return;
     if (!allVisite.length) {
-        sel.innerHTML = '<option value="">Nessuna visita disponibile sulla piattaforma</option>';
+        sel.innerHTML = '<option value="">Nessuna visita disponibile: crea o acquista prima una visita</option>';
     } else {
         sel.innerHTML = '<option value="">— Seleziona una visita —</option>' +
             allVisite.map(v => {
