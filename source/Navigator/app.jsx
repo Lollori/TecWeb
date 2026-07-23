@@ -301,6 +301,8 @@ function App() {
                 <div className="search-box-container" style={{ flex: 1 }}>
                   <i className="fa-solid fa-magnifying-glass search-icon" />
                   <input
+                    id="nav-search-musei"
+                    name="search-musei"
                     className="search-input"
                     type="text"
                     placeholder="Cerca museo o città…"

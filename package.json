@@ -1,7 +1,12 @@
 {
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "prestart": "npm run build:navigator",
+    "predev": "npm run build:navigator",
+    "build": "npm run build:navigator",
+    "build:navigator": "babel source/Navigator --extensions .jsx --out-dir source/Navigator --out-file-extension .js",
+    "build:navigator:watch": "npm run build:navigator -- --watch"
   },
   "nodemonConfig": {
     "legacyWatch": true
@@ -14,5 +19,10 @@
     "mongodb": "^4.5.0",
     "mongoose": "^7.1.0",
     "npm": "^9.6.6"
+  },
+  "devDependencies": {
+    "@babel/cli": "^8.0.4",
+    "@babel/core": "^8.0.1",
+    "@babel/preset-react": "^8.0.1"
   }
 }

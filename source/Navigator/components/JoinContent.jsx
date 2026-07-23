@@ -41,6 +41,8 @@ function JoinContent({ onJoined }) {
       <p>Inserisci il codice stanza fornito dal docente</p>
       <div className="join-card">
         <input
+          id="join-code"
+          name="join-code"
           type="text"
           className={`join-code-input${joinError ? ' join-code-input--error' : ''}`}
           placeholder='es. "Fenice rossa"'
