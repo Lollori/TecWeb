@@ -164,15 +164,15 @@ function toneEditorHtml(editorId, prefix, toni) {
         <div class="tone-editor-panel${g.key === defaultKey ? ' active' : ''}" data-tone-panel="${g.key}">
             <div class="tone-editor-fields">
                 <div class="tone-editor-field">
-                    <label>3 secondi</label>
+                    <label for="${prefix}${g.label}3">3 secondi</label>
                     <textarea id="${prefix}${g.label}3" placeholder="Versione brevissima…">${t.d3 || ''}</textarea>
                 </div>
                 <div class="tone-editor-field">
-                    <label>15 secondi</label>
+                    <label for="${prefix}${g.label}15">15 secondi</label>
                     <textarea id="${prefix}${g.label}15" placeholder="Versione media…">${t.d15 || ''}</textarea>
                 </div>
                 <div class="tone-editor-field">
-                    <label>40 secondi</label>
+                    <label for="${prefix}${g.label}40">40 secondi</label>
                     <textarea id="${prefix}${g.label}40" placeholder="Versione estesa…">${t.d40 || ''}</textarea>
                 </div>
             </div>

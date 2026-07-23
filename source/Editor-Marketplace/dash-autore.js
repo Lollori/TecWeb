@@ -317,28 +317,28 @@ window._showAutoreVisitaForm = async function (visitaId) {
         <div class="glass-card p-5">
             <form id="visitaFormAutore" class="row g-4">
                 <div class="col-12">
-                    <label class="custom-label">Museo *</label>
+                    <label class="custom-label" for="vfMuseo">Museo *</label>
                     <select id="vfMuseo" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Seleziona museo —</option>
                     </select>
                     ${isEdit ? '<p style="font-size:0.78rem;color:#94a3b8;margin:6px 0 0;">Il museo non è modificabile: crea una nuova visita per cambiarlo.</p>' : ''}
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Nome Visita *</label>
+                    <label class="custom-label" for="vfNomeVisita">Nome Visita *</label>
                     <input type="text" id="vfNomeVisita" class="custom-input"
                            placeholder="es. Rinascimento Fiorentino" required value="${(visita?.nomeVisita || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Nome Mnemonico</label>
+                    <label class="custom-label" for="vfNomeMnemonico">Nome Mnemonico</label>
                     <input type="text" id="vfNomeMnemonico" class="custom-input"
                            placeholder="es. uffizi_rinascimento" value="${(visita?.nomeMnemonico || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    <label class="custom-label" for="vfTagsField">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('vfTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Items da includere nella visita</label>
+                    <span class="custom-label">Items da includere nella visita</span>
                     <div class="detail-tabs mb-3" style="margin-top:8px;">
                         <button type="button" class="tab-btn active" id="vfTabMiei"
                                 onclick="setVfItemTab('miei',this)">
@@ -360,7 +360,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
-                    <label class="custom-label" style="margin:0;">Visibilità</label>
+                    <span class="custom-label" style="margin:0;">Visibilità</span>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
                          onclick="toggleVfVisibilita()">
                         <div id="vfToggleTrack" style="width:54px;height:28px;border-radius:14px;background:#cbd5e1;position:relative;transition:background .2s;flex-shrink:0;">
@@ -370,7 +370,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     </div>
                 </div>
                 <div class="col-md-4" id="vfPrezzoRow" style="display:none;">
-                    <label class="custom-label">Prezzo (€)</label>
+                    <label class="custom-label" for="vfPrezzo">Prezzo (€)</label>
                     <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="${visita?.prezzo || 0}" placeholder="0.00">
                 </div>
                 ` : `

@@ -197,13 +197,13 @@ window._showAutoreItemForm = async function (itemId) {
         <div class="glass-card p-5">
             <form id="itemFormAutore" class="row g-4">
                 <div class="col-md-6">
-                    <label class="custom-label">Museo *</label>
+                    <label class="custom-label" for="ifMuseo">Museo *</label>
                     <select id="ifMuseo" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Seleziona museo —</option>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Tipo di contenuto *</label>
+                    <span class="custom-label">Tipo di contenuto *</span>
                     <div class="content-type-toggle" id="ifContentTypeToggle">
                         <button type="button" class="content-type-btn" data-type="opera"
                                 ${isEdit ? 'disabled' : `onclick="setIfContentType('opera')"`}>
@@ -220,13 +220,13 @@ window._showAutoreItemForm = async function (itemId) {
                     <i class="fa-solid fa-circle-info me-1"></i>Un item "Indipendente" non è legato a un'opera specifica: usalo per movimenti culturali, stili, artisti, eventi storici e simili.
                 </p>
                 <div class="col-md-6" id="ifOperaWrap">
-                    <label class="custom-label">Opera *</label>
+                    <label class="custom-label" for="ifOpera">Opera *</label>
                     <select id="ifOpera" class="custom-input" required ${isEdit ? 'disabled' : ''}>
                         <option value="">— Prima seleziona un museo —</option>
                     </select>
                 </div>
                 <div class="col-md-6" id="ifTopicWrap" style="display:none;">
-                    <label class="custom-label">Argomento *</label>
+                    <label class="custom-label" for="ifTopic">Argomento *</label>
                     <input type="text" id="ifTopic" class="custom-input"
                            placeholder="es. Cubismo, Rinascimento fiorentino, Caravaggio…"
                            value="${(item?.topic || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
@@ -237,21 +237,21 @@ window._showAutoreItemForm = async function (itemId) {
                 </p>
                 ${toneEditorHtml('ifToneEditor', 'if', item?.toni)}
                 <div class="col-md-6">
-                    <label class="custom-label">ID Oggetto</label>
+                    <label class="custom-label" for="ifObjectId">ID Oggetto</label>
                     <input type="text" id="ifObjectId" class="custom-input"
                            placeholder="Generato automaticamente se vuoto" value="${(item?.objectId || '').replace(/"/g, '&quot;')}" ${isEdit ? 'disabled' : ''}>
                 </div>
                 <div class="col-md-6" id="ifImmagineWrap" style="display:none;">
-                    <label class="custom-label">URL Immagine</label>
+                    <label class="custom-label" for="ifImmagine">URL Immagine</label>
                     <input type="url" id="ifImmagine" class="custom-input" placeholder="https://esempio.com/immagine.jpg" value="${(item?.image || '').replace(/"/g, '&quot;')}">
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    <label class="custom-label" for="ifTagsField">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('ifTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 ${SESSION.role !== 'visitatore' ? `
                 <div class="col-12 d-flex align-items-center gap-3">
-                    <label class="custom-label" style="margin:0;">Visibilità</label>
+                    <span class="custom-label" style="margin:0;">Visibilità</span>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
                          onclick="toggleIfVisibilita()">
                         <div id="ifToggleTrack" style="width:54px;height:28px;border-radius:14px;background:#cbd5e1;position:relative;transition:background .2s;flex-shrink:0;">
@@ -261,7 +261,7 @@ window._showAutoreItemForm = async function (itemId) {
                     </div>
                 </div>
                 <div class="col-md-4" id="ifPrezzoRow" style="display:none;">
-                    <label class="custom-label">Prezzo (€)</label>
+                    <label class="custom-label" for="ifPrezzo">Prezzo (€)</label>
                     <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="${item?.metadata?.prezzo || 0}" placeholder="0.00">
                 </div>
                 ` : `

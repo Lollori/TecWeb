@@ -56,7 +56,7 @@ async function initCuratoreQuiz() {
         </div>
         <div class="glass-card p-5">
             <div class="mb-4">
-                <label class="custom-label">Seleziona la visita</label>
+                <label class="custom-label" for="quizSelectVisita">Seleziona la visita</label>
                 <select id="quizSelectVisita" class="custom-input" onchange="onQuizVisitaChange()">
                     <option value="">— Seleziona una visita —</option>
                 </select>
@@ -172,18 +172,18 @@ function _renderQuizEditor() {
         </h5>
         <div class="row g-3">
             <div class="col-12">
-                <label class="custom-label">Testo della domanda *</label>
+                <label class="custom-label" for="qfTesto">Testo della domanda *</label>
                 <input type="text" id="qfTesto" class="custom-input"
                        placeholder="Es: Chi ha dipinto La Primavera?">
             </div>
             ${['A','B','C','D'].map((letter, i) => `
             <div class="col-md-6">
-                <label class="custom-label">Risposta ${letter} *</label>
+                <label class="custom-label" for="qfOpzione${i}">Risposta ${letter} *</label>
                 <input type="text" id="qfOpzione${i}" class="custom-input"
                        placeholder="Opzione ${letter}…">
             </div>`).join('')}
             <div class="col-12">
-                <label class="custom-label">Risposta corretta *</label>
+                <span class="custom-label">Risposta corretta *</span>
                 <div class="d-flex gap-3 flex-wrap mt-1">
                     ${['A','B','C','D'].map((letter, i) => `
                     <label style="display:flex;align-items:center;gap:8px;cursor:pointer;

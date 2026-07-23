@@ -10,7 +10,7 @@ async function initAdminNavigator() {
         <div class="glass-card p-4">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
-                    <label class="custom-label">Museo da esportare</label>
+                    <label class="custom-label" for="navMuseoSelect">Museo da esportare</label>
                     <select id="navMuseoSelect" class="custom-input" onchange="onNavMuseoChange()">
                         <option value="">— scegli un museo —</option>
                     </select>

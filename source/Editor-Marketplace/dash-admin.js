@@ -195,18 +195,18 @@ async function initAdminMusei() {
         <div id="adminMuseiFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Città</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterMuseiCitta">Città</label>
                     <select id="filterMuseiCitta" class="custom-input" style="padding:7px 12px;" onchange="filterAdminMusei()">
                         <option value="">Tutte le città</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Codice ISIL</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterMuseiIsil">Codice ISIL</label>
                     <input type="text" id="filterMuseiIsil" class="custom-input" style="padding:7px 12px;"
                            placeholder="Es. IT-RM001" oninput="filterAdminMusei()">
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Curatore (ID)</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterMuseiCuratore">Curatore (ID)</label>
                     <select id="filterMuseiCuratore" class="custom-input" style="padding:7px 12px;" onchange="filterAdminMusei()">
                         <option value="">Tutti i curatori</option>
                     </select>
@@ -401,27 +401,27 @@ window.adminEditMuseo = function (codiceIsil) {
         <div class="glass-card p-5 mt-4">
             <form id="adminMuseoForm" class="row g-4">
                 <div class="col-md-6">
-                    <label class="custom-label">Nome *</label>
+                    <label class="custom-label" for="amNome">Nome *</label>
                     <input type="text" id="amNome" class="custom-input" value="${m.nome || ''}" required>
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Città *</label>
+                    <label class="custom-label" for="amCitta">Città *</label>
                     <input type="text" id="amCitta" class="custom-input" value="${m.citta || ''}" required>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Indirizzo</label>
+                    <label class="custom-label" for="amIndirizzo">Indirizzo</label>
                     <input type="text" id="amIndirizzo" class="custom-input" value="${m.indirizzo || ''}">
                 </div>
                 <div class="col-md-8">
-                    <label class="custom-label">URL Copertina</label>
+                    <label class="custom-label" for="amImmagine">URL Copertina</label>
                     <input type="url" id="amImmagine" class="custom-input" value="${m.immagineCopertina || ''}">
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label">Codice ISIL</label>
-                    <input type="text" class="custom-input" value="${m.codiceIsil}" disabled>
+                    <label class="custom-label" for="amCodiceIsil">Codice ISIL</label>
+                    <input type="text" id="amCodiceIsil" class="custom-input" value="${m.codiceIsil}" disabled>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Descrizione</label>
+                    <label class="custom-label" for="amDescrizione">Descrizione</label>
                     <textarea id="amDescrizione" class="custom-input" rows="3">${m.descrizioneBreve || ''}</textarea>
                 </div>
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3" style="border-top:1px solid #e2e8f0;">
@@ -496,13 +496,13 @@ async function initAdminOpere() {
         <div id="adminOpereFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-6">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Tipo</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterOpereTipo">Tipo</label>
                     <select id="filterOpereTipo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
                         <option value="">Tutti i tipi</option>
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ISIL)</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterOpereMuseo">Museo (ISIL)</label>
                     <select id="filterOpereMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminOpere()">
                         <option value="">Tutti i musei</option>
                     </select>
@@ -698,11 +698,11 @@ window.adminEditOpera = function (id) {
         <div class="glass-card p-5 mt-4">
             <form id="adminOperaForm" class="row g-4">
                 <div class="col-md-8">
-                    <label class="custom-label">Titolo / ID Opera *</label>
+                    <label class="custom-label" for="aoOperaId">Titolo / ID Opera *</label>
                     <input type="text" id="aoOperaId" class="custom-input" value="${op.operaId || ''}" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label">Tipo *</label>
+                    <label class="custom-label" for="aoTipo">Tipo *</label>
                     <select id="aoTipo" class="custom-input" required>
                         <option value="quadro"  ${op.tipo === 'quadro'  ? 'selected' : ''}>Quadro</option>
                         <option value="statua"  ${op.tipo === 'statua'  ? 'selected' : ''}>Statua</option>
@@ -710,15 +710,15 @@ window.adminEditOpera = function (id) {
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Autore</label>
+                    <label class="custom-label" for="aoAutore">Autore</label>
                     <input type="text" id="aoAutore" class="custom-input" value="${op.autore || ''}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Datazione</label>
+                    <label class="custom-label" for="aoDatazione">Datazione</label>
                     <input type="text" id="aoDatazione" class="custom-input" value="${op.datazione || ''}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Linguaggio</label>
+                    <label class="custom-label" for="aoLinguaggio">Linguaggio</label>
                     <select id="aoLinguaggio" class="custom-input">
                         ${['semplice','infantile','medio','specialistico'].map(v =>
                             `<option value="${v}" ${op.linguaggio === v ? 'selected' : ''}>${v}</option>`
@@ -726,7 +726,7 @@ window.adminEditOpera = function (id) {
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Lunghezza</label>
+                    <label class="custom-label" for="aoLunghezza">Lunghezza</label>
                     <select id="aoLunghezza" class="custom-input">
                         ${[['15s','15 secondi'],['1min','1 minuto'],['4min','4 minuti']].map(([v,l]) =>
                             `<option value="${v}" ${op.lunghezza === v ? 'selected' : ''}>${l}</option>`
@@ -734,19 +734,19 @@ window.adminEditOpera = function (id) {
                     </select>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">URL Immagine</label>
+                    <label class="custom-label" for="aoImmagine">URL Immagine</label>
                     <input type="url" id="aoImmagine" class="custom-input" value="${op.immagine || ''}">
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Descrizione</label>
+                    <label class="custom-label" for="aoDescrizione">Descrizione</label>
                     <textarea id="aoDescrizione" class="custom-input" rows="3">${op.descrizione || ''}</textarea>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Testo Audioguida</label>
+                    <label class="custom-label" for="aoTesto">Testo Audioguida</label>
                     <textarea id="aoTesto" class="custom-input" rows="4">${op.testo || ''}</textarea>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label">Prezzo (€)</label>
+                    <label class="custom-label" for="aoPrezzo">Prezzo (€)</label>
                     <input type="number" id="aoPrezzo" class="custom-input" min="0" step="0.01" value="${op.prezzo || 0}">
                 </div>
                 <div class="col-md-8 d-flex align-items-end pb-1">

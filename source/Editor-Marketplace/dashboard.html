@@ -136,34 +136,34 @@
             </div>
             <div class="glass-card p-5">
                 <div class="mb-4">
-                    <label class="custom-label">Seleziona Museo</label>
+                    <label class="custom-label" for="selectModifica">Seleziona Museo</label>
                     <select id="selectModifica" class="custom-input">
                         <option value="">— Seleziona —</option>
                     </select>
                 </div>
                 <form id="modificaForm" style="display:none" class="row g-4">
                     <div class="col-md-6">
-                        <label class="custom-label">Nome *</label>
+                        <label class="custom-label" for="mfNome">Nome *</label>
                         <input type="text" id="mfNome" class="custom-input" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Città *</label>
+                        <label class="custom-label" for="mfCitta">Città *</label>
                         <input type="text" id="mfCitta" class="custom-input" required>
                     </div>
                     <div class="col-12">
-                        <label class="custom-label">Indirizzo</label>
+                        <label class="custom-label" for="mfIndirizzo">Indirizzo</label>
                         <input type="text" id="mfIndirizzo" class="custom-input">
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Codice ISIL</label>
+                        <label class="custom-label" for="mfCodiceIsil">Codice ISIL</label>
                         <input type="text" id="mfCodiceIsil" class="custom-input">
                     </div>
                     <div class="col-md-8">
-                        <label class="custom-label">URL Copertina</label>
+                        <label class="custom-label" for="mfImmagine">URL Copertina</label>
                         <input type="url" id="mfImmagine" class="custom-input">
                     </div>
                     <div class="col-12">
-                        <label class="custom-label">Descrizione</label>
+                        <label class="custom-label" for="mfDescrizione">Descrizione</label>
                         <textarea id="mfDescrizione" class="custom-input" rows="3"></textarea>
                     </div>
                     <div class="col-12 text-end">
@@ -183,7 +183,7 @@
             </div>
             <div class="glass-card p-5">
                 <div class="mb-4">
-                    <label class="custom-label">Museo *</label>
+                    <label class="custom-label" for="selectOpereMuseo">Museo *</label>
                     <select id="selectOpereMuseo" class="custom-input">
                         <option value="">— Seleziona museo —</option>
                     </select>
@@ -191,12 +191,12 @@
                 <form id="operaForm" class="row g-4">
                     <!-- Titolo + Tipo -->
                     <div class="col-md-8">
-                        <label class="custom-label">Titolo / ID Opera *</label>
+                        <label class="custom-label" for="ofTitolo">Titolo / ID Opera *</label>
                         <input type="text" id="ofTitolo" class="custom-input"
                                placeholder="es. La Primavera" required>
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Tipo *</label>
+                        <label class="custom-label" for="ofTipo">Tipo *</label>
                         <select id="ofTipo" class="custom-input" required>
                             <option value="">— Seleziona —</option>
                             <option value="quadro">Quadro</option>
@@ -206,36 +206,36 @@
                     </div>
                     <!-- Autore + Datazione -->
                     <div class="col-md-6">
-                        <label class="custom-label">Autore</label>
+                        <label class="custom-label" for="ofAutore">Autore</label>
                         <input type="text" id="ofAutore" class="custom-input"
                                placeholder="es. Sandro Botticelli">
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Datazione</label>
+                        <label class="custom-label" for="ofDatazione">Datazione</label>
                         <input type="text" id="ofDatazione" class="custom-input"
                                placeholder="es. 1477–1478">
                     </div>
                     <!-- Immagine -->
                     <div class="col-12">
-                        <label class="custom-label">URL Immagine</label>
+                        <label class="custom-label" for="ofImmagine">URL Immagine</label>
                         <input type="url" id="ofImmagine" class="custom-input"
                                placeholder="https://…">
                     </div>
                     <!-- Descrizione -->
                     <div class="col-12">
-                        <label class="custom-label">Descrizione</label>
+                        <label class="custom-label" for="ofDescrizione">Descrizione</label>
                         <textarea id="ofDescrizione" class="custom-input" rows="3"
                                   placeholder="Breve descrizione dell'opera…"></textarea>
                     </div>
                     <!-- Testo Audioguida -->
                     <div class="col-12">
-                        <label class="custom-label">Testo Audioguida</label>
+                        <label class="custom-label" for="ofTesto">Testo Audioguida</label>
                         <textarea id="ofTesto" class="custom-input" rows="4"
                                   placeholder="Testo completo per l'audioguida…"></textarea>
                     </div>
                     <!-- Linguaggio + Lunghezza + Licenza -->
                     <div class="col-md-4">
-                        <label class="custom-label">Linguaggio</label>
+                        <label class="custom-label" for="ofLinguaggio">Linguaggio</label>
                         <select id="ofLinguaggio" class="custom-input">
                             <option value="semplice">Semplice</option>
                             <option value="infantile">Infantile</option>
@@ -244,7 +244,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Lunghezza</label>
+                        <label class="custom-label" for="ofLunghezza">Lunghezza</label>
                         <select id="ofLunghezza" class="custom-input">
                             <option value="1min">1 minuto</option>
                             <option value="15s">15 secondi</option>
@@ -252,7 +252,7 @@
                         </select>
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Licenza</label>
+                        <label class="custom-label" for="ofLicenza">Licenza</label>
                         <select id="ofLicenza" class="custom-input">
                             <option value="gratuita">Gratuita</option>
                             <option value="premium">Premium</option>
@@ -260,31 +260,31 @@
                     </div>
                     <!-- Dimensioni -->
                     <div class="col-md-4">
-                        <label class="custom-label">Altezza (cm)</label>
+                        <label class="custom-label" for="ofAltezza">Altezza (cm)</label>
                         <input type="number" id="ofAltezza" class="custom-input" min="0" value="0">
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Larghezza (cm)</label>
+                        <label class="custom-label" for="ofLarghezza">Larghezza (cm)</label>
                         <input type="number" id="ofLarghezza" class="custom-input" min="0" value="0">
                     </div>
                     <div class="col-md-4">
-                        <label class="custom-label">Profondità (cm)</label>
+                        <label class="custom-label" for="ofProfondita">Profondità (cm)</label>
                         <input type="number" id="ofProfondita" class="custom-input" min="0" value="0">
                     </div>
                     <!-- Tecnica + Materiali -->
                     <div class="col-md-6">
-                        <label class="custom-label">Tecnica <small style="text-transform:none;color:#94a3b8;">(quadri)</small></label>
+                        <label class="custom-label" for="ofTecnica">Tecnica <small style="text-transform:none;color:#94a3b8;">(quadri)</small></label>
                         <input type="text" id="ofTecnica" class="custom-input"
                                placeholder="es. Tempera su tavola">
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Materiali <small style="text-transform:none;color:#94a3b8;">(statue)</small></label>
+                        <label class="custom-label" for="ofMateriali">Materiali <small style="text-transform:none;color:#94a3b8;">(statue)</small></label>
                         <input type="text" id="ofMateriali" class="custom-input"
                                placeholder="es. Marmo bianco">
                     </div>
                     <!-- Prezzo + Pubblica -->
                     <div class="col-md-4">
-                        <label class="custom-label">Prezzo (€)</label>
+                        <label class="custom-label" for="ofPrezzo">Prezzo (€)</label>
                         <input type="number" id="ofPrezzo" class="custom-input"
                                min="0" step="0.01" value="0">
                     </div>
@@ -322,32 +322,32 @@
             <div class="glass-card p-5">
                 <form id="nuovoMuseoForm" class="row g-4">
                     <div class="col-md-6">
-                        <label class="custom-label">Nome Istituzione *</label>
+                        <label class="custom-label" for="nmNome">Nome Istituzione *</label>
                         <input type="text" id="nmNome" class="custom-input"
                                placeholder="es. Galleria degli Uffizi" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Città *</label>
+                        <label class="custom-label" for="nmCitta">Città *</label>
                         <input type="text" id="nmCitta" class="custom-input"
                                placeholder="es. Firenze" required>
                     </div>
                     <div class="col-12">
-                        <label class="custom-label">Indirizzo Completo</label>
+                        <label class="custom-label" for="nmIndirizzo">Indirizzo Completo</label>
                         <input type="text" id="nmIndirizzo" class="custom-input"
                                placeholder="Piazzale degli Uffizi, 6, 50122 Firenze FI">
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Codice ISIL *</label>
+                        <label class="custom-label" for="nmCodiceIsil">Codice ISIL *</label>
                         <input type="text" id="nmCodiceIsil" class="custom-input"
                                placeholder="IT-FI0001" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="custom-label">Immagine Copertina (URL)</label>
+                        <label class="custom-label" for="nmImmagine">Immagine Copertina (URL)</label>
                         <input type="url" id="nmImmagine" class="custom-input"
                                placeholder="https://images.unsplash.com/…">
                     </div>
                     <div class="col-12">
-                        <label class="custom-label">Descrizione</label>
+                        <label class="custom-label" for="nmDescrizione">Descrizione</label>
                         <textarea id="nmDescrizione" class="custom-input" rows="4"
                                   placeholder="Breve descrizione del museo…"></textarea>
                     </div>

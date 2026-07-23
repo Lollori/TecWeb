@@ -82,24 +82,24 @@ async function initMarketplace() {
         <div class="glass-card p-4 mb-4">
             <div class="row g-3 align-items-end">
                 <div class="col-md-3">
-                    <label class="custom-label">Museo</label>
+                    <label class="custom-label" for="mktFilterMuseo">Museo</label>
                     <select id="mktFilterMuseo" class="custom-input" onchange="onMktMuseoChange()">
                         <option value="">Tutti i musei</option>
                     </select>
                 </div>
                 <div class="col-md-2" id="mktOperaCol">
-                    <label class="custom-label">Opera</label>
+                    <label class="custom-label" for="mktFilterOpera">Opera</label>
                     <select id="mktFilterOpera" class="custom-input" onchange="applyMktFilter()">
                         <option value="">Tutte le opere</option>
                     </select>
                 </div>
                 <div class="col-md-3">
-                    <label class="custom-label">
+                    <span class="custom-label">
                         Prezzo (€) &nbsp;—&nbsp;
                         <span id="mktRangeLabelMin" style="color:#FF007F;font-weight:600;">€0</span>
                         &nbsp;:&nbsp;
                         <span id="mktRangeLabelMax" style="color:#FF007F;font-weight:600;">∞</span>
-                    </label>
+                    </span>
                     <div style="position:relative;height:30px;margin-top:6px;">
                         <div style="position:absolute;left:0;right:0;top:13px;height:4px;background:#e2e8f0;border-radius:2px;">
                             <div id="mktRangeFill" style="position:absolute;height:100%;background:#FF007F;border-radius:2px;left:0%;right:0%;"></div>
@@ -109,7 +109,7 @@ async function initMarketplace() {
                     </div>
                 </div>
                 <div class="col-md-2" id="mktLinguaggioCol" style="display:none">
-                    <label class="custom-label">Linguaggio</label>
+                    <label class="custom-label" for="mktFilterLinguaggio">Linguaggio</label>
                     <select id="mktFilterLinguaggio" class="custom-input" onchange="applyMktFilter()">
                         <option value="">Tutti</option>
                         <option value="semplice">Semplice</option>
@@ -119,7 +119,7 @@ async function initMarketplace() {
                     </select>
                 </div>
                 <div class="col-md-2">
-                    <label class="custom-label">Cerca</label>
+                    <label class="custom-label" for="mktSearch">Cerca</label>
                     <input type="text" id="mktSearch" class="custom-input"
                            placeholder="Parola chiave…" oninput="_onMktSearchInput()">
                 </div>

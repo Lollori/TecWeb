@@ -24,13 +24,13 @@ async function initAdminVisite() {
         <div id="adminVisiteFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ISIL)</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterVisiteMuseo">Museo (ISIL)</label>
                     <select id="filterVisiteMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
                         <option value="">Tutti i musei</option>
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Stato</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterVisiteStato">Stato</label>
                     <select id="filterVisiteStato" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
                         <option value="">Tutti gli stati</option>
                         <option value="pubblica">In vendita</option>
@@ -38,7 +38,7 @@ async function initAdminVisite() {
                     </select>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Prezzo</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterVisitePrezzo">Prezzo</label>
                     <select id="filterVisitePrezzo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminVisite()">
                         <option value="">Tutti</option>
                         <option value="gratis">Gratuita</option>
@@ -169,35 +169,35 @@ window.adminEditVisita = function (id) {
         <div class="glass-card p-5 mt-4">
             <form id="adminVisitaForm" class="row g-4">
                 <div class="col-md-8">
-                    <label class="custom-label">Nome Visita *</label>
+                    <label class="custom-label" for="avNome">Nome Visita *</label>
                     <input type="text" id="avNome" class="custom-input" value="${v.nomeVisita || ''}" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="custom-label">Prezzo (€)</label>
+                    <label class="custom-label" for="avPrezzo">Prezzo (€)</label>
                     <input type="number" id="avPrezzo" class="custom-input" min="0" step="0.01" value="${v.prezzo || 0}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Nome Mnemonico</label>
+                    <label class="custom-label" for="avNomeMnemonico">Nome Mnemonico</label>
                     <input type="text" id="avNomeMnemonico" class="custom-input" value="${v.nomeMnemonico || ''}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Domanda Quiz</label>
+                    <label class="custom-label" for="avQuizDomanda">Domanda Quiz</label>
                     <input type="text" id="avQuizDomanda" class="custom-input" value="${v.quizDomanda || ''}">
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Logistica</label>
+                    <label class="custom-label" for="avLogistica">Logistica</label>
                     <textarea id="avLogistica" class="custom-input" rows="3">${v.logistica || ''}</textarea>
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    <label class="custom-label" for="avTagsField">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('avTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Museo (ISIL)</label>
+                    <label class="custom-label" for="avIsil">Museo (ISIL)</label>
                     <input type="text" id="avIsil" class="custom-input" value="${v.codiceIsil || ''}">
                 </div>
                 <div class="col-md-6">
-                    <label class="custom-label">Acquirenti</label>
+                    <label class="custom-label" for="avAcquirenti">Acquirenti</label>
                     <input type="number" id="avAcquirenti" class="custom-input" min="0" value="${v.acquirenti || 0}">
                 </div>
                 <div class="col-12 d-flex align-items-center gap-3">
@@ -268,13 +268,13 @@ async function initAdminItems() {
         <div id="adminItemsFilterPanel" class="glass-card p-3 mb-3" style="display:none;">
             <div class="row g-3 align-items-end">
                 <div class="col-md-5">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Autore (ID)</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterItemsAutore">Autore (ID)</label>
                     <select id="filterItemsAutore" class="custom-input" style="padding:7px 12px;" onchange="filterAdminItems()">
                         <option value="">Tutti gli autori</option>
                     </select>
                 </div>
                 <div class="col-md-5">
-                    <label class="custom-label mb-1" style="font-size:0.82rem;">Museo (ID)</label>
+                    <label class="custom-label mb-1" style="font-size:0.82rem;" for="filterItemsMuseo">Museo (ID)</label>
                     <select id="filterItemsMuseo" class="custom-input" style="padding:7px 12px;" onchange="filterAdminItems()">
                         <option value="">Tutti i musei</option>
                     </select>
@@ -412,12 +412,12 @@ window.adminEditItem = function (id) {
                 </p>
                 ${toneEditorHtml('aiToneEditor', 'ai', toni)}
                 <div class="col-md-6">
-                    <label class="custom-label">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera (ID)'}</label>
-                    <input type="text" class="custom-input" value="${itemTitle(it)}" disabled>
+                    <label class="custom-label" for="aiOperaTitle">${it.contentType === 'indipendente' ? 'Argomento' : 'Opera (ID)'}</label>
+                    <input type="text" id="aiOperaTitle" class="custom-input" value="${itemTitle(it)}" disabled>
                 </div>
                 ${it.contentType === 'indipendente' ? `
                 <div class="col-md-6">
-                    <label class="custom-label">URL Immagine</label>
+                    <label class="custom-label" for="aiImmagine">URL Immagine</label>
                     <input type="url" id="aiImmagine" class="custom-input" value="${it.image || ''}">
                 </div>
                 ` : `
@@ -426,11 +426,11 @@ window.adminEditItem = function (id) {
                 </p>
                 `}
                 <div class="col-12">
-                    <label class="custom-label">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
+                    <label class="custom-label" for="aiTagsField">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('aiTags', 'es. caravaggio, rinascimento…')}
                 </div>
                 <div class="col-12">
-                    <label class="custom-label">Metadata (JSON)</label>
+                    <label class="custom-label" for="aiMetadata">Metadata (JSON)</label>
                     <textarea id="aiMetadata" class="custom-input" rows="5"
                               style="font-family:monospace;font-size:0.85rem;">${metaJson}</textarea>
                 </div>
