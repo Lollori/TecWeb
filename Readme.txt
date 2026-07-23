@@ -91,6 +91,14 @@ _Inserire qui il linguaggio utilizzato, il o i framework utilizzati e ogni pacch
     * Creazione della schermata home
     * Scrittura del file CSS iniziale per lo stile della schermata home
 
-#### Leonardo Rocco Monaco: xxxxxx
+#### Leonardo Rocco Monaco: 
+1. Sezione "Visite" form CRUD per visite guidate con schema Mongoose Visita (nome, logistica, quiz, opereCount, codiceIsil)
+2. Sincronizzazione tra docente e studenti in tempo reale durante una visita.
+3. Piantina interattiva Uffizi che carica GeoJSON con click-to-navigate sulle stanze; poi secondo piano con selettore, legenda stanze/categorie, popolamento di opere nel DB.
+4. Correzioni layout mobile su tutte le pagine editor, pulizia CSS morto.
+5. Riconoscimento vocale via Web Speech API.
+6. Comandi vocali: riconosce frasi tipo "dimmi di più", "cos'è questo", "dov'è l'uscita" e le traduce in azioni (cambio durata spiegazione, info autore/stile, evidenziazione stanza sulla piantina), con canale audio indipendente per le risposte dell'assistente.
+7. Piantine interattive durante la visita che mostrano la stanza di riferimento
+8. Algoritmo di inserimento di opere all'interno delle visite per seguire un percorso lineare all'interno del museo.
 
-#### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto TT(inserire nome, non ricordo come si chiama)(disponibile su npm), creazione immagini profilo, immagini della home page (anche per versione mobile e modalita' chiara)
+#### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo, immagini della home page (anche per versione mobile e modalita' chiara)
