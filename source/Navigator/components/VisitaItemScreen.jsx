@@ -171,14 +171,36 @@ function VisitaItemScreen({
   const AMENITY_LABELS = {
     U: "L'uscita", bagno: 'La toilette', scale: 'Le scale',
     ascensore: "L'ascensore", caffetteria: 'La caffetteria', ingresso: "L'ingresso",
+    info_point: 'Il punto informazioni', guardaroba: 'Il guardaroba',
+    audio_guida: "L'audioguida", auditorium: "L'auditorium",
+    conferenze: 'La sala conferenze', educazione: "L'area educativa",
+    scale_mobili: 'Le scale mobili', bagno_disabili: 'Il bagno per disabili',
+    bagno_donne: 'Il bagno delle donne', bagno_uomini: "Il bagno degli uomini",
+    allattamento: 'La sala allattamento', area_riposo: "L'area di riposo",
+    negozio: 'Il negozio', libreria: 'La libreria',
+    'armadietto farmaceutico': "L'armadietto farmaceutico",
   };
   const AMENITY_LABELS_NOT_FOUND = {
     U: "l'uscita", bagno: 'i bagni', scale: 'le scale',
     ascensore: "l'ascensore", caffetteria: 'la caffetteria', ingresso: "l'ingresso",
+    info_point: 'il punto informazioni', guardaroba: 'il guardaroba',
+    audio_guida: "l'audioguida", auditorium: "l'auditorium",
+    conferenze: 'la sala conferenze', educazione: "l'area educativa",
+    scale_mobili: 'le scale mobili', bagno_disabili: 'il bagno per disabili',
+    bagno_donne: 'il bagno delle donne', bagno_uomini: "il bagno degli uomini",
+    allattamento: 'la sala allattamento', area_riposo: "l'area di riposo",
+    negozio: 'il negozio', libreria: 'la libreria',
+    'armadietto farmaceutico': "l'armadietto farmaceutico",
+  };
+  // Stesso concetto logistico ma room_id diverso tra i musei (es. Uffizi
+  // usa 'caffetteria', il Prado usa 'bar'): si cerca qualunque id del gruppo.
+  const AMENITY_SYNONYMS = {
+    caffetteria: ['caffetteria', 'bar'],
   };
 
   async function locateAmenity(kind) {
     const label = AMENITY_LABELS[kind] || 'Il punto richiesto';
+    const candidateIds = AMENITY_SYNONYMS[kind] || [kind];
     if (!activeItem?.museumId || !operaGroup?.operaId) {
       speakAssistant(`${label}: mappa non disponibile al momento.`);
       return;
@@ -198,6 +220,7 @@ function VisitaItemScreen({
 
       let operaFloorIdx = null;
       const foundFloors = [];
+      const matchedIdByFloor = {};
       for (let i = 0; i < piani.length; i++) {
         const piano = piani[i];
         if (!piano.geoJsonUrl) continue;
@@ -208,7 +231,8 @@ function VisitaItemScreen({
           if (salaOpera != null && operaFloorIdx === null && feats.some(f => f.properties?.room_id === salaOpera)) {
             operaFloorIdx = i;
           }
-          if (feats.some(f => f.properties?.room_id === kind)) foundFloors.push(i);
+          const matchedFeat = feats.find(f => candidateIds.includes(f.properties?.room_id));
+          if (matchedFeat) { foundFloors.push(i); matchedIdByFloor[i] = matchedFeat.properties.room_id; }
         } catch (_) {  }
       }
 
@@ -223,7 +247,7 @@ function VisitaItemScreen({
 
       speakAssistant(`${label} più vicina si trova al ${pianoLabel}. Controlla la mappa.`);
       setActivePanel('mappa');
-      setLogisticsTarget({ roomId: kind, piano: piani[nearestIdx]?.piano });
+      setLogisticsTarget({ roomId: matchedIdByFloor[nearestIdx] || kind, piano: piani[nearestIdx]?.piano });
     } catch (_) {
       speakAssistant('Non sono riuscito a recuperare le indicazioni.');
     }
