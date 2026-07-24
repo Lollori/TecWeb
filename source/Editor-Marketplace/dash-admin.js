@@ -29,22 +29,6 @@ function adminActionBtns(editFn, delFn) {
     </div>`;
 }
 
-function adminSearchHeader(title, inputId, onInputFn, subtitle = '') {
-    return `
-        <div class="section-header-inline d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h1 class="page-title">${title}</h1>
-                ${subtitle ? `<p class="text-muted mb-0">${subtitle}</p>` : ''}
-            </div>
-            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:280px;">
-                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                <input type="text" id="${inputId}" class="search-input py-2"
-                       placeholder="Cerca…" oninput="${onInputFn}()">
-            </div>
-        </div>`;
-}
-
-
 async function initAdminUtenti() {
     const section = document.getElementById('section-admin-utenti');
     section.innerHTML = `
