@@ -57,12 +57,12 @@ const AMENITY_ICONS = {
     label: 'WC persone a mobilità ridotta'
   },
   bagno_donne: {
-    icon: 'fa-restroom',
-    label: 'WC'
+    icon: 'fa-person-dress',
+    label: 'Bagno donne'
   },
   bagno_uomini: {
-    icon: 'fa-restroom',
-    label: 'WC'
+    icon: 'fa-person',
+    label: 'Bagno uomini'
   },
   allattamento: {
     icon: 'fa-baby',
