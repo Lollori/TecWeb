@@ -9,8 +9,8 @@
     "autoreId": "e9o1w5g3hk",
     "pubblica": true,
     "prezzo": 10,
-    "acquirenti": 0,
-    "acquirentiIds": [],
+    "acquirenti": 3,
+    "acquirentiIds": ["c5j9n3t8vy", "d2l6s4u7ez", "a3f7k2m9qz"],
     "itemIds": [
       "venere-nascita-semplice",
       "venere-nascita-medio",
@@ -30,7 +30,7 @@
     ],
     "tags": ["rinascimento", "botticelli", "michelangelo", "firenze"],
     "quizDomande": [],
-    "eseguita": 0
+    "eseguita": 5
   },
   {
     "nomeVisita": "Luce e Ombra: dal Manierismo al Naturalismo",
@@ -42,8 +42,8 @@
     "autoreId": "f4q8y2c7mt",
     "pubblica": true,
     "prezzo": 10,
-    "acquirenti": 0,
-    "acquirentiIds": [],
+    "acquirenti": 2,
+    "acquirentiIds": ["d2l6s4u7ez", "b8h4p1r6xw"],
     "itemIds": [
       "bacco-semplice",
       "bacco-medio",
@@ -63,6 +63,51 @@
     ],
     "tags": ["caravaggio", "manierismo", "barocco", "firenze"],
     "quizDomande": [],
-    "eseguita": 0
+    "eseguita": 3
+  },
+  {
+    "nomeVisita": "Botticelli, Michelangelo e i Medici: il Rinascimento fiorentino",
+    "nomeMnemonico": "uffizi_medici_rinascimento",
+    "logistica": "Percorso introduttivo al Rinascimento fiorentino, pensato per chi visita gli Uffizi per la prima volta: unisce le biografie di Botticelli e Michelangelo al contesto storico del mecenatismo mediceo. Durata stimata: 60 minuti.",
+    "quizDomanda": "Quale famiglia fiorentina fu la principale mecenate di Botticelli e Michelangelo?",
+    "opereCount": 4,
+    "codiceIsil": "IT-FI0082",
+    "autoreId": "e9o1w5g3hk",
+    "pubblica": true,
+    "prezzo": 8,
+    "acquirenti": 4,
+    "acquirentiIds": ["c5j9n3t8vy", "d2l6s4u7ez", "a3f7k2m9qz", "b8h4p1r6xw"],
+    "itemIds": [
+      "botticelli-biografia-semplice",
+      "michelangelo-biografia-semplice",
+      "medici-mecenatismo-semplice",
+      "rinascimento-fiorentino-semplice"
+    ],
+    "tags": ["rinascimento", "firenze", "biografia", "medici"],
+    "quizDomande": [],
+    "eseguita": 6
+  },
+  {
+    "nomeVisita": "Il Secolo d'Oro spagnolo al Prado",
+    "nomeMnemonico": "prado_secolo_oro",
+    "logistica": "Percorso introduttivo al Secolo d'Oro spagnolo attraverso le vite di Velázquez, Goya ed El Greco e il contesto della corte degli Asburgo. Durata stimata: 55 minuti.",
+    "quizDomanda": "Quale re di Spagna rese Diego Velázquez pittore ufficiale della corte?",
+    "opereCount": 5,
+    "codiceIsil": "ES-MA0001",
+    "autoreId": "f4q8y2c7mt",
+    "pubblica": true,
+    "prezzo": 12,
+    "acquirenti": 2,
+    "acquirentiIds": ["c5j9n3t8vy", "a3f7k2m9qz"],
+    "itemIds": [
+      "velazquez-biografia-semplice",
+      "goya-biografia-semplice",
+      "elgreco-biografia-semplice",
+      "secolo-oro-spagnolo-semplice",
+      "asburgo-corte-semplice"
+    ],
+    "tags": ["storia", "spagna", "contestostorico", "secolodoro"],
+    "quizDomande": [],
+    "eseguita": 2
   }
 ]
