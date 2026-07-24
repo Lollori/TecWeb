@@ -392,7 +392,7 @@ function renderMktItems(lista, purchasedIds, cartIds = []) {
             <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
             ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
             ${tagChipsDisplayHtml(it.tags)}
-            ${renderToni(it, 'mkt-' + it._id)}
+            ${renderToniCompact(it, 'mkt-' + it._id, itemTitle(it))}
             ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
             <ul class="item-metadata-list">
                 ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>
@@ -544,7 +544,7 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
                 <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
                 ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
                 ${tagChipsDisplayHtml(it.tags)}
-                ${renderToni(it, 'acq-' + it._id)}
+                ${renderToniCompact(it, 'acq-' + it._id, itemTitle(it))}
                 ${Object.keys(it.metadata || {}).filter(k => k !== 'prezzo').length ? `
                 <ul class="item-metadata-list">
                     ${Object.entries(it.metadata).filter(([k]) => k !== 'prezzo').map(([k, v]) =>

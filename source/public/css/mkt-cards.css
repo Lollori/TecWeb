@@ -186,6 +186,16 @@
     color: #94a3b8; text-transform: none; margin-left: 6px;
 }
 
+.toni-open-btn { align-self: flex-start; padding: 6px 14px; font-size: 0.8rem; }
+
+.toni-modal-box {
+    width: min(560px, 92vw);
+    max-height: 80vh;
+    display: flex; flex-direction: column;
+    text-align: left;
+}
+.toni-modal-body { overflow-y: auto; margin: 4px 0 16px; }
+
 /* ── Tone badges (liste item: quali toni hanno una descrizione) ── */
 .tone-badge {
     display: inline-flex; align-items: center;

@@ -284,6 +284,48 @@ function renderToni(item, uid) {
         </div>`;
 }
 
+window.__toniCache = window.__toniCache || {};
+
+function renderToniCompact(item, uid, titolo) {
+    const id = uid || item._id || Math.random().toString(36).slice(2);
+    const hasContent = Object.values(item.toni || {}).some(t => t && !toneIsEmpty(t));
+    window.__toniCache[id] = { html: renderToni(item, id), titolo: titolo || '' };
+    if (!hasContent) {
+        return '<p class="toni-empty">Nessuna descrizione disponibile.</p>';
+    }
+    return `
+        <button type="button" class="btn-outline-custom toni-open-btn" onclick="apriDescrizioneItem('${id}')">
+            <i class="fa-solid fa-file-lines me-1"></i> Vedi descrizione
+        </button>`;
+}
+
+window.apriDescrizioneItem = function (id) {
+    const cached = window.__toniCache[id];
+    if (!cached) return;
+    const backdrop = document.createElement('div');
+    backdrop.className = 'ui-modal-backdrop';
+    backdrop.innerHTML = `
+        <div class="ui-modal-box toni-modal-box" role="dialog" aria-modal="true">
+            ${cached.titolo ? `<div class="ui-modal-title">${cached.titolo}</div>` : ''}
+            <div class="toni-modal-body"></div>
+            <div class="ui-modal-actions">
+                <button type="button" class="ui-modal-btn ui-modal-btn-primary">Chiudi</button>
+            </div>
+        </div>`;
+    backdrop.querySelector('.toni-modal-body').innerHTML = cached.html;
+    const done = () => { backdrop.classList.remove('show'); setTimeout(() => backdrop.remove(), 200); };
+    backdrop.querySelector('.ui-modal-btn-primary').onclick = done;
+    backdrop.addEventListener('click', (e) => { if (e.target === backdrop) done(); });
+    let root = document.getElementById('uiModalRoot');
+    if (!root) {
+        root = document.createElement('div');
+        root.id = 'uiModalRoot';
+        document.body.appendChild(root);
+    }
+    root.appendChild(backdrop);
+    requestAnimationFrame(() => backdrop.classList.add('show'));
+};
+
 window.toniNav = function (id, dir) {
     const root = document.querySelector(`.toni-switcher[data-toni-id="${id}"]`);
     if (!root) return;
