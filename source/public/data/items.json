@@ -1867,5 +1867,421 @@
     "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg/960px-Andrea_del_Sarto_-_Madonna_of_the_Harpies_-_WGA00370.jpg",
     "authorId": "f4q8y2c7mt",
     "pubblica": true
+  },
+  {
+    "museumId": "IT-FI0082",
+    "objectId": "botticelli-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Botticelli è stato un grande pittore del Rinascimento fiorentino, famoso per la Nascita di Venere e la Primavera.",
+        "d15": "Sandro Botticelli nasce a Firenze nel 1445 e cresce artisticamente nella bottega di Filippo Lippi. Diventa presto uno dei pittori preferiti della famiglia Medici, per cui realizza opere come 'La Primavera' e 'La Nascita di Venere', oggi conservate agli Uffizi. Il suo stile è riconoscibile per le linee morbide, i colori delicati e i soggetti tratti dalla mitologia classica.",
+        "d40": "Sandro Filipepi, detto il Botticelli, nasce a Firenze nel 1445 e si forma nella bottega del pittore Filippo Lippi, da cui eredita l'attenzione per il disegno elegante e le linee sinuose. Grazie al sostegno della famiglia Medici, diventa uno dei pittori più richiesti della Firenze rinascimentale, capace di unire i temi della mitologia classica al pensiero filosofico neoplatonico allora molto diffuso alla corte medicea. Le sue opere più celebri, 'La Primavera' e 'La Nascita di Venere', oggi conservate agli Uffizi, sono considerate tra i capolavori assoluti del Rinascimento italiano per l'eleganza delle figure e la delicatezza dei colori. Negli ultimi anni della sua vita, influenzato dalle prediche del frate Girolamo Savonarola, Botticelli abbandona quasi del tutto i soggetti mitologici per dedicarsi a temi religiosi, in uno stile più austero e drammatico. Muore a Firenze nel 1510: la sua fama, offuscata per secoli, verrà pienamente riscoperta solo nell'Ottocento."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 4
+    },
+    "image": "",
+    "authorId": "e9o1w5g3hk",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Sandro Botticelli: vita e opere",
+    "tags": [
+      "biografia",
+      "pittore",
+      "rinascimento",
+      "firenze",
+      "botticelli"
+    ],
+    "pubblica": true,
+    "acquirenti": 2,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "d2l6s4u7ez"
+    ]
+  },
+  {
+    "museumId": "IT-FI0082",
+    "objectId": "michelangelo-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Michelangelo Buonarroti è stato scultore, pittore e architetto, tra i massimi geni del Rinascimento italiano.",
+        "d15": "Michelangelo Buonarroti nasce vicino ad Arezzo nel 1475 e si forma a Firenze, dove viene notato da Lorenzo de' Medici. Considerato uno dei più grandi artisti di tutti i tempi, realizza capolavori come il David, la volta della Cappella Sistina e la Pietà, distinguendosi per la straordinaria capacità di rendere la forza e la tensione del corpo umano.",
+        "d40": "Michelangelo di Lodovico Buonarroti Simoni nasce nel 1475 vicino ad Arezzo e si trasferisce presto a Firenze, dove il suo talento viene notato da Lorenzo de' Medici, che lo accoglie nella propria casa e nel circolo di artisti e umanisti da lui protetto. Formatosi come scultore, Michelangelo diventa presto anche un pittore e architetto straordinario, capace di lavorare su commissione di papi e signori in tutta Italia. Tra i suoi capolavori assoluti spiccano il David di Firenze, simbolo della città, la volta della Cappella Sistina in Vaticano, affrescata in soli quattro anni, e la Pietà, scolpita quando aveva appena ventiquattro anni. Il suo stile è riconoscibile per la resa potente e tesa dei corpi umani, definita 'terribilità' dai contemporanei, che trasmette forza fisica e intensità emotiva allo stesso tempo. Michelangelo lavora fino alla fine della sua lunghissima vita, morendo a Roma nel 1564 all'età di ottantotto anni, lasciando un'eredità artistica che avrebbe influenzato generazioni di scultori e pittori dopo di lui."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 5
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Michelangelo Buonarroti: il genio universale",
+    "tags": [
+      "biografia",
+      "pittore",
+      "rinascimento",
+      "firenze",
+      "michelangelo"
+    ],
+    "pubblica": true,
+    "acquirenti": 3,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "d2l6s4u7ez",
+      "a3f7k2m9qz"
+    ]
+  },
+  {
+    "museumId": "IT-FI0082",
+    "objectId": "medici-mecenatismo-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "I Medici furono la famiglia fiorentina che finanziò e protesse molti dei più grandi artisti del Rinascimento.",
+        "d15": "La famiglia Medici, ricchi banchieri fiorentini, governò di fatto Firenze per gran parte del Rinascimento. Attraverso il mecenatismo, cioè il sostegno economico agli artisti, i Medici resero possibile la realizzazione di capolavori come quelli di Botticelli e Michelangelo, trasformando la loro città in uno dei centri artistici più importanti d'Europa.",
+        "d40": "La famiglia Medici, arricchitasi grazie all'attività bancaria, divenne nel corso del Quattrocento la vera signora di Firenze, pur mantenendo formalmente le istituzioni repubblicane della città. Figure come Cosimo il Vecchio e soprattutto suo nipote Lorenzo, detto il Magnifico, capirono che finanziare arte e cultura era anche un modo per costruire prestigio e consenso politico. Grazie al loro sostegno economico, il cosiddetto mecenatismo, artisti come Botticelli, Michelangelo e molti altri poterono lavorare liberamente, sperimentare nuove tecniche e realizzare opere di straordinaria qualità. I Medici finanziarono inoltre accademie, biblioteche e la riscoperta dei testi classici greci e latini, contribuendo a creare il clima culturale che oggi chiamiamo Rinascimento. Senza il loro sostegno, molti dei capolavori oggi conservati agli Uffizi probabilmente non sarebbero mai stati realizzati. Il legame tra i Medici e l'arte fiorentina durò per generazioni, fino a quando l'ultima erede della famiglia, Anna Maria Luisa, lasciò l'intero patrimonio artistico alla città di Firenze, a condizione che non venisse mai più smembrato o portato altrove."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 0
+    },
+    "image": "",
+    "authorId": "e9o1w5g3hk",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Il mecenatismo dei Medici",
+    "tags": [
+      "storia",
+      "contestostorico",
+      "rinascimento",
+      "firenze",
+      "medici"
+    ],
+    "pubblica": true,
+    "acquirenti": 4,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "d2l6s4u7ez",
+      "a3f7k2m9qz",
+      "b8h4p1r6xw"
+    ]
+  },
+  {
+    "museumId": "IT-FI0082",
+    "objectId": "rinascimento-fiorentino-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Il Rinascimento fu il periodo, nato a Firenze nel Quattrocento, in cui arte, scienza e cultura tornarono a fiorire.",
+        "d15": "Tra il Trecento e il Cinquecento, Firenze diventa il centro di un movimento culturale straordinario: il Rinascimento. Artisti, scrittori e scienziati riscoprono i testi e i valori dell'antichità classica, sviluppando nuove tecniche come la prospettiva e ponendo l'uomo, con le sue capacità e la sua ragione, al centro dell'attenzione.",
+        "d40": "Il termine Rinascimento indica il periodo storico e culturale, sviluppatosi soprattutto a Firenze tra il Trecento e il Cinquecento, in cui l'Europa riscopre e reinterpreta i valori dell'antichità greca e romana. Dopo i secoli medievali, in cui l'arte era quasi esclusivamente al servizio della religione, gli artisti rinascimentali iniziano a rappresentare anche temi mitologici e storici, e soprattutto sviluppano nuove tecniche rivoluzionarie come la prospettiva lineare, che permette di dare profondità e realismo alle immagini. Al centro di questa nuova visione del mondo c'è l'essere umano, con la sua ragione, la sua curiosità scientifica e la sua capacità creativa: è il cosiddetto umanesimo. Firenze diventa il laboratorio principale di questa rivoluzione culturale grazie alla presenza di ricche famiglie di mecenati come i Medici, di botteghe artistiche all'avanguardia e di una vivace comunità di studiosi e filosofi. Da Firenze, il Rinascimento si diffonde poi in tutta Italia e in Europa, influenzando per secoli il modo di fare arte, architettura e scienza."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 3
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Il Rinascimento fiorentino: contesto storico",
+    "tags": [
+      "storia",
+      "contestostorico",
+      "rinascimento",
+      "firenze"
+    ],
+    "pubblica": true,
+    "acquirenti": 1,
+    "acquirentiIds": [
+      "b8h4p1r6xw"
+    ]
+  },
+  {
+    "museumId": "IT-FI0082",
+    "objectId": "caravaggio-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Caravaggio fu un pittore rivoluzionario, celebre per i suoi fortissimi contrasti tra luce e ombra.",
+        "d15": "Michelangelo Merisi, detto Caravaggio, nasce nel 1571 e diventa uno dei pittori più innovativi tra Cinquecento e Seicento. Il suo stile, basato su un uso drammatico della luce e su un realismo crudo e diretto, dà origine al naturalismo barocco e influenzerà generazioni di artisti in tutta Europa.",
+        "d40": "Michelangelo Merisi, conosciuto come Caravaggio dal nome del paese lombardo di origine della sua famiglia, nasce nel 1571 e si forma a Milano prima di trasferirsi a Roma, dove sviluppa uno stile pittorico assolutamente rivoluzionario per l'epoca. Caravaggio abbandona le pose idealizzate tipiche del Rinascimento maturo per rappresentare i suoi personaggi, spesso presi dalla strada, con un realismo crudo e diretto, senza abbellimenti. La sua tecnica più riconoscibile è il fortissimo contrasto tra zone di luce intensa e ombre profonde, chiamato chiaroscuro, che dà alle sue scene un'intensità drammatica quasi teatrale. Questo stile, che darà origine al naturalismo barocco, avrà un'enorme influenza su pittori come Rembrandt e su intere scuole artistiche in tutta Europa. La vita di Caravaggio fu segnata anche da una personalità turbolenta e violenta, che lo costrinse a fuggire da Roma dopo un omicidio e a vivere una vita da fuggiasco tra Napoli, Malta e la Sicilia. Morì nel 1610, ancora giovane, in circostanze mai del tutto chiarite, lasciando un'eredità artistica immensa."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 4
+    },
+    "image": "",
+    "authorId": "e9o1w5g3hk",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Caravaggio: luce, ombra e naturalismo",
+    "tags": [
+      "biografia",
+      "pittore",
+      "barocco",
+      "caravaggio"
+    ],
+    "pubblica": true,
+    "acquirenti": 2,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "a3f7k2m9qz"
+    ]
+  },
+  {
+    "museumId": "ES-MA0001",
+    "objectId": "velazquez-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Diego Velázquez fu il grande pittore ufficiale della corte spagnola nel Seicento.",
+        "d15": "Diego Velázquez nasce a Siviglia nel 1599 e diventa pittore di corte del re Filippo IV di Spagna. Autore di capolavori come 'Las Meninas', oggi conservato al Museo del Prado, è celebre per la straordinaria capacità di catturare la luce naturale e la psicologia dei suoi soggetti, dai reali ai personaggi più umili.",
+        "d40": "Diego Velázquez nasce a Siviglia nel 1599 e mostra fin da giovane un grande talento per la pittura, formandosi nella bottega del pittore Francisco Pacheco. Nel 1623 entra al servizio del re Filippo IV di Spagna come pittore di corte, un ruolo che manterrà per tutta la vita, ottenendo grande prestigio e onori fino a diventare anche ciambellano reale. Velázquez è celebre soprattutto per 'Las Meninas', un dipinto complesso e innovativo che ritrae l'infanta Margherita circondata dalla sua corte, con lo stesso pittore raffigurato al lavoro davanti alla tela: un vero e proprio gioco di sguardi e specchi che ha affascinato critici e artisti per secoli. Oltre ai ritratti reali, Velázquez dipinge anche scene di vita quotidiana, chiamate 'bodegones', e soggetti popolari trattati con la stessa dignità riservata ai nobili. La sua tecnica pittorica, basata su pennellate rapide e sciolte e su uno straordinario uso della luce naturale, anticipa in molti aspetti la pittura moderna e influenzerà artisti come Goya, Manet e gli impressionisti. Muore a Madrid nel 1660."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 5
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Diego Velázquez: il pittore della corte spagnola",
+    "tags": [
+      "biografia",
+      "pittore",
+      "barocco",
+      "spagna",
+      "velazquez"
+    ],
+    "pubblica": true,
+    "acquirenti": 2,
+    "acquirentiIds": [
+      "d2l6s4u7ez",
+      "b8h4p1r6xw"
+    ]
+  },
+  {
+    "museumId": "ES-MA0001",
+    "objectId": "goya-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Francisco Goya fu pittore di corte e testimone delle trasformazioni storiche della Spagna tra Sette e Ottocento.",
+        "d15": "Francisco Goya nasce nel 1746 e diventa pittore ufficiale della corte spagnola. Nel corso della sua vita il suo stile cambia radicalmente: dalle scene leggere per gli arazzi reali arriva, dopo una grave malattia e gli orrori della guerra, alle inquietanti 'Pitture Nere', tra le opere più cupe e visionarie della storia dell'arte.",
+        "d40": "Francisco Goya nasce nel 1746 in un piccolo villaggio dell'Aragona e diventa, grazie al suo enorme talento, pittore ufficiale della corte spagnola sotto diversi sovrani. I suoi primi lavori più noti sono i bozzetti per arazzi destinati ai palazzi reali, scene di vita quotidiana dipinte con colori vivaci e uno spirito leggero e festoso. Intorno ai quarant'anni, una grave malattia lo rende completamente sordo, un evento che segna profondamente la sua arte e la sua visione del mondo. Testimone diretto dell'invasione francese della Spagna e della violenta guerra d'indipendenza che ne segue, Goya realizza opere drammatiche come la serie di incisioni 'I disastri della guerra' e i celebri dipinti 'Il 2 e il 3 maggio 1808', che denunciano senza filtri la crudeltà dei conflitti. Nell'ultima parte della sua vita, ormai anziano e malato, dipinge direttamente sui muri della propria casa le cosiddette 'Pitture Nere', un ciclo di opere cupe, oniriche e disturbanti che riflettono la sua visione pessimistica dell'umanità. Goya muore in esilio in Francia nel 1828, considerato oggi uno dei padri dell'arte moderna per la sua libertà espressiva."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 4
+    },
+    "image": "",
+    "authorId": "e9o1w5g3hk",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Francisco Goya: dalla corte alle pitture nere",
+    "tags": [
+      "biografia",
+      "pittore",
+      "storia",
+      "spagna",
+      "goya"
+    ],
+    "pubblica": true,
+    "acquirenti": 3,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "d2l6s4u7ez",
+      "a3f7k2m9qz"
+    ]
+  },
+  {
+    "museumId": "ES-MA0001",
+    "objectId": "elgreco-biografia-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "El Greco fu un pittore greco che sviluppò in Spagna uno stile unico, visionario e allungato.",
+        "d15": "Domínikos Theotokópoulos, conosciuto come El Greco, nasce a Creta nel 1541 e si forma tra Venezia e Roma prima di trasferirsi a Toledo, in Spagna. Il suo stile personalissimo, con figure allungate e colori intensi e quasi irreali, unisce la tradizione bizantina a quella rinascimentale italiana, creando opere di forte intensità spirituale.",
+        "d40": "Domínikos Theotokópoulos nasce a Creta, allora sotto il dominio veneziano, nel 1541 e viene per questo soprannominato El Greco, 'il Greco', dagli spagnoli. Formatosi inizialmente nella tradizione dell'icona bizantina, si trasferisce a Venezia, dove studia la pittura di Tiziano e Tintoretto, e poi a Roma, prima di stabilirsi definitivamente a Toledo, in Spagna, dove trascorre il resto della sua vita. È proprio in Spagna che El Greco sviluppa il suo stile più personale e riconoscibile: figure straordinariamente allungate, quasi eteree, colori intensi e a volte innaturali, composizioni dinamiche che sembrano proiettare lo spettatore verso l'alto. Questo linguaggio pittorico, molto lontano dal naturalismo classico, viene interpretato come espressione di un'intensa spiritualità religiosa, in perfetta sintonia con il clima della Controriforma cattolica spagnola. Per secoli considerato uno stile eccentrico e quasi incomprensibile, El Greco viene rivalutato solo a partire dal Novecento, quando artisti come Picasso e i pittori espressionisti riconoscono nella sua pittura un'anticipazione sorprendente dell'arte moderna. Muore a Toledo nel 1614."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 0
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "El Greco: tra Creta, Venezia e Toledo",
+    "tags": [
+      "biografia",
+      "pittore",
+      "spagna",
+      "elgreco"
+    ],
+    "pubblica": true,
+    "acquirenti": 2,
+    "acquirentiIds": [
+      "c5j9n3t8vy",
+      "b8h4p1r6xw"
+    ]
+  },
+  {
+    "museumId": "ES-MA0001",
+    "objectId": "secolo-oro-spagnolo-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Il Secolo d'Oro fu il periodo di massimo splendore artistico e culturale della Spagna, tra Cinque e Seicento.",
+        "d15": "Tra il Cinquecento e il Seicento, mentre l'impero spagnolo raggiunge la sua massima estensione territoriale, la Spagna vive anche un'epoca di straordinaria fioritura artistica e letteraria, il cosiddetto Secolo d'Oro. In questo periodo lavorano pittori come Velázquez, El Greco e in seguito Goya, insieme a grandi scrittori come Cervantes.",
+        "d40": "Il Secolo d'Oro spagnolo indica il periodo, esteso convenzionalmente tra il Cinquecento e il Seicento, di massimo splendore culturale e artistico della Spagna. Paradossalmente, questa straordinaria fioritura di arte e letteratura si sviluppa mentre l'impero spagnolo, pur essendo all'apice della propria potenza politica e territoriale grazie alle ricchezze provenienti dalle colonie americane, inizia ad affrontare le prime crisi economiche e militari. La corte reale di Madrid diventa un centro di mecenatismo artistico fondamentale, capace di attirare e sostenere pittori come Diego Velázquez e, in seguito, Francisco Goya, oltre ad artisti stranieri come El Greco. Allo stesso tempo, la letteratura spagnola vive una stagione altrettanto brillante grazie a scrittori come Miguel de Cervantes, autore del 'Don Chisciotte', e drammaturghi come Lope de Vega e Calderón de la Barca. L'arte del Secolo d'Oro è spesso caratterizzata da una forte componente religiosa, legata al clima della Controriforma cattolica, ma anche da un crescente interesse per il realismo e la vita quotidiana. Molti dei capolavori realizzati in questo periodo sono oggi conservati proprio al Museo del Prado di Madrid."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 3
+    },
+    "image": "",
+    "authorId": "e9o1w5g3hk",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "Il Secolo d'Oro spagnolo: contesto storico",
+    "tags": [
+      "storia",
+      "contestostorico",
+      "spagna",
+      "secolodoro"
+    ],
+    "pubblica": true,
+    "acquirenti": 1,
+    "acquirentiIds": [
+      "c5j9n3t8vy"
+    ]
+  },
+  {
+    "museumId": "ES-MA0001",
+    "objectId": "asburgo-corte-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Gli Asburgo di Spagna furono la dinastia reale che governò l'impero spagnolo durante il Secolo d'Oro.",
+        "d15": "Dal 1516 al 1700, la Spagna fu governata dal ramo spagnolo della casata asburgica, che ne fece il centro di un vastissimo impero. I sovrani Asburgo, come Filippo IV, furono anche grandi collezionisti e mecenati d'arte, e le loro collezioni personali costituiscono il nucleo originario del Museo del Prado.",
+        "d40": "Il ramo spagnolo della dinastia degli Asburgo governò la Spagna dal 1516, con l'ascesa al trono di Carlo I (l'imperatore Carlo V), fino al 1700, quando si estinse con la morte di Carlo II senza eredi diretti. Durante questo periodo, la Spagna divenne il centro di un impero vastissimo, esteso su gran parte dell'Europa e delle Americhe, grazie anche alle enormi ricchezze provenienti dalle colonie d'oltreoceano. I sovrani asburgici, in particolare Filippo II e Filippo IV, furono anche appassionati collezionisti e mecenati d'arte, capaci di attirare a corte artisti come Tiziano, Rubens e soprattutto Diego Velázquez, che divenne pittore ufficiale e figura di fiducia di Filippo IV. Le collezioni reali di dipinti, sculture e oggetti preziosi accumulate nel corso di quasi due secoli dagli Asburgo di Spagna costituiscono ancora oggi il nucleo storico fondamentale del Museo del Prado di Madrid, inaugurato nel 1819. Nonostante il progressivo declino politico ed economico dell'impero nel corso del Seicento, la corte degli Asburgo rimase fino alla fine un centro di straordinario prestigio culturale e artistico."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "prezzo": 0
+    },
+    "image": "",
+    "authorId": "f4q8y2c7mt",
+    "contentType": "indipendente",
+    "operaId": "",
+    "topic": "La corte degli Asburgo di Spagna",
+    "tags": [
+      "storia",
+      "contestostorico",
+      "spagna",
+      "asburgo"
+    ],
+    "pubblica": true,
+    "acquirenti": 1,
+    "acquirentiIds": [
+      "d2l6s4u7ez"
+    ]
   }
 ]
