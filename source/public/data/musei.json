@@ -16,7 +16,47 @@
       "lngMax": -3.6897
     },
     "sale": [],
-    "mappaInterna": []
+    "mappaInterna": [
+      {
+        "piano": "Piano 0",
+        "url": "/data/maps/prado/piano0.png",
+        "gpsBounds": {
+          "latMin": 40.4128,
+          "latMax": 40.4148,
+          "lngMin": -3.6945,
+          "lngMax": -3.6897
+        },
+        "geoJsonUrl": "/data/maps/prado/piano0_prado.geojson",
+        "imgWidth": 2219,
+        "imgHeight": 1578
+      },
+      {
+        "piano": "Piano 1",
+        "url": "/data/maps/prado/piano1.png",
+        "gpsBounds": {
+          "latMin": 40.4128,
+          "latMax": 40.4148,
+          "lngMin": -3.6945,
+          "lngMax": -3.6897
+        },
+        "geoJsonUrl": "/data/maps/prado/piano1_prado.geojson",
+        "imgWidth": 2219,
+        "imgHeight": 1578
+      },
+      {
+        "piano": "Piano 2",
+        "url": "/data/maps/prado/piano2.png",
+        "gpsBounds": {
+          "latMin": 40.4128,
+          "latMax": 40.4148,
+          "lngMin": -3.6945,
+          "lngMax": -3.6897
+        },
+        "geoJsonUrl": "/data/maps/prado/piano2_prado.geojson",
+        "imgWidth": 2219,
+        "imgHeight": 1578
+      }
+    ]
   },
   {
     "nome": "Galleria degli Uffizi",

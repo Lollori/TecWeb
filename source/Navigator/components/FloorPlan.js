@@ -9,7 +9,7 @@ const AMENITY_ICONS = {
   },
   bagno: {
     icon: 'fa-restroom',
-    label: 'Bagni'
+    label: 'WC'
   },
   caffetteria: {
     icon: 'fa-mug-saucer',
@@ -22,6 +22,71 @@ const AMENITY_ICONS = {
   U: {
     icon: 'fa-right-from-bracket',
     label: 'Uscita'
+  },
+  // Museo del Prado
+  info_point: {
+    icon: 'fa-circle-info',
+    label: 'Informazioni'
+  },
+  guardaroba: {
+    icon: 'fa-suitcase-rolling',
+    label: 'Armadietti per bagagli'
+  },
+  audio_guida: {
+    icon: 'fa-headphones',
+    label: 'Audio guida'
+  },
+  auditorium: {
+    icon: 'fa-clapperboard',
+    label: 'Auditorium'
+  },
+  conferenze: {
+    icon: 'fa-chalkboard-user',
+    label: 'Sala per conferenze'
+  },
+  educazione: {
+    icon: 'fa-graduation-cap',
+    label: 'Educazione'
+  },
+  scale_mobili: {
+    icon: 'fa-angles-up',
+    label: 'Scale mobili'
+  },
+  bagno_disabili: {
+    icon: 'fa-wheelchair',
+    label: 'WC persone a mobilità ridotta'
+  },
+  bagno_donne: {
+    icon: 'fa-restroom',
+    label: 'WC'
+  },
+  bagno_uomini: {
+    icon: 'fa-restroom',
+    label: 'WC'
+  },
+  allattamento: {
+    icon: 'fa-baby',
+    label: 'Sala per allattamento'
+  },
+  area_riposo: {
+    icon: 'fa-couch',
+    label: 'Area di riposo'
+  },
+  bar: {
+    icon: 'fa-mug-saucer',
+    label: 'Caffè'
+  },
+  negozio: {
+    icon: 'fa-bag-shopping',
+    label: 'Negozio'
+  },
+  libreria: {
+    icon: 'fa-book',
+    label: 'Libreria'
+  },
+  'armadietto farmaceutico': {
+    icon: 'fa-suitcase-medical',
+    label: 'Armadietto farmaceutico'
   }
 };
 const TEMP_EXHIBIT_ID = 'mostre_temp';
