@@ -8,7 +8,7 @@ const AMENITY_ICONS = {
 
   // Museo del Prado
   info_point:                    { icon: 'fa-circle-info',      label: 'Informazioni' },
-  guardaroba:                    { icon: 'fa-suitcase-rolling', label: 'Armadietti per bagagli' },
+  guardaroba:                    { icon: 'fa-shirt',            label: 'Guardaroba' },
   audio_guida:                   { icon: 'fa-headphones',       label: 'Audio guida' },
   auditorium:                    { icon: 'fa-clapperboard',     label: 'Auditorium' },
   conferenze:                    { icon: 'fa-chalkboard-user',  label: 'Sala per conferenze' },

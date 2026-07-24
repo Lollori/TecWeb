@@ -29,8 +29,8 @@ const AMENITY_ICONS = {
     label: 'Informazioni'
   },
   guardaroba: {
-    icon: 'fa-suitcase-rolling',
-    label: 'Armadietti per bagagli'
+    icon: 'fa-shirt',
+    label: 'Guardaroba'
   },
   audio_guida: {
     icon: 'fa-headphones',
