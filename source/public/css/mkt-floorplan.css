@@ -1,7 +1,4 @@
-/* ============================================================
-   Marketplace – Floorplan: mappa dashboard, pianta interna,
-   stanze SVG, amenity POI, pannello opera.
-   ============================================================ */
+/* Marketplace – Floorplan: mappa dashboard, pianta interna, stanze SVG, amenity POI, pannello opera. */
 
 /* ── Map action buttons ── */
 .museo-map-actions { display: flex; gap: 10px; flex-wrap: wrap; margin: 14px 0 6px; }

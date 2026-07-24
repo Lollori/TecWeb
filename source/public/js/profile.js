@@ -28,13 +28,12 @@ function updateDarkToggleUI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Recupera dati dal LocalStorage
     const userUsername = localStorage.getItem('userUsername');
     const userRole = localStorage.getItem('userRole') || '';
     const userId = localStorage.getItem('userId') || '';
 
-    // 2. Mappa ruoli — avatar: opera d'arte famosissima coerente col ruolo
-    // (Wikimedia Commons, pubblico dominio), stessa immagine ovunque nel sito.
+    // Avatar: opera d'arte famosa coerente col ruolo (Wikimedia Commons,
+    // pubblico dominio), stessa immagine ovunque nel sito.
     const roleMap = {
         curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore',
                       avatar: '/img/pfp_curatore.jpg' },
@@ -60,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // 3. Aggiorna la sidebar se presente
     const avatarEl = document.querySelector('.sidebar-footer .avatar-sm');
     const nameEl = document.querySelector('.sidebar-footer .user-info-mini .name');
     const roleEl = document.querySelector('.sidebar-footer .user-info-mini .role');
@@ -80,10 +78,8 @@ document.addEventListener('DOMContentLoaded', () => {
         roleEl.textContent = cfg.label;
     }
 
-    // 4. Aggiorna UI dark-toggle
     updateDarkToggleUI();
 
-    // 5. Gestione logout
     if (logoutEl) {
         logoutEl.addEventListener('click', (e) => {
             e.preventDefault();
@@ -94,7 +90,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 6. Aggiorna anche l'header della dashboard se presente
     const headerRoleLabel = document.getElementById('headerRoleLabel');
     if (headerRoleLabel) {
         headerRoleLabel.textContent = cfg.label;
@@ -105,9 +100,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-/**
- * Funzione di Logout (chiamabile da onclick)
- */
 function logout(event) {
     if (event) event.preventDefault();
     if (confirm("Sei sicuro di voler uscire?")) {

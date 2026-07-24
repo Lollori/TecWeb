@@ -1,8 +1,4 @@
-/* ============================================================
-   Marketplace – entry point: importa i file componente.
-   Tutti gli HTML che caricano questo file ottengono
-   automaticamente tutti gli stili senza modifiche.
-   ============================================================ */
+/* Marketplace – entry point: importa i file componente. Tutti gli HTML che caricano questo file ottengono automaticamente tutti gli stili senza modifiche. */
 
 @import "mkt-base.css";
 @import "mkt-sidebar.css";

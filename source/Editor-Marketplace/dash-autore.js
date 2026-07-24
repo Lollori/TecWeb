@@ -548,7 +548,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
     }
     window._loadVfItemsForMuseo = _loadVfItemsForMuseo;
 
-    /* ---- ordinamento automatico per vicinanza spaziale (geoJson piantina) ---- */
+    /* Ordinamento automatico per vicinanza spaziale (geoJson piantina) */
 
     async function _vfLoadRoomGeo(codiceIsil) {
         _vfOperaSalaMap = {};
@@ -653,7 +653,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         await _loadVfItemsForMuseo(visita.codiceIsil, true);
     }
 
-    /* ---- drag-and-drop order panel ---- */
+    /* Drag-and-drop order panel */
     let _vfDragSrc = null;
 
     function _vfRenumberCards() {

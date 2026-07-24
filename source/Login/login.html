@@ -19,7 +19,7 @@
 
     <div class="auth-wrapper">
 
-        <!-- ===================== LOGIN PANEL ===================== -->
+        <!-- LOGIN PANEL -->
         <div class="auth-scene" id="loginPanel">
 
             <!-- Avatar badge -->
@@ -79,7 +79,7 @@
             </div>
         </div>
 
-        <!-- ===================== REGISTER PANEL ===================== -->
+        <!-- REGISTER PANEL -->
         <div class="auth-scene" id="registerPanel" style="display: none;">
 
             <!-- Avatar badge -->
@@ -159,7 +159,7 @@
     </div>
 
     <script>
-        /* ===================== TOGGLE PASSWORD ===================== */
+        /* TOGGLE PASSWORD */
         function togglePwd(inputId, btn) {
             const input = document.getElementById(inputId);
             const icon = btn.querySelector('i');
@@ -172,9 +172,8 @@
             }
         }
 
-        /* ===================== AVATAR RUOLO (registrazione) =====================
-           Anteprima dell'immagine profilo che l'account avrà in base al ruolo
-           scelto — stessa opera d'arte usata ovunque nel sito per quel ruolo. */
+        /* Avatar ruolo (registrazione): anteprima dell'immagine profilo che l'account
+           avrà in base al ruolo scelto — stessa opera d'arte usata ovunque nel sito. */
         const roleConfig = {
             visitatore: { icon: 'fa-user',       cls: 'bg-visitatore', avatar: '/img/pfp_visitatore.jpg' },
             curatore:   { icon: 'fa-user-gear',  cls: 'bg-curatore',   avatar: '/img/pfp_curatore.jpg' },
@@ -191,7 +190,7 @@
         }
         updateRegAvatar(document.getElementById('regUserRole'));
 
-        /* ===================== PASSWORD STRENGTH ===================== */
+        /* PASSWORD STRENGTH */
         function checkStrength(pwd) {
             const bar = document.getElementById('strengthBar');
             const label = document.getElementById('strengthLabel');
@@ -216,7 +215,7 @@
             label.style.color = lv.color;
         }
 
-        /* ===================== TRANSIZIONE LOGIN → REGISTRAZIONE ===================== */
+        /* TRANSIZIONE LOGIN → REGISTRAZIONE */
         function switchPanel(fromId, toId) {
             const from = document.getElementById(fromId);
             const toPanel = document.getElementById(toId);

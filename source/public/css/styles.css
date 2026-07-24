@@ -1,6 +1,4 @@
-/* ============================================
-   ARTAROUND - PALETTE: MAGENTA + DARK NAVY
-   ============================================ */
+/* ARTAROUND - PALETTE: MAGENTA + DARK NAVY */
 
 :root {
     --dark-navy: #05070A;
@@ -18,7 +16,7 @@
     --border-subtle: rgba(255, 255, 255, 0.06);
 }
 
-/* ========== BASE ========== */
+/* BASE */
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--dark-navy);
@@ -28,7 +26,7 @@ body {
 
 .text-magenta { color: var(--magenta); }
 
-/* ========== NAVBAR ========== */
+/* NAVBAR */
 .navbar {
     padding: 20px 0;
     transition: all 0.3s ease;
@@ -41,7 +39,7 @@ body {
     letter-spacing: -1px;
 }
 
-/* ========== BUTTONS ========== */
+/* BUTTONS */
 .btn-magenta {
     background: var(--magenta);
     color: var(--white);
@@ -60,7 +58,7 @@ body {
     box-shadow: 0 8px 30px var(--magenta-glow);
 }
 
-/* ========== HERO SECTION ========== */
+/* HERO SECTION */
 .hero-section {
     min-height: 100vh;
     display: flex;
@@ -217,7 +215,7 @@ body {
     60% { transform: translateX(-50%) translateY(-5px); }
 }
 
-/* ========== SECTIONS COMMON ========== */
+/* SECTIONS COMMON */
 .section-features {
     padding: 120px 0;
     background: var(--navy-deep);
@@ -228,7 +226,7 @@ body {
     background: var(--dark-navy);
 }
 
-/* ========== TECH STACK ========== */
+/* TECH STACK */
 .section-tech {
     padding: 110px 0;
     background: var(--dark-navy);
@@ -306,7 +304,7 @@ body {
     line-height: 1.7;
 }
 
-/* ========== FEATURE CARDS ========== */
+/* FEATURE CARDS */
 .feature-card {
     background: rgba(15, 21, 32, 0.4);
     backdrop-filter: blur(20px);
@@ -386,7 +384,7 @@ body {
     margin-bottom: 0;
 }
 
-/* ========== APP CARDS ========== */
+/* APP CARDS */
 .app-card {
     background: rgba(15, 21, 32, 0.4);
     backdrop-filter: blur(20px);
@@ -515,7 +513,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* ========== FOOTER ========== */
+/* FOOTER */
 .footer {
     padding: 40px 0;
     background: var(--navy-deep);
@@ -526,7 +524,7 @@ body {
     font-size: 1.5rem;
 }
 
-/* ========== RESPONSIVE ========== */
+/* RESPONSIVE */
 @media (max-width: 768px) {
     body {
         padding-top: 0;
@@ -579,7 +577,7 @@ body {
     }
 }
 
-/* ========== LIGHT MODE OVERRIDES ========== */
+/* LIGHT MODE OVERRIDES */
 [data-theme="light"] body {
     background-color: #f4f6f8;
     color: #1e293b;

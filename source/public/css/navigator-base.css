@@ -1,8 +1,4 @@
-/* ============================================================
-   Navigator – Base: variabili tema, override Bootstrap,
-   utilità condivise tra tutti i componenti Navigator.
-   Caricato per primo dopo marketplace.css e Bootstrap.
-   ============================================================ */
+/* Navigator – Base: variabili tema, override Bootstrap, utilità condivise tra tutti i componenti Navigator. Caricato per primo dopo marketplace.css e Bootstrap. */
 
 /* ── Variabili tema Navigator ── */
 :root {

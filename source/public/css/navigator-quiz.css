@@ -1,7 +1,4 @@
-/* ============================================================
-   Navigator – Quiz: prompt modale, pannello domande,
-   risultati, domande più sbagliate, filtro visitatore.
-   ============================================================ */
+/* Navigator – Quiz: prompt modale, pannello domande, risultati, domande più sbagliate, filtro visitatore. */
 
 /* ── Prompt modale (avvia quiz prima di terminare?) ── */
 .quiz-prompt-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400; }

@@ -1,6 +1,4 @@
-/* ============================================================
-   UI MODAL — sostituto stilizzato di alert()/confirm() nativi
-   ============================================================ */
+/* UI MODAL — sostituto stilizzato di alert()/confirm() nativi */
 
 .ui-modal-backdrop {
     position: fixed;
