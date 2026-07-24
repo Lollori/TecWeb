@@ -29,7 +29,8 @@ const AMENITY_ICONS = {
 const TEMP_EXHIBIT_ID = 'mostre_temp';
 
 function roomDisplayName(roomId) {
-  return roomId === TEMP_EXHIBIT_ID ? 'Sale per Mostre temporanee' : `Sala ${roomId}`;
+  if (roomId === TEMP_EXHIBIT_ID) return 'Sale per Mostre temporanee';
+  return /^sala\b/i.test(roomId) ? roomId : `Sala ${roomId}`;
 }
 
 function ringCentroid(ring) {

@@ -577,7 +577,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1656",
-    "sala": "Planta 1 - Sala 012",
+    "sala": "12",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/960px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "Complessa scena di corte ambientata nello studio del pittore, con l'infanta Margherita d'Austria circondata dalle sue dame. Uno dei dipinti più studiati e enigmatici della storia dell'arte occidentale.",
     "pubblica": true
@@ -588,7 +588,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1635",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Velazquez-The_Surrender_of_Breda.jpg/960px-Velazquez-The_Surrender_of_Breda.jpg",
     "descrizione": "Raffigura la resa della città olandese di Breda al comandante spagnolo Ambrogio Spinola, celebre per il gesto cavalleresco di clemenza verso il nemico sconfitto.",
     "pubblica": true
@@ -599,7 +599,7 @@
     "tipo": "Pittura",
     "autore": "El Bosco (Jheronimus Bosch)",
     "datazione": "1490-1500",
-    "sala": "Planta 0 - Sala 056A",
+    "sala": "56A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6d/The_Garden_of_Earthly_Delights_by_Bosch_High_Resolution.jpg/960px-The_Garden_of_Earthly_Delights_by_Bosch_High_Resolution.jpg",
     "descrizione": "Trittico fantastico e allegorico che rappresenta il Paradiso, il Giardino delle Delizie terrene e l'Inferno, popolato da figure oniriche e creature ibride.",
     "pubblica": true
@@ -610,7 +610,7 @@
     "tipo": "Pittura",
     "autore": "Rogier van der Weyden",
     "datazione": "ca. 1435",
-    "sala": "Planta 0 - Sala 058",
+    "sala": "58",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/El_Descendimiento%2C_by_Rogier_van_der_Weyden%2C_from_Prado_in_Google_Earth.jpg/960px-El_Descendimiento%2C_by_Rogier_van_der_Weyden%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "Deposizione di Cristo dalla croce composta come un altorilievo scultoreo, con figure dal dolore intensamente espressivo disposte in uno spazio poco profondo.",
     "pubblica": true
@@ -621,7 +621,7 @@
     "tipo": "Pittura",
     "autore": "Peter Paul Rubens",
     "datazione": "1630-1635",
-    "sala": "Planta 1 - Sala 029",
+    "sala": "29",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/The_Three_Graces%2C_by_Peter_Paul_Rubens%2C_from_Prado_in_Google_Earth.jpg/960px-The_Three_Graces%2C_by_Peter_Paul_Rubens%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "Le tre dee mitologiche danzano in un abbraccio circolare, celebrazione barocca della bellezza femminile e della fertilità della natura.",
     "pubblica": true
@@ -632,7 +632,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1795-1800 ca.",
-    "sala": "Planta 1 - Sala 036",
+    "sala": "36",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4c/Goya_Maja_naga2.jpg/960px-Goya_Maja_naga2.jpg",
     "descrizione": "Figura femminile distesa e nuda che guarda direttamente lo spettatore, opera controversa per l'epoca e tra le prime a raffigurare un nudo reale privo di pretesto mitologico.",
     "pubblica": true
@@ -643,7 +643,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1800-1807",
-    "sala": "Planta 1 - Sala 036",
+    "sala": "36",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Goya_Maja_ubrana2.jpg/960px-Goya_Maja_ubrana2.jpg",
     "descrizione": "Controparte vestita della Maja desnuda, stessa posa e stesso divano, dipinta con lo stesso magistrale uso della luce e dei tessuti.",
     "pubblica": true
@@ -654,7 +654,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1814",
-    "sala": "Planta 0 - Sala 064",
+    "sala": "64",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_thin_black_margin.jpg/960px-El_Tres_de_Mayo%2C_by_Francisco_de_Goya%2C_from_Prado_thin_black_margin.jpg",
     "descrizione": "Fucilazione dei ribelli madrileni da parte delle truppe napoleoniche, immagine drammatica e universale della violenza della guerra, con la figura dell'uomo in camicia bianca illuminato dalla lanterna.",
     "pubblica": true
@@ -665,7 +665,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1814",
-    "sala": "Planta 0 - Sala 064",
+    "sala": "64",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/El_dos_de_mayo_de_1808_en_Madrid.jpg/960px-El_dos_de_mayo_de_1808_en_Madrid.jpg",
     "descrizione": "Raffigura la rivolta popolare di Madrid contro le truppe mamelucche napoleoniche, dipinta in coppia con Il tre maggio 1808.",
     "pubblica": true
@@ -676,7 +676,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1820-1823",
-    "sala": "Planta 0 - Sala 067",
+    "sala": "67",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/960px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg",
     "descrizione": "Una delle Pitture Nere realizzate da Goya direttamente sui muri della sua casa, raffigura il dio Saturno nell'atto di divorare uno dei suoi figli in preda alla follia.",
     "pubblica": true
@@ -687,7 +687,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1800-1801",
-    "sala": "Planta 1 - Sala 032",
+    "sala": "32",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/La_familia_de_Carlos_IV.jpg/960px-La_familia_de_Carlos_IV.jpg",
     "descrizione": "Grande ritratto di gruppo della famiglia reale spagnola, celebre per l'impietoso realismo psicologico con cui Goya ritrae i sovrani e la loro corte.",
     "pubblica": true
@@ -698,7 +698,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1820-1823",
-    "sala": "Planta 0 - Sala 067",
+    "sala": "67",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/38/Goya_Dog.jpg/960px-Goya_Dog.jpg",
     "descrizione": "Una delle Pitture Nere più enigmatiche: la testa di un cane emerge da una distesa dorata e indefinita, immagine di grande spoglia potenza espressiva.",
     "pubblica": true
@@ -709,7 +709,7 @@
     "tipo": "Pittura",
     "autore": "José de Ribera",
     "datazione": "1639",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/El_sue%C3%B1o_de_Jacob%2C_by_Jos%C3%A9_de_Ribera%2C_from_Prado_in_Google_Earth.jpg/960px-El_sue%C3%B1o_de_Jacob%2C_by_Jos%C3%A9_de_Ribera%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "Il patriarca biblico Giacobbe dorme addossato a una roccia mentre sogna la scala che unisce cielo e terra, dipinto con morbido naturalismo tenebroso.",
     "pubblica": true
@@ -720,7 +720,7 @@
     "tipo": "Pittura",
     "autore": "José de Ribera",
     "datazione": "1639",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bd/Ribera_-_Martirio_de_san_Felipe%2C_P001101.jpg/960px-Ribera_-_Martirio_de_san_Felipe%2C_P001101.jpg",
     "descrizione": "Scena del martirio dell'apostolo Filippo issato sulla croce, resa con il crudo naturalismo tenebrista tipico della maturità dell'artista.",
     "pubblica": true
@@ -731,7 +731,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1628-1629",
-    "sala": "Planta 1 - Sala 015A",
+    "sala": "15A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/Vel%C3%A1zquez_-_El_Triunfo_de_Baco_o_Los_Borrachos_%28Museo_del_Prado%2C_1628-29%29.jpg/960px-Vel%C3%A1zquez_-_El_Triunfo_de_Baco_o_Los_Borrachos_%28Museo_del_Prado%2C_1628-29%29.jpg",
     "descrizione": "Il dio Bacco incorona un gruppo di popolani spagnoli in una taverna, fusione originale tra il soggetto mitologico e la scena di genere popolare.",
     "pubblica": true
@@ -742,7 +742,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1630",
-    "sala": "Planta 1 - Sala 015A",
+    "sala": "15A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/ae/Vel%C3%A1zquez_-_La_Fragua_de_Vulcano_%28Museo_del_Prado%2C_1630%29.jpg/960px-Vel%C3%A1zquez_-_La_Fragua_de_Vulcano_%28Museo_del_Prado%2C_1630%29.jpg",
     "descrizione": "Apollo annuncia a Vulcano il tradimento della moglie Venere nella fucina del dio, colto nell'attimo di sorpresa dei fabbri al lavoro.",
     "pubblica": true
@@ -753,7 +753,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1635",
-    "sala": "Planta 1 - Sala 014",
+    "sala": "14",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/Diego_Vel%C3%A1zquez_-_Prince_Baltasar_Carlos_on_Horseback_-_WGA24414.jpg/960px-Diego_Vel%C3%A1zquez_-_Prince_Baltasar_Carlos_on_Horseback_-_WGA24414.jpg",
     "descrizione": "Ritratto equestre del giovane principe ereditario di Spagna, parte del ciclo di ritratti reali a cavallo per il Salón de Reinos.",
     "pubblica": true
@@ -764,7 +764,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1634",
-    "sala": "Planta 1 - Sala 014",
+    "sala": "14",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Vel%C3%A1zquez_-_Conde_Duque_de_Olivares_%28Museo_del_Prado%2C_1634-35%29.jpg/960px-Vel%C3%A1zquez_-_Conde_Duque_de_Olivares_%28Museo_del_Prado%2C_1634-35%29.jpg",
     "descrizione": "Il potente ministro di Filippo IV è ritratto a cavallo in posa di comando durante una battaglia, immagine di propaganda politica del potere validato.",
     "pubblica": true
@@ -775,7 +775,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1815",
-    "sala": "Planta 1 - Sala 038",
+    "sala": "38",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1d/Autorretrato_Goya_1815.jpg/960px-Autorretrato_Goya_1815.jpg",
     "descrizione": "Autoritratto della tarda maturità dell'artista, di intensa introspezione psicologica, dipinto con pennellata libera e vibrante.",
     "pubblica": true
@@ -786,7 +786,7 @@
     "tipo": "Pittura",
     "autore": "Tiziano Vecellio",
     "datazione": "1548",
-    "sala": "Planta 1 - Sala 027",
+    "sala": "27",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Titian_-_Emperor_Charles_V_at_M%C3%BChlberg_-_WGA22965.jpg/960px-Titian_-_Emperor_Charles_V_at_M%C3%BChlberg_-_WGA22965.jpg",
     "descrizione": "Ritratto equestre dell'imperatore Carlo V dopo la vittoria nella battaglia di Mühlberg, modello per secoli della ritrattistica regale europea.",
     "pubblica": true
@@ -797,7 +797,7 @@
     "tipo": "Pittura",
     "autore": "Tiziano Vecellio",
     "datazione": "1553",
-    "sala": "Planta 1 - Sala 027",
+    "sala": "27",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Tizian_-_Danae_receiving_the_Golden_Rain_-_Prado.jpg/960px-Tizian_-_Danae_receiving_the_Golden_Rain_-_Prado.jpg",
     "descrizione": "Soggetto mitologico ovidiano: Danae distesa riceve Zeus trasformato in pioggia d'oro, celebre per la sensualità della pennellata veneziana matura.",
     "pubblica": true
@@ -808,7 +808,7 @@
     "tipo": "Pittura",
     "autore": "Albrecht Dürer",
     "datazione": "1507",
-    "sala": "Planta 1 - Sala 055B",
+    "sala": "55B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Albrecht_D%C3%BCrer_-_Adam_and_Eve_%28Prado%29.jpg/960px-Albrecht_D%C3%BCrer_-_Adam_and_Eve_%28Prado%29.jpg",
     "descrizione": "Coppia di tavole a grandezza quasi naturale che raffigurano Adamo ed Eva, capolavoro rinascimentale tedesco sullo studio delle proporzioni del corpo umano.",
     "pubblica": true
@@ -819,7 +819,7 @@
     "tipo": "Pittura",
     "autore": "Fra Angelico",
     "datazione": "ca. 1426",
-    "sala": "Planta 0 - Sala 056B",
+    "sala": "56B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/La_Anunciaci%C3%B3n%2C_by_Fra_Angelico%2C_from_Prado_in_Google_Earth.jpg/960px-La_Anunciaci%C3%B3n%2C_by_Fra_Angelico%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "Pala d'altare a fondo oro raffigurante l'Annunciazione e, nella predella, storie della vita della Vergine, di squisita fattura gotico-rinascimentale.",
     "pubblica": true
@@ -830,7 +830,7 @@
     "tipo": "Pittura",
     "autore": "El Greco",
     "datazione": "1580 ca.",
-    "sala": "Planta 1 - Sala 008B",
+    "sala": "8B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_caballero_de_la_mano_en_el_pecho.jpg/960px-El_caballero_de_la_mano_en_el_pecho.jpg",
     "descrizione": "Ritratto di un gentiluomo spagnolo con la mano sul petto in gesto di giuramento, tra i ritratti più celebri ed enigmatici del maestro cretese-toledano.",
     "pubblica": true
@@ -841,7 +841,7 @@
     "tipo": "Pittura",
     "autore": "El Greco",
     "datazione": "1577-1579",
-    "sala": "Planta 1 - Sala 008B",
+    "sala": "8B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/La_Trinidad_%28El_Greco%2C_1577-1579%29.jpg/960px-La_Trinidad_%28El_Greco%2C_1577-1579%29.jpg",
     "descrizione": "Dio Padre sorregge il corpo di Cristo morto sotto lo sguardo della colomba dello Spirito Santo, dipinto con le forme allungate e i colori accesi tipici dell'artista.",
     "pubblica": true
@@ -852,7 +852,7 @@
     "tipo": "Pittura",
     "autore": "Joachim Patinir",
     "datazione": "1520-1524",
-    "sala": "Planta 0 - Sala 057",
+    "sala": "57",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Crossing_the_River_Styx.jpg/960px-Crossing_the_River_Styx.jpg",
     "descrizione": "Paesaggio fantastico che mostra un'anima traghettata da Caronte tra il Paradiso e l'Inferno, capolavoro del paesaggismo fiammingo cosmico.",
     "pubblica": true
@@ -863,7 +863,7 @@
     "tipo": "Pittura",
     "autore": "Rembrandt van Rijn",
     "datazione": "1634",
-    "sala": "Planta 1 - Sala 007",
+    "sala": "7",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b0/Judith_at_the_Banquet_of_Holofernes_%28previously_known_as_Artemisia%29%2C_by_Rembrandt%2C_from_Prado_in_Google_Earth.jpg/960px-Judith_at_the_Banquet_of_Holofernes_%28previously_known_as_Artemisia%29%2C_by_Rembrandt%2C_from_Prado_in_Google_Earth.jpg",
     "descrizione": "La regina Artemisia beve le ceneri del marito defunto in una coppa, scena di grande solennità resa con il chiaroscuro caratteristico del maestro olandese.",
     "pubblica": true
@@ -874,7 +874,7 @@
     "tipo": "Pittura",
     "autore": "El Greco",
     "datazione": "1612-1614",
-    "sala": "Planta 1 - Sala 008B",
+    "sala": "8B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/The_Adoration_of_the_Shepherds%2C_El_Greco.jpg/960px-The_Adoration_of_the_Shepherds%2C_El_Greco.jpg",
     "descrizione": "Ultima opera datata del pittore, dipinta per la propria cappella funeraria, con figure allungate e colori visionari tipici della sua maniera tarda.",
     "pubblica": true
@@ -885,7 +885,7 @@
     "tipo": "Pittura",
     "autore": "El Greco",
     "datazione": "1597",
-    "sala": "Planta 1 - Sala 008B",
+    "sala": "8B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/El_bautismo_de_Cristo_%28El_Greco%2C_1597%29.jpg/960px-El_bautismo_de_Cristo_%28El_Greco%2C_1597%29.jpg",
     "descrizione": "Battesimo di Cristo dipinto per il Colegio de Doña María de Aragón a Madrid, con le figure allungate e i colori accesi tipici dell'ultima fase dell'artista attivo a Toledo.",
     "pubblica": true
@@ -896,7 +896,7 @@
     "tipo": "Pittura",
     "autore": "Guercino",
     "datazione": "1617",
-    "sala": "Planta 1 - Sala 029",
+    "sala": "29",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/5/50/Susana_y_los_viejos_%28Guercino%29.jpg/960px-Susana_y_los_viejos_%28Guercino%29.jpg",
     "descrizione": "Episodio biblico di Susanna spiata dai due vecchi mentre fa il bagno, dipinto dal Guercino a Bologna per il cardinale Alessandro Ludovisi con intenso naturalismo emiliano.",
     "pubblica": true
@@ -907,7 +907,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1657",
-    "sala": "Planta 1 - Sala 012",
+    "sala": "12",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a3/Velazquez-las_hilanderas.jpg/960px-Velazquez-las_hilanderas.jpg",
     "descrizione": "Duplice scena che unisce un laboratorio di filatrici in primo piano al mito di Aracne e Minerva sullo sfondo, capolavoro tardo per la resa della luce e dello spazio.",
     "pubblica": true
@@ -918,7 +918,7 @@
     "tipo": "Pittura",
     "autore": "Peter Paul Rubens",
     "datazione": "1630-1633",
-    "sala": "Planta 1 - Sala 029",
+    "sala": "29",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d9/El_Jard%C3%ADn_del_Amor_%28Rubens%29.jpg/960px-El_Jard%C3%ADn_del_Amor_%28Rubens%29.jpg",
     "descrizione": "Gruppo di coppie eleganti che si corteggiano in un giardino, dipinto probabilmente in occasione delle seconde nozze dell'artista, celebrazione dell'amore coniugale barocco.",
     "pubblica": true
@@ -929,7 +929,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1619",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/74/La_adoraci%C3%B3n_de_los_Reyes_Magos%2C_1619%2C_Vel%C3%A1zquez.jpg/960px-La_adoraci%C3%B3n_de_los_Reyes_Magos%2C_1619%2C_Vel%C3%A1zquez.jpg",
     "descrizione": "Opera giovanile del pittore siviglianо, dipinta con influssi ancora tenebristi, in cui i modelli sono probabilmente familiari dell'artista.",
     "pubblica": true
@@ -940,7 +940,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1632",
-    "sala": "Planta 1 - Sala 012",
+    "sala": "12",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/af/Diego_Vel%C3%A1zquez_-_Christ_on_the_Cross_-_WGA24389.jpg/960px-Diego_Vel%C3%A1zquez_-_Christ_on_the_Cross_-_WGA24389.jpg",
     "descrizione": "Cristo in croce raffigurato in perfetta simmetria e solitudine su fondo scuro, capolavoro di sobrietà classica e intensità devozionale.",
     "pubblica": true
@@ -951,7 +951,7 @@
     "tipo": "Pittura",
     "autore": "Tiziano Vecellio",
     "datazione": "1551",
-    "sala": "Planta 1 - Sala 027",
+    "sala": "27",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b4/Titian_-_Portrait_of_Philip_II_in_Armour_-_WGA22970.jpg/960px-Titian_-_Portrait_of_Philip_II_in_Armour_-_WGA22970.jpg",
     "descrizione": "Ritratto ufficiale del futuro re di Spagna in armatura, immagine di rappresentanza destinata a circolare come dono diplomatico nelle corti europee.",
     "pubblica": true
@@ -962,7 +962,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "1618-1622",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/El_aguador_de_Sevilla%2C_por_Diego_Vel%C3%A1zquez.jpg/960px-El_aguador_de_Sevilla%2C_por_Diego_Vel%C3%A1zquez.jpg",
     "descrizione": "Scena di genere giovanile che ritrae un vecchio venditore d'acqua siviglianо, celebre per il naturalismo tenebrista e la resa illusionistica della brocca di terracotta.",
     "pubblica": true
@@ -973,7 +973,7 @@
     "tipo": "Pittura",
     "autore": "Diego Velázquez",
     "datazione": "ca. 1641-1644",
-    "sala": "Planta 1 - Sala 009",
+    "sala": "9",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fc/Vel%C3%A1zquez_-_Coronaci%C3%B3n_de_la_Virgen_%28Museo_del_Prado%2C_h._1645%29.jpg/960px-Vel%C3%A1zquez_-_Coronaci%C3%B3n_de_la_Virgen_%28Museo_del_Prado%2C_h._1645%29.jpg",
     "descrizione": "La Trinità incorona la Vergine Maria in una composizione solenne dipinta per l'oratorio della regina Isabella di Borbone nell'Alcázar di Madrid.",
     "pubblica": true
@@ -984,7 +984,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1825-1827",
-    "sala": "Planta 1 - Sala 038",
+    "sala": "38",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8e/Goya_MilkMaid.jpg/960px-Goya_MilkMaid.jpg",
     "descrizione": "Una delle ultime opere di Goya, dipinta durante l'esilio a Bordeaux, ritrae una giovane lattaia con tecnica sciolta e anticipatrice dell'Impressionismo.",
     "pubblica": true
@@ -995,7 +995,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1805",
-    "sala": "Planta 1 - Sala 034",
+    "sala": "34",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/76/Retrato_de_la_Marquesa_de_Santa_Cruz.jpg/960px-Retrato_de_la_Marquesa_de_Santa_Cruz.jpg",
     "descrizione": "Ritratto raffinato della nobildonna raffigurata come musa ispiratrice con una lira, esempio della grazia neoclassica nella ritrattistica goyesca.",
     "pubblica": true
@@ -1006,7 +1006,7 @@
     "tipo": "Pittura",
     "autore": "Attribuito alla bottega di Francisco de Goya",
     "datazione": "1808-1812",
-    "sala": "Planta 1 - Sala 038",
+    "sala": "38",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/El_coloso.jpg/960px-El_coloso.jpg",
     "descrizione": "Un gigante minaccioso domina un paesaggio di popolazioni in fuga, immagine simbolica angosciante legata al clima della guerra d'indipendenza spagnola.",
     "pubblica": true
@@ -1017,7 +1017,7 @@
     "tipo": "Pittura",
     "autore": "Francisco de Goya",
     "datazione": "1795",
-    "sala": "Planta 1 - Sala 034",
+    "sala": "34",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fe/Duchess_of_Alba_or_The_White_Duchess_by_Goya.jpg/960px-Duchess_of_Alba_or_The_White_Duchess_by_Goya.jpg",
     "descrizione": "Ritratto elegante della celebre duchessa, amica e forse musa dell'artista, vestita all'ultima moda del tempo con un cagnolino ai piedi.",
     "pubblica": true
@@ -1028,7 +1028,7 @@
     "tipo": "Pittura",
     "autore": "El Greco",
     "datazione": "1595 ca.",
-    "sala": "Planta 1 - Sala 008B",
+    "sala": "8B",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/San_Andr%C3%A9s_y_san_Francisco.jpg/960px-San_Andr%C3%A9s_y_san_Francisco.jpg",
     "descrizione": "I due santi sono raffigurati fianco a fianco a figura intera, con le forme allungate e la spiritualità intensa tipiche della maturità dell'artista.",
     "pubblica": true
@@ -1039,7 +1039,7 @@
     "tipo": "Pittura",
     "autore": "Bartolomé Esteban Murillo",
     "datazione": "1650 ca.",
-    "sala": "Planta 1 - Sala 009A",
+    "sala": "9A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Sagrada_Familia_del_pajarito_%28Murillo%29.jpg/960px-Sagrada_Familia_del_pajarito_%28Murillo%29.jpg",
     "descrizione": "Scena domestica e affettuosa della Sacra Famiglia, con il piccolo Gesù che gioca con un cardellino, esempio della grazia devozionale sivigliana.",
     "pubblica": true
@@ -1050,7 +1050,7 @@
     "tipo": "Pittura",
     "autore": "Bartolomé Esteban Murillo",
     "datazione": "1660-1665",
-    "sala": "Planta 1 - Sala 009A",
+    "sala": "9A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7f/Inmaculada_Concepci%C3%B3n_%28Murillo%2C_El_Escorial%29.jpg/960px-Inmaculada_Concepci%C3%B3n_%28Murillo%2C_El_Escorial%29.jpg",
     "descrizione": "La Vergine è raffigurata trionfante tra nubi e angeli, immagine devozionale tra le più imitate del pittore sivigliano barocco.",
     "pubblica": true
@@ -1061,7 +1061,7 @@
     "tipo": "Pittura",
     "autore": "Bartolomé Esteban Murillo",
     "datazione": "ca. 1660",
-    "sala": "Planta 1 - Sala 009A",
+    "sala": "9A",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Bartolom%C3%A9_Esteban_Perez_Murillo_-_Christ_the_Good_Shepherd_-_WGA16374.jpg/960px-Bartolom%C3%A9_Esteban_Perez_Murillo_-_Christ_the_Good_Shepherd_-_WGA16374.jpg",
     "descrizione": "Il piccolo Gesù raffigurato come pastore, seduto tra le pecore con l'agnello accanto, tra le immagini devozionali infantili più amate e riprodotte di Murillo.",
     "pubblica": true
@@ -1072,7 +1072,7 @@
     "tipo": "Scultura",
     "autore": "Ignoto (copia romana di età augustea)",
     "datazione": "I secolo a.C. - I secolo d.C.",
-    "sala": "Planta 0 - Galería de Escultura",
+    "sala": "71",
     "immagine": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/Grupo_de_San_Ildefonso_%28Museo_del_Prado%29_02.jpg/960px-Grupo_de_San_Ildefonso_%28Museo_del_Prado%29_02.jpg",
     "descrizione": "Gruppo marmoreo con due giovani efebi affiancati a un'ara, tra le sculture classiche più celebri e studiate della collezione archeologica del museo.",
     "pubblica": true
