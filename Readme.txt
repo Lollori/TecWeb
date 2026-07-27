@@ -63,10 +63,10 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 -Implementazione della pagina principale dell'editor-marketplace, creazione di cards per la gestione di musei, opere e items + grafica coerente col menu' principale dell'applicazione
 -Implementazione della pagina principale del navigator e implementazione delle sessioni per gestire le visite coordinate tra insegnanti e studenti + grafica coerente col menu' principale dell'applicazione 
 -Implementazione nell'editor-marketplace del form di creazione delle visite, creato per aggiungere item, assegnare nomi mnemonici e nomi univoci, possibilita' di pubblicarle sul marketplace (a una determinata cifra) o tenerle private (con Leonardo) 
--Implementazione di sezione per aggiungere items alle varie opere
+-Implementazione di sezione per creare nuovi items e collegarli a un'opera
 -Creazione degli schemi mongoose di musei, items, visite. Gestione di API lato backend per comunicare col database MongoDB
 -Creazione delle dashboard personalizzate per ogni ruolo dei vari utenti (ciascun utente vede una determinata dashboard in base al suo ruolo all'interno dell'editor-marketplace) e della dashboard unica del navigator
--Implementazione della chat e renderizzazione di immagini, items e mappe all'interno delle visite (con appositi bottoni)
+-Implementazione della chat e renderizzazione di immagini, items e mappe all'interno delle visite nel Navigator (con appositi bottoni)
 -Implementazione della schermata di riordinamento delle opere di una visita prima di farla partire all'interno del navigator
 
 
