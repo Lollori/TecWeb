@@ -52,6 +52,7 @@ app.use('/js'  , express.static(global.rootDir +'/public/js'));
 app.use('/css' , express.static(global.rootDir +'/public/css'));
 app.use('/data', express.static(global.rootDir +'/public/data'));
 app.use('/img' , express.static(global.rootDir +'/public/media'));
+app.get(['/Editor-Marketplace', '/Editor-Marketplace/'], (req, res) => res.redirect('/Editor-Marketplace/dashboard.html'));
 app.use('/Editor-Marketplace', express.static(global.rootDir + '/Editor-Marketplace'));
 app.use('/login', express.static(global.rootDir + '/Login'));
 app.use('/Navigator', express.static(global.rootDir + '/Navigator'));
