@@ -302,6 +302,10 @@ app.get('/api/sessioni/:codice', (req, res) => {
     const session = sessioni.getSession(req.params.codice);
     if (!session) return res.status(404).json({ error: 'Sessione non trovata.' });
     const { clients, ...safeSession } = session;
+    if (safeSession.quiz) {
+        const { timer, ...quizSafe } = safeSession.quiz;
+        safeSession.quiz = quizSafe;
+    }
     res.json({ ok: true, data: safeSession });
 });
 

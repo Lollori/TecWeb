@@ -14,9 +14,7 @@ function QuizPanel({
   const [remaining, setRemaining] = React.useState(() => Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000)));
   const [filtroVisitatore, setFiltroVisitatore] = React.useState('');
 
-  // In una visita in solitaria il "docente" è anche l'unico partecipante:
-  // deve poter rispondere lui stesso al quiz invece di vedere solo il
-  // pannello di monitoraggio pensato per una classe con studenti collegati.
+
   const puoRispondere = !isDocente || soloQuiz;
   React.useEffect(() => {
     if (quiz.stato !== 'in-corso') return;
