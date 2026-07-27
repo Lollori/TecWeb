@@ -53,7 +53,7 @@ _ Al massimo 15 giorni dopo la data di sottomissione del file README_
 
 #### Applicazione marketplace: HTML, CSS (Bootstrap), JavaScript (vanilla)
 
-#### Applicazione navigator: CSS (Bootstrap), JavaScript (React JSX per la precisione), HTML
+#### Applicazione navigator: CSS (Bootstrap), JavaScript (React JSX), HTML
 
 
 ## Contributo individuale
@@ -102,4 +102,4 @@ _ Al massimo 15 giorni dopo la data di sottomissione del file README_
 7. Piantine interattive durante la visita che mostrano la stanza di riferimento
 8. Algoritmo di inserimento di opere all'interno delle visite per seguire un percorso lineare all'interno del museo.
 
-#### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo, immagini della home page (anche per versione mobile e modalita' chiara)
+#### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo (ciascun ruolo ha la sua immagine profilo), immagini della home page (anche per versione mobile e modalita' chiara)
