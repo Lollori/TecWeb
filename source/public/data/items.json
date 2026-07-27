@@ -1,5 +1,6 @@
 [
   {
+    "_id": "f8d97d72470f2c058f3642e6",
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
     "objectId": "venere-nascita-semplice",
@@ -32,6 +33,7 @@
     "pubblica": true
   },
   {
+    "_id": "d17b5aa9274d2630c09ef8f0",
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
     "objectId": "venere-nascita-medio",
@@ -64,6 +66,7 @@
     "pubblica": true
   },
   {
+    "_id": "84b7044332ac726c43e484d0",
     "museumId": "IT-FI0082",
     "operaId": "La Nascita di Venere",
     "objectId": "venere-nascita-avanzato",
@@ -96,6 +99,7 @@
     "pubblica": true
   },
   {
+    "_id": "25ec720f30b03b52ec5e1253",
     "museumId": "IT-FI0082",
     "operaId": "La Primavera",
     "objectId": "primavera-semplice",
@@ -128,6 +132,7 @@
     "pubblica": true
   },
   {
+    "_id": "ea466d2316bb6aec8341dc1f",
     "museumId": "IT-FI0082",
     "operaId": "La Primavera",
     "objectId": "primavera-medio",
@@ -160,6 +165,7 @@
     "pubblica": true
   },
   {
+    "_id": "15a17ecf3cdf81e791dee675",
     "museumId": "IT-FI0082",
     "operaId": "La Primavera",
     "objectId": "primavera-avanzato",
@@ -192,6 +198,7 @@
     "pubblica": true
   },
   {
+    "_id": "3414860502a867b6a3eec68e",
     "museumId": "IT-FI0082",
     "operaId": "Pallade e il Centauro",
     "objectId": "pallade-centauro-semplice",
@@ -224,6 +231,7 @@
     "pubblica": true
   },
   {
+    "_id": "56f391df9c60fa8d43e0a1cf",
     "museumId": "IT-FI0082",
     "operaId": "Pallade e il Centauro",
     "objectId": "pallade-centauro-medio",
@@ -256,6 +264,7 @@
     "pubblica": true
   },
   {
+    "_id": "4d355252c2ffe1f2e4f85485",
     "museumId": "IT-FI0082",
     "operaId": "Pallade e il Centauro",
     "objectId": "pallade-centauro-avanzato",
@@ -288,6 +297,7 @@
     "pubblica": true
   },
   {
+    "_id": "74dd2b39e6c23fc432fd658a",
     "museumId": "IT-FI0082",
     "operaId": "Annunciazione",
     "objectId": "annunciazione-leonardo-semplice",
@@ -319,6 +329,7 @@
     "pubblica": true
   },
   {
+    "_id": "8cfb84c9aca273d1ac240778",
     "museumId": "IT-FI0082",
     "operaId": "Annunciazione",
     "objectId": "annunciazione-leonardo-medio",
@@ -350,6 +361,7 @@
     "pubblica": true
   },
   {
+    "_id": "b73fbd0d54dbda2263b8a846",
     "museumId": "IT-FI0082",
     "operaId": "Annunciazione",
     "objectId": "annunciazione-leonardo-avanzato",
@@ -381,6 +393,7 @@
     "pubblica": true
   },
   {
+    "_id": "36cd69550b0489d6ea0e987f",
     "museumId": "IT-FI0082",
     "operaId": "Adorazione dei Magi",
     "objectId": "adorazione-magi-leonardo-semplice",
@@ -412,6 +425,7 @@
     "pubblica": true
   },
   {
+    "_id": "5b069cadccb8d0846f03e68b",
     "museumId": "IT-FI0082",
     "operaId": "Adorazione dei Magi",
     "objectId": "adorazione-magi-leonardo-medio",
@@ -443,6 +457,7 @@
     "pubblica": true
   },
   {
+    "_id": "461756c7a1b303106f0aa411",
     "museumId": "IT-FI0082",
     "operaId": "Adorazione dei Magi",
     "objectId": "adorazione-magi-leonardo-avanzato",
@@ -474,6 +489,7 @@
     "pubblica": true
   },
   {
+    "_id": "5f0a8a9266ce1913df95b8d5",
     "museumId": "IT-FI0082",
     "operaId": "Tondo Doni",
     "objectId": "tondo-doni-semplice",
@@ -505,6 +521,7 @@
     "pubblica": true
   },
   {
+    "_id": "d3e0a7fdb66db628345b6384",
     "museumId": "IT-FI0082",
     "operaId": "Tondo Doni",
     "objectId": "tondo-doni-medio",
@@ -536,6 +553,7 @@
     "pubblica": true
   },
   {
+    "_id": "3ad7f21bb00c742b18b41227",
     "museumId": "IT-FI0082",
     "operaId": "Tondo Doni",
     "objectId": "tondo-doni-avanzato",
@@ -567,6 +585,7 @@
     "pubblica": true
   },
   {
+    "_id": "82771a7c8e372a934bac6a2f",
     "museumId": "IT-FI0082",
     "operaId": "La Venere di Urbino",
     "objectId": "venere-urbino-semplice",
@@ -598,6 +617,7 @@
     "pubblica": true
   },
   {
+    "_id": "d9d9703240f55a24ce662814",
     "museumId": "IT-FI0082",
     "operaId": "La Venere di Urbino",
     "objectId": "venere-urbino-medio",
@@ -629,6 +649,7 @@
     "pubblica": true
   },
   {
+    "_id": "dd50afb62763b59818d65ac7",
     "museumId": "IT-FI0082",
     "operaId": "La Venere di Urbino",
     "objectId": "venere-urbino-avanzato",
@@ -660,6 +681,7 @@
     "pubblica": true
   },
   {
+    "_id": "111865567b25fc2a818025c7",
     "museumId": "IT-FI0082",
     "operaId": "Madonna del Cardellino",
     "objectId": "madonna-cardellino-semplice",
@@ -691,6 +713,7 @@
     "pubblica": true
   },
   {
+    "_id": "1c3e3471088a5b61bb4893e7",
     "museumId": "IT-FI0082",
     "operaId": "Madonna del Cardellino",
     "objectId": "madonna-cardellino-medio",
@@ -722,6 +745,7 @@
     "pubblica": true
   },
   {
+    "_id": "a1daf28d7e3413716e773a05",
     "museumId": "IT-FI0082",
     "operaId": "Madonna del Cardellino",
     "objectId": "madonna-cardellino-avanzato",
@@ -753,6 +777,7 @@
     "pubblica": true
   },
   {
+    "_id": "07cab61a74898f05c2532dd9",
     "museumId": "IT-FI0082",
     "operaId": "Maestà di Santa Trinita",
     "objectId": "maesta-santa-trinita-semplice",
@@ -784,6 +809,7 @@
     "pubblica": true
   },
   {
+    "_id": "2f92ba91beb6aa1667b7d4e0",
     "museumId": "IT-FI0082",
     "operaId": "Maestà di Santa Trinita",
     "objectId": "maesta-santa-trinita-medio",
@@ -815,6 +841,7 @@
     "pubblica": true
   },
   {
+    "_id": "420a60e9cef9165e519f31ad",
     "museumId": "IT-FI0082",
     "operaId": "Maestà di Santa Trinita",
     "objectId": "maesta-santa-trinita-avanzato",
@@ -846,6 +873,7 @@
     "pubblica": true
   },
   {
+    "_id": "c53ee49d5cecccdf0d03075a",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto con collare di pelliccia",
     "objectId": "durer-autoritratto-semplice",
@@ -877,6 +905,7 @@
     "pubblica": true
   },
   {
+    "_id": "4b628df9b4d9b77c9270225c",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto con collare di pelliccia",
     "objectId": "durer-autoritratto-medio",
@@ -908,6 +937,7 @@
     "pubblica": true
   },
   {
+    "_id": "c406941884c266a7d3b41db1",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto con collare di pelliccia",
     "objectId": "durer-autoritratto-avanzato",
@@ -939,6 +969,7 @@
     "pubblica": true
   },
   {
+    "_id": "6bec3690e6608a77ab79300e",
     "museumId": "IT-FI0082",
     "operaId": "Doppio ritratto dei Duchi di Urbino",
     "objectId": "duchi-urbino-semplice",
@@ -970,6 +1001,7 @@
     "pubblica": true
   },
   {
+    "_id": "5a223f28376ad764aef514c8",
     "museumId": "IT-FI0082",
     "operaId": "Doppio ritratto dei Duchi di Urbino",
     "objectId": "duchi-urbino-medio",
@@ -1001,6 +1033,7 @@
     "pubblica": true
   },
   {
+    "_id": "ecbd6829a7c4a29493ed5793",
     "museumId": "IT-FI0082",
     "operaId": "Doppio ritratto dei Duchi di Urbino",
     "objectId": "duchi-urbino-avanzato",
@@ -1032,6 +1065,7 @@
     "pubblica": true
   },
   {
+    "_id": "7698c2718eb8739933410243",
     "museumId": "IT-FI0082",
     "operaId": "Venere de' Medici",
     "objectId": "venere-medici-semplice",
@@ -1063,6 +1097,7 @@
     "pubblica": true
   },
   {
+    "_id": "d75461f15b4bf33859d3e698",
     "museumId": "IT-FI0082",
     "operaId": "Venere de' Medici",
     "objectId": "venere-medici-medio",
@@ -1094,6 +1129,7 @@
     "pubblica": true
   },
   {
+    "_id": "b0795870d04731e3d5bf31f5",
     "museumId": "IT-FI0082",
     "operaId": "Venere de' Medici",
     "objectId": "venere-medici-avanzato",
@@ -1125,6 +1161,7 @@
     "pubblica": true
   },
   {
+    "_id": "72552cb7264e19f8c7614542",
     "museumId": "IT-FI0082",
     "operaId": "Bacco",
     "objectId": "bacco-semplice",
@@ -1156,6 +1193,7 @@
     "pubblica": true
   },
   {
+    "_id": "34de0e06553cb7724678552d",
     "museumId": "IT-FI0082",
     "operaId": "Bacco",
     "objectId": "bacco-medio",
@@ -1187,6 +1225,7 @@
     "pubblica": true
   },
   {
+    "_id": "132f5adaf3d115c3e5746ed0",
     "museumId": "IT-FI0082",
     "operaId": "Bacco",
     "objectId": "bacco-avanzato",
@@ -1218,6 +1257,7 @@
     "pubblica": true
   },
   {
+    "_id": "13736437ee4a6c074af1eb75",
     "museumId": "IT-FI0082",
     "operaId": "Medusa",
     "objectId": "medusa-semplice",
@@ -1249,6 +1289,7 @@
     "pubblica": true
   },
   {
+    "_id": "cbf018fe933108a050040f6e",
     "museumId": "IT-FI0082",
     "operaId": "Medusa",
     "objectId": "medusa-medio",
@@ -1280,6 +1321,7 @@
     "pubblica": true
   },
   {
+    "_id": "5e0a939b43140f29ba25e1be",
     "museumId": "IT-FI0082",
     "operaId": "Medusa",
     "objectId": "medusa-avanzato",
@@ -1311,6 +1353,7 @@
     "pubblica": true
   },
   {
+    "_id": "b261f8e151f34840498a8667",
     "museumId": "IT-FI0082",
     "operaId": "Ritratto di Eleonora di Toledo",
     "objectId": "eleonora-toledo-semplice",
@@ -1342,6 +1385,7 @@
     "pubblica": true
   },
   {
+    "_id": "d3f8abcfc019509cfa558c5b",
     "museumId": "IT-FI0082",
     "operaId": "Ritratto di Eleonora di Toledo",
     "objectId": "eleonora-toledo-medio",
@@ -1373,6 +1417,7 @@
     "pubblica": true
   },
   {
+    "_id": "56cc8158712f3aa52b244104",
     "museumId": "IT-FI0082",
     "operaId": "Ritratto di Eleonora di Toledo",
     "objectId": "eleonora-toledo-avanzato",
@@ -1404,6 +1449,7 @@
     "pubblica": true
   },
   {
+    "_id": "86694c427a6311fe427c6e90",
     "museumId": "IT-FI0082",
     "operaId": "Battaglia di San Romano",
     "objectId": "battaglia-san-romano-semplice",
@@ -1435,6 +1481,7 @@
     "pubblica": true
   },
   {
+    "_id": "b73e7d4373a0e65024ff6557",
     "museumId": "IT-FI0082",
     "operaId": "Battaglia di San Romano",
     "objectId": "battaglia-san-romano-medio",
@@ -1466,6 +1513,7 @@
     "pubblica": true
   },
   {
+    "_id": "42924fd3349cd229ff1d1523",
     "museumId": "IT-FI0082",
     "operaId": "Battaglia di San Romano",
     "objectId": "battaglia-san-romano-avanzato",
@@ -1497,6 +1545,7 @@
     "pubblica": true
   },
   {
+    "_id": "730f605393ec7e60d11da689",
     "museumId": "IT-FI0082",
     "operaId": "Madonna dal collo lungo",
     "objectId": "madonna-collo-lungo-semplice",
@@ -1528,6 +1577,7 @@
     "pubblica": true
   },
   {
+    "_id": "944d20196a6831e1baa6c1f6",
     "museumId": "IT-FI0082",
     "operaId": "Madonna dal collo lungo",
     "objectId": "madonna-collo-lungo-medio",
@@ -1559,6 +1609,7 @@
     "pubblica": true
   },
   {
+    "_id": "cf92923c61d059cd28fe45eb",
     "museumId": "IT-FI0082",
     "operaId": "Madonna dal collo lungo",
     "objectId": "madonna-collo-lungo-avanzato",
@@ -1590,6 +1641,7 @@
     "pubblica": true
   },
   {
+    "_id": "11fad00f17dcd17cd3267093",
     "museumId": "IT-FI0082",
     "operaId": "Giuditta che decapita Oloferne",
     "objectId": "giuditta-oloferne-semplice",
@@ -1621,6 +1673,7 @@
     "pubblica": true
   },
   {
+    "_id": "24c30d65e6a0c77e7547e37e",
     "museumId": "IT-FI0082",
     "operaId": "Giuditta che decapita Oloferne",
     "objectId": "giuditta-oloferne-medio",
@@ -1652,6 +1705,7 @@
     "pubblica": true
   },
   {
+    "_id": "b79c562103d913bcdfc20921",
     "museumId": "IT-FI0082",
     "operaId": "Giuditta che decapita Oloferne",
     "objectId": "giuditta-oloferne-avanzato",
@@ -1683,6 +1737,7 @@
     "pubblica": true
   },
   {
+    "_id": "408374ef101ba0a2898aa220",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto",
     "objectId": "rembrandt-autoritratto-semplice",
@@ -1714,6 +1769,7 @@
     "pubblica": true
   },
   {
+    "_id": "fa1c7374e12c9e57b97e24d2",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto",
     "objectId": "rembrandt-autoritratto-medio",
@@ -1745,6 +1801,7 @@
     "pubblica": true
   },
   {
+    "_id": "c3ebc1dac3f33e0561e03c5f",
     "museumId": "IT-FI0082",
     "operaId": "Autoritratto",
     "objectId": "rembrandt-autoritratto-avanzato",
@@ -1776,6 +1833,7 @@
     "pubblica": true
   },
   {
+    "_id": "f7b9a701105911256f30f973",
     "museumId": "IT-FI0082",
     "operaId": "Madonna delle Arpie",
     "objectId": "madonna-arpie-semplice",
@@ -1807,6 +1865,7 @@
     "pubblica": true
   },
   {
+    "_id": "eae423a26b53272196b2cd47",
     "museumId": "IT-FI0082",
     "operaId": "Madonna delle Arpie",
     "objectId": "madonna-arpie-medio",
@@ -1838,6 +1897,7 @@
     "pubblica": true
   },
   {
+    "_id": "b7bb3167817bd50fb608528c",
     "museumId": "IT-FI0082",
     "operaId": "Madonna delle Arpie",
     "objectId": "madonna-arpie-avanzato",
@@ -1869,6 +1929,7 @@
     "pubblica": true
   },
   {
+    "_id": "36b5a88de0c647f26ea5bc0b",
     "museumId": "IT-FI0082",
     "objectId": "botticelli-biografia-semplice",
     "toni": {
@@ -1911,6 +1972,7 @@
     ]
   },
   {
+    "_id": "958edbb802ddbd6f54fc422d",
     "museumId": "IT-FI0082",
     "objectId": "michelangelo-biografia-semplice",
     "toni": {
@@ -1954,6 +2016,7 @@
     ]
   },
   {
+    "_id": "51366ed8caab5e56fd4acad1",
     "museumId": "IT-FI0082",
     "objectId": "medici-mecenatismo-semplice",
     "toni": {
@@ -1998,6 +2061,7 @@
     ]
   },
   {
+    "_id": "d554ce17398c347fbe713a2b",
     "museumId": "IT-FI0082",
     "objectId": "rinascimento-fiorentino-semplice",
     "toni": {
@@ -2038,6 +2102,7 @@
     ]
   },
   {
+    "_id": "9dff177733eb41db18a288ce",
     "museumId": "IT-FI0082",
     "objectId": "caravaggio-biografia-semplice",
     "toni": {
@@ -2079,6 +2144,7 @@
     ]
   },
   {
+    "_id": "8cbbc8e7b7c765ea56c599e8",
     "museumId": "ES-MA0001",
     "objectId": "velazquez-biografia-semplice",
     "toni": {
@@ -2121,6 +2187,7 @@
     ]
   },
   {
+    "_id": "49951d0702396d4a6c0b373b",
     "museumId": "ES-MA0001",
     "objectId": "goya-biografia-semplice",
     "toni": {
@@ -2164,6 +2231,7 @@
     ]
   },
   {
+    "_id": "b0e96657da5bc1e4d926ec80",
     "museumId": "ES-MA0001",
     "objectId": "elgreco-biografia-semplice",
     "toni": {
@@ -2205,6 +2273,7 @@
     ]
   },
   {
+    "_id": "7df7b2402bb7a15806fff96b",
     "museumId": "ES-MA0001",
     "objectId": "secolo-oro-spagnolo-semplice",
     "toni": {
@@ -2245,6 +2314,7 @@
     ]
   },
   {
+    "_id": "ba71b697f170ba85d3a617c6",
     "museumId": "ES-MA0001",
     "objectId": "asburgo-corte-semplice",
     "toni": {
@@ -2283,5 +2353,805 @@
     "acquirentiIds": [
       "d2l6s4u7ez"
     ]
+  },
+  {
+    "_id": "60fbcb11c913f07d7b27f50c",
+    "museumId": "IT-FI0082",
+    "operaId": "Flora",
+    "objectId": "flora-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Flora è una giovane donna che regge dei fiori, ritratta da Tiziano con colori caldi e luminosi.",
+        "d15": "Il dipinto raffigura una giovane donna idealizzata con una camicia bianca leggermente scivolata dalla spalla, che regge un mazzo di fiori. È uno dei ritratti femminili più celebri del Cinquecento veneziano, ammirato per la resa morbida della carnagione e dei capelli dorati.",
+        "d40": "Flora (1515 ca., olio su tavola) di Tiziano Vecellio raffigura una fanciulla dai capelli biondo-ramati che offre un mazzo di fiori, avvolta in una camicia bianca che scopre parzialmente la spalla destra. L'identità della figura resta incerta: alcuni la interpretano come un ritratto di cortigiana idealizzata, altri come un'allegoria della primavera o della sposa novella secondo l'uso nuziale veneziano di donare fiori. La resa pittorica, con l'incarnato caldo e luminoso reso attraverso sottili velature, e la libertà della posa, ne fanno un modello fondamentale per la ritrattistica femminile veneziana del Cinquecento, influenzando generazioni di pittori successivi."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1515 ca.",
+      "sala": "28",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Flora%2C_por_Tiziano.jpg/960px-Flora%2C_por_Tiziano.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "49bee55d86529d7a158f4d8f",
+    "museumId": "IT-FI0082",
+    "operaId": "Flora",
+    "objectId": "flora-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Icona della ritrattistica veneziana, sospesa tra ritratto di cortigiana e allegoria nuziale.",
+        "d15": "L'ambiguità iconografica tra ritratto di cortigiana idealizzata e allegoria nuziale legata all'uso veneziano di donare fiori alla sposa rende Flora un caso paradigmatico della ritrattistica tizianesca, costruita su una sensualità trattenuta e una tavolozza calda di ascendenza giorgionesca.",
+        "d40": "Flora (olio su tavola, 79,7 × 63,5 cm, ca. 1515), attribuita alla prima maturità di Tiziano, si colloca nel filone della ritrattistica femminile idealizzata veneziana, di cui costituisce uno dei vertici assoluti. La figura, con la camicia scivolata a scoprire la spalla in un gesto di casta sensualità, e il mazzo di fiori di viola, gelsomino e rose offerto con la mano destra, ha generato un'ampia esegesi critica: dalla lettura come ritratto di cortigiana (secondo la tradizione della 'bella' veneziana), all'interpretazione come allegoria nuziale legata al costume veneziano di offrire fiori alla sposa nel giorno del matrimonio, fino all'identificazione con Flora, dea romana della primavera e della fioritura. La tavolozza calda, costruita su velature sovrapposte che modulano la luce sull'incarnato, deriva dalla lezione giorgionesca rielaborata da Tiziano in chiave più materica e luminosa, e costituì un modello di riferimento imprescindibile per la ritrattistica veneziana del pieno Cinquecento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1515 ca.",
+      "sala": "28",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/24/Flora%2C_por_Tiziano.jpg/960px-Flora%2C_por_Tiziano.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "30c1ad881282c0587b94b043",
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna del Magnificat",
+    "objectId": "magnificat-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Tondo raffigurante la Vergine Maria che scrive il Magnificat, circondata da angeli e dal Bambino.",
+        "d15": "Botticelli dipinge la Vergine nell'atto di scrivere il cantico del Magnificat su un libro, mentre il Bambino Gesù le regge la mano guidandola. Attorno, un coro di angeli osserva la scena in un tondo dalla composizione elegante e armoniosa.",
+        "d40": "La Madonna del Magnificat (1481, tempera su tavola) di Sandro Botticelli raffigura la Vergine colta nell'atto di scrivere il cantico del Magnificat ('L'anima mia magnifica il Signore'), con il Bambino che le sorregge la mano guidando la scrittura mentre con l'altra riceve una melagrana, simbolo della Passione. La composizione circolare (tondo), tipica del Rinascimento fiorentino per le decorazioni domestiche di famiglie facoltose, è animata da un coro di angeli che circonda le figure centrali con un ritmo elegante e sinuoso, caratteristico dello stile grafico e raffinato di Botticelli negli anni Ottanta del Quattrocento."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1481",
+      "sala": "10-14",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Madonna_of_the_Magnificat.png/960px-Madonna_of_the_Magnificat.png",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "4a436af2c05ef6d12c3cc0d2",
+    "museumId": "IT-FI0082",
+    "operaId": "Madonna del Magnificat",
+    "objectId": "magnificat-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Tondo devozionale con complessa iconografia mariana e riferimento eucaristico della melagrana.",
+        "d15": "Il tondo, formato circolare diffuso nella Firenze laurenziana per la decorazione domestica, sviluppa un'iconografia mariana raffinata: la scrittura del Magnificat allude alla dignità profetica della Vergine, mentre la melagrana offerta dal Bambino introduce un rimando eucaristico-passionale nella composizione, orchestrata secondo un ritmo lineare tipico della bottega botticelliana matura.",
+        "d40": "La Madonna del Magnificat (tempera su tavola, diametro 118 cm, 1481) rappresenta uno degli esempi più raffinati della produzione di tondi devozionali nella Firenze laurenziana, formato circolare particolarmente in voga per l'arredo domestico dell'alta borghesia e dell'aristocrazia fiorentina del secondo Quattrocento. L'iconografia, incentrata sulla Vergine intenta a vergare il cantico del Magnificat mentre il Bambino le guida la mano, allude alla dignità profetica e sapienziale di Maria, mentre la melagrana che il Bambino riceve dall'angelo introduce un rimando simbolico alla futura Passione, secondo una tradizione iconografica consolidata nella pittura toscana del tempo. La disposizione degli angeli, disposti secondo un ritmo circolare che asseconda la forma del supporto, dimostra la piena padronanza da parte di Botticelli della composizione tonda, genere in cui l'artista fiorentino eccelse producendo alcuni degli esemplari più imitati del Rinascimento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1481",
+      "sala": "10-14",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Madonna_of_the_Magnificat.png/960px-Madonna_of_the_Magnificat.png",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "1efb5ba5f8518842b71b5139",
+    "museumId": "IT-FI0082",
+    "operaId": "Ritratto di Leone X",
+    "objectId": "leone-x-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Ritratto di papa Leone X con due cardinali, dipinto da Raffaello con straordinaria attenzione psicologica.",
+        "d15": "Raffaello ritrae papa Leone X de' Medici seduto a un tavolo, con accanto i cardinali Giulio de' Medici e Luigi de' Rossi. Il dipinto è celebre per la resa minuziosa dei tessuti e per l'intensità psicologica dello sguardo del pontefice.",
+        "d40": "Il Ritratto di Leone X con i cardinali Giulio de' Medici e Luigi de' Rossi (1518-1519, olio su tavola) di Raffaello Sanzio raffigura il papa mediceo intento a esaminare un manoscritto miniato con una lente d'ingrandimento, dettaglio che allude alla sua raffinata cultura bibliofila. La resa dei tessuti, dal velluto rosso della mozzetta alla trama dorata del damasco, è resa con un virtuosismo pittorico che rivaleggia con la grande tradizione fiamminga, mentre il volto del pontefice, miope e leggermente appesantito, viene reso con un naturalismo psicologico che ne svela la personalità senza idealizzazioni cortigiane, facendone uno dei vertici della ritrattistica di corte del Rinascimento italiano."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1518-1519",
+      "sala": "35",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Raphael_-_Pope_Leo_X_with_two_cardinals.jpg/960px-Raphael_-_Pope_Leo_X_with_two_cardinals.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "dd4f1ad5e62f773affadd722",
+    "museumId": "IT-FI0082",
+    "operaId": "Ritratto di Leone X",
+    "objectId": "leone-x-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Ritratto di stato mediceo, tra virtuosismo tessile fiammingo e naturalismo psicologico raffaellesco.",
+        "d15": "Il ritratto, eseguito nell'ultima fase romana di Raffaello, coniuga la tradizione del ritratto di stato con un'analisi fisiognomica priva di idealizzazione encomiastica, mentre la resa dei tessuti rivela l'assimilazione di modelli fiamminghi filtrati attraverso la sensibilità cromatica dell'artista urbinate.",
+        "d40": "Il Ritratto di Leone X con i cardinali Giulio de' Medici e Luigi de' Rossi (olio su tavola, 154 × 119 cm, 1518-1519) costituisce uno dei vertici della ritrattistica di rappresentanza del Cinquecento italiano, eseguito da Raffaello nella sua ultima e più matura fase romana. Il pontefice, colto nell'atto di esaminare un prezioso manoscritto miniato tramite una lente d'ingrandimento, è caratterizzato da un naturalismo fisiognomico privo di idealizzazione cortigiana, che ne restituisce la miopia e la corporatura pesante con understatement quasi documentario. La resa virtuosistica dei tessuti, dal velluto cremisi della mozzetta al broccato aureo del piviale, rivela l'assimilazione da parte di Raffaello della tradizione ritrattistica fiamminga, filtrata attraverso una sensibilità cromatica pienamente italiana. L'opera, celebrata da Vasari per la sua verosimiglianza, divenne modello imprescindibile per la ritrattistica di stato europea dei secoli successivi, da Tiziano a Velázquez."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1518-1519",
+      "sala": "35",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c3/Raphael_-_Pope_Leo_X_with_two_cardinals.jpg/960px-Raphael_-_Pope_Leo_X_with_two_cardinals.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "ab0477e36cb9a0c368be5486",
+    "museumId": "IT-FI0082",
+    "operaId": "Cena in Emmaus",
+    "objectId": "cena-emmaus-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Scena evangelica in cui Cristo risorto si rivela ai due discepoli durante la cena a Emmaus.",
+        "d15": "Pontormo dipinge l'episodio evangelico dei discepoli di Emmaus che riconoscono Cristo risorto nel gesto di spezzare il pane. L'opera fu realizzata durante il soggiorno dell'artista alla Certosa del Galluzzo, dove si era rifugiato durante l'epidemia di peste del 1523-25.",
+        "d40": "La Cena in Emmaus (1525, olio su tela) di Jacopo Pontormo raffigura l'episodio evangelico (Luca 24, 13-35) in cui Cristo risorto, non riconosciuto dai due discepoli durante il viaggio verso Emmaus, si rivela loro nell'atto di spezzare il pane durante la cena. L'opera fu dipinta durante il rifugio dell'artista presso la Certosa del Galluzzo, dove si era ritirato per sfuggire all'epidemia di peste che colpì Firenze tra il 1523 e il 1525, e riflette nell'ambientazione monastica e nel misticismo della scena l'atmosfera di isolamento spirituale vissuta dal pittore in quel periodo, insieme all'influsso della grafica di Dürer allora in circolazione tra gli artisti fiorentini."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1525",
+      "sala": "27",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Pontormo_-_Cena_in_Emmaus_-_Google_Art_Project.jpg/960px-Pontormo_-_Cena_in_Emmaus_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "f020f07654a69395aeffe89c",
+    "museumId": "IT-FI0082",
+    "operaId": "Cena in Emmaus",
+    "objectId": "cena-emmaus-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Opera certosina di Pontormo, tra iconografia eucaristica e assimilazione della grafica düreriana.",
+        "d15": "Dipinta durante il ritiro alla Certosa del Galluzzo, l'opera integra l'iconografia tradizionale della cena di Emmaus con soluzioni compositive e fisionomiche derivate dalla circolazione di incisioni düreriane in ambito fiorentino, in un clima di intensa spiritualità solitaria acuita dal contesto della peste del 1523-25.",
+        "d40": "La Cena in Emmaus (olio su tela, 230 × 173 cm, 1525) fu eseguita da Jacopo Pontormo durante il periodo di isolamento volontario presso la Certosa del Galluzzo, dove l'artista si era rifugiato per sottrarsi all'epidemia di peste che colpì Firenze tra il 1523 e il 1525. L'iconografia tradizionale dell'episodio evangelico del riconoscimento di Cristo risorto nell'atto di spezzare il pane viene qui rielaborata attraverso un linguaggio formale fortemente influenzato dalla grafica di Albrecht Dürer, le cui incisioni circolavano ampiamente tra gli artisti fiorentini del tempo, riconoscibile nella caratterizzazione fisionomica intensa dei personaggi e nella resa quasi grafica dei panneggi. Un dettaglio celebre e oggetto di ampio dibattito storiografico è la presenza, nel triangolo sopra la testa di Cristo, di un occhio inserito entro un motivo decorativo, tradizionalmente interpretato come simbolo della Provvidenza divina. L'opera, destinata al refettorio della Certosa, riflette nell'ambientazione monastica sobria e nell'intensità mistica della scena il clima di raccoglimento spirituale vissuto dall'artista in quel periodo di isolamento forzato."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1525",
+      "sala": "27",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2b/Pontormo_-_Cena_in_Emmaus_-_Google_Art_Project.jpg/960px-Pontormo_-_Cena_in_Emmaus_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "b6267841901dd8689d8c2ccc",
+    "museumId": "IT-FI0082",
+    "operaId": "Sacrificio di Isacco",
+    "objectId": "sacrificio-isacco-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Episodio biblico del sacrificio di Isacco, fermato all'ultimo istante da un angelo.",
+        "d15": "Caravaggio raffigura il momento drammatico in cui Abramo sta per sacrificare il figlio Isacco per obbedienza a Dio, ma viene fermato da un angelo che gli blocca il braccio. Il volto atterrito del ragazzo e la tensione fisica dei corpi rendono la scena di straordinaria intensità.",
+        "d40": "Il Sacrificio di Isacco (1603 ca., olio su tela) di Caravaggio rappresenta l'episodio biblico (Genesi 22) in cui Abramo, messo alla prova da Dio, sta per sacrificare il figlio Isacco, ma viene fermato all'ultimo istante da un angelo che gli afferra il polso mentre indica un ariete impigliato nel cespuglio, destinato a sostituire il sacrificio umano. La scena è costruita con un dinamismo fisico intenso: il volto di Isacco, schiacciato a terra e atterrito, contrasta con la fermezza quasi meccanica del gesto di Abramo, creando una tensione drammatica tipica del naturalismo caravaggesco maturo, qui applicato a un soggetto di forte valenza teologica sul tema dell'obbedienza e della grazia divina."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1603 ca.",
+      "sala": "44",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Sacrifice_of_Isaac-Caravaggio_%28Uffizi%29.jpg/960px-Sacrifice_of_Isaac-Caravaggio_%28Uffizi%29.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "79dfc79bff20e6a3a603bd9e",
+    "museumId": "IT-FI0082",
+    "operaId": "Sacrificio di Isacco",
+    "objectId": "sacrificio-isacco-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Naturalismo tenebrista applicato al tema teologico dell'obbedienza abramitica e della sostituzione sacrificale.",
+        "d15": "La resa fisica quasi brutale del fermo-immagine sacrificale, con il volto di Isacco costretto a terra in un naturalismo privo di mediazione classicista, e l'intervento angelico reso con immediatezza gestuale, costituiscono un caso esemplare di applicazione del linguaggio tenebrista caravaggesco a un soggetto di elevata complessità teologica sul tema della sostituzione sacrificale.",
+        "d40": "Il Sacrificio di Isacco (olio su tela, 104 × 135 cm, ca. 1603), eseguito da Caravaggio per il cardinale Maffeo Barberini (futuro Urbano VIII), rielabora l'episodio veterotestamentario della prova di Abramo (Genesi 22, 1-14) con un naturalismo fisico che rifiuta ogni mediazione classicista nella resa del terrore di Isacco, il cui volto viene premuto contro la roccia dalla mano paterna in un gesto di violenza controllata. L'intervento angelico, che blocca il gesto sacrificale indicando contemporaneamente l'ariete sostitutivo impigliato nel cespuglio, è reso con un'immediatezza gestuale che sottolinea la dimensione provvidenziale dell'episodio, centrale nell'esegesi patristica come prefigurazione tipologica del sacrificio di Cristo. Il taglio compositivo ravvicinato, quasi claustrofobico, e il contrasto luministico tenebrista tra le figure e il fondo scuro, tipici della piena maturità romana dell'artista, concorrono a un'interpretazione del soggetto biblico priva di ogni idealizzazione, in linea con la poetica naturalistica caravaggesca."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1603 ca.",
+      "sala": "44",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Sacrifice_of_Isaac-Caravaggio_%28Uffizi%29.jpg/960px-Sacrifice_of_Isaac-Caravaggio_%28Uffizi%29.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "0cab8cebcef86b3f62d694ff",
+    "museumId": "IT-FI0082",
+    "operaId": "Incoronazione della Vergine",
+    "objectId": "incoronazione-vergine-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria viene incoronata regina del cielo da Gesù, circondata da tanti angeli dorati.",
+        "d15": "In questo quadro dorato, Gesù incorona sua madre Maria come regina del Paradiso. Intorno a loro tanti angeli e santi assistono alla scena, dipinti con colori vivaci su un fondo tutto d'oro.",
+        "d40": "Questo splendido dipinto racconta un momento speciale: Gesù, ormai adulto e in cielo, mette una corona sulla testa di sua madre Maria, incoronandola regina del Paradiso. Tutto intorno a loro ci sono tantissimi angeli con ali colorate e santi che assistono alla scena, disposti in file ordinate come in una grande festa celeste. Lo sfondo è completamente ricoperto d'oro, una tecnica molto usata nei quadri religiosi di tanti secoli fa per rappresentare la luce divina del paradiso. Il pittore che ha realizzato questo capolavoro, Lorenzo Monaco, non era un pittore qualunque: era anche un monaco, cioè viveva in un monastero pregando e dipingendo allo stesso tempo, ed era considerato uno dei migliori artisti specializzati nel decorare libri antichi con piccole miniature colorate."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera e oro su tavola",
+      "periodo": "1409",
+      "sala": "7",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg/960px-Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "d6dbd180a83bc0bc744a1365",
+    "museumId": "IT-FI0082",
+    "operaId": "Incoronazione della Vergine",
+    "objectId": "incoronazione-vergine-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Gesù incorona Maria regina del cielo in un'opera tardogotica ricca d'oro.",
+        "d15": "Lorenzo Monaco, pittore e monaco camaldolese, raffigura l'incoronazione di Maria come regina del Paradiso, circondata da un coro di angeli e santi su fondo oro. L'opera è tra i massimi esempi del tardogotico fiorentino, apprezzata per l'eleganza lineare e la ricchezza cromatica.",
+        "d40": "L'Incoronazione della Vergine (1409, tempera e oro su tavola) di Lorenzo Monaco rappresenta uno dei vertici della pittura tardogotica fiorentina. Il monaco camaldolese, attivo anche come miniaturista, raffigura Cristo che incorona Maria regina del Paradiso, in una composizione affollata di angeli musicanti e santi disposti con ritmo elegante e sinuoso. La ricchezza decorativa del fondo oro e la squisita raffinatezza calligrafica delle vesti, panneggiate con linee fluide e sinuose, riflettono la formazione dell'artista nell'arte della miniatura, che influenzò profondamente il suo linguaggio pittorico su grande formato."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera e oro su tavola",
+      "periodo": "1409",
+      "sala": "7",
+      "prezzo": 2
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg/960px-Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "0a13d7babc69abc1123a9653",
+    "museumId": "IT-FI0082",
+    "operaId": "Incoronazione della Vergine",
+    "objectId": "incoronazione-vergine-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Vertice del tardogotico fiorentino, tra miniatura camaldolese e classicismo linear-cromatico.",
+        "d15": "L'opera, eseguita dal monaco-miniaturista camaldolese, sintetizza la tradizione tardogotica internazionale con un raffinato calligrafismo lineare derivato dalla pratica miniaturistica, in una composizione affollata di gusto quasi orchestrale.",
+        "d40": "L'Incoronazione della Vergine (tempera e oro su tavola, 1409), eseguita da Lorenzo Monaco per la propria chiesa camaldolese di Santa Maria degli Angeli, costituisce uno dei vertici assoluti del tardogotico fiorentino nella sua declinazione più aulica e decorativa. La formazione dell'artista come miniaturista, attività che praticò parallelamente alla pittura su tavola, emerge nella resa calligrafica e sinuosa dei panneggi e nella preziosità cromatica dell'insieme, memore della tradizione internazionale gotica di ascendenza francese e lombarda. La disposizione affollata ma ritmicamente organizzata degli angeli musicanti e dei santi, secondo una struttura quasi concentrica attorno al gruppo centrale di Cristo e Maria, anticipa soluzioni compositive che saranno riprese, in chiave rinnovata, dalla generazione successiva di pittori fiorentini attivi nel primo Quattrocento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera e oro su tavola",
+      "periodo": "1409",
+      "sala": "7",
+      "prezzo": 5
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg/960px-Lorenzo_Monaco_-_Incoronazione_della_Vergine_-_Google_Art_Project.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "2fb583ddd880c55384b6a2ee",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà di Ognissanti (Madonna Ognissanti)",
+    "objectId": "maesta-ognissanti-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria è seduta su un trono con Gesù bambino, circondata da angeli e santi.",
+        "d15": "Giotto dipinge Maria seduta su un grande trono dorato con il piccolo Gesù in braccio, circondata da angeli e santi. Rispetto ai quadri più antichi, i corpi qui sembrano avere più peso e volume, quasi reali.",
+        "d40": "In questo grande dipinto, uno dei più importanti della storia dell'arte italiana, vediamo Maria seduta su un trono decorato, con il piccolo Gesù in braccio che alza la mano per benedire. Intorno a loro ci sono tanti angeli e santi che la guardano con devozione. Quello che rende speciale questo quadro è il modo in cui Giotto dipinge i corpi: non sono più piatti e leggeri come nei quadri più antichi, ma sembrano avere un vero peso, un vero volume, quasi come se potessero muoversi. Anche il trono sembra costruito con una vera struttura in legno e marmo, non solo disegnato. Per questo motivo Giotto è considerato uno degli artisti più importanti di sempre: fu il primo a capire come dipingere le persone in modo più naturale e vero, aprendo la strada a tutta la pittura che venne dopo di lui, incluso il Rinascimento."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1310 ca.",
+      "sala": "2",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/GiottoMadonna.jpg/960px-GiottoMadonna.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "bbc703888bd6ec492b7e5257",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà di Ognissanti (Madonna Ognissanti)",
+    "objectId": "maesta-ognissanti-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Giotto rivoluziona la resa dello spazio e del volume in questa monumentale pala d'altare.",
+        "d15": "La Maestà di Ognissanti raffigura la Madonna in trono col Bambino, circondata da angeli e santi. Rispetto alla tradizione bizantina precedente, Giotto introduce una resa più naturalistica dei volumi corporei e una costruzione spaziale del trono più coerente, segnando una svolta decisiva nella pittura italiana.",
+        "d40": "La Maestà di Ognissanti (1310 ca., tempera su tavola) di Giotto, proveniente dalla chiesa fiorentina di Ognissanti, rappresenta una delle opere fondative della pittura italiana del Trecento. Rispetto ai modelli bizantini e alla maniera greca ancora dominanti nella pittura duecentesca (si pensi alla coeva Maestà di Cimabue), Giotto introduce una monumentalità plastica dei corpi, resi attraverso un modellato chiaroscurale che suggerisce volume e peso reale, e una costruzione prospettica del trono, con gradini e architetture che creano un'illusione di profondità spaziale coerente. Gli angeli e i santi che circondano la Vergine sono disposti con un principio di gerarchia dimensionale ancora legato alla tradizione, ma i loro volti individuati e le pose naturali segnano un deciso allontanamento dall'astrazione iconica precedente."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1310 ca.",
+      "sala": "2",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/GiottoMadonna.jpg/960px-GiottoMadonna.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "ad98dc66a7e8f33056b3688a",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà di Ognissanti (Madonna Ognissanti)",
+    "objectId": "maesta-ognissanti-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Rivoluzione plastico-spaziale che segna la cesura tra maniera greca e naturalismo trecentesco.",
+        "d15": "La costruzione prospettica del trono ligneo e la resa plastica dei corpi, ottenuta attraverso un modellato chiaroscurale coerente, segnano lo scarto decisivo di Giotto rispetto alla tradizione icastica bizantina, ponendo le basi per l'intero sviluppo della pittura spaziale italiana del Trecento e oltre.",
+        "d40": "La Maestà di Ognissanti (tempera su tavola, 325 × 204 cm, ca. 1310), eseguita da Giotto per la chiesa fiorentina di Ognissanti (Umiliati), rappresenta il punto di svolta decisivo tra la tradizione icastica della maniera greca, ancora dominante nella coeva Maestà di Cimabue conservata nella stessa sala degli Uffizi, e il nuovo naturalismo spaziale che caratterizzerà tutta la pittura italiana successiva. Il trono, costruito attraverso una struttura architettonica coerente di gradini e nicchie che suggerisce una profondità spaziale unificata, e il modellato chiaroscurale dei corpi, che restituisce peso e volume reale alle figure attraverso una sapiente gestione della luce, costituiscono una rottura radicale rispetto alla bidimensionalità iconica bizantina. Il confronto diretto, reso possibile dalla comune collocazione museale, tra questa tavola, la Maestà di Cimabue e la Madonna Rucellai di Duccio, permette di cogliere con rara evidenza la rivoluzione giottesca nel contesto delle diverse scuole pittoriche italiane di primo Trecento."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1310 ca.",
+      "sala": "2",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/GiottoMadonna.jpg/960px-GiottoMadonna.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "967ea5a8d321a01733f9ea79",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà (Madonna Rucellai)",
+    "objectId": "maesta-rucellai-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Maria è seduta su un trono dorato con Gesù bambino, circondata da angeli.",
+        "d15": "Duccio dipinge Maria su un trono elegante, con il piccolo Gesù in braccio, circondata da angeli inginocchiati. I colori sono delicati e le linee morbide, tipiche della pittura di Siena, città rivale di Firenze.",
+        "d40": "Questo grande dipinto dorato mostra Maria seduta su un trono decorato con stoffe preziose, con il piccolo Gesù in braccio che alza la mano in segno di benedizione. Ai lati del trono, sei angeli inginocchiati reggono i braccioli, disposti con grazia ed eleganza. Questo quadro fu dipinto da Duccio di Buoninsegna, uno dei più grandi pittori di Siena, città che in quegli anni era una vera rivale artistica di Firenze. Rispetto alla pittura fiorentina, più interessata a rendere i corpi solidi e reali, la pittura senese di Duccio preferisce linee morbide, colori delicati e un'eleganza quasi musicale nelle pose. Il quadro prende il nome dalla famiglia Rucellai, ricchi mercanti fiorentini che lo commissionarono per la loro cappella, e fu per secoli uno dei dipinti più ammirati di Firenze."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1285",
+      "sala": "2",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg/960px-Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "81c40575bd688d40d50d39c2",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà (Madonna Rucellai)",
+    "objectId": "maesta-rucellai-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Pala d'altare senese di raffinata eleganza lineare, commissionata dalla famiglia Rucellai.",
+        "d15": "La Maestà Rucellai raffigura la Vergine in trono con il Bambino, circondata da sei angeli inginocchiati. Duccio di Buoninsegna, il maggiore pittore senese del tempo, sviluppa una linea sinuosa ed elegante, alternativa al naturalismo plastico fiorentino coevo di Cimabue e Giotto.",
+        "d40": "La Maestà, detta Madonna Rucellai dal nome della famiglia fiorentina che la commissionò per la propria cappella in Santa Maria Novella, fu eseguita nel 1285 da Duccio di Buoninsegna, il maggiore esponente della scuola pittorica senese di fine Duecento. Rispetto al naturalismo plastico che caratterizza la coeva produzione fiorentina di Cimabue e Giotto, Duccio sviluppa un linguaggio di eleganza lineare e cromatica, con un panneggio fluido e sinuoso e una tavolozza delicata dominata da rosa, blu e oro. I sei angeli inginocchiati che sorreggono il trono, disposti con un ritmo quasi musicale, sono un tratto distintivo della sensibilità cortese senese, alternativa e complementare alla monumentalità fiorentina."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1285",
+      "sala": "2",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg/960px-Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "aac5a97d0aad315ce3fc48c7",
+    "museumId": "IT-FI0082",
+    "operaId": "Maestà (Madonna Rucellai)",
+    "objectId": "maesta-rucellai-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Paradigma dell'eleganza lineare senese, in dialettica con il naturalismo plastico fiorentino coevo.",
+        "d15": "La commissione Rucellai, oggi attribuita a Duccio in base al documento di pagamento del 1285, esemplifica il linguaggio cortese-lineare della scuola senese di fine Duecento, costruendo un modello di regalità mariana alternativo alla monumentalità plastica giottesca, con cui dialoga per contiguità museale.",
+        "d40": "La Maestà detta Madonna Rucellai (tempera su tavola, 450 × 290 cm, 1285), commissionata dalla Compagnia dei Laudesi di Santa Maria Novella per l'omonima cappella Rucellai, è oggi unanimemente attribuita a Duccio di Buoninsegna sulla base del documento di pagamento del 1285, contraddicendo l'attribuzione a Cimabue tramandata da Vasari. L'opera costituisce il manifesto dell'eleganza lineare della scuola senese di fine Duecento, alternativa al naturalismo plastico-volumetrico che caratterizza la coeva produzione fiorentina di Cimabue e Giotto, oggi esposta nella medesima sala degli Uffizi in un confronto diretto di straordinario valore storiografico. Il panneggio fluido e sinuoso, la tavolozza cromatica delicata dominata da rosa cangianti, blu oltremare e oro, e la disposizione ritmica dei sei angeli genuflessi ai lati del trono, costruiscono un modello di regalità mariana di matrice cortese, debitore della miniatura gotica francese e bizantina, che avrà fortuna duratura nella pittura senese del Trecento, da Simone Martini ai Lorenzetti."
+      }
+    },
+    "metadata": {
+      "tecnica": "Tempera su tavola",
+      "periodo": "1285",
+      "sala": "2",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg/960px-Madonna_em_Majestade_dita_Rucellai_-_Duccio.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "0b56f26aca122c7d32763a44",
+    "museumId": "IT-FI0082",
+    "operaId": "Adamo ed Eva",
+    "objectId": "adamo-eva-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Adamo ed Eva sono nel giardino dell'Eden, vicino all'albero con il frutto proibito.",
+        "d15": "Cranach dipinge Adamo ed Eva nudi nel giardino dell'Eden, il primo giardino del mondo secondo la Bibbia. Eva sta per prendere il frutto proibito dall'albero, mentre un serpente li osserva tra i rami.",
+        "d40": "Questo dipinto racconta una delle storie più famose della Bibbia: Adamo ed Eva, il primo uomo e la prima donna, vivono nel giardino dell'Eden, un paradiso pieno di animali e piante. Ma c'è una regola: non devono mangiare il frutto di un albero speciale al centro del giardino. In questo quadro vediamo il momento cruciale in cui Eva sta per cogliere il frutto proibito, mentre un serpente, nascosto tra i rami dell'albero, la osserva e la tenta. Il pittore, un tedesco di nome Lucas Cranach, dipinge i due corpi in modo allungato ed elegante, con dettagli molto precisi, uno stile tipico della pittura rinascimentale della Germania, diverso da quello più arrotondato e naturale che si vedeva in Italia nello stesso periodo."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1528",
+      "sala": "20",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Cranach%2C_adamo_ed_eva%2C_uffizi.jpg/960px-Cranach%2C_adamo_ed_eva%2C_uffizi.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "a7b923198bd4be344259fea7",
+    "museumId": "IT-FI0082",
+    "operaId": "Adamo ed Eva",
+    "objectId": "adamo-eva-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Adamo ed Eva colti nell'istante della tentazione, in un raffinato stile rinascimentale tedesco.",
+        "d15": "Cranach raffigura la coppia progenitrice nel giardino dell'Eden, nell'istante in cui Eva coglie il frutto proibito su suggerimento del serpente. Le figure allungate e l'attenzione minuziosa ai dettagli naturalistici sono tipiche dello stile elegante e raffinato della pittura rinascimentale tedesca.",
+        "d40": "Adamo ed Eva (1528, olio su tavola) di Lucas Cranach il Vecchio raffigura la coppia progenitrice nel giardino dell'Eden nell'istante immediatamente precedente alla caduta, con Eva che sta per cogliere il frutto proibito dall'Albero della Conoscenza, mentre il serpente osserva dai rami. Le figure, dai corpi allungati e dalle proporzioni volutamente eleganti e stilizzate, esemplificano il tipico linguaggio cortese della pittura rinascimentale tedesca, ben distinto dal naturalismo classicheggiante coevo della pittura italiana. Cranach, pittore di corte alla corte sassone di Wittenberg e amico di Martin Lutero, produsse numerose versioni di questo soggetto, di grande fortuna nell'ambiente della Riforma protestante per il suo valore didattico-teologico sul tema del peccato originale."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1528",
+      "sala": "20",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Cranach%2C_adamo_ed_eva%2C_uffizi.jpg/960px-Cranach%2C_adamo_ed_eva%2C_uffizi.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "14da765764762c60d1ec7798",
+    "museumId": "IT-FI0082",
+    "operaId": "Adamo ed Eva",
+    "objectId": "adamo-eva-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Iconografia protestante del peccato originale, tra stilizzazione cortese e propaganda luterana.",
+        "d15": "L'elaborazione cranachiana del tema edenico, caratterizzata da una stilizzazione elegante e allungata delle figure di ascendenza tardogotica cortese, si inserisce nel contesto della propaganda visiva della Riforma protestante, di cui l'artista fu il principale interprete figurativo in qualità di pittore di corte e amico personale di Lutero.",
+        "d40": "Adamo ed Eva (olio su tavola, ciascun pannello ca. 172 × 63 cm, 1528) di Lucas Cranach il Vecchio appartiene a una serie di redazioni multiple dello stesso soggetto, prodotte dall'artista e dalla sua affermata bottega di Wittenberg lungo l'intera sua carriera, a testimonianza della fortuna iconografica del tema presso la committenza cortese e borghese dell'area sassone. La stilizzazione allungata ed elegante delle figure, di ascendenza tardogotica cortese piuttosto che classicheggiante, si discosta consapevolmente dai canoni proporzionali italiani, costituendo un tratto distintivo dell'identità figurativa della scuola tedesca del primo Cinquecento. In quanto pittore di corte presso l'elettore di Sassonia e amico personale di Martin Lutero, Cranach elaborò ripetutamente il tema del peccato originale in chiave affine alla teologia protestante, che attribuiva particolare centralità dottrinale alla caduta edenica come premessa necessaria alla dottrina della giustificazione per sola fede, conferendo a queste immagini una valenza che eccede la semplice illustrazione biblica per assumere una funzione di propaganda visiva riformata."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tavola",
+      "periodo": "1528",
+      "sala": "20",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/aa/Cranach%2C_adamo_ed_eva%2C_uffizi.jpg/960px-Cranach%2C_adamo_ed_eva%2C_uffizi.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "f663e8bc20c8880ae1f7b688",
+    "museumId": "IT-FI0082",
+    "operaId": "Leda e il cigno",
+    "objectId": "leda-cigno-semplice",
+    "toni": {
+      "semplice": {
+        "d3": "Leda gioca con un cigno, che nella mitologia greca è in realtà il dio Zeus travestito.",
+        "d15": "Tintoretto dipinge Leda, una donna della mitologia greca, mentre gioca con un cigno bianco. Secondo la leggenda, quel cigno era in realtà il dio Zeus, che si era trasformato per avvicinarsi a lei. Il quadro ha colori vivaci e un movimento tipico dello stile di Tintoretto.",
+        "d40": "Questo quadro racconta una storia della mitologia greca antica: Leda, una bellissima regina, viene visitata da un cigno bianco che si avvicina a lei in modo affettuoso. Quello che Leda non sa è che quel cigno è in realtà il dio Zeus, il re di tutti gli dei, che si è trasformato in questo animale per stare vicino a lei senza spaventarla. Il pittore Tintoretto, che lavorava a Venezia, dipinge la scena con colori intensi e un senso di movimento quasi teatrale, con la luce che illumina i corpi in modo drammatico creando forti contrasti, uno stile che rese Tintoretto uno dei pittori più originali e amati della sua epoca."
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1570 ca.",
+      "sala": "32",
+      "prezzo": 0
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Leda_mit_schwan.jpg/960px-Leda_mit_schwan.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
+  },
+  {
+    "_id": "fc4d50e2dae39509e340d979",
+    "museumId": "IT-FI0082",
+    "operaId": "Leda e il cigno",
+    "objectId": "leda-cigno-medio",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "Soggetto mitologico ovidiano reso con il tipico dinamismo compositivo di Tintoretto.",
+        "d15": "Tintoretto raffigura l'incontro tra Leda e il cigno, dietro cui si cela Zeus trasformato per sedurla, episodio tratto dalla mitologia greco-romana. La composizione dinamica e i forti contrasti luministici sono tratti distintivi dello stile pittorico veneziano dell'artista.",
+        "d40": "Leda e il cigno (1570 ca., olio su tela) di Jacopo Tintoretto raffigura l'episodio mitologico, narrato tra gli altri da Ovidio, in cui Zeus, trasformato in cigno, si unisce alla regina spartana Leda. Il soggetto, di grande fortuna nella pittura rinascimentale e manierista per la sua carica sensuale, viene qui reso da Tintoretto con il tipico dinamismo compositivo e i contrasti luministici drammatici che caratterizzano la sua produzione matura, distinguendosi dalle versioni più placide e classicheggianti di altri maestri veneziani coevi come Tiziano o Correggio."
+      },
+      "avanzato": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1570 ca.",
+      "sala": "32",
+      "prezzo": 3
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Leda_mit_schwan.jpg/960px-Leda_mit_schwan.jpg",
+    "authorId": "f4q8y2c7mt",
+    "pubblica": true
+  },
+  {
+    "_id": "382b99809d25688cf9451410",
+    "museumId": "IT-FI0082",
+    "operaId": "Leda e il cigno",
+    "objectId": "leda-cigno-avanzato",
+    "toni": {
+      "semplice": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "medio": {
+        "d3": "",
+        "d15": "",
+        "d40": ""
+      },
+      "avanzato": {
+        "d3": "Rielaborazione tenebrista-dinamica del mito ovidiano, in dialettica con la tradizione classicista veneziana.",
+        "d15": "La resa del soggetto ovidiano attraverso un dinamismo compositivo accentuato e un chiaroscuro drammatico, tipici della maturità tintorettesca, si distanzia dalle formulazioni più placide e idealizzate della tradizione tizianesca e correggesca, proponendo una lettura più fisica e immediata dell'incontro mitologico.",
+        "d40": "Leda e il cigno (olio su tela, ca. 1570), attribuita alla piena maturità di Jacopo Tintoretto, rielabora un soggetto ovidiano (Metamorfosi) di consolidata fortuna nella pittura veneziana del Cinquecento, già trattato con esiti più idealizzati e classicisti da Tiziano e Correggio. Tintoretto vi imprime il proprio linguaggio distintivo, fondato su un dinamismo compositivo accentuato, una torsione dei corpi che introduce tensione fisica nell'incontro tra la regina e il dio trasformato, e un trattamento luministico tenebrista che anticipa, per contrasti drammatici e pennellata corsiva, soluzioni pienamente barocche. La scelta di un taglio compositivo ravvicinato e di un'illuminazione radente, che scolpisce i corpi con forte plasticismo, riflette l'assimilazione da parte dell'artista della lezione di Jacopo Bassano, mediata attraverso la propria sensibilità scenografica e teatrale, tipica della bottega tintorettesca."
+      }
+    },
+    "metadata": {
+      "tecnica": "Olio su tela",
+      "periodo": "1570 ca.",
+      "sala": "32",
+      "prezzo": 6
+    },
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Leda_mit_schwan.jpg/960px-Leda_mit_schwan.jpg",
+    "authorId": "e9o1w5g3hk",
+    "pubblica": true
   }
 ]

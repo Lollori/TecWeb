@@ -321,3 +321,42 @@
 @media (max-width: 991px) {
   .geo-room-panel { left: 0; }
 }
+
+
+.reorder-map {
+  width: 100%; max-width: 600px; margin: 0 auto 20px; box-sizing: border-box;
+  padding: 16px; background: var(--nav-card-bg); color: var(--nav-text);
+  border: 1px solid var(--nav-border); border-radius: 14px;
+}
+[data-theme="dark"] .reorder-map { background: var(--nav-dark); color: #f1f5f9; border-color: transparent; }
+.reorder-map-title { font-size: 0.85rem; font-weight: 600; margin: 0; text-align: center; color: var(--nav-text); }
+[data-theme="dark"] .reorder-map-title { color: #f1f5f9; }
+.reorder-map .geo-floorplan-wrap { margin-top: 10px; }
+.reorder-map .geo-floorplan-img  { max-height: 320px; }
+
+.reorder-floor-tabs { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.reorder-floor-tab {
+  background: none; border: 1px solid var(--nav-border); color: var(--nav-muted);
+  border-radius: 8px; padding: 5px 14px; font-size: 0.78rem; font-weight: 600;
+  font-family: 'Inter', sans-serif; cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.reorder-floor-tab--active { border-color: var(--nav-magenta); color: var(--nav-magenta); background: rgba(255,0,127,0.08); }
+
+.geo-room-overlay .geo-room-polygon.geo-room-polygon--stop {
+  fill: rgba(255,0,127,0.22) !important; stroke: var(--nav-magenta) !important; stroke-width: 2 !important;
+}
+.geo-stop-marker {
+  position: absolute;
+  width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--nav-magenta,#FF007F);
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem; font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  z-index: 9;
+  pointer-events: none;
+  white-space: nowrap;
+}
