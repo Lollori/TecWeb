@@ -780,6 +780,84 @@ window.toggleAnalyticsBlock = function (bodyId, chevronId) {
 };
 
 
+const ADMIN_SEED_TARGETS = [
+    { key: 'utenti', label: 'Utenti', icon: 'fa-users' },
+    { key: 'musei',  label: 'Musei',  icon: 'fa-building-columns' },
+    { key: 'opere',  label: 'Opere',  icon: 'fa-image' },
+    { key: 'items',  label: 'Items',  icon: 'fa-layer-group' },
+    { key: 'visite', label: 'Visite', icon: 'fa-route' },
+];
+
+async function initAdminDatabase() {
+    const section = document.getElementById('section-admin-database');
+    section.innerHTML = `
+        <div class="mb-4">
+            <h1 class="page-title">Seed Dati</h1>
+            <p class="text-muted mb-0">Ripristina i dati di una collezione dai file JSON di partenza. Operazione riservata agli amministratori.</p>
+        </div>
+        <div class="glass-card p-4 mb-4" style="border:1px solid #ef4444;">
+            <p class="mb-0" style="color:#ef4444;">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                Attenzione: ogni seed <strong>elimina tutti i dati esistenti</strong> della collezione e li sostituisce con quelli del file JSON. L'operazione non è reversibile.
+            </p>
+        </div>
+        <div class="row g-4">
+            ${ADMIN_SEED_TARGETS.map(t => `
+                <div class="col-md-6 col-lg-4">
+                    <div class="glass-card p-4 d-flex flex-column align-items-start gap-3">
+                        <h5 class="mb-0"><i class="fa-solid ${t.icon} me-2" style="color:#e91e8c;"></i>${t.label}</h5>
+                        <button class="btn-outline-custom" style="color:#ef4444;border-color:#ef4444;"
+                                onclick="runAdminSeed('${t.key}')" id="seedBtn-${t.key}">
+                            <i class="fa-solid fa-rotate me-1"></i> Reimposta ${t.label}
+                        </button>
+                        <p class="mb-0 small text-muted" id="seedResult-${t.key}"></p>
+                    </div>
+                </div>`).join('')}
+        </div>`;
+}
+
+async function runAdminSeed(key) {
+    const label = (ADMIN_SEED_TARGETS.find(t => t.key === key) || {}).label || key;
+    if (!confirm(`Confermi la reimpostazione di "${label}"? Tutti i dati attuali di questa collezione verranno eliminati e sostituiti da quelli del file JSON.`)) {
+        return;
+    }
+
+    const btn    = document.getElementById(`seedBtn-${key}`);
+    const result = document.getElementById(`seedResult-${key}`);
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> In corso…';
+    if (result) result.textContent = '';
+
+    try {
+        const res  = await fetch(`/api/${key}/seed`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${SESSION.token}`,
+            },
+        });
+        const data = await res.json();
+        if (!res.ok || data.ok === false) {
+            if (result) {
+                result.textContent = data.error || 'Operazione non riuscita.';
+                result.style.color = '#ef4444';
+            }
+        } else if (result) {
+            result.textContent = data.message || 'Completato.';
+            result.style.color = '';
+        }
+    } catch (e) {
+        if (result) {
+            result.textContent = 'Errore di rete.';
+            result.style.color = '#ef4444';
+        }
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="fa-solid fa-rotate me-1"></i> Reimposta ${label}`;
+    }
+}
+
+
 function exportAnalyticsPDF() {
     const originalTitle = document.title;
     document.title = `Analytics ArtAround - ${new Date().toLocaleDateString('it-IT')}`;

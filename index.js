@@ -45,6 +45,9 @@ const tts = require(global.rootDir + '/scripts/tts.js');
 
 const express = require('express');
 const cors = require('cors')
+const jwt = require('jsonwebtoken');
+
+const JWT_SECRET = process.env.JWT_SECRET || 'artaround-dev-secret-change-in-prod';
 
 
 let app = express(); 
@@ -77,6 +80,25 @@ const mongoCredentials = {
 console.log(`Connessione DB impostata su: ${mongoCredentials.site}`);
 
 
+function requireAdmin(req, res, next) {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : null;
+    if (!token) {
+        return res.status(401).json({ ok: false, error: 'Autenticazione richiesta.' });
+    }
+    try {
+        const payload = jwt.verify(token, JWT_SECRET);
+        if (payload.ruolo !== 'admin') {
+            return res.status(403).json({ ok: false, error: 'Operazione riservata agli amministratori.' });
+        }
+        req.user = payload;
+        next();
+    } catch (e) {
+        return res.status(401).json({ ok: false, error: 'Token non valido o scaduto.' });
+    }
+}
+
+
 app.post('/api/login', async (req, res) => {
     const { username, password } = req.body;
     console.log(`[index.js] Tentativo di login per: ${username}`);
@@ -90,7 +112,12 @@ app.post('/api/login', async (req, res) => {
         }
 
         console.log(`[index.js] Login successo per: ${username}`);
-        res.json({ success: true, message: "Login effettuato", user: user });
+        const token = jwt.sign(
+            { userId: user.userId, username: user.username, ruolo: user.ruolo },
+            JWT_SECRET,
+            { expiresIn: '2h' }
+        );
+        res.json({ success: true, message: "Login effettuato", user: user, token: token });
     } catch (error) {
         console.error('[index.js] Errore login:', error);
         res.status(500).json({ success: false, message: "Errore interno del server" });
@@ -98,15 +125,18 @@ app.post('/api/login', async (req, res) => {
 });
 
 
+const RUOLI_REGISTRABILI = ['curatore', 'visitatore', 'autore'];
+
 app.post('/api/register', async (req, res) => {
     const { username, password, ruolo } = req.body;
+    const ruoloFinale = RUOLI_REGISTRABILI.includes(ruolo) ? ruolo : 'visitatore';
     try {
         const check = await users.findUser({ username: username }, mongoCredentials);
         if (check) {
             return res.status(400).json({ success: false, message: "Username già registrato!" });
         }
 
-        await users.registerUser({ username: username, password: password, ruolo: ruolo || 'visitatore' }, mongoCredentials);
+        await users.registerUser({ username: username, password: password, ruolo: ruoloFinale }, mongoCredentials);
         res.json({ success: true, message: "Registrazione avvenuta!" });
     } catch (e) {
         res.status(500).json({ success: false, message: "Errore nel salvataggio DB" });
@@ -114,7 +144,7 @@ app.post('/api/register', async (req, res) => {
 });
 
 
-app.get('/api/utenti/seed', async (_req, res) => {
+app.post('/api/utenti/seed', requireAdmin, async (_req, res) => {
     const result = await users.seedUsers(mongoCredentials);
     res.json(result);
 });
@@ -134,7 +164,7 @@ app.get('/api/test', (_req, res) => {
     res.json({ ok: true, message: 'Il server risponde correttamente.' });
 });
 
-app.get('/api/musei/seed', async function (_req, res) {
+app.post('/api/musei/seed', requireAdmin, async function (_req, res) {
     const result = await musei.seed(mongoCredentials);
     res.json(result);
 });
@@ -165,7 +195,7 @@ app.delete('/api/musei/:codiceIsil', async function (req, res) {
 });
 
 
-app.get('/api/visite/seed', async function (_req, res) {
+app.post('/api/visite/seed', requireAdmin, async function (_req, res) {
     const result = await visite.seed(mongoCredentials);
     res.json(result);
 });
@@ -201,7 +231,7 @@ app.post('/api/visite/:id/acquista', async function (req, res) {
 });
 
 
-app.get('/api/opere/seed', async function (_req, res) {
+app.post('/api/opere/seed', requireAdmin, async function (_req, res) {
     const result = await opere.seed(mongoCredentials);
     res.json(result);
 });
@@ -238,7 +268,7 @@ app.delete('/api/opere/:id', async function (req, res) {
 });
 
 
-app.get('/api/items/seed', async function (_req, res) {
+app.post('/api/items/seed', requireAdmin, async function (_req, res) {
     const result = await items.seed(mongoCredentials);
     res.json(result);
 });

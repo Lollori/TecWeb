@@ -77,9 +77,20 @@ exports.seedUsers = async (credentials) => {
         const data = JSON.parse(await fs.readFile(global.rootDir + '/public/data/utenti.json', 'utf8'));
         const conn = await connect(credentials);
         const User = model(conn);
-        await User.deleteMany({});
-        await User.insertMany(data);
-        return { ok: true, message: `Inseriti ${data.length} utenti.` };
+
+        const adminEsistenti = await User.countDocuments({ ruolo: 'admin' });
+
+        await User.deleteMany({ ruolo: { $ne: 'admin' } });
+
+        const daInserire = adminEsistenti > 0 ? data.filter(u => u.ruolo !== 'admin') : data;
+        await User.insertMany(daInserire);
+
+        return {
+            ok: true,
+            message: adminEsistenti > 0
+                ? `Inseriti ${daInserire.length} utenti. Account admin esistenti preservati.`
+                : `Inseriti ${daInserire.length} utenti.`
+        };
     } catch (e) {
         return { ok: false, error: e.message };
     }

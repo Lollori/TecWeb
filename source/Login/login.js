@@ -16,6 +16,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             localStorage.setItem('userUsername', data.user.username);
             localStorage.setItem('userId', data.user.userId);
             localStorage.setItem('userRole', data.user.ruolo);
+            localStorage.setItem('token', data.token);
 
             await showAlert('Accesso eseguito!', { type: 'success' });
             const redirect = new URLSearchParams(window.location.search).get('redirect');

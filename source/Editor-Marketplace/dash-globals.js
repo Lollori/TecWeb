@@ -2,6 +2,7 @@ const SESSION = {
     userId:   localStorage.getItem('userId')       || '',
     role:     localStorage.getItem('userRole')     || '',
     username: localStorage.getItem('userUsername') || '',
+    token:    localStorage.getItem('token')        || '',
 };
 
 

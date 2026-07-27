@@ -40,6 +40,8 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 * URI del navigator: https://site252630.tw.cs.unibo.it/Navigator
 * Altri URI rilevanti: https://site252630.tw.cs.unibo.it (URI del menu' principale)
 * URI per accedere ai dati nel DB: https://site252630.tw.cs.unibo.it/api/(opere, items, visite, utenti, musei)
+ 
+
 
 
 ## Organizzazione dei sorgenti
@@ -68,7 +70,7 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 -Creazione delle dashboard personalizzate per ogni ruolo dei vari utenti (ciascun utente vede una determinata dashboard in base al suo ruolo all'interno dell'editor-marketplace) e della dashboard unica del navigator
 -Implementazione della chat e renderizzazione di immagini, items e mappe all'interno delle visite nel Navigator (con appositi bottoni)
 -Implementazione della schermata di riordinamento delle opere di una visita prima di farla partire all'interno del navigator
-
+-Implementazione di funzionalita' per permettere all'admin (utente unico) di eseguire il seed delle varie sezioni del DB, eliminandone il contenuto e ripopolandole con i dati contenuti nei file .json 
 
 #### Maria Paola Klein Serini: 
 1. Login & Registrazione
@@ -108,4 +110,5 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 
 #### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo (ciascun ruolo ha la sua immagine profilo), immagini della home page (anche per versione mobile e modalita' chiara)
 
-#### Note: username, password e nome mnemonico per accedere alle visite sono case sensitive
+#### Note: -username, password e nome mnemonico per accedere alle visite sono case sensitive
+           -Esiste un unico utente admin (con la stessa pw degli altri) per vedere analytics, ripopolare il DB con il contenuto dei file .json sfruttando JWT per la sicurezza e visualizzare gli utenti, le opere ecc

@@ -139,6 +139,7 @@ const SECTIONS_BY_ROLE = {
         { divider: 'Amministrazione' },
         { id: 'admin-analytics', icon: 'fa-chart-bar',        label: 'Analytics'   },
         { id: 'admin-utenti',    icon: 'fa-users',            label: 'Utenti'      },
+        { id: 'admin-database',  icon: 'fa-database',         label: 'Seed Dati'   },
     ],
 };
 
@@ -197,6 +198,7 @@ function switchSection(id) {
     if (id === 'admin-items')     initAdminItems();
     if (id === 'admin-analytics') initAdminAnalytics();
     if (id === 'admin-navigator') initAdminNavigator();
+    if (id === 'admin-database')  initAdminDatabase();
 
     if (id === 'curatore-quiz') initCuratoreQuiz();
 

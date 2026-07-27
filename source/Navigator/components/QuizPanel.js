@@ -13,8 +13,6 @@ function QuizPanel({
   const [inviato, setInviato] = React.useState(false);
   const [remaining, setRemaining] = React.useState(() => Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000)));
   const [filtroVisitatore, setFiltroVisitatore] = React.useState('');
-
-
   const puoRispondere = !isDocente || soloQuiz;
   React.useEffect(() => {
     if (quiz.stato !== 'in-corso') return;
