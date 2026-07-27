@@ -175,6 +175,20 @@ function LobbyDocente({
       setQuizTerminandoOra(false);
     }
   }
+  async function handleRispondiQuizDocente(risposte) {
+    try {
+      await fetch(`/api/sessioni/${encodeURIComponent(codice)}/quiz/rispondi`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          nome: 'Docente',
+          risposte
+        })
+      });
+    } catch (e) {}
+  }
   const museoHeader = museo && /*#__PURE__*/React.createElement("div", {
     className: "museo-mini-header"
   }, /*#__PURE__*/React.createElement("div", {
@@ -219,6 +233,9 @@ function LobbyDocente({
     quizAvviando: quizAvviando,
     onTerminaQuizOra: handleTerminaQuizOra,
     quizTerminandoOra: quizTerminandoOra,
+    soloQuiz: studenti.length === 0,
+    nomeAssegnato: studenti.length === 0 ? 'Docente' : '',
+    onRispondiQuiz: handleRispondiQuizDocente,
     audioAvviato: audioAvviato,
     onAvviaAudio: handleAvviaAudio,
     onFermaAudio: handleFermaAudio,

@@ -1,10 +1,13 @@
-function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStudenti, onRispondiQuiz, onTerminaQuizOra, quizTerminandoOra }) {
+function QuizPanel({ quiz, isDocente, soloQuiz, nomeAssegnato, respondedCount, totalStudenti, onRispondiQuiz, onTerminaQuizOra, quizTerminandoOra }) {
   const [risposte, setRisposte] = React.useState(() => quiz.domande.map(() => null));
   const [inviato,  setInviato]  = React.useState(false);
   const [remaining, setRemaining] = React.useState(
     () => Math.max(0, Math.round((quiz.scadenza - Date.now()) / 1000))
   );
   const [filtroVisitatore, setFiltroVisitatore] = React.useState('');
+
+
+  const puoRispondere = !isDocente || soloQuiz;
 
   React.useEffect(() => {
     if (quiz.stato !== 'in-corso') return;
@@ -16,12 +19,14 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
 
 
   React.useEffect(() => {
-    if (isDocente || inviato || quiz.stato !== 'in-corso') return;
+    if (!puoRispondere || inviato || quiz.stato !== 'in-corso') return;
     if (remaining <= 0) {
       setInviato(true);
-      onRispondiQuiz(risposte);
+      Promise.resolve(onRispondiQuiz(risposte)).then(() => {
+        if (soloQuiz) onTerminaQuizOra();
+      });
     }
-  }, [remaining, isDocente, inviato, quiz.stato]);
+  }, [remaining, puoRispondere, inviato, quiz.stato]);
 
   function selezionaRisposta(domandaIdx, opzioneIdx) {
     if (inviato) return;
@@ -34,7 +39,9 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
 
   function handleInvia() {
     setInviato(true);
-    onRispondiQuiz(risposte);
+    Promise.resolve(onRispondiQuiz(risposte)).then(() => {
+      if (soloQuiz) onTerminaQuizOra();
+    });
   }
 
   const minuti  = String(Math.floor(remaining / 60)).padStart(2, '0');
@@ -42,7 +49,9 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
 
   if (quiz.stato === 'terminato') {
     const risultati = quiz.risultati || [];
-    const mio = !isDocente ? risultati.find(r => r.nome === nomeAssegnato) : null;
+    const mio = soloQuiz
+      ? quiz.risultatoDocente
+      : (!isDocente ? risultati.find(r => r.nome === nomeAssegnato) : null);
     const pct = (punteggio, totale) => totale > 0 ? Math.round((punteggio / totale) * 100) : 0;
 
     const domandePiuSbagliate = risultati.length === 0 ? [] : risultati[0].dettaglio
@@ -64,7 +73,7 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
           <div key={i} className={`quiz-result-item${d.isCorrect ? ' quiz-result-item--ok' : ' quiz-result-item--ko'}`}>
             <p className="quiz-result-q">{i + 1}. {d.testo}</p>
             <p className="quiz-result-a">
-              {isDocente ? 'Risposta data' : 'Hai risposto'}: {d.rispostaData != null ? d.opzioni[d.rispostaData] : <em>nessuna risposta</em>}
+              {(isDocente && !soloQuiz) ? 'Risposta data' : 'Hai risposto'}: {d.rispostaData != null ? d.opzioni[d.rispostaData] : <em>nessuna risposta</em>}
             </p>
             {!d.isCorrect && (
               <p className="quiz-result-correct">Corretta: {d.opzioni[d.corretta]}</p>
@@ -78,10 +87,10 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
       <div className="quiz-panel">
         <div className="quiz-panel-header">
           <i className="fa-solid fa-trophy" />
-          <h2>{isDocente ? 'Risultati del quiz' : 'Quiz terminato'}</h2>
+          <h2>{(isDocente && !soloQuiz) ? 'Risultati del quiz' : 'Quiz terminato'}</h2>
         </div>
 
-        {isDocente ? (
+        {(isDocente && !soloQuiz) ? (
           <>
             {domandePiuSbagliate.length > 0 && (
               <div className="quiz-most-missed-card">
@@ -133,7 +142,7 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
           <div className="quiz-my-result">
             {mio ? (
               <>
-                <p className="quiz-my-score">{mio.punteggio} / {mio.totale}</p>
+                <p className="quiz-my-score">{mio.punteggio} / {mio.totale} <span className="quiz-my-score-pct">({pct(mio.punteggio, mio.totale)}%)</span></p>
                 {dettaglioBlock(mio.dettaglio)}
               </>
             ) : (
@@ -154,16 +163,7 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
         <span className="quiz-countdown">{minuti}:{secondi}</span>
       </div>
 
-      {isDocente ? (
-        <div className="quiz-docente-live">
-          <p className="quiz-docente-live-text">
-            Il quiz è in corso — {respondedCount} / {totalStudenti} partecipanti hanno risposto.
-          </p>
-          <button className="visita-termina-btn" onClick={onTerminaQuizOra} disabled={quizTerminandoOra}>
-            {quizTerminandoOra ? 'Chiusura…' : 'Termina quiz ora'}
-          </button>
-        </div>
-      ) : (
+      {puoRispondere ? (
         <>
           <div className="quiz-domande-list">
             {quiz.domande.map((d, i) => (
@@ -186,9 +186,20 @@ function QuizPanel({ quiz, isDocente, nomeAssegnato, respondedCount, totalStuden
             ))}
           </div>
           <button className="quiz-invia-btn" onClick={handleInvia} disabled={inviato}>
-            {inviato ? 'Risposte inviate — in attesa della fine del quiz…' : 'Invia risposte'}
+            {inviato
+              ? (soloQuiz ? 'Risposte inviate…' : 'Risposte inviate — in attesa della fine del quiz…')
+              : 'Invia risposte'}
           </button>
         </>
+      ) : (
+        <div className="quiz-docente-live">
+          <p className="quiz-docente-live-text">
+            Il quiz è in corso — {respondedCount} / {totalStudenti} partecipanti hanno risposto.
+          </p>
+          <button className="visita-termina-btn" onClick={onTerminaQuizOra} disabled={quizTerminandoOra}>
+            {quizTerminandoOra ? 'Chiusura…' : 'Termina quiz ora'}
+          </button>
+        </div>
       )}
     </div>
   );

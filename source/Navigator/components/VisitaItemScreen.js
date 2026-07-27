@@ -14,6 +14,7 @@ function VisitaItemScreen({
   quiz = null,
   respondedCount = 0,
   totalStudenti = 0,
+  soloQuiz = false,
   onAvviaQuiz,
   onTerminaQuizOra,
   quizAvviando = false,
@@ -790,6 +791,7 @@ function VisitaItemScreen({
   }, quiz ? /*#__PURE__*/React.createElement(QuizPanel, {
     quiz: quiz,
     isDocente: isDocente,
+    soloQuiz: soloQuiz,
     nomeAssegnato: nomeAssegnato,
     respondedCount: respondedCount,
     totalStudenti: totalStudenti,

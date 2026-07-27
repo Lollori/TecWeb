@@ -277,10 +277,36 @@ function terminaQuiz(codice) {
     return { nome, punteggio, totale: domande.length, dettaglio };
   }).sort((a, b) => b.punteggio - a.punteggio);
 
+  // Visita in solitaria: nessuno in session.studenti, ma il docente stesso può
+  // aver risposto al quiz. Il suo risultato viene calcolato a parte (non entra
+  // nella classifica dei "risultati", pensata per i partecipanti che si uniscono
+  // con /join) e restituito nel campo dedicato risultatoDocente.
+  let risultatoDocente = null;
+  if (session.studenti.length === 0) {
+    const [rispostaDocente] = Object.values(risposte);
+    if (rispostaDocente) {
+      let punteggio = 0;
+      const dettaglio = domande.map((d, i) => {
+        const rispostaData = rispostaDocente[i];
+        const isCorrect = rispostaData === d.corretta;
+        if (isCorrect) punteggio++;
+        return {
+          testo: d.testo,
+          opzioni: d.opzioni,
+          corretta: d.corretta,
+          rispostaData: (rispostaData === undefined) ? null : rispostaData,
+          isCorrect,
+        };
+      });
+      risultatoDocente = { punteggio, totale: domande.length, dettaglio };
+    }
+  }
+
   session.quiz.stato = 'terminato';
   session.quiz.risultati = risultati;
+  session.quiz.risultatoDocente = risultatoDocente;
   broadcast(codice, { tipo: 'quiz-terminato', ...publicQuiz(session.quiz) });
-  return { ok: true, risultati };
+  return { ok: true, risultati, risultatoDocente };
 }
 
 module.exports = {

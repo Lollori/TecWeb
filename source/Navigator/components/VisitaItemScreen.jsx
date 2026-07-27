@@ -1,7 +1,7 @@
 function VisitaItemScreen({
   operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
-  hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0,
+  hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0, soloQuiz = false,
   onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
   audioAvviato = false, onAvviaAudio, onFermaAudio, syncTono = null, syncDurata = null,
   inAscolto = false,
@@ -747,6 +747,7 @@ function VisitaItemScreen({
           <QuizPanel
             quiz={quiz}
             isDocente={isDocente}
+            soloQuiz={soloQuiz}
             nomeAssegnato={nomeAssegnato}
             respondedCount={respondedCount}
             totalStudenti={totalStudenti}

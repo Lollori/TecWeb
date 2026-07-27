@@ -145,6 +145,7 @@
   margin: 0 0 8px;
   font-family: 'Playfair Display', serif;
 }
+.quiz-my-score-pct { font-size: 1.15rem; font-weight: 700; color: var(--nav-muted); }
 .quiz-result-detail {
   display: flex; flex-direction: column; gap: 10px;
   padding: 0 16px 16px;
