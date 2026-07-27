@@ -36,8 +36,8 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 
 ## Locazione del progetto:
 
-* URI del marketplace: https://site252630.tw.cs.unibo.it/Editor-Marketplace
-* URI del navigator: https://site252630.tw.cs.unibo.it/Navigator
+* URI del marketplace: https://site252630.tw.cs.unibo.it/Editor-Marketplace (richiede di effettuare login)
+* URI del navigator: https://site252630.tw.cs.unibo.it/Navigator (richiede di effettuare login)
 * Altri URI rilevanti: https://site252630.tw.cs.unibo.it (URI del menu' principale)
 * URI per accedere ai dati nel DB: https://site252630.tw.cs.unibo.it/api/(opere, items, visite, utenti, musei)
  
@@ -53,7 +53,7 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
   
 ## Tecnologie utilizzate:
 
-    Server-side: Node.js, Express, MongoDB, EdgeTTS, CORS
+    Server-side: Node.js, Express, MongoDB, EdgeTTS, CORS, JWT
 
     Applicazione marketplace: HTML, CSS (Bootstrap), JavaScript (vanilla)
 
@@ -111,4 +111,4 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 #### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo (ciascun ruolo ha la sua immagine profilo), immagini della home page (anche per versione mobile e modalita' chiara)
 
 #### Note: -username, password e nome mnemonico per accedere alle visite sono case sensitive
-           -Esiste un unico utente admin (con la stessa pw degli altri) per vedere analytics, ripopolare il DB con il contenuto dei file .json sfruttando JWT per la sicurezza e visualizzare gli utenti, le opere ecc
+           -Esiste un unico utente admin (con la stessa pw degli altri) per vedere analytics, ripopolare il DB con il contenuto dei file .json sfruttando JWT per la sicurezza e visualizzare gli utenti, le opere ecc.
