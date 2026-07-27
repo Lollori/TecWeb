@@ -98,11 +98,13 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 #### Leonardo Rocco Monaco: 
 1. Sezione "Visite" form CRUD per visite guidate con schema Mongoose Visita (nome, logistica, quiz, opereCount, codiceIsil) (con Lorenzo)
 2. Sincronizzazione tra docente e studenti in tempo reale durante una visita.
-3. Piantina interattiva Uffizi che carica GeoJSON con click-to-navigate sulle stanze; poi secondo piano con selettore, legenda stanze/categorie, popolamento di opere nel DB.
-4. Correzioni layout mobile su tutte le pagine editor, pulizia CSS morto.
-5. Riconoscimento vocale via Web Speech API.
-7. Piantine interattive durante la visita che mostrano la stanza di riferimento
-8. Algoritmo di inserimento di opere all'interno delle visite per seguire un percorso lineare all'interno del museo.
+3. Piantina interattiva Uffizi e Prado e relativi piani che carica GeoJSON con click-to-navigate sulle stanze, legenda stanze/categorie, popolamento di opere nel DB con relative immagini. Le piantine durante la visita mostrano la stanza di riferimento secondo l’opera selezionata.
+4. Aggiunto css personalizzato per il layout mobile, pulizia CSS morto.
+5. Riconoscimento vocale via Web Speech API( comandi personalizzati secondo la legenda del museo: alla richiesta viene illuminata l’icona di riferimento sulla mappa); pulsante di controllo dell’audio da parte del docente. Comandi per estendere/accorciare/ripetere la spiegazione.
+6. Algoritmo di inserimento di opere all'interno delle visite per seguire un percorso lineare all'interno del museo(tenendo conto dei corridoi quando possibile).
+7. implementazione del marketplace nel navigator tramite iframe.
+8. Persistenza del codice isil del museo durante la navigazione tra le pagine 
+9. Persistenza e ripristino della sessione Navigator dopo refresh/riapertura pagina (docente e studente) tramite salvataggio della sessione attiva in localstorage, con riconnessione allo stato corrente della visita e monitoraggio del tono di ascolto degli studenti live da parte del docente.
 
 #### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo (ciascun ruolo ha la sua immagine profilo), immagini della home page (anche per versione mobile e modalita' chiara)
 
