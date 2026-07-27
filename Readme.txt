@@ -16,7 +16,7 @@ Pizza Capricciosa
 
 * Nome e cognome: Lorenzo Ricci, matricola: 0001044327, mail: lorenzo.ricci27@studio.unibo.it
 * Nome e cognome: Maria Paola Klein Serini, matricola:  0001069177, mail: maria.kleinserini@studio.unibo.it
-* Nome e cognome: Leonardo Monaco, matricola: 0001161289, mail: leonardorocco.monaco@studio.unibo.it
+* Nome e cognome: Leonardo Rocco Monaco, matricola: 0001161289, mail: leonardorocco.monaco@studio.unibo.it
 * LLM (nome e versione e licenza): Claude Code (Sonnet 5, incluso nell'abbonamento a Claude Pro by Anthropic)
 
 _Il primo membro della lista verrà considerato come punto di contatto primario. Sarà la persona 
@@ -67,7 +67,7 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 -Creazione degli schemi mongoose di musei, items, visite. Gestione di API lato backend per comunicare col database MongoDB
 -Creazione delle dashboard personalizzate per ogni ruolo dei vari utenti (ciascun utente vede una determinata dashboard in base al suo ruolo all'interno dell'editor-marketplace) e della dashboard unica del navigator
 -Implementazione della chat e renderizzazione di immagini, items e mappe all'interno delle visite (con appositi bottoni)
--Implementazione della schermata di riordinamento degli items di una visita prima di farla partire all'interno del navigator
+-Implementazione della schermata di riordinamento delle opere di una visita prima di farla partire all'interno del navigator
 
 
 #### Maria Paola Klein Serini: 
