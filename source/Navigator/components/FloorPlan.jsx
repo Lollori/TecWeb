@@ -6,7 +6,7 @@ const AMENITY_ICONS = {
   ingresso:           { icon: 'fa-door-open',          label: 'Ingresso' },
   U:                  { icon: 'fa-right-from-bracket', label: 'Uscita' },
 
-  // Museo del Prado
+  
   info_point:                    { icon: 'fa-circle-info',      label: 'Informazioni' },
   guardaroba:                    { icon: 'fa-shirt',            label: 'Guardaroba' },
   audio_guida:                   { icon: 'fa-headphones',       label: 'Audio guida' },

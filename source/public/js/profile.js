@@ -4,11 +4,11 @@ function toggleDarkMode() {
     document.documentElement.dataset.theme = next;
     localStorage.setItem('theme', next);
     updateDarkToggleUI();
-    // Notifica il Navigator (React) se questa pagina è in un iframe al suo interno
+    
     window.dispatchEvent(new CustomEvent('artaround-theme', { detail: { isDark: next === 'dark' } }));
 }
 
-// Reagisce ai cambiamenti di tema fatti da altri documenti (altri tab, Navigator, iframe)
+
 window.addEventListener('storage', function(e) {
     if (e.key !== 'theme' || !e.newValue) return;
     document.documentElement.dataset.theme = e.newValue;
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userId = localStorage.getItem('userId') || '';
 
     // Avatar: opera d'arte famosa coerente col ruolo (Wikimedia Commons,
-    // pubblico dominio), stessa immagine ovunque nel sito.
+    
     const roleMap = {
         curatore:   { letter: 'C', color: '#6366f1', label: 'Curatore',
                       avatar: '/img/pfp_curatore.jpg' },
@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     applyAvatarEl(avatarEl);
 
-    // Aggiorna avatar mobile (dashboard.html)
+    
     const mobileAvatarTop  = document.getElementById('mobileAvatarTop');
     const mobileAvatarMenu = document.getElementById('mobileAvatarMenu');
     applyAvatarEl(mobileAvatarTop);

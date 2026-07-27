@@ -157,9 +157,6 @@ function matchVoiceCommand(testo) {
     categoria: 'logistica',
     azione: 'armadietto farmaceutico'
   };
-  // "dov'è/dove si trova/dove sono + nome opera" — nessuna delle logistiche
-  // sopra ha fatto match, quindi il resto della frase è considerato il nome
-  // dell'opera cercata (accordo su singolare/plurale gestito dal chiamante).
   const doveMatch = t.match(/^dov\s*e\b\s*(.*)/);
   if (doveMatch) {
     let query = doveMatch[1].trim().replace(/^(si trova|sono|e)\s+/, '').replace(/^(il|lo|la|i|gli|le|l)\s+/, '').trim();

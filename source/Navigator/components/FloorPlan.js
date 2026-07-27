@@ -23,7 +23,6 @@ const AMENITY_ICONS = {
     icon: 'fa-right-from-bracket',
     label: 'Uscita'
   },
-  // Museo del Prado
   info_point: {
     icon: 'fa-circle-info',
     label: 'Informazioni'

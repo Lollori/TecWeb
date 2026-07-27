@@ -1,4 +1,4 @@
-/* Marketplace – Base: variabili CSS, body, layout radice, helper di testo, badge colore, utility Bootstrap-adjacent. */
+
 
 :root {
     --dark-navy:      #05070A;
@@ -33,12 +33,12 @@ body {
     min-height: 100vh;
 }
 
-/* ── Text helpers ── */
+
 .text-magenta { color: var(--magenta) !important; }
 .text-navy    { color: var(--dark-navy) !important; }
 .text-muted   { color: var(--text-muted) !important; }
 
-/* ── Badges ── */
+
 .badge {
     display: inline-block;
     padding: 6px 12px;
@@ -53,15 +53,15 @@ body {
 .bg-primary  { background-color: #6366f1 !important; color: white !important; }
 .btn-sm      { padding: 6px 16px !important; font-size: 0.85rem !important; }
 
-/* ── Role avatar colors ── */
+
 .bg-visitatore { background-color: var(--magenta) !important; }
 .bg-curatore   { background-color: #6366f1 !important; }
 .bg-autore     { background-color: var(--dark-navy) !important; }
 
-/* ── Bootstrap gap override ── */
+
 .gap-3 { gap: 1rem !important; }
 
-/* ── Dark mode vars + body ── */
+
 [data-theme="dark"] {
     --light-bg:    #0f1623;
     --text-dark:   #e8edf5;

@@ -1,4 +1,4 @@
-/* ARTAROUND - AUTH PAGE STYLES PALETTE: MAGENTA + DARK NAVY Static gradient background — matches home page */
+
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300,400,500,600,700,900&family=Playfair+Display:wght@700,800,900&display=swap');
 
@@ -27,7 +27,7 @@ body, html {
     overflow-x: hidden;
 }
 
-/* STATIC GRADIENT BACKGROUND (like home) */
+
 .auth-hero-bg {
     position: fixed;
     inset: 0;
@@ -139,7 +139,7 @@ body, html {
 
 .auth-avatar-badge.bg-autore i { color: rgba(255,255,255,0.7); }
 
-/* Avatar inline (dentro il form, accanto al select ruolo) */
+
 .d-flex > .auth-avatar-badge {
     width: 48px;
     height: 48px;
@@ -153,7 +153,7 @@ body, html {
     font-size: 1.2rem;
 }
 
-/* AUTH CARD */
+
 .auth-card {
     border-radius: 28px !important;
     background: rgba(255,255,255,0.07) !important;
@@ -190,12 +190,12 @@ body, html {
     to { opacity: 0; transform: translateY(-16px) scale(0.97); }
 }
 
-/* SCROLLABLE BODY */
+
 .auth-scroll-body {
     padding-right: 2px;
 }
 
-/* BRAND HEADER */
+
 .brand-header { margin-bottom: 20px; }
 
 .logo-text {
@@ -218,7 +218,7 @@ body, html {
     border-radius: 10px;
 }
 
-/* TITLES */
+
 .auth-body h2 {
     font-family: 'Playfair Display', serif;
     font-size: 1.45rem;
@@ -234,7 +234,7 @@ body, html {
     margin-bottom: 22px;
 }
 
-/* FORM LABELS */
+
 .form-label {
     font-size: 0.72rem;
     font-weight: 700;
@@ -245,7 +245,7 @@ body, html {
     display: block;
 }
 
-/* AVATAR ROLE (inside form) */
+
 .auth-avatar-container {
     width: 52px;
     height: 52px;
@@ -267,7 +267,7 @@ body, html {
 .bg-curatore   { background-color: rgba(99,102,241,0.7) !important; }
 .bg-autore     { background-color: rgba(255,255,255,0.15) !important; }
 
-/* SELECT DROPDOWN */
+
 .select-dark-navy {
     background-color: rgba(255,255,255,0.08) !important;
     color: white !important;
@@ -301,7 +301,7 @@ body, html {
     padding: 8px 12px;
 }
 
-/* INPUT GROUPS */
+
 .input-group-custom {
     display: flex;
     align-items: center;
@@ -355,7 +355,7 @@ body, html {
     color: rgba(255,255,255,0.8);
 }
 
-/* PASSWORD STRENGTH */
+
 .password-strength {
     height: 3px;
     border-radius: 10px;
@@ -375,7 +375,7 @@ body, html {
 .strength-medium { width: 66%; background: #f59e0b; }
 .strength-strong { width: 100%; background: #10b981; }
 
-/* SUBMIT BUTTON */
+
 .btn-magenta-submit {
     background: var(--magenta) !important;
     color: white !important;
@@ -404,7 +404,7 @@ body, html {
     box-shadow: 0 2px 8px rgba(255,0,127,0.2);
 }
 
-/* DIVIDER */
+
 .auth-divider {
     display: flex;
     align-items: center;
@@ -427,7 +427,7 @@ body, html {
     letter-spacing: 1px;
 }
 
-/* FOOTER LINKS */
+
 .footer-links a {
     color: rgba(255,255,255,0.6) !important;
     text-decoration: none;
@@ -448,7 +448,7 @@ body, html {
     color: var(--magenta-light) !important;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 480px) {
     .auth-card {
         padding: 40px 24px 24px !important;

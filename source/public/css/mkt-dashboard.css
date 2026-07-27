@@ -1,6 +1,6 @@
-/* Marketplace – Dashboard: tab navigazione museo, analytics KPI, view-toggle, print. */
 
-/* ── Museo detail header ── */
+
+
 .museo-detail-back {
     background: none; border: none;
     color: var(--magenta); cursor: pointer;
@@ -18,7 +18,7 @@
 }
 .museo-detail-sub { color: var(--text-muted); font-size: 0.95rem; margin: 0 0 24px; }
 
-/* ── Detail tabs ── */
+
 .detail-tabs {
     display: flex; gap: 8px; margin-bottom: 24px;
     border-bottom: 2px solid #e2e8f0; padding-bottom: 0;
@@ -33,7 +33,7 @@
 .tab-btn:hover  { color: var(--text-dark); }
 .tab-btn.active { color: var(--magenta); border-bottom-color: var(--magenta); }
 
-/* ── Analytics: sezioni collassabili (Attività Recenti, Marketplace, …) ── */
+
 .analytics-block-title {
     display: flex; align-items: center; gap: 10px;
     font-weight: 800; font-size: 1.1rem;
@@ -48,16 +48,15 @@
 }
 .analytics-block-chevron.collapsed { transform: rotate(-90deg); }
 
-/* ── Analytics bar/column tracks ── */
+
 .analytics-bar-track { background: #e2e8f0; border-radius: 4px; height: 8px; }
 .analytics-col-track { background: #e2e8f0; border-radius: 4px; }
 
-/* ── KPI card ── */
+
 .kpi-icon  { font-size: 1.2rem; color: rgba(0,0,0,0.15); }
 .kpi-label { font-size: 0.82rem; color: #64748b; }
 
-/* Sfondo magenta smorzato (translucido, non a tinta piena): inverte lo
-   schema del glass-card senza un rosa troppo acceso. */
+
 .kpi-card {
     background: rgba(204, 0, 102, 0.9);
     border-color: rgba(204, 0, 102, 0.6);
@@ -67,7 +66,7 @@
 .kpi-card .kpi-value { color: #ffffff; }
 .kpi-card .kpi-label { color: rgba(255,255,255,0.85); font-weight: 600; }
 
-/* ── View-toggle (tabella / griglia) ── */
+
 .view-toggle-btn {
     padding: 8px 14px; border: none;
     cursor: pointer; transition: background 0.2s, color 0.2s;
@@ -75,7 +74,7 @@
 .view-toggle-btn.vt-active   { background: #FF007F; color: #fff; }
 .view-toggle-btn.vt-inactive { background: #f8f9fa; color: #888; }
 
-/* ── Dark mode ── */
+
 [data-theme="dark"] .detail-tabs    { border-bottom-color: rgba(255, 255, 255, 0.08); }
 [data-theme="dark"] .tab-btn:hover  { color: #e8edf5; }
 [data-theme="dark"] .analytics-block-title { color: #e8edf5; border-bottom-color: rgba(255, 255, 255, 0.08); }
@@ -104,7 +103,7 @@
 [data-theme="dark"] .table-hover tbody tr:hover small,
 [data-theme="dark"] .table-hover tbody tr:hover .text-muted { color: #e8edf5 !important; }
 
-/* ── Table base ── */
+
 .table { width: 100%; margin-bottom: 1rem; color: var(--text-dark); }
 .table th {
     font-weight: 700; font-size: 0.85rem;
@@ -114,7 +113,7 @@
 .table td { padding: 16px; vertical-align: middle; border-bottom: 1px solid #f1f5f9; }
 .table-hover tbody tr:hover { background-color: #f8fafc; }
 
-/* ── Print ── */
+
 @media print {
     body            { background: #fff !important; }
     .sidebar,

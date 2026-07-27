@@ -39,8 +39,6 @@ function ReorderScreen({
             const isIndipendente = d.data?.contentType === 'indipendente';
             return {
               _id: id,
-              // operaId resta quello vero (stringa vuota per gli indipendenti): viene
-              // spedito così com'è al backend/VisitaItemScreen, che già sa gestirlo.
               operaId: isIndipendente ? '' : d.data?.operaId || id,
               // groupKey serve solo qui, per non far finire tutti gli item indipendenti
               // (operaId vuoto in comune) dentro lo stesso gruppo: ognuno resta la sua card.

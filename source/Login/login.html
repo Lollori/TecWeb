@@ -14,15 +14,15 @@
 </head>
 <body>
 
-    <!-- HERO BACKGROUND -->
+    
     <div class="auth-hero-bg"></div>
 
     <div class="auth-wrapper">
 
-        <!-- LOGIN PANEL -->
+        
         <div class="auth-scene" id="loginPanel">
 
-            <!-- Avatar badge -->
+            
             <div class="auth-avatar-badge" id="loginBadge">
                 <i class="fa-solid fa-user"></i>
             </div>
@@ -40,7 +40,7 @@
 
                     <form id="loginForm" class="text-start">
 
-                        <!-- Username -->
+                        
                         <div class="mb-3">
                             <label class="form-label" for="loginUsername">Username</label>
                             <div class="input-group-custom">
@@ -49,7 +49,7 @@
                             </div>
                         </div>
 
-                        <!-- Password -->
+                        
                         <div class="mb-4">
                             <label class="form-label" for="loginPassword">Password</label>
                             <div class="input-group-custom">
@@ -79,10 +79,10 @@
             </div>
         </div>
 
-        <!-- REGISTER PANEL -->
+        
         <div class="auth-scene" id="registerPanel" style="display: none;">
 
-            <!-- Avatar badge -->
+            
             <div class="auth-avatar-badge" id="registerBadge">
                 <i class="fa-solid fa-user-pen"></i>
             </div>
@@ -101,7 +101,7 @@
 
                         <form id="registerForm" class="text-start">
 
-                            <!-- Tipo di account con avatar -->
+                            
                             <div class="mb-4">
                                 <label class="form-label" for="regUserRole">Tipo di Account</label>
                                 <div class="d-flex align-items-center gap-3">
@@ -116,7 +116,7 @@
                                 </div>
                             </div>
 
-                            <!-- Username -->
+                            
                             <div class="mb-3">
                                 <label class="form-label" for="regUsername">Username</label>
                                 <div class="input-group-custom">
@@ -125,7 +125,7 @@
                                 </div>
                             </div>
 
-                            <!-- Password -->
+                            
                             <div class="mb-4">
                                 <label class="form-label" for="regPassword">Password</label>
                                 <div class="input-group-custom">
@@ -159,7 +159,7 @@
     </div>
 
     <script>
-        /* TOGGLE PASSWORD */
+        
         function togglePwd(inputId, btn) {
             const input = document.getElementById(inputId);
             const icon = btn.querySelector('i');
@@ -172,8 +172,7 @@
             }
         }
 
-        /* Avatar ruolo (registrazione): anteprima dell'immagine profilo che l'account
-           avrà in base al ruolo scelto — stessa opera d'arte usata ovunque nel sito. */
+        
         const roleConfig = {
             visitatore: { icon: 'fa-user',       cls: 'bg-visitatore', avatar: '/img/pfp_visitatore.jpg' },
             curatore:   { icon: 'fa-user-gear',  cls: 'bg-curatore',   avatar: '/img/pfp_curatore.jpg' },
@@ -190,7 +189,7 @@
         }
         updateRegAvatar(document.getElementById('regUserRole'));
 
-        /* PASSWORD STRENGTH */
+        
         function checkStrength(pwd) {
             const bar = document.getElementById('strengthBar');
             const label = document.getElementById('strengthLabel');
@@ -215,7 +214,7 @@
             label.style.color = lv.color;
         }
 
-        /* TRANSIZIONE LOGIN → REGISTRAZIONE */
+        
         function switchPanel(fromId, toId) {
             const from = document.getElementById(fromId);
             const toPanel = document.getElementById(toId);

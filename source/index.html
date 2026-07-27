@@ -14,7 +14,7 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand fw-900" href="#">ArtAround<span class="text-magenta">.</span></a>
@@ -30,7 +30,7 @@
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
+    
     <section class="hero-section">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
@@ -57,7 +57,7 @@
         </div>
     </section>
 
-    <!-- FEATURES SECTION -->
+    
     <section id="features" class="section-features">
         <div class="container">
             <div id="featuresHeading" class="text-center mb-5">
@@ -123,7 +123,7 @@
         </div>
     </section>
 
-    <!-- APPS SECTION -->
+    
     <section id="apps" class="section-apps">
         <div class="container">
             <div id="appsHeading" class="text-center mb-5">
@@ -165,7 +165,7 @@
         </div>
     </section>
 
-    <!-- TECH STACK SECTION -->
+    
     <section class="section-tech">
         <div class="container text-center">
             <p class="tech-stack-label">Tecnologie utilizzate</p>
@@ -209,9 +209,9 @@
 
     <script src="/js/ui-modal.js"></script>
     <script>
-    // Scorre fino al titolo della sezione (non fino al bordo della sezione,
-    // che include ~120px di padding vuoto sopra) così restano visibili sia
-    // il titolo sia il maggior numero possibile di card subito sotto.
+    
+    
+    
     function scrollToSection(id, event) {
         const el = document.getElementById(id);
         if (!el) return true;
@@ -220,7 +220,7 @@
         return false;
     }
 
-    // Inizializza tema prima del render
+    
     (function () {
         let theme = localStorage.getItem('theme');
         if (!theme) { theme = 'dark'; localStorage.setItem('theme', theme); }
@@ -240,7 +240,7 @@
         updateHomeThemeBtn();
     }
 
-    // Aggiorna subito il bottone al caricamento
+    
     document.addEventListener('DOMContentLoaded', updateHomeThemeBtn);
 
     (function () {

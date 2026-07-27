@@ -1,6 +1,6 @@
-/* Navigator – Quiz: prompt modale, pannello domande, risultati, domande più sbagliate, filtro visitatore. */
 
-/* ── Prompt modale (avvia quiz prima di terminare?) ── */
+
+
 .quiz-prompt-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 400; }
 .quiz-prompt-modal {
   position: fixed;
@@ -45,7 +45,7 @@
 
 [data-theme="dark"] .quiz-prompt-modal { background: var(--nav-card-bg); }
 
-/* ── Quiz panel container ── */
+
 .quiz-panel {
   width: 100%; max-width: 640px;
   margin: 0 auto;
@@ -71,7 +71,7 @@
 }
 .quiz-empty { color: var(--nav-muted); text-align: center; padding: 24px 0; }
 
-/* ── Vista docente: quiz in corso ── */
+
 .quiz-docente-live {
   display: flex; flex-direction: column;
   align-items: center; gap: 14px;
@@ -82,7 +82,7 @@
 }
 .quiz-docente-live-text { margin: 0; color: var(--nav-text); font-size: 0.95rem; }
 
-/* ── Vista studente: domande ── */
+
 .quiz-domande-list { display: flex; flex-direction: column; gap: 14px; }
 .quiz-domanda-card {
   background: var(--nav-card-bg);
@@ -123,7 +123,7 @@
 }
 .quiz-invia-btn:disabled { opacity: 0.55; cursor: default; }
 
-/* ── Risultati ── */
+
 .quiz-results-list,
 .quiz-my-result { display: flex; flex-direction: column; gap: 12px; }
 .quiz-result-card {
@@ -156,7 +156,7 @@
 .quiz-result-a { margin: 0; font-size: 0.84rem; color: var(--nav-muted); }
 .quiz-result-correct { margin: 2px 0 0; font-size: 0.84rem; color: #22c55e; font-weight: 600; }
 
-/* ── Domande più sbagliate (docente) ── */
+
 .quiz-most-missed-card {
   background: var(--nav-card-bg);
   border: 1px solid var(--nav-border);
@@ -171,7 +171,7 @@
 .quiz-most-missed-q    { margin: 0 0 4px; font-weight: 600; font-size: 0.88rem; color: var(--nav-text); }
 .quiz-most-missed-stat { margin: 0; font-size: 0.84rem; color: var(--nav-muted); }
 
-/* ── Filtro visitatore (docente) ── */
+
 .quiz-filter-bar { display: flex; align-items: center; gap: 10px; }
 .quiz-filter-bar label { font-size: 0.85rem; font-weight: 600; color: var(--nav-muted); }
 .quiz-filtro-select {
@@ -184,7 +184,7 @@
 }
 .quiz-filtro-select:focus { outline: none; border-color: var(--nav-magenta); }
 
-/* ── Dark mode ── */
+
 [data-theme="dark"] .quiz-docente-live,
 [data-theme="dark"] .quiz-domanda-card,
 [data-theme="dark"] .quiz-most-missed-card,

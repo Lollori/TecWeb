@@ -24,7 +24,7 @@
 </head>
 <body>
 
-<!-- MOBILE TOPBAR -->
+
 <div class="mobile-topbar" id="mobileTopbar">
     <button class="mobile-hamburger" id="mobileHamburger" onclick="toggleMobileMenu()" aria-label="Apri menu">
         <i class="fa-solid fa-bars" id="hamburgerIcon"></i>
@@ -33,10 +33,10 @@
     <div class="avatar-sm" id="mobileAvatarTop">?</div>
 </div>
 
-<!-- MOBILE OVERLAY -->
+
 <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="closeMobileMenu()"></div>
 
-<!-- MOBILE DROPDOWN -->
+
 <div class="mobile-menu-dropdown" id="mobileMenuDropdown">
     <div class="mobile-menu-user-row">
         <div class="avatar-sm" id="mobileAvatarMenu">?</div>
@@ -62,7 +62,7 @@
 
 <div class="admin-layout">
 
-    <!-- SIDEBAR -->
+    
     <aside class="sidebar">
         <div class="sidebar-top">
             <a href="/" style="text-decoration:none;"><h2 class="logo-brand">ArtAround.</h2></a>
@@ -75,7 +75,7 @@
         <div class="sidebar-divider-line"></div>
 
         <nav class="sidebar-menu" id="sidebarNav">
-            <!-- Popolato da buildSidebar() in base al ruolo -->
+            
         </nav>
 
         <div class="sidebar-footer">
@@ -97,11 +97,11 @@
         </div>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    
     <main class="main-content">
 
 
-        <!-- CURATORE — MUSEI -->
+        
         <section id="section-musei" class="dashboard-section mb-5" style="display:none">
             <div class="section-header-inline d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3" id="museiListHeader">
                 <div>
@@ -124,7 +124,7 @@
 <div id="museiView" class="items-grid"></div>
         </section>
 
-        <!-- CURATORE — MODIFICA MUSEO -->
+        
         <section id="section-modifica-museo" class="dashboard-section mb-5" style="display:none">
             <div class="mb-5">
                 <h1 class="page-title">Modifica Museo</h1>
@@ -169,7 +169,7 @@
             </div>
         </section>
 
-        <!-- CURATORE — AGGIUNGI OPERA -->
+        
         <section id="section-aggiungi-opere" class="dashboard-section mb-5" style="display:none">
             <div class="mb-5">
                 <h1 class="page-title">Aggiungi Opera</h1>
@@ -183,7 +183,7 @@
                     </select>
                 </div>
                 <form id="operaForm" class="row g-4">
-                    <!-- Titolo + Tipo -->
+                    
                     <div class="col-md-8">
                         <label class="custom-label" for="ofTitolo">Titolo / ID Opera *</label>
                         <input type="text" id="ofTitolo" class="custom-input"
@@ -198,7 +198,7 @@
                             <option value="altro">Altro</option>
                         </select>
                     </div>
-                    <!-- Autore + Datazione -->
+                    
                     <div class="col-md-6">
                         <label class="custom-label" for="ofAutore">Autore</label>
                         <input type="text" id="ofAutore" class="custom-input"
@@ -209,25 +209,25 @@
                         <input type="text" id="ofDatazione" class="custom-input"
                                placeholder="es. 1477–1478">
                     </div>
-                    <!-- Immagine -->
+                    
                     <div class="col-12">
                         <label class="custom-label" for="ofImmagine">URL Immagine</label>
                         <input type="url" id="ofImmagine" class="custom-input"
                                placeholder="https://…">
                     </div>
-                    <!-- Descrizione -->
+                    
                     <div class="col-12">
                         <label class="custom-label" for="ofDescrizione">Descrizione</label>
                         <textarea id="ofDescrizione" class="custom-input" rows="3"
                                   placeholder="Breve descrizione dell'opera…"></textarea>
                     </div>
-                    <!-- Testo Audioguida -->
+                    
                     <div class="col-12">
                         <label class="custom-label" for="ofTesto">Testo Audioguida</label>
                         <textarea id="ofTesto" class="custom-input" rows="4"
                                   placeholder="Testo completo per l'audioguida…"></textarea>
                     </div>
-                    <!-- Linguaggio + Lunghezza + Licenza -->
+                    
                     <div class="col-md-4">
                         <label class="custom-label" for="ofLinguaggio">Linguaggio</label>
                         <select id="ofLinguaggio" class="custom-input">
@@ -252,7 +252,7 @@
                             <option value="premium">Premium</option>
                         </select>
                     </div>
-                    <!-- Dimensioni -->
+                    
                     <div class="col-md-4">
                         <label class="custom-label" for="ofAltezza">Altezza (cm)</label>
                         <input type="number" id="ofAltezza" class="custom-input" min="0" value="0">
@@ -265,7 +265,7 @@
                         <label class="custom-label" for="ofProfondita">Profondità (cm)</label>
                         <input type="number" id="ofProfondita" class="custom-input" min="0" value="0">
                     </div>
-                    <!-- Tecnica + Materiali -->
+                    
                     <div class="col-md-6">
                         <label class="custom-label" for="ofTecnica">Tecnica <small style="text-transform:none;color:#94a3b8;">(quadri)</small></label>
                         <input type="text" id="ofTecnica" class="custom-input"
@@ -276,7 +276,7 @@
                         <input type="text" id="ofMateriali" class="custom-input"
                                placeholder="es. Marmo bianco">
                     </div>
-                    <!-- Prezzo + Pubblica -->
+                    
                     <div class="col-md-4">
                         <label class="custom-label" for="ofPrezzo">Prezzo (€)</label>
                         <input type="number" id="ofPrezzo" class="custom-input"
@@ -289,7 +289,7 @@
                             <span class="custom-label" style="margin:0;">Pubblica subito</span>
                         </label>
                     </div>
-                    <!-- Azioni -->
+                    
                     <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                          style="border-top:1px solid #e2e8f0;">
                         <button type="button" class="btn-outline-custom"
@@ -300,7 +300,7 @@
             </div>
         </section>
 
-        <!-- CURATORE — AGGIUNGI MUSEO -->
+        
         <section id="section-aggiungi-museo" class="dashboard-section mb-5" style="display:none">
             <div class="d-flex justify-content-between align-items-center mb-5">
                 <div>
@@ -353,19 +353,19 @@
             </div>
         </section>
 
-        <!-- AUTORE — sezioni (contenuto generato da JS) -->
+        
         <section id="section-autore-musei"           class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-autore-aggiungi-visita" class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-autore-aggiungi-item"   class="dashboard-section mb-5" style="display:none"></section>
 
-        <!-- VISITATORE — sezioni (contenuto generato da JS) -->
+        
         <section id="section-visitatore-musei"  class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-visitatore-opere"  class="dashboard-section mb-5" style="display:none"></section>
 
-        <!-- CURATORE — QUIZ NAVIGATOR -->
+        
         <section id="section-curatore-quiz" class="dashboard-section mb-5" style="display:none"></section>
 
-        <!-- ADMIN — sezioni (contenuto generato da JS) -->
+        
         <section id="section-admin-utenti"    class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-admin-musei"     class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-admin-opere"     class="dashboard-section mb-5" style="display:none"></section>
@@ -374,7 +374,7 @@
         <section id="section-admin-analytics" class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-admin-navigator" class="dashboard-section mb-5" style="display:none"></section>
 
-        <!-- MARKETPLACE — condiviso fra tutti i ruoli -->
+        
         <section id="section-marketplace" class="dashboard-section mb-5" style="display:none"></section>
         <section id="section-carrello" class="dashboard-section mb-5" style="display:none"></section>
 

@@ -1,6 +1,6 @@
-/* Marketplace – Sidebar: navigazione laterale desktop, topbar mobile, hamburger menu, dark-toggle. */
 
-/* ── Sidebar ── */
+
+
 .sidebar {
     width: var(--sidebar-width);
     background-color: var(--dark-navy);
@@ -114,7 +114,7 @@ a.nav-item { text-decoration: none; }
 }
 .logout-icon:hover { color: var(--magenta); }
 
-/* ── Nav-item (button variant usato in dashboard.js React) ── */
+
 .nav-item {
     color: rgba(255, 255, 255, 0.6);
     background: none; border: none;
@@ -129,7 +129,7 @@ a.nav-item { text-decoration: none; }
 .nav-item:hover  { background: var(--magenta-subtle); color: var(--magenta-light); }
 .nav-item.active { background: rgba(255, 0, 127, 0.15); color: var(--magenta); }
 
-/* ── Dark-mode toggle (in sidebar footer) ── */
+
 .dark-toggle {
     width: 100%;
     background: rgba(255, 255, 255, 0.05);
@@ -150,7 +150,7 @@ a.nav-item { text-decoration: none; }
     color: var(--magenta-light);
 }
 
-/* ── Mobile topbar ── */
+
 .mobile-topbar {
     display: none;
     position: fixed; top: 0; left: 0; right: 0;
@@ -180,7 +180,7 @@ a.nav-item { text-decoration: none; }
 .mobile-hamburger:hover,
 .mobile-hamburger.open { background: var(--magenta-subtle); color: var(--magenta-light); }
 
-/* ── Mobile dropdown menu ── */
+
 .mobile-menu-overlay {
     display: none; position: fixed; inset: 0; top: 60px;
     background: rgba(0,0,0,0.5); z-index: 1090;
@@ -234,7 +234,7 @@ a.nav-item { text-decoration: none; }
 }
 .mobile-footer-link:hover { background: var(--magenta-subtle); color: var(--magenta-light); }
 
-/* ── Responsive ── */
+
 @media (max-width: 991px) {
     .sidebar       { display: none; }
     .mobile-topbar { display: flex; }

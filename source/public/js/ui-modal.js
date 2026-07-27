@@ -1,9 +1,4 @@
-/* ============================================================
-   UI MODAL — sostituto stilizzato di alert()/confirm() nativi.
-   window.showAlert(message, opts?)   -> Promise<void>   (fire-and-forget ok)
-   window.showConfirm(message, opts?) -> Promise<boolean> (va atteso con await)
-   opts: { title, type: 'success'|'error'|'warning'|'info'|'question', okText, cancelText }
-   ============================================================ */
+
 (function () {
     function ensureRoot() {
         let root = document.getElementById('uiModalRoot');
@@ -25,9 +20,9 @@
         }
     }
 
-    // Gli alert esistenti non passano un "type" esplicito: lo deduciamo dal
-    // testo per scegliere un'icona/colore sensata senza dover riscrivere
-    // manualmente ogni singola chiamata.
+    
+    
+    
     function guessType(message) {
         const m = (message || '').toLowerCase();
         if (/errore|impossibile|non è possibile|non e' possibile|fallit/.test(m)) return 'error';

@@ -1,6 +1,6 @@
-/* Marketplace – Cards: museum card, glass card, opera/visita/ item read card, scroll card, section-form, toni-switcher, price/free badge, tag bubble. */
 
-/* ── Glass card ── */
+
+
 .glass-card {
     background: rgba(255, 255, 255, 0.85);
     backdrop-filter: blur(15px);
@@ -10,7 +10,7 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
-/* ── Museum item card ── */
+
 .item-card {
     background: white; border-radius: 16px; overflow: hidden;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
@@ -59,7 +59,7 @@
 .description-text {
     font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin: 0;
     display: -webkit-box;
-    -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
 }
 .card-footer {
     padding: 16px 20px 20px;
@@ -73,7 +73,7 @@
 }
 .tag-bubble i { font-size: 0.7rem; color: var(--magenta); }
 
-/* ── Read cards (opera, visita, item) ── */
+
 .opera-read-card {
     background: white; border: 1px solid #e2e8f0;
     border-radius: 16px; padding: 20px;
@@ -122,7 +122,7 @@
 .item-card-clickable { cursor: pointer; display: flex; flex-direction: column; gap: 12px; }
 .item-card-clickable:hover h3 { color: var(--magenta, #FF007F); }
 
-/* ── Vista di sola lettura di un item, con frecce per scorrere la lista ── */
+
 .item-view-carousel { display: flex; align-items: flex-start; gap: 20px; margin-top: 20px; }
 .item-view-nav {
     flex: 0 0 auto; width: 48px; height: 48px; border-radius: 50%;
@@ -142,8 +142,7 @@
     .item-view-nav { width: 36px; height: 36px; position: static; }
 }
 
-/* ── Toni switcher (frecce per passare fra semplice/medio/avanzato;
-   il tono attivo mostra tutte le durate compilate, 3s/15s/40s) ── */
+
 .toni-switcher {
     border: 1px solid #e2e8f0; border-radius: 10px; overflow: hidden;
 }
@@ -192,7 +191,7 @@
 }
 .toni-modal-body { overflow-y: auto; margin: 4px 0 16px; }
 
-/* ── Tone badges (liste item: quali toni hanno una descrizione) ── */
+
 .tone-badge {
     display: inline-flex; align-items: center;
     font-size: 0.7rem; font-weight: 700;
@@ -206,7 +205,7 @@
 .tone-badge--medio    { background: rgba(99, 102, 241, 0.16); color: #6366f1; border-color: rgba(99, 102, 241, 0.35); }
 .tone-badge--avanzato { background: rgba(255, 0, 127, 0.14); color: var(--magenta, #FF007F); border-color: rgba(255, 0, 127, 0.35); }
 
-/* ── Tag chip cliccabili (card marketplace: avviano una ricerca per tag) ── */
+
 .tag-chips-display { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 8px; }
 .tag-chip-mini {
     background: rgba(99, 102, 241, 0.1); color: #6366f1;
@@ -218,7 +217,7 @@
 }
 .tag-chip-mini:hover { background: #6366f1; color: white; border-color: #6366f1; }
 
-/* ── Item metadata ── */
+
 .item-metadata-list {
     list-style: none; padding: 0; margin: 0;
     display: flex; flex-direction: column; gap: 4px;
@@ -226,7 +225,7 @@
 .item-metadata-list li { font-size: 0.82rem; color: var(--text-muted); }
 .meta-key { font-weight: 700; color: var(--text-dark); }
 
-/* ── Price / free badge ── */
+
 .price-badge {
     display: inline-flex; align-items: center;
     padding: 4px 12px;
@@ -242,7 +241,7 @@
     border-radius: 20px; font-size: 0.8rem; font-weight: 700;
 }
 
-/* ── Scroll row cards (autore) ── */
+
 .scroll-row {
     display: flex; gap: 20px; overflow-x: auto;
     padding: 4px 0 20px;
@@ -284,7 +283,7 @@
     display: flex; align-items: center; gap: 5px;
 }
 
-/* ── Section form (autore: editor visite/item) ── */
+
 .section-form {
     background: white; border: 1px solid #e2e8f0;
     border-radius: 16px; padding: 28px;
@@ -318,7 +317,7 @@
 }
 .full-width { grid-column: 1 / -1; }
 
-/* ── Drag card (ordine opere in creazione visita) ── */
+
 .vf-drag-card {
     display: flex; align-items: center; gap: 12px;
     padding: 10px 16px;
@@ -339,7 +338,7 @@
     box-shadow: 0 0 0 2px rgba(255, 0, 127, 0.15);
 }
 
-/* ── Dark mode ── */
+
 [data-theme="dark"] .glass-card {
     background: rgba(26, 34, 53, 0.97);
     border-color: rgba(255, 255, 255, 0.07);

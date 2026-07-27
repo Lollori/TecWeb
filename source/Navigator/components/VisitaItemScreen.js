@@ -220,8 +220,6 @@ function VisitaItemScreen({
     libreria: 'la libreria',
     'armadietto farmaceutico': "l'armadietto farmaceutico"
   };
-  // Stesso concetto logistico ma room_id diverso tra i musei (es. Uffizi
-  // usa 'caffetteria', il Prado usa 'bar'): si cerca qualunque id del gruppo.
   const AMENITY_SYNONYMS = {
     caffetteria: ['caffetteria', 'bar']
   };
@@ -545,11 +543,6 @@ function VisitaItemScreen({
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       audioRef.current = audio;
-
-      // L'audio per tutti resta attivo (audioAvviato) fino a un fermo esplicito
-      // del docente o al cambio opera (che lo resetta lato server): non deve
-      // spegnersi da solo alla fine della narrazione, altrimenti uno studente
-      // che cambia tono in autonomia perde la riproduzione automatica.
       if (!isDocente) audio.onended = () => {
         if (nomeAssegnato && codice) reportAscolto(false);
       };

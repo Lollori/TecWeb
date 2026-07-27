@@ -1,4 +1,4 @@
-/* app.jsx - App component + mount */
+
 
 function App() {
   const [screen,         setScreen]         = React.useState('loading');
@@ -57,7 +57,7 @@ function App() {
               return;
             }
           }
-          // Sessione non più valida (chiusa/scaduta lato server): pulisci e riparti normalmente.
+          
           clearNavSession();
         } catch (_) {
           clearNavSession();
@@ -97,7 +97,7 @@ function App() {
       const data = await res.json();
       setMusei(data.data || []);
 
-      // Carica le visite dell'utente per sapere quali musei hanno visite sue
+      
       if (userId) {
         try {
           const vParams = new URLSearchParams({ autoreId: userId });
@@ -210,7 +210,7 @@ function App() {
     }
   }
 
-  /* ── Rendering ── */
+  
 
   if (screen === 'loading') return (
     <div className="nav-loading">
@@ -227,8 +227,8 @@ function App() {
     </div>
   );
 
-  // Unica via d'uscita per i partecipanti: il pulsante "Esci" dentro la visita
-  // (o la chiusura da parte della docente). Un reload non deve mai passare di qui.
+  
+  
   const exitStudente = () => { if (lobby?.codice) releaseNavLock(lobby.codice); clearNavSession(); setLobby(null); setScreen('musei'); };
 
   if (screen === 'lobby-studente') return (
@@ -248,16 +248,16 @@ function App() {
     />
   );
 
-  // Unica via d'uscita per la docente: "Annulla sessione" (prima dell'avvio) o
-  // "Termina visita" (durante), entrambi passano per onClose. Niente sidebar
-  // qui sotto (Musei/Marketplace/Unisciti) — non deve esistere un'uscita implicita.
+  
+  
+  
   const closeSession = () => { if (lobby?.codice) releaseNavLock(lobby.codice); clearNavSession(); setLobby(null); setScreen('visite'); };
 
   if (screen === 'lobby-docente') return (
     <LobbyDocente codice={lobby.codice} visitaNome={lobby.visitaNome} museo={museo} onClose={closeSession} />
   );
 
-  /* screen === 'musei' | 'join' | 'visite' */
+  
   const joinClick    = () => { window.history.pushState({ screen: 'join' }, '', window.location.href); setScreen('join'); };
 
   const goMarketplace = () => setScreen('marketplace');
@@ -369,5 +369,5 @@ function App() {
   );
 }
 
-/* ── Mount ──────────────────────────────────────────── */
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);

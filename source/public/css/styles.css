@@ -1,4 +1,4 @@
-/* ARTAROUND - PALETTE: MAGENTA + DARK NAVY */
+
 
 :root {
     --dark-navy: #05070A;
@@ -16,7 +16,7 @@
     --border-subtle: rgba(255, 255, 255, 0.06);
 }
 
-/* BASE */
+
 body {
     font-family: 'Inter', sans-serif;
     background-color: var(--dark-navy);
@@ -26,7 +26,7 @@ body {
 
 .text-magenta { color: var(--magenta); }
 
-/* NAVBAR */
+
 .navbar {
     padding: 20px 0;
     transition: all 0.3s ease;
@@ -39,7 +39,7 @@ body {
     letter-spacing: -1px;
 }
 
-/* BUTTONS */
+
 .btn-magenta {
     background: var(--magenta);
     color: var(--white);
@@ -58,7 +58,7 @@ body {
     box-shadow: 0 8px 30px var(--magenta-glow);
 }
 
-/* HERO SECTION */
+
 .hero-section {
     min-height: 100vh;
     display: flex;
@@ -215,7 +215,7 @@ body {
     60% { transform: translateX(-50%) translateY(-5px); }
 }
 
-/* SECTIONS COMMON */
+
 .section-features {
     padding: 120px 0;
     background: var(--navy-deep);
@@ -226,7 +226,7 @@ body {
     background: var(--dark-navy);
 }
 
-/* TECH STACK */
+
 .section-tech {
     padding: 110px 0;
     background: var(--dark-navy);
@@ -304,7 +304,7 @@ body {
     line-height: 1.7;
 }
 
-/* FEATURE CARDS */
+
 .feature-card {
     background: rgba(15, 21, 32, 0.4);
     backdrop-filter: blur(20px);
@@ -513,7 +513,7 @@ body {
     font-size: 0.85rem;
 }
 
-/* FOOTER */
+
 .footer {
     padding: 40px 0;
     background: var(--navy-deep);
@@ -524,7 +524,7 @@ body {
     font-size: 1.5rem;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 768px) {
     body {
         padding-top: 0;
@@ -577,13 +577,13 @@ body {
     }
 }
 
-/* LIGHT MODE OVERRIDES */
+
 [data-theme="light"] body {
     background-color: #f4f6f8;
     color: #1e293b;
 }
 
-/* Navbar */
+
 [data-theme="light"] .navbar {
     background: rgba(255, 255, 255, 0.95) !important;
     backdrop-filter: blur(12px);
@@ -599,7 +599,7 @@ body {
     color: #1e293b !important;
 }
 
-/* Override Bootstrap text-white / text-white-50 con !important */
+
 [data-theme="light"] .text-white {
     color: #1e293b !important;
 }
@@ -612,7 +612,7 @@ body {
     color: #1e293b !important;
 }
 
-/* Hero */
+
 [data-theme="light"] .hero-title  { color: #1e293b; text-shadow: 0 6px 30px rgba(0, 0, 0, 0.2), 0 2px 10px rgba(0, 0, 0, 0.15); }
 [data-theme="light"] .hero-subtitle { color: #475569; text-shadow: 0 4px 24px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.12); }
 [data-theme="light"] .hero-scroll-indicator { color: #94a3b8; }
@@ -622,7 +622,7 @@ body {
     border-color: rgba(255,0,127,0.18);
 }
 
-/* Sezioni */
+
 [data-theme="light"] .section-features { background: #fdedf4; }
 [data-theme="light"] .section-apps     { background: #f4f6f8; }
 [data-theme="light"] .section-title    { color: #1e293b !important; }
@@ -635,7 +635,7 @@ body {
 [data-theme="light"] .tech-stack-item span   { color: #64748b; }
 [data-theme="light"] .tech-stack-icon-img    { filter: grayscale(1) opacity(0.75); }
 
-/* Feature cards */
+
 [data-theme="light"] .feature-card {
     background: rgba(255, 0, 127, 0.4);
     border-color: rgba(255, 255, 255, 0.35);
@@ -646,7 +646,7 @@ body {
 [data-theme="light"] .feature-icon-wrapper { background: rgba(255, 255, 255, 0.5); }
 [data-theme="light"] .feature-icon-wrapper i { color: #1e293b; }
 
-/* App cards */
+
 [data-theme="light"] .app-card {
     background: rgba(255, 0, 127, 0.4);
     border-color: rgba(255, 255, 255, 0.35);
@@ -684,7 +684,7 @@ body {
 [data-theme="light"] .app-card-marketplace .fw-900.text-white { color: #ffffff !important; }
 [data-theme="light"] .app-card-marketplace li i { color: rgba(255,255,255,0.8) !important; }
 
-/* Bottoni dentro le app-card: più contrasto in modalità chiara */
+
 [data-theme="light"] .app-card-navigator .btn-light {
     background: #1e293b !important;
     color: #ffffff !important;
@@ -702,7 +702,7 @@ body {
     color: #ffffff !important;
 }
 
-/* Footer */
+
 [data-theme="light"] .footer {
     background: #1e293b;
     border-top-color: rgba(255,255,255,0.08);
@@ -710,7 +710,7 @@ body {
 [data-theme="light"] .footer .text-white-50 { color: rgba(255,255,255,0.5) !important; }
 [data-theme="light"] .footer .navbar-brand  { color: #ffffff !important; }
 
-/* Bottoni outline-light in light mode */
+
 [data-theme="light"] .btn-outline-light {
     border-color: #1e293b !important;
     color: #1e293b !important;
@@ -720,7 +720,7 @@ body {
     color: #ffffff !important;
 }
 
-/* Bottone logout/tema in navbar light */
+
 [data-theme="light"] .nav-logout-btn {
     border-color: rgba(30,41,59,0.3);
     color: rgba(30,41,59,0.75);

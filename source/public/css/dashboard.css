@@ -1,4 +1,4 @@
-/* VARIABILI & RESET */
+
 :root {
     --brand-green: #1b3a27;
     --hover-green: #2d5a3d;
@@ -6,7 +6,7 @@
     --glass-border: rgba(255, 255, 255, 0.75);
 }
 
-/* SIDEBAR (Stile Unico) */
+
 .sidebar {
     background: var(--brand-green);
     color: white;
@@ -35,7 +35,7 @@
     color: white !important;
 }
 
-/* COMPONENTI GLASS */
+
 .glass-card {
     background: var(--glass-bg);
     backdrop-filter: blur(15px);
@@ -45,14 +45,14 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
 }
 
-/* SEZIONI & TITOLI */
+
 .section-header h2 {
     font-family: 'Playfair Display', serif;
     color: var(--brand-green);
     font-weight: 700;
 }
 
-/* CARDS (Opere, Visite, Musei) */
+
 .item-card-custom {
     background: white;
     border-radius: 16px;
@@ -72,7 +72,7 @@
     object-fit: cover;
 }
 
-/* SCROLL ROW (Sezione Autore) */
+
 .scroll-row {
     display: flex;
     gap: 16px;
@@ -86,7 +86,7 @@
     border-radius: 10px;
 }
 
-/* UTILITY SPECIFICHE */
+
 .meta-key {
     font-weight: 600;
     color: var(--brand-green);

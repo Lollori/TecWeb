@@ -1,4 +1,4 @@
-/* PROFILO UTENTE (Navbar) */
+
 
 .nav-user-card {
     padding: 8px 18px;
@@ -16,14 +16,12 @@
     box-shadow: 0 8px 24px rgba(30, 41, 59, 0.1);
 }
 
-/* Da disconnessi #nav-profile-placeholder resta vuoto: senza questa regola
-   il gap del flex container si somma comunque, allargando la pillola oltre
-   l'icona e lasciandola storta a sinistra invece che centrata. */
+
 #nav-profile-placeholder:empty {
     display: none;
 }
 
-/* Da disconnessi niente pillola: solo l'icona nuda, senza sfondo/bordo/ombra. */
+
 .nav-user-card:has(#nav-profile-placeholder:empty) {
     padding: 0;
     background: none;

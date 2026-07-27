@@ -1,6 +1,6 @@
-/* Marketplace – Forms: input, select, textarea, bottoni, modal, search glass. */
 
-/* ── Buttons ── */
+
+
 .btn-magenta {
     background: var(--magenta);
     color: white; border: none;
@@ -56,7 +56,7 @@
 }
 .btn-submit:hover { background: var(--magenta-light); transform: translateY(-1px); }
 
-/* ── Modal ── */
+
 .custom-modal { background: white; border-radius: 24px; border: none; overflow: hidden; }
 .custom-modal .modal-header {
     background: var(--dark-navy); color: white;
@@ -69,7 +69,7 @@
     display: flex; justify-content: flex-end; gap: 15px; margin-top: 30px;
 }
 
-/* ── Form inputs ── */
+
 .custom-label {
     font-weight: 700; color: var(--text-dark);
     font-size: 0.85rem; margin-bottom: 8px;
@@ -93,8 +93,8 @@ select.custom-input {
     background-size: 14px; padding-right: 40px; cursor: pointer;
 }
 
-/* ── Content type toggle (item legato a un'opera vs contenuto indipendente) ── */
-/* ── Tag input (item e visite: tag liberi facoltativi) ── */
+
+
 .tag-input {
     display: flex;
     flex-wrap: wrap;
@@ -178,7 +178,7 @@ select.custom-input {
 }
 .content-type-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
-/* ── Tone editor (creazione/modifica item: 3 toni, 3 durate ciascuno) ── */
+
 .tone-editor {
     border: 1px solid #e2e8f0;
     border-radius: 16px;
@@ -279,7 +279,7 @@ select.custom-input {
     .tone-editor-fields { grid-template-columns: 1fr; }
 }
 
-/* ── Search box glass (usato nel dashboard Autore) ── */
+
 .search-box-glass {
     background: white; border: 1px solid #e2e8f0;
     border-radius: 12px;
@@ -298,7 +298,7 @@ select.custom-input {
 }
 .search-box-glass input::placeholder { color: #94a3b8; }
 
-/* ── Dark mode ── */
+
 [data-theme="dark"] .tag-input { background: #1a2235; border-color: rgba(255,255,255,0.1); }
 [data-theme="dark"] .tag-input-field { color: #e8edf5; }
 [data-theme="dark"] .tag-input-field::placeholder { color: #4a5568; }
@@ -353,11 +353,7 @@ select.custom-input {
     background: #1e2a42; border-color: rgba(255, 255, 255, 0.2); color: #e8edf5;
 }
 
-/* ── Form "Nuova/Modifica Visita" (autore/curatore/visitatore) ──
-   Bootstrap dà alle colonne .col-* flex-shrink:0 di default: se un figlio
-   (es. il nome di un'opera lunga dentro le card di riordino item) ha un
-   contenuto che non va a capo, la colonna rifiuta di restringersi e allarga
-   l'intera pagina su mobile. Qui forziamo lo shrink a ogni livello. */
+
 #visitaFormAutore.row               { min-width: 0; }
 #visitaFormAutore > [class*="col-"] { min-width: 0; max-width: 100%; }
 

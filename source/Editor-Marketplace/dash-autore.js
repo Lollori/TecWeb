@@ -460,7 +460,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             return;
         }
         // Un'opera non può avere, all'interno della stessa visita, due item con lo stesso tono:
-        // costruiamo la mappa "operaId|tono" -> id dell'item già selezionato per bloccare i conflitti.
+        
         const allItemsPool = [..._vfMyItems, ..._vfAcquistatiItems];
         const toneTaken = new Map();
         _vfSelectedItemIds.forEach(selId => {
@@ -597,8 +597,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         const c = dashRingCentroid(f.geometry.coordinates[0]);
                         entrance = { floor: floorIdx, x: c.x, y: c.y };
                     } else if (/corridoio/i.test(roomId)) {
-                        // segmento di corridoio: usato per costruire il percorso
-                        // praticabile, non è una sala selezionabile per gli item.
+                        
+                        
                         if (!corridorSegmentsByFloor.has(floorIdx)) corridorSegmentsByFloor.set(floorIdx, []);
                         corridorSegmentsByFloor.get(floorIdx).push(dashPolygonLongAxis(f.geometry.coordinates[0]));
                     } else if (!DASH_AMENITY_ICONS[roomId]) {
@@ -606,7 +606,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         rooms.set(String(roomId), { floor: floorIdx, x: c.x, y: c.y });
                     }
                 });
-            } catch (e) { /* silent */ }
+            } catch (e) {  }
         }));
 
         if (!(entrance && rooms.size)) return;
@@ -620,11 +620,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         _vfRoomGeo = { entrance, rooms, spines };
     }
 
-    /* Cammino ordinato per vicinanza: parte dall'ingresso, poi sceglie ogni volta
-       l'item non ancora inserito la cui sala è più vicina (camminando lungo il
-       corridoio, se la piantina lo permette — altrimenti in linea d'aria) all'ultima
-       aggiunta. Esaurisce un piano prima di passare al successivo. Ritorna null se
-       manca il geoJson o nessun item è localizzabile. */
+    
     function _vfComputeSpatialOrder(selectedIds) {
         if (!_vfRoomGeo) return null;
         const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
@@ -671,7 +667,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         await _loadVfItemsForMuseo(visita.codiceIsil, true);
     }
 
-    /* Drag-and-drop order panel */
+    
     let _vfDragSrc = null;
 
     function _vfRenumberCards() {
