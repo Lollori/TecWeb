@@ -31,29 +31,31 @@ incaricata di spedire mail (sempre e solo dall'indirizzo studio.unibo.it) e tene
 18-27 
 
 
-## Data di disponibilità delle applicazioni
-_ Al massimo 15 giorni dopo la data di sottomissione del file README_
+## Data di disponibilità delle applicazioni: 31/07/2026
+(_ Al massimo 15 giorni dopo la data di sottomissione del file README_)
 
 ## Locazione del progetto:
 
-* URI del marketplace: https://www.site252630.tw.cs.unibo.it/Editor-Marketplace
-* URI del navigator: https://www.site252630.tw.cs.unibo.it/Navigator
-* Altri URI rilevanti: https://www.site252630.tw.cs.unibo.it (URI del menu' principale)
+* URI del marketplace: https://site252630.tw.cs.unibo.it/Editor-Marketplace
+* URI del navigator: https://site252630.tw.cs.unibo.it/Navigator
+* Altri URI rilevanti: https://site252630.tw.cs.unibo.it (URI del menu' principale)
+* URI per accedere ai dati nel DB: https://site252630.tw.cs.unibo.it/api/(opere, items, visite, utenti, musei)
+
 
 ## Organizzazione dei sorgenti
 * _creare una directory source all'interno della directory html_
 * _Cambiare i permessi di accesso a questi file a 755 e 644_
 * _Creare una directory per applicazione più una directory per la applicazione server-side_
-* _Descrivere qui l'organizzazione interna di queste directory: nella root sono presenti il README e index.js (punto di ingresso dell'applicazione), all'interno di source sono presenti: Editor-Marketplace (che contiene i vari moduli JS per l'applicazione Editor-Marketplace); Navigator (che contiene i componenti JSX React per l'applicazione Navigator); scripts (per i moduli JS del backend); public (che contiene le cartelle con i file CSS, i dati in formato JSON, le mappe GeoJSON e immagini come il favicon e quelle presenti nel menu' principale)
+* _Descrivere qui l'organizzazione interna di queste directory: nella root sono presenti il README, index.js (punto di ingresso dell'applicazione) e la cartella source. All'interno di source sono presenti: Editor-Marketplace (che contiene i vari moduli JS per l'applicazione Editor-Marketplace); Navigator (che contiene i componenti JSX React per l'applicazione Navigator); scripts (per i moduli JS del backend); public (che contiene le cartelle con i file CSS, i dati in formato JSON, le mappe GeoJSON e immagini come il favicon e quelle presenti nel menu' principale)
 
   
 ## Tecnologie utilizzate:
 
-#### Server-side: Node.js, Express, MongoDB, EdgeTTS, CORS
+    Server-side: Node.js, Express, MongoDB, EdgeTTS, CORS
 
-#### Applicazione marketplace: HTML, CSS (Bootstrap), JavaScript (vanilla)
+    Applicazione marketplace: HTML, CSS (Bootstrap), JavaScript (vanilla)
 
-#### Applicazione navigator: CSS (Bootstrap), JavaScript (React JSX), HTML
+    Applicazione navigator: CSS (Bootstrap), JavaScript (React JSX), HTML
 
 
 ## Contributo individuale
@@ -103,3 +105,5 @@ _ Al massimo 15 giorni dopo la data di sottomissione del file README_
 8. Algoritmo di inserimento di opere all'interno delle visite per seguire un percorso lineare all'interno del museo.
 
 #### LLM: usato principalmente per refactoring (ci siamo ritrovati a lavorare con file incredibilmente lunghi, che gli abbiamo chiesto di dividere in moduli o componenti diversi), correzione di bug/errori, debugging, implementazione di comandi vocali tramite pacchetto EdgeTTS(disponibile su npm), creazione immagini profilo (ciascun ruolo ha la sua immagine profilo), immagini della home page (anche per versione mobile e modalita' chiara)
+
+#### Note: username, password e nome mnemonico per accedere alle visite sono case sensitive
