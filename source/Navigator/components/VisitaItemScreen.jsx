@@ -28,7 +28,7 @@ function VisitaItemScreen({
   const [ascoltoCountdown, setAscoltoCountdown] = React.useState(60);
 
 
-  const [activePanel,   setActivePanel]   = React.useState('mappa');
+  const [activePanel,   setActivePanel]   = React.useState('opera');
 
   const [micOn,            setMicOn]            = React.useState(false);
   const [micSupported]     = React.useState(() =>
@@ -781,6 +781,13 @@ function VisitaItemScreen({
                     <i className={`fa-solid ${ttsLoading ? 'fa-spinner fa-spin' : ttsMuted ? 'fa-volume-xmark' : 'fa-volume-high'}`} />
                   </button>
                 </h2>
+                {(operaInfo?.autore || operaInfo?.datazione) && (
+                  <p className="visita-item-subtitle">
+                    {operaInfo?.autore}
+                    {operaInfo?.autore && operaInfo?.datazione ? ' · ' : ''}
+                    {operaInfo?.datazione}
+                  </p>
+                )}
 
                 <div className="visita-view-toggle">
                   <button

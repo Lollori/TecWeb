@@ -46,7 +46,7 @@ function VisitaItemScreen({
   const [ascoltoPopupOpen, setAscoltoPopupOpen] = React.useState(false);
   const [ascoltoPopupTitolo, setAscoltoPopupTitolo] = React.useState('Non puoi andare avanti');
   const [ascoltoCountdown, setAscoltoCountdown] = React.useState(60);
-  const [activePanel, setActivePanel] = React.useState('mappa');
+  const [activePanel, setActivePanel] = React.useState('opera');
   const [micOn, setMicOn] = React.useState(false);
   const [micSupported] = React.useState(() => typeof window !== 'undefined' && !!(window.SpeechRecognition || window.webkitSpeechRecognition));
   const [voiceTranscript, setVoiceTranscript] = React.useState('');
@@ -815,7 +815,9 @@ function VisitaItemScreen({
     title: ttsMuted ? 'Attiva lettura ad alta voce' : 'Disattiva lettura ad alta voce'
   }, /*#__PURE__*/React.createElement("i", {
     className: `fa-solid ${ttsLoading ? 'fa-spinner fa-spin' : ttsMuted ? 'fa-volume-xmark' : 'fa-volume-high'}`
-  }))), /*#__PURE__*/React.createElement("div", {
+  }))), (operaInfo?.autore || operaInfo?.datazione) && /*#__PURE__*/React.createElement("p", {
+    className: "visita-item-subtitle"
+  }, operaInfo?.autore, operaInfo?.autore && operaInfo?.datazione ? ' · ' : '', operaInfo?.datazione), /*#__PURE__*/React.createElement("div", {
     className: "visita-view-toggle"
   }, /*#__PURE__*/React.createElement("button", {
     type: "button",
