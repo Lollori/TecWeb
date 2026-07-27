@@ -771,7 +771,7 @@ function VisitaItemScreen({
             {!loading && activeItem && (
               <div className="visita-item-card">
                 <h2 className="visita-item-title">
-                  {operaGroup?.operaId || activeItem.operaId}
+                  {operaGroup?.operaId || activeItem.operaId || activeItem.topic || 'Contenuto'}
                   <button
                     type="button"
                     className={`visita-tts-toggle${ttsMuted ? '' : ' visita-tts-toggle--active'}`}
@@ -810,7 +810,7 @@ function VisitaItemScreen({
                   <img
                     className="visita-item-img"
                     src={activeItem.image || operaFallbackImg}
-                    alt={operaGroup?.operaId || activeItem.operaId}
+                    alt={operaGroup?.operaId || activeItem.operaId || activeItem.topic || 'Contenuto'}
                     onError={(e) => { e.target.style.display = 'none'; }}
                   />
                 )}

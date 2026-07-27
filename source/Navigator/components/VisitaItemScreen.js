@@ -815,7 +815,7 @@ function VisitaItemScreen({
     className: "visita-item-card"
   }, /*#__PURE__*/React.createElement("h2", {
     className: "visita-item-title"
-  }, operaGroup?.operaId || activeItem.operaId, /*#__PURE__*/React.createElement("button", {
+  }, operaGroup?.operaId || activeItem.operaId || activeItem.topic || 'Contenuto', /*#__PURE__*/React.createElement("button", {
     type: "button",
     className: `visita-tts-toggle${ttsMuted ? '' : ' visita-tts-toggle--active'}`,
     onClick: toggleTtsMuted,
@@ -843,7 +843,7 @@ function VisitaItemScreen({
   }), activePanel === 'opera' && (activeItem.image || operaFallbackImg) && /*#__PURE__*/React.createElement("img", {
     className: "visita-item-img",
     src: activeItem.image || operaFallbackImg,
-    alt: operaGroup?.operaId || activeItem.operaId,
+    alt: operaGroup?.operaId || activeItem.operaId || activeItem.topic || 'Contenuto',
     onError: e => {
       e.target.style.display = 'none';
     }

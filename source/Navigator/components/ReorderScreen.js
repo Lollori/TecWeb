@@ -36,26 +36,41 @@ function ReorderScreen({
           try {
             const r = await fetch(`/api/items/${encodeURIComponent(id)}`);
             const d = await r.json();
+            const isIndipendente = d.data?.contentType === 'indipendente';
             return {
               _id: id,
-              operaId: d.data?.operaId || id
+              // operaId resta quello vero (stringa vuota per gli indipendenti): viene
+              // spedito così com'è al backend/VisitaItemScreen, che già sa gestirlo.
+              operaId: isIndipendente ? '' : d.data?.operaId || id,
+              // groupKey serve solo qui, per non far finire tutti gli item indipendenti
+              // (operaId vuoto in comune) dentro lo stesso gruppo: ognuno resta la sua card.
+              groupKey: isIndipendente ? `__indip_${id}` : d.data?.operaId || id,
+              label: isIndipendente ? d.data?.topic || 'Contenuto indipendente' : d.data?.operaId || id
             };
           } catch (_) {
             return {
               _id: id,
-              operaId: id
+              operaId: id,
+              groupKey: id,
+              label: id
             };
           }
         }));
         if (cancelled) return;
         const map = new Map();
         for (const it of loaded) {
-          if (!map.has(it.operaId)) map.set(it.operaId, []);
-          map.get(it.operaId).push(it._id);
+          if (!map.has(it.groupKey)) map.set(it.groupKey, {
+            operaId: it.operaId,
+            label: it.label,
+            itemIds: []
+          });
+          map.get(it.groupKey).itemIds.push(it._id);
         }
-        setGroups([...map.entries()].map(([operaId, itemIds]) => ({
-          operaId,
-          itemIds
+        setGroups([...map.entries()].map(([groupKey, g]) => ({
+          groupKey,
+          operaId: g.operaId,
+          label: g.label,
+          itemIds: g.itemIds
         })));
       } catch (_) {} finally {
         if (!cancelled) setLoading(false);
@@ -194,7 +209,7 @@ function ReorderScreen({
       padding: '0 16px 8px'
     }
   }, groups.map((group, idx) => /*#__PURE__*/React.createElement("div", {
-    key: group.operaId,
+    key: group.groupKey,
     draggable: true,
     onDragStart: e => handleDragStart(e, idx),
     onDragOver: e => handleDragOver(e, idx),
@@ -230,7 +245,7 @@ function ReorderScreen({
       minWidth: 0,
       overflowWrap: 'anywhere'
     }
-  }, group.operaId), group.itemIds.length > 1 && /*#__PURE__*/React.createElement("span", {
+  }, group.label), group.itemIds.length > 1 && /*#__PURE__*/React.createElement("span", {
     style: {
       fontSize: '0.75rem',
       color: 'var(--nav-muted)',
@@ -239,7 +254,7 @@ function ReorderScreen({
       padding: '2px 8px',
       flexShrink: 0
     }
-  }, group.itemIds.length, " varianti"), /*#__PURE__*/React.createElement("div", {
+  }, group.itemIds.length, " items"), /*#__PURE__*/React.createElement("div", {
     style: {
       display: 'flex',
       flexDirection: 'column',
@@ -262,7 +277,13 @@ function ReorderScreen({
     }
   }, /*#__PURE__*/React.createElement("button", {
     className: "inizia-btn",
-    onClick: () => onConfirm(groups),
+    onClick: () => onConfirm(groups.map(({
+      operaId,
+      itemIds
+    }) => ({
+      operaId,
+      itemIds
+    }))),
     disabled: loading
   }, "Avanti — Apri la lobby →"))));
 }

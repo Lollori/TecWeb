@@ -459,22 +459,40 @@ window._showAutoreVisitaForm = async function (visitaId) {
             container.innerHTML = `<p style="color:#64748b;font-size:0.88rem;grid-column:1/-1;">Nessun item corrisponde alla ricerca.</p>`;
             return;
         }
+        // Un'opera non può avere, all'interno della stessa visita, due item con lo stesso tono:
+        // costruiamo la mappa "operaId|tono" -> id dell'item già selezionato per bloccare i conflitti.
+        const allItemsPool = [..._vfMyItems, ..._vfAcquistatiItems];
+        const toneTaken = new Map();
+        _vfSelectedItemIds.forEach(selId => {
+            const selItem = allItemsPool.find(x => x._id === selId);
+            if (!selItem || selItem.contentType === 'indipendente' || !selItem.operaId) return;
+            const t = getItemTone(selItem);
+            if (t) toneTaken.set(selItem.operaId + '|' + t, selId);
+        });
+
         container.innerHTML = lista.map(it => {
             const preview   = toneText(it.toni?.semplice).substring(0, 60);
             const isChecked = _vfSelectedItemIds.has(it._id);
+            const tone      = getItemTone(it);
+            const conflictId = (it.contentType !== 'indipendente' && it.operaId && tone)
+                ? toneTaken.get(it.operaId + '|' + tone) : null;
+            const isBlocked = !!conflictId && conflictId !== it._id;
             return `
             <label style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
                           border:1px solid ${isChecked ? 'var(--magenta,#FF007F)' : '#e2e8f0'};
-                          border-radius:10px;cursor:pointer;transition:border-color .18s,background .18s;
-                          background:${isChecked ? 'rgba(255,0,127,0.05)' : ''};
+                          border-radius:10px;cursor:${isBlocked ? 'not-allowed' : 'pointer'};transition:border-color .18s,background .18s;
+                          background:${isChecked ? 'rgba(255,0,127,0.05)' : (isBlocked ? 'rgba(0,0,0,0.03)' : '')};
+                          opacity:${isBlocked ? '0.55' : '1'};
                           min-width:0;box-sizing:border-box;">
                 <input type="checkbox" name="itemsVisita" value="${it._id}"
-                       ${isChecked ? 'checked' : ''}
+                       ${isChecked ? 'checked' : ''} ${isBlocked ? 'disabled' : ''}
                        style="margin-top:3px;width:auto;accent-color:var(--magenta,#FF007F);flex-shrink:0;"
                        onchange="vfToggleItem('${it._id}',this.checked,this);">
                 <span style="font-size:0.88rem;min-width:0;overflow-wrap:anywhere;">
                     <strong>${itemTitle(it)}</strong>
+                    ${tone ? `<span class="tone-badge tone-badge--${tone}" style="margin-left:6px;font-size:0.68rem;">${tone}</span>` : ''}
                     ${preview ? `<br><span style="color:#64748b;font-size:0.8rem;">${preview}${preview.length >= 60 ? '…' : ''}</span>` : ''}
+                    ${isBlocked ? `<br><span style="color:#ef4444;font-size:0.78rem;"><i class="fa-solid fa-circle-exclamation"></i> Hai già un item "${tone}" per quest'opera in questa visita</span>` : ''}
                 </span>
             </label>`;
         }).join('');
@@ -664,11 +682,27 @@ window._showAutoreVisitaForm = async function (visitaId) {
     }
 
     window.vfToggleItem = function (id, checked, checkbox) {
-        if (checked) _vfSelectedItemIds.add(id);
-        else         _vfSelectedItemIds.delete(id);
-        const lbl = checkbox.closest('label');
-        lbl.style.borderColor = checked ? 'var(--magenta,#FF007F)' : '#e2e8f0';
-        lbl.style.background  = checked ? 'rgba(255,0,127,0.05)' : '';
+        if (checked) {
+            const allItemsPool = [..._vfMyItems, ..._vfAcquistatiItems];
+            const candidate    = allItemsPool.find(it => it._id === id);
+            const tone         = candidate ? getItemTone(candidate) : null;
+            if (candidate && candidate.contentType !== 'indipendente' && candidate.operaId && tone) {
+                const conflict = [..._vfSelectedItemIds].some(selId => {
+                    if (selId === id) return false;
+                    const selItem = allItemsPool.find(it => it._id === selId);
+                    return selItem && selItem.operaId === candidate.operaId && getItemTone(selItem) === tone;
+                });
+                if (conflict) {
+                    checkbox.checked = false;
+                    showAlert(`Hai già selezionato un item con tono "${tone}" per l'opera "${candidate.operaId}" in questa visita. Scegli un item con un tono diverso per la stessa opera.`);
+                    return;
+                }
+            }
+            _vfSelectedItemIds.add(id);
+        } else {
+            _vfSelectedItemIds.delete(id);
+        }
+        _renderVfItems();
         window.vfUpdateOrderPanel();
     };
 

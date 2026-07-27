@@ -26,17 +26,27 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
           try {
             const r = await fetch(`/api/items/${encodeURIComponent(id)}`);
             const d = await r.json();
-            return { _id: id, operaId: d.data?.operaId || id };
-          } catch (_) { return { _id: id, operaId: id }; }
+            const isIndipendente = d.data?.contentType === 'indipendente';
+            return {
+              _id: id,
+              // operaId resta quello vero (stringa vuota per gli indipendenti): viene
+              // spedito così com'è al backend/VisitaItemScreen, che già sa gestirlo.
+              operaId: isIndipendente ? '' : (d.data?.operaId || id),
+              // groupKey serve solo qui, per non far finire tutti gli item indipendenti
+              // (operaId vuoto in comune) dentro lo stesso gruppo: ognuno resta la sua card.
+              groupKey: isIndipendente ? `__indip_${id}` : (d.data?.operaId || id),
+              label: isIndipendente ? (d.data?.topic || 'Contenuto indipendente') : (d.data?.operaId || id),
+            };
+          } catch (_) { return { _id: id, operaId: id, groupKey: id, label: id }; }
         }));
         if (cancelled) return;
 
         const map = new Map();
         for (const it of loaded) {
-          if (!map.has(it.operaId)) map.set(it.operaId, []);
-          map.get(it.operaId).push(it._id);
+          if (!map.has(it.groupKey)) map.set(it.groupKey, { operaId: it.operaId, label: it.label, itemIds: [] });
+          map.get(it.groupKey).itemIds.push(it._id);
         }
-        setGroups([...map.entries()].map(([operaId, itemIds]) => ({ operaId, itemIds })));
+        setGroups([...map.entries()].map(([groupKey, g]) => ({ groupKey, operaId: g.operaId, label: g.label, itemIds: g.itemIds })));
       } catch (_) {}
       finally { if (!cancelled) setLoading(false); }
     })();
@@ -139,7 +149,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxWidth: '600px', width: '100%', margin: '0 auto', padding: '0 16px 8px' }}>
             {groups.map((group, idx) => (
               <div
-                key={group.operaId}
+                key={group.groupKey}
                 draggable
                 onDragStart={e => handleDragStart(e, idx)}
                 onDragOver={e => handleDragOver(e, idx)}
@@ -156,7 +166,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
                   fontSize: '0.73rem', fontWeight: '700', flexShrink: 0,
                 }}>{idx + 1}</span>
                 <span style={{ flex: 1, fontWeight: '600', fontSize: '0.92rem', minWidth: 0, overflowWrap: 'anywhere' }}>
-                  {group.operaId}
+                  {group.label}
                 </span>
                 {group.itemIds.length > 1 && (
                   <span style={{
@@ -164,7 +174,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
                     background: 'rgba(255,0,127,0.1)', borderRadius: '20px',
                     padding: '2px 8px', flexShrink: 0,
                   }}>
-                    {group.itemIds.length} varianti
+                    {group.itemIds.length} items
                   </span>
                 )}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', flexShrink: 0 }}>
@@ -179,7 +189,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
         <div style={{ textAlign: 'center', padding: '24px 16px 40px', marginTop: 'auto' }}>
           <button
             className="inizia-btn"
-            onClick={() => onConfirm(groups)}
+            onClick={() => onConfirm(groups.map(({ operaId, itemIds }) => ({ operaId, itemIds })))}
             disabled={loading}
           >
             Avanti — Apri la lobby →

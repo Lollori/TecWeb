@@ -231,6 +231,14 @@ function readToneFields(prefix, label) {
 function toneIsComplete(t) { return !!(t.d3 && t.d15 && t.d40); }
 function toneIsEmpty(t)    { return !t.d3 && !t.d15 && !t.d40; }
 
+function getItemTone(it) {
+    const toni = it?.toni || {};
+    if (!toneIsEmpty(toni.semplice || {})) return 'semplice';
+    if (!toneIsEmpty(toni.medio    || {})) return 'medio';
+    if (!toneIsEmpty(toni.avanzato || {})) return 'avanzato';
+    return null;
+}
+
 
 function validateToniShapeOrAlert(toniObj) {
     for (const [key, t] of Object.entries(toniObj)) {
