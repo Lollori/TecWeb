@@ -2167,10 +2167,10 @@
     "metadata": {
       "prezzo": 5
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/960px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
     "authorId": "f4q8y2c7mt",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "Las Meninas",
     "topic": "Diego Velázquez: il pittore della corte spagnola",
     "tags": [
       "biografia",
@@ -2210,10 +2210,10 @@
     "metadata": {
       "prezzo": 4
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg/960px-Francisco_de_Goya%2C_Saturno_devorando_a_su_hijo_%281819-1823%29.jpg",
     "authorId": "e9o1w5g3hk",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "Saturno devorando a un hijo",
     "topic": "Francisco Goya: dalla corte alle pitture nere",
     "tags": [
       "biografia",
@@ -2254,10 +2254,10 @@
     "metadata": {
       "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f1/El_caballero_de_la_mano_en_el_pecho.jpg/960px-El_caballero_de_la_mano_en_el_pecho.jpg",
     "authorId": "f4q8y2c7mt",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "El caballero de la mano en el pecho",
     "topic": "El Greco: tra Creta, Venezia e Toledo",
     "tags": [
       "biografia",
@@ -2296,7 +2296,7 @@
     "metadata": {
       "prezzo": 3
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/31/Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg/960px-Las_Meninas%2C_by_Diego_Vel%C3%A1zquez%2C_from_Prado_in_Google_Earth.jpg",
     "authorId": "e9o1w5g3hk",
     "contentType": "indipendente",
     "operaId": "",
@@ -2337,7 +2337,7 @@
     "metadata": {
       "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/Titian_-_Emperor_Charles_V_at_M%C3%BChlberg_-_WGA22965.jpg/960px-Titian_-_Emperor_Charles_V_at_M%C3%BChlberg_-_WGA22965.jpg",
     "authorId": "f4q8y2c7mt",
     "contentType": "indipendente",
     "operaId": "",
