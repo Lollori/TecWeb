@@ -693,9 +693,14 @@ window._showAutoreVisitaForm = async function (visitaId) {
             const item = _vfResolveItem(id);
             const key  = _vfGroupKey(item, id);
             if (!byKey.has(key)) {
+                const isIndependent = !!item && item.contentType === 'indipendente';
                 const group = {
                     groupKey: key,
-                    operaId: item && item.contentType !== 'indipendente' ? (item.operaId || id) : '',
+                    operaId: item && !isIndependent ? (item.operaId || id) : '',
+                    // Solo per i gruppi "indipendente": sala tematica di riferimento (vedi
+                    // _vfComputeSpatialOrder), non un vero operaId.
+                    isIndependent,
+                    salaIndicativa: isIndependent ? (item.salaIndicativa || '') : '',
                     label: item ? itemTitle(item) : 'Item (dettagli non disponibili)',
                     itemIds: [],
                 };
@@ -712,9 +717,13 @@ window._showAutoreVisitaForm = async function (visitaId) {
         const located = [];
         const unlocated = [];
         groups.forEach(g => {
-            const sala = g.operaId ? _vfOperaSalaMap[g.operaId] : undefined;
-            const pos  = sala != null ? _vfRoomGeo.rooms.get(String(sala)) : undefined;
-            if (pos) located.push({ groupKey: g.groupKey, pos });
+            // Un gruppo "indipendente" non ha un'opera/sala propria: usa la sala tematica
+            // indicata dall'autore solo per posizionarsi nel percorso, non per rivendicare
+            // di essere un'opera di quella sala (per questo va comunque prima delle vere
+            // opere della sala, gestito col bonus isIndependent più sotto).
+            const sala = g.isIndependent ? g.salaIndicativa : _vfOperaSalaMap[g.operaId];
+            const pos  = sala ? _vfRoomGeo.rooms.get(String(sala)) : undefined;
+            if (pos) located.push({ groupKey: g.groupKey, pos, isIndependent: g.isIndependent });
             else unlocated.push(g.groupKey);
         });
         if (!located.length) return null;
@@ -734,6 +743,9 @@ window._showAutoreVisitaForm = async function (visitaId) {
                         ? dashSpineDistance(spine, current, cand.pos)
                         : Math.hypot(cand.pos.x - current.x, cand.pos.y - current.y);
                 }
+                // Stessa sala di un'opera vera (stessa posizione, distanza a parità):
+                // il contenuto di contesto la precede sempre.
+                if (cand.isIndependent) d -= 0.001;
                 if (d < bestDist) { bestDist = d; bestIdx = i; }
             });
             const chosen = remaining.splice(bestIdx, 1)[0];
@@ -820,7 +832,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         }
 
         panel.innerHTML = _vfGroups.map((g, i) => {
-            const sala = g.operaId ? _vfOperaSalaMap[g.operaId] : undefined;
+            const sala = g.isIndependent ? g.salaIndicativa : (g.operaId ? _vfOperaSalaMap[g.operaId] : undefined);
             return `
             <div class="vf-drag-card" data-group-key="${g.groupKey}" data-item-ids="${g.itemIds.join(',')}" draggable="true"
                  ondragstart="vfDragStart(event,this)"

@@ -29,6 +29,11 @@ const itemSchema = new mongoose.Schema({
 
     contentType: { type: String, enum: ['opera', 'indipendente'], default: 'opera' },
     operaId:    { type: String, default: '', index: true },
+    // Solo per contentType 'indipendente': sala del museo a cui il contenuto è tematicamente
+    // più legato (es. una biografia d'autore -> sala dove sono esposte le sue opere). Non
+    // implica che il contenuto "sia" un'opera di quella sala: serve solo a posizionarlo nel
+    // percorso della visita, subito prima delle opere della sala indicata.
+    salaIndicativa: { type: String, default: '' },
     topic:      { type: String, default: '' },
 
     tags:       { type: [String], default: [], index: true },
