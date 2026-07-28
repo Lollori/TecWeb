@@ -584,7 +584,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
 
         const rooms = new Map();
         const corridorSegmentsByFloor = new Map();
-        let entrance = null;
+        const entranceCandidates = [];
         await Promise.all(floorDefs.map(async (def, floorIdx) => {
             if (!def.geoJsonUrl) return;
             try {
@@ -595,7 +595,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     if (!roomId || f.geometry?.type !== 'Polygon') return;
                     if (roomId === 'ingresso') {
                         const c = dashRingCentroid(f.geometry.coordinates[0]);
-                        entrance = { floor: floorIdx, x: c.x, y: c.y };
+                        entranceCandidates.push({ floor: floorIdx, x: c.x, y: c.y });
                     } else if (/corridoio/i.test(roomId)) {
                         
                         
@@ -609,6 +609,9 @@ window._showAutoreVisitaForm = async function (visitaId) {
             } catch (e) {  }
         }));
 
+        // Se più piani hanno una sala "ingresso" (es. per la mappa GPS), l'accesso
+        // reale del museo è quello del piano più basso.
+        const entrance = entranceCandidates.sort((a, b) => a.floor - b.floor)[0] || null;
         if (!(entrance && rooms.size)) return;
 
         const spines = new Map();
