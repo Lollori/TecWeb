@@ -755,15 +755,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         return [...ordered, ...unlocated];
     }
 
-    let _vfDragSrc = null;
     let _vfOrderPanelToken = 0;
-
-    function _vfRenumberCards() {
-        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach((c, i) => {
-            const n = c.querySelector('[data-num]');
-            if (n) n.textContent = i + 1;
-        });
-    }
 
     window.vfToggleItem = function (id, checked, checkbox) {
         if (checked) {
@@ -827,20 +819,14 @@ window._showAutoreVisitaForm = async function (visitaId) {
         const hint = document.getElementById('vfOrderHint');
         if (hint) {
             hint.innerHTML = spatialOrder
-                ? '<i class="fa-solid fa-route me-1"></i>Ordine suggerito in base alla vicinanza fisica nel museo — puoi comunque trascinare le card per modificarlo.'
-                : '<i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.';
+                ? '<i class="fa-solid fa-route me-1"></i>Ordine suggerito in base alla vicinanza fisica nel museo. <em>(l\'ordine potrà essere cambiato in seguito)</em>'
+                : '<i class="fa-solid fa-list-ol me-1"></i>Ordine basato sulla selezione degli item. <em>(l\'ordine potrà essere cambiato in seguito)</em>';
         }
 
         panel.innerHTML = _vfGroups.map((g, i) => {
             const sala = g.isIndependent ? g.salaIndicativa : (g.operaId ? _vfOperaSalaMap[g.operaId] : undefined);
             return `
-            <div class="vf-drag-card" data-group-key="${g.groupKey}" data-item-ids="${g.itemIds.join(',')}" draggable="true"
-                 ondragstart="vfDragStart(event,this)"
-                 ondragover="vfDragOver(event,this)"
-                 ondragleave="vfDragLeave(event,this)"
-                 ondrop="vfDrop(event,this)"
-                 ondragend="vfDragEnd(event,this)">
-                <i class="fa-solid fa-grip-vertical"></i>
+            <div class="vf-drag-card">
                 <span data-num>${i + 1}</span>
                 <div style="flex:1;min-width:0;">
                     <strong style="font-size:0.88rem;">${g.label}</strong>
@@ -858,43 +844,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
     if (isEdit && visita.codiceIsil) {
         await _loadVfItemsForMuseo(visita.codiceIsil, true);
     }
-
-    window.vfDragStart = function (e, el) {
-        _vfDragSrc = el;
-        e.dataTransfer.effectAllowed = 'move';
-        setTimeout(() => { el.style.opacity = '0.45'; el.style.cursor = 'grabbing'; }, 0);
-    };
-
-    window.vfDragOver = function (e, el) {
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'move';
-        if (el !== _vfDragSrc) el.classList.add('vf-drag-card--over');
-    };
-
-    window.vfDragLeave = function (e, el) {
-        el.classList.remove('vf-drag-card--over');
-    };
-
-    window.vfDrop = function (e, el) {
-        e.preventDefault();
-        if (!_vfDragSrc || _vfDragSrc === el) return;
-        const panel = document.getElementById('itemsOrderPanel');
-        const cards = [...panel.querySelectorAll('.vf-drag-card')];
-        const srcIdx = cards.indexOf(_vfDragSrc);
-        const dstIdx = cards.indexOf(el);
-        if (srcIdx < dstIdx) el.parentNode.insertBefore(_vfDragSrc, el.nextSibling);
-        else                  el.parentNode.insertBefore(_vfDragSrc, el);
-        el.classList.remove('vf-drag-card--over');
-        _vfRenumberCards();
-    };
-
-    window.vfDragEnd = function (e, el) {
-        el.style.opacity = '1';
-        el.style.cursor  = 'grab';
-        document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach(c => {
-            c.classList.remove('vf-drag-card--over');
-        });
-    };
 
     document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();

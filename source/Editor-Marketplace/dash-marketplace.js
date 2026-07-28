@@ -136,6 +136,10 @@ async function initMarketplace() {
                     onclick="setMktTab('visite',this)">
                 <i class="fa-solid fa-route me-1"></i> Visite
             </button>
+            <button class="tab-btn" id="mktTabInserzioni"
+                    onclick="setMktTab('inserzioni',this)">
+                <i class="fa-solid fa-store me-1"></i> Le mie inserzioni
+            </button>
             <button class="tab-btn" id="mktTabAcquisti"
                     onclick="setMktTab('acquisti',this)">
                 <i class="fa-solid fa-bag-shopping me-1"></i> I miei acquisti
@@ -277,8 +281,14 @@ window.applyMktFilter = async function () {
         return;
     }
 
+    if (mktTab === 'inserzioni') {
+        renderMktInserzioni(museoVal, applyPriceFilter, q);
+        return;
+    }
+
     if (mktTab === 'visite') {
         let lista = allMktVisite.filter(v => !purchases.visite.includes(v._id));
+        lista = lista.filter(v => !(SESSION.userId && v.autoreId === SESSION.userId));
         if (museoVal) lista = lista.filter(v => v.codiceIsil === museoVal);
         lista = lista.filter(v => applyPriceFilter(v.prezzo || 0));
         if (_mktActiveTag) {
@@ -287,14 +297,10 @@ window.applyMktFilter = async function () {
             (v.nomeVisita || '').toLowerCase().includes(q) ||
             (v.logistica  || '').toLowerCase().includes(q) ||
             (v.tags || []).some(t => t.toLowerCase().includes(q)));
-        lista = lista.slice().sort((a, b) => {
-            const aOwn = SESSION.userId && a.autoreId === SESSION.userId;
-            const bOwn = SESSION.userId && b.autoreId === SESSION.userId;
-            return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
-        });
         renderMktVisite(lista, purchases.visite, (await getMktCart()).visite);
     } else {
         let lista = allMktItems.filter(it => !purchases.items.includes(it._id));
+        lista = lista.filter(it => !(SESSION.userId && it.authorId === SESSION.userId));
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
         lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
@@ -310,11 +316,6 @@ window.applyMktFilter = async function () {
                 ...(it.tags || []),
             ].join(' ').toLowerCase();
             return allText.includes(q);
-        });
-        lista = lista.slice().sort((a, b) => {
-            const aOwn = SESSION.userId && a.authorId === SESSION.userId;
-            const bOwn = SESSION.userId && b.authorId === SESSION.userId;
-            return aOwn === bOwn ? 0 : (aOwn ? 1 : -1);
         });
         renderMktItems(lista, purchases.items, (await getMktCart()).items);
     }
@@ -383,7 +384,6 @@ function renderMktItems(lista, purchasedIds, cartIds = []) {
         const prezzo = it.metadata?.prezzo || 0;
         const bought = purchasedIds.includes(it._id);
         const inCart = cartIds.includes(it._id);
-        const isMio  = SESSION.userId && it.authorId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
         return `
         <div class="item-read-card">
@@ -404,23 +404,19 @@ function renderMktItems(lista, purchasedIds, cartIds = []) {
                     ? `<span class="price-badge">€${prezzo}</span>`
                     : `<span class="free-badge">Gratis</span>`
                 }
-                ${isMio
-                    ? `<span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
-                           <i class="fa-solid fa-user"></i> La tua inserzione
+                ${bought
+                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                           <i class="fa-solid fa-check"></i> Acquistato
                        </span>`
-                    : bought
-                        ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                               <i class="fa-solid fa-check"></i> Acquistato
-                           </span>`
-                        : inCart
-                            ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
-                                       onclick="rimuoviDalCarrello('items','${it._id}')">
-                                   <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
-                               </button>`
-                            : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                                       onclick="aggiungiAlCarrello('items','${it._id}')">
-                                   <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
-                               </button>`
+                    : inCart
+                        ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="rimuoviDalCarrello('items','${it._id}')">
+                               <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
+                           </button>`
+                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="aggiungiAlCarrello('items','${it._id}')">
+                               <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
+                           </button>`
                 }
             </div>
         </div>`;
@@ -438,7 +434,6 @@ function renderMktVisite(lista, purchasedIds, cartIds = []) {
     content.innerHTML = lista.map(v => {
         const bought = purchasedIds.includes(v._id);
         const inCart = cartIds.includes(v._id);
-        const isMia  = SESSION.userId && v.autoreId === SESSION.userId;
         const museo  = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
         return `
         <div class="visita-read-card">
@@ -456,23 +451,19 @@ function renderMktVisite(lista, purchasedIds, cartIds = []) {
                 }
             </div>
             <div style="margin-top:12px;">
-                ${isMia
-                    ? `<span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
-                           <i class="fa-solid fa-user"></i> La tua inserzione
+                ${bought
+                    ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
+                           <i class="fa-solid fa-check"></i> Acquistata
                        </span>`
-                    : bought
-                        ? `<span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
-                               <i class="fa-solid fa-check"></i> Acquistata
-                           </span>`
-                        : inCart
-                            ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
-                                       onclick="rimuoviDalCarrello('visite','${v._id}')">
-                                   <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
-                               </button>`
-                            : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
-                                       onclick="aggiungiAlCarrello('visite','${v._id}')">
-                                   <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
-                               </button>`
+                    : inCart
+                        ? `<button class="btn-outline-custom" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="rimuoviDalCarrello('visite','${v._id}')">
+                               <i class="fa-solid fa-cart-arrow-down me-1"></i> Nel carrello — rimuovi
+                           </button>`
+                        : `<button class="btn-magenta" style="padding:6px 14px;font-size:0.82rem;"
+                                   onclick="aggiungiAlCarrello('visite','${v._id}')">
+                               <i class="fa-solid fa-cart-plus me-1"></i> Aggiungi al carrello
+                           </button>`
                 }
             </div>
         </div>`;
@@ -582,6 +573,114 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
                 <div style="margin-top:12px;">
                     <span class="tag-bubble" style="background:rgba(34,197,94,0.12);color:#16a34a;border-color:rgba(34,197,94,0.25);">
                         <i class="fa-solid fa-check"></i> Acquistata${v.prezzo > 0 ? ` — €${v.prezzo}` : ' (gratis)'}
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    content.innerHTML = html;
+}
+
+
+function renderMktInserzioni(museoVal, applyPriceFilter, q) {
+    const content = document.getElementById('mktContent');
+    let ownItems  = SESSION.userId ? allMktItems.filter(it => it.authorId === SESSION.userId)  : [];
+    let ownVisite = SESSION.userId ? allMktVisite.filter(v  => v.autoreId === SESSION.userId) : [];
+    const hasAnyInserzione = ownItems.length > 0 || ownVisite.length > 0;
+
+    if (museoVal) {
+        ownItems  = ownItems.filter(it => it.museumId  === museoVal);
+        ownVisite = ownVisite.filter(v  => v.codiceIsil === museoVal);
+    }
+    if (applyPriceFilter) {
+        ownItems  = ownItems.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
+        ownVisite = ownVisite.filter(v  => applyPriceFilter(v.prezzo || 0));
+    }
+    if (_mktActiveTag) {
+        ownItems  = ownItems.filter(it => (it.tags || []).includes(_mktActiveTag));
+        ownVisite = ownVisite.filter(v  => (v.tags  || []).includes(_mktActiveTag));
+    } else if (q) {
+        ownItems = ownItems.filter(it => {
+            const allText = [
+                itemTitle(it),
+                toneText(it.toni?.semplice),
+                toneText(it.toni?.medio),
+                toneText(it.toni?.avanzato),
+                ...(it.tags || []),
+            ].join(' ').toLowerCase();
+            return allText.includes(q);
+        });
+        ownVisite = ownVisite.filter(v =>
+            (v.nomeVisita || '').toLowerCase().includes(q) ||
+            (v.logistica  || '').toLowerCase().includes(q) ||
+            (v.tags || []).some(t => t.toLowerCase().includes(q)));
+    }
+
+    if (!ownItems.length && !ownVisite.length) {
+        content.className = '';
+        content.innerHTML = hasAnyInserzione ? `
+            <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+                <i class="fa-solid fa-store" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                <p>Nessuna inserzione corrisponde ai filtri selezionati.</p>
+            </div>` : `
+            <div style="text-align:center;padding:60px 20px;color:#94a3b8;">
+                <i class="fa-solid fa-store" style="font-size:3rem;margin-bottom:16px;display:block;"></i>
+                <p>Non hai ancora pubblicato nessun item o visita sul marketplace.</p>
+                <p style="font-size:0.88rem;">Rendi pubblico un item o una visita da "Gestisci Item" / "Gestisci Visite" per vederli qui.</p>
+            </div>`;
+        return;
+    }
+
+    content.className = '';
+    let html = '';
+
+    if (ownItems.length) {
+        html += `<h3 class="scroll-section-label">Items pubblicati</h3><div class="items-grid" style="margin-bottom:32px;">`;
+        html += ownItems.map(it => {
+            const prezzo = it.metadata?.prezzo || 0;
+            const museo  = allMktMusei.find(m => m.codiceIsil === it.museumId);
+            return `
+            <div class="item-read-card">
+                ${it.image ? `<img loading="lazy" src="${it.image}" alt="item" onerror="this.style.display='none'">` : ''}
+                <h3 style="font-weight:700;font-size:1rem;margin-bottom:4px;">${itemTitle(it)}</h3>
+                <div style="margin-bottom:6px;">${itemTypeBadge(it)}</div>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                ${tagChipsDisplayHtml(it.tags)}
+                ${renderToniCompact(it, 'ins-' + it._id, itemTitle(it))}
+                <div style="margin-top:auto;padding-top:12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+                    <span style="font-size:0.78rem;color:#64748b;"><i class="fa-solid fa-users me-1"></i>${it.acquirenti || 0} acquirenti</span>
+                    ${prezzo > 0 ? `<span class="price-badge">€${prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
+                </div>
+                <div style="margin-top:10px;">
+                    <span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
+                        <i class="fa-solid fa-user"></i> La tua inserzione
+                    </span>
+                </div>
+            </div>`;
+        }).join('');
+        html += '</div>';
+    }
+
+    if (ownVisite.length) {
+        html += `<h3 class="scroll-section-label" style="margin-top:${ownItems.length ? '32px' : '0'};">Visite pubblicate</h3><div class="items-grid">`;
+        html += ownVisite.map(v => {
+            const museo = allMktMusei.find(m => m.codiceIsil === v.codiceIsil);
+            return `
+            <div class="visita-read-card">
+                <h3>${v.nomeVisita}</h3>
+                ${museo ? `<p class="opera-meta"><i class="fa-solid fa-building-columns"></i> ${museo.nome}</p>` : ''}
+                ${v.logistica ? `<p style="font-size:0.88rem;color:#475569;margin-top:8px;">${v.logistica}</p>` : ''}
+                ${tagChipsDisplayHtml(v.tags)}
+                <div style="margin-top:10px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                    <span class="tag-bubble"><i class="fa-solid fa-layer-group"></i> ${v.opereCount || 0} opere</span>
+                    <span class="tag-bubble"><i class="fa-solid fa-users"></i> ${v.acquirenti || 0} acquirenti</span>
+                    ${v.prezzo > 0 ? `<span class="price-badge">€${v.prezzo}</span>` : `<span class="free-badge">Gratis</span>`}
+                </div>
+                <div style="margin-top:12px;">
+                    <span class="tag-bubble" style="background:rgba(255,0,127,0.08);color:var(--magenta,#FF007F);border-color:rgba(255,0,127,0.25);">
+                        <i class="fa-solid fa-user"></i> La tua inserzione
                     </span>
                 </div>
             </div>`;
