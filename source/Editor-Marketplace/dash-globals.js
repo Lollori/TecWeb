@@ -52,6 +52,8 @@ let _vfAcquistatiItems = [];
 let _vfSelectedItemIds = new Set();
 let _vfOperaSalaMap    = {};
 let _vfRoomGeo         = null;
+let _vfExtraItemDetails = new Map();
+let _vfGroups           = [];
 
 
 let _vfLoadToken       = 0;

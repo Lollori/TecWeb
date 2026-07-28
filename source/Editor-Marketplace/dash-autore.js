@@ -460,12 +460,37 @@ window._showAutoreVisitaForm = async function (visitaId) {
     };
     if (isEdit && visita.pubblica && SESSION.role !== 'visitatore' && !isPurchased) window.toggleVfVisibilita(true);
 
-    _vfCurrentMuseo    = '';
-    _vfItemTab         = 'miei';
-    _vfMyItems         = [];
-    _vfAcquistatiItems = [];
-    _vfSelectedItemIds = new Set(isEdit ? (visita.itemIds || []) : []);
+    _vfCurrentMuseo     = '';
+    _vfItemTab          = 'miei';
+    _vfMyItems          = [];
+    _vfAcquistatiItems  = [];
+    _vfSelectedItemIds  = new Set(isEdit ? (visita.itemIds || []) : []);
+    _vfExtraItemDetails = new Map();
+    _vfGroups           = [];
     _vfLoadToken++;
+
+    function _vfResolveItem(id) {
+        return _vfMyItems.find(it => it._id === id)
+            || _vfAcquistatiItems.find(it => it._id === id)
+            || _vfExtraItemDetails.get(id);
+    }
+
+    async function _vfEnsureItemDetails(ids) {
+        const missing = ids.filter(id => !_vfResolveItem(id));
+        if (!missing.length) return;
+        await Promise.all(missing.map(async id => {
+            try {
+                const r = await fetch(`/api/items/${encodeURIComponent(id)}`);
+                const d = await r.json();
+                if (d.ok) _vfExtraItemDetails.set(id, d.data);
+            } catch (e) { /* silent: verrà mostrato come "dettagli non disponibili" */ }
+        }));
+    }
+
+    function _vfGroupKey(item, id) {
+        if (!item) return id;
+        return item.contentType === 'indipendente' ? `__indip_${id}` : (item.operaId || id);
+    }
 
     window.setVfItemTab = function (tab, btn) {
         _vfItemTab = tab;
@@ -661,17 +686,36 @@ window._showAutoreVisitaForm = async function (visitaId) {
     }
 
     
-    function _vfComputeSpatialOrder(selectedIds) {
+    function _vfBuildGroups(selectedIds) {
+        const groups = [];
+        const byKey = new Map();
+        selectedIds.forEach(id => {
+            const item = _vfResolveItem(id);
+            const key  = _vfGroupKey(item, id);
+            if (!byKey.has(key)) {
+                const group = {
+                    groupKey: key,
+                    operaId: item && item.contentType !== 'indipendente' ? (item.operaId || id) : '',
+                    label: item ? itemTitle(item) : 'Item (dettagli non disponibili)',
+                    itemIds: [],
+                };
+                byKey.set(key, group);
+                groups.push(group);
+            }
+            byKey.get(key).itemIds.push(id);
+        });
+        return groups;
+    }
+
+    function _vfComputeSpatialOrder(groups) {
         if (!_vfRoomGeo) return null;
-        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
         const located = [];
         const unlocated = [];
-        selectedIds.forEach(id => {
-            const item = allItems.find(it => it._id === id);
-            const sala = item ? _vfOperaSalaMap[item.operaId] : undefined;
+        groups.forEach(g => {
+            const sala = g.operaId ? _vfOperaSalaMap[g.operaId] : undefined;
             const pos  = sala != null ? _vfRoomGeo.rooms.get(String(sala)) : undefined;
-            if (pos) located.push({ id, pos });
-            else unlocated.push(id);
+            if (pos) located.push({ groupKey: g.groupKey, pos });
+            else unlocated.push(g.groupKey);
         });
         if (!located.length) return null;
 
@@ -693,13 +737,14 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 if (d < bestDist) { bestDist = d; bestIdx = i; }
             });
             const chosen = remaining.splice(bestIdx, 1)[0];
-            ordered.push(chosen.id);
+            ordered.push(chosen.groupKey);
             current = chosen.pos;
         }
         return [...ordered, ...unlocated];
     }
 
     let _vfDragSrc = null;
+    let _vfOrderPanelToken = 0;
 
     function _vfRenumberCards() {
         document.querySelectorAll('#itemsOrderPanel .vf-drag-card').forEach((c, i) => {
@@ -733,7 +778,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
         window.vfUpdateOrderPanel();
     };
 
-    window.vfUpdateOrderPanel = function () {
+    window.vfUpdateOrderPanel = async function () {
         const section = document.getElementById('vfOrderSection');
         const panel   = document.getElementById('itemsOrderPanel');
         if (!section || !panel) return;
@@ -741,23 +786,31 @@ window._showAutoreVisitaForm = async function (visitaId) {
         if (!_vfSelectedItemIds.size) {
             section.style.display = 'none';
             panel.innerHTML = '';
+            _vfGroups = [];
             return;
         }
         section.style.display = '';
 
-        const allItems = [..._vfMyItems, ..._vfAcquistatiItems];
-        const spatialOrder = _vfComputeSpatialOrder([..._vfSelectedItemIds]);
+        const myToken = ++_vfOrderPanelToken;
+        await _vfEnsureItemDetails([..._vfSelectedItemIds]);
+        if (myToken !== _vfOrderPanelToken) return;
 
-        let newOrder;
+        const freshGroups  = _vfBuildGroups([..._vfSelectedItemIds]);
+        const spatialOrder = _vfComputeSpatialOrder(freshGroups);
+
+        let orderedKeys;
         if (spatialOrder) {
-            newOrder = spatialOrder;
+            orderedKeys = spatialOrder;
         } else {
-            const existingIds = [...panel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId);
-            newOrder = [
-                ...existingIds.filter(id => _vfSelectedItemIds.has(id)),
-                ...[..._vfSelectedItemIds].filter(id => !existingIds.includes(id)),
+            const existingKeys = _vfGroups.map(g => g.groupKey);
+            const freshKeys    = freshGroups.map(g => g.groupKey);
+            orderedKeys = [
+                ...existingKeys.filter(k => freshKeys.includes(k)),
+                ...freshKeys.filter(k => !existingKeys.includes(k)),
             ];
         }
+        const groupByKey = new Map(freshGroups.map(g => [g.groupKey, g]));
+        _vfGroups = orderedKeys.map(k => groupByKey.get(k)).filter(Boolean);
 
         const hint = document.getElementById('vfOrderHint');
         if (hint) {
@@ -766,12 +819,10 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 : '<i class="fa-solid fa-grip-vertical me-1"></i>Trascina le card per riordinare la sequenza di visita.';
         }
 
-        panel.innerHTML = newOrder.map((id, i) => {
-            const item = allItems.find(it => it._id === id);
-            const preview = item ? toneText(item.toni?.semplice).substring(0, 70) : '';
-            const label = item ? itemTitle(item) : 'Item (dettagli non disponibili)';
+        panel.innerHTML = _vfGroups.map((g, i) => {
+            const sala = g.operaId ? _vfOperaSalaMap[g.operaId] : undefined;
             return `
-            <div class="vf-drag-card" data-item-id="${id}" draggable="true"
+            <div class="vf-drag-card" data-group-key="${g.groupKey}" data-item-ids="${g.itemIds.join(',')}" draggable="true"
                  ondragstart="vfDragStart(event,this)"
                  ondragover="vfDragOver(event,this)"
                  ondragleave="vfDragLeave(event,this)"
@@ -780,10 +831,10 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 <i class="fa-solid fa-grip-vertical"></i>
                 <span data-num>${i + 1}</span>
                 <div style="flex:1;min-width:0;">
-                    <strong style="font-size:0.88rem;">${label}</strong>
-                    ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
-                                            white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
+                    <strong style="font-size:0.88rem;">${g.label}</strong>
+                    ${sala != null ? `<span style="margin-left:8px;font-size:0.78rem;color:#64748b;">· Sala ${sala}</span>` : ''}
                 </div>
+                ${g.itemIds.length > 1 ? `<span class="tag-bubble" style="font-size:0.7rem;flex-shrink:0;">${g.itemIds.length} item</span>` : ''}
             </div>`;
         }).join('');
     };
@@ -841,11 +892,12 @@ window._showAutoreVisitaForm = async function (visitaId) {
 
             const orderPanel = document.getElementById('itemsOrderPanel');
             const orderedFromPanel = orderPanel
-                ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
+                ? [...orderPanel.querySelectorAll('.vf-drag-card')]
+                    .flatMap(c => (c.dataset.itemIds || '').split(',').filter(Boolean))
                 : [];
-            // _vfSelectedItemIds è la fonte di verità: il pannello di riordino serve solo
-            // per l'ordine, non deve mai poter "perdere" un item selezionato (es. se i suoi
-            // dettagli non sono nel pool caricato, la card di riordino potrebbe non esistere).
+            // _vfSelectedItemIds è la fonte di verità: il pannello di riordino (ora raggruppato
+            // per opera) serve solo per l'ordine, non deve mai poter "perdere" un item selezionato
+            // (es. se i suoi dettagli non sono nel pool caricato, la card di riordino potrebbe non esistere).
             const selectedItems = orderedFromPanel.length
                 ? [...orderedFromPanel, ...[..._vfSelectedItemIds].filter(id => !orderedFromPanel.includes(id))]
                 : [..._vfSelectedItemIds];
@@ -911,6 +963,8 @@ window.resetVisitaForm = function () {
     _vfSelectedItemIds = new Set();
     _vfOperaSalaMap    = {};
     _vfRoomGeo         = null;
+    _vfExtraItemDetails = new Map();
+    _vfGroups           = [];
     const orderSection = document.getElementById('vfOrderSection');
     const orderPanel   = document.getElementById('itemsOrderPanel');
     if (orderSection) orderSection.style.display = 'none';
