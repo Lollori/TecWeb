@@ -593,6 +593,15 @@ function renderMktAcquisti(purchases, museoVal, applyPriceFilter, q) {
 }
 
 
+function _registraAcquistoItemLocale(item, id, data) {
+    if (item) {
+        item.acquirentiIds = data.acquirentiIds;
+        item.acquirenti    = data.acquirenti;
+    }
+    const p = getMktPurchases();
+    if (!p.items.includes(id)) { p.items.push(id); saveMktPurchases(p); }
+}
+
 async function finalizzaAcquistoItem(id) {
     const item = allMktItems.find(it => it._id === id);
     if (item?.acquirentiIds?.includes(SESSION.userId)) return true;
@@ -605,15 +614,23 @@ async function finalizzaAcquistoItem(id) {
         });
         const data = await res.json();
         if (data.ok) {
-            if (item) {
-                item.acquirentiIds = data.data.acquirentiIds;
-                item.acquirenti    = data.data.acquirenti;
-            }
-            const p = getMktPurchases();
-            if (!p.items.includes(id)) { p.items.push(id); saveMktPurchases(p); }
+            _registraAcquistoItemLocale(item, id, data.data);
             return true;
         }
-    } catch (e) {  }
+    } catch (e) {
+        // La richiesta potrebbe essere comunque andata a buon fine lato server
+        // (es. connessione caduta dopo l'elaborazione): verifichiamo prima di
+        // rimettere l'articolo nel carrello, altrimenti resterebbe lì per
+        // sempre pur essendo già stato acquistato.
+        try {
+            const check = await fetch(`/api/items/${id}`);
+            const data  = await check.json();
+            if (data.ok && data.data.acquirentiIds?.includes(SESSION.userId)) {
+                _registraAcquistoItemLocale(item, id, data.data);
+                return true;
+            }
+        } catch (e2) {  }
+    }
 
     return false;
 }

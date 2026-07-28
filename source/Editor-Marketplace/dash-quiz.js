@@ -304,6 +304,15 @@ window.resetQuizForm = function () {
         '<i class="fa-solid fa-plus-circle me-2" style="color:var(--magenta)"></i>Aggiungi Domanda';
 };
 
+function _registraAcquistoVisitaLocale(visita, id, data) {
+    if (visita) {
+        visita.acquirentiIds = data.acquirentiIds;
+        visita.acquirenti    = data.acquirenti;
+    }
+    const p = getMktPurchases();
+    if (!p.visite.includes(id)) { p.visite.push(id); saveMktPurchases(p); }
+}
+
 async function finalizzaAcquistoVisita(id) {
     const visita = allMktVisite.find(v => v._id === id);
     if (visita?.acquirentiIds?.includes(SESSION.userId)) return true;
@@ -316,15 +325,22 @@ async function finalizzaAcquistoVisita(id) {
         });
         const data = await res.json();
         if (data.ok) {
-            if (visita) {
-                visita.acquirentiIds = data.data.acquirentiIds;
-                visita.acquirenti    = data.data.acquirenti;
-            }
-            const p = getMktPurchases();
-            if (!p.visite.includes(id)) { p.visite.push(id); saveMktPurchases(p); }
+            _registraAcquistoVisitaLocale(visita, id, data.data);
             return true;
         }
-    } catch (e) {  }
+    } catch (e) {
+        // Vedi finalizzaAcquistoItem: la connessione può cadere dopo che il
+        // server ha già registrato l'acquisto. Verifichiamo prima di rimettere
+        // la visita nel carrello.
+        try {
+            const check = await fetch(`/api/visite/${id}`);
+            const data  = await check.json();
+            if (data.ok && data.data.acquirentiIds?.includes(SESSION.userId)) {
+                _registraAcquistoVisitaLocale(visita, id, data.data);
+                return true;
+            }
+        } catch (e2) {  }
+    }
 
     return false;
 }
