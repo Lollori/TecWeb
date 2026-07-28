@@ -1952,10 +1952,10 @@
     "metadata": {
       "prezzo": 4
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg/960px-La_nascita_di_Venere_%28Botticelli%29.jpg",
     "authorId": "e9o1w5g3hk",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "La Nascita di Venere",
     "topic": "Sandro Botticelli: vita e opere",
     "tags": [
       "biografia",
@@ -1995,10 +1995,10 @@
     "metadata": {
       "prezzo": 5
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Tondo_Doni_2021.jpg/960px-Tondo_Doni_2021.jpg",
     "authorId": "f4q8y2c7mt",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "Tondo Doni",
     "topic": "Michelangelo Buonarroti: il genio universale",
     "tags": [
       "biografia",
@@ -2039,7 +2039,7 @@
     "metadata": {
       "prezzo": 0
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg/960px-Cleomene_di_Apollodoro%2C_venere_medici%2C_I_secolo_ac_ca.jpg",
     "authorId": "e9o1w5g3hk",
     "contentType": "indipendente",
     "operaId": "",
@@ -2084,7 +2084,7 @@
     "metadata": {
       "prezzo": 3
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/47/La_nascita_di_Venere_%28Botticelli%29.jpg/960px-La_nascita_di_Venere_%28Botticelli%29.jpg",
     "authorId": "f4q8y2c7mt",
     "contentType": "indipendente",
     "operaId": "",
@@ -2125,10 +2125,10 @@
     "metadata": {
       "prezzo": 4
     },
-    "image": "",
+    "image": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/00/Medusa_by_Caravaggio.jpg/960px-Medusa_by_Caravaggio.jpg",
     "authorId": "e9o1w5g3hk",
-    "contentType": "indipendente",
-    "operaId": "",
+    "contentType": "opera",
+    "operaId": "Medusa",
     "topic": "Caravaggio: luce, ombra e naturalismo",
     "tags": [
       "biografia",
