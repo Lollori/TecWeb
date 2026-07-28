@@ -74,6 +74,14 @@ function itemTitle(it) {
     return it?.operaId || '—';
 }
 
+function editOnlyActionBtn(editFn) {
+    return `<div class="d-flex gap-2">
+        <button class="btn-outline-custom btn-sm" title="Modifica" onclick="${editFn}">
+            <i class="fa-solid fa-pen-to-square"></i>
+        </button>
+    </div>`;
+}
+
 
 function tagChipsDisplayHtml(tags) {
     if (!tags || !tags.length) return '';

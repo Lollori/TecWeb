@@ -227,6 +227,11 @@ window.showAutoreOperaItemsInMusei = async function (idx, codiceIsil) {
 
 
 let allAutoreVisite = [];
+let _autoreVisiteTab = 'mie';
+
+function _isVisitaOwned(v) {
+    return v.autoreId === SESSION.userId;
+}
 
 async function initAutoreAggiungiVisita() {
     const section = document.getElementById('section-autore-aggiungi-visita');
@@ -240,6 +245,16 @@ async function initAutoreAggiungiVisita() {
                 <i class="fa-solid fa-plus me-2"></i>Nuova Visita
             </button>
         </div>
+        <div class="detail-tabs mb-3">
+            <button type="button" class="tab-btn${_autoreVisiteTab === 'mie' ? ' active' : ''}"
+                    onclick="setAutoreVisiteTab('mie', this)">
+                <i class="fa-solid fa-user me-1"></i> Di mia proprietà
+            </button>
+            <button type="button" class="tab-btn${_autoreVisiteTab === 'acquistate' ? ' active' : ''}"
+                    onclick="setAutoreVisiteTab('acquistate', this)">
+                <i class="fa-solid fa-bag-shopping me-1"></i> Acquistate
+            </button>
+        </div>
         <div id="autoreVisiteListGrid" class="items-grid">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
@@ -249,18 +264,33 @@ async function initAutoreAggiungiVisita() {
         const res  = await fetch(`/api/visite?autoreId=${encodeURIComponent(SESSION.userId)}`);
         const data = await res.json();
         allAutoreVisite = data.ok ? data.data : [];
-        _renderAutoreVisiteList(allAutoreVisite);
+        _filterAndRenderAutoreVisite();
     } catch (e) {
         document.getElementById('autoreVisiteListGrid').innerHTML =
             '<p class="empty-msg">Errore nel caricamento delle visite.</p>';
     }
 }
 
+window.setAutoreVisiteTab = function (tab, btn) {
+    _autoreVisiteTab = tab;
+    document.querySelectorAll('#section-autore-aggiungi-visita .detail-tabs .tab-btn')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _filterAndRenderAutoreVisite();
+};
+
+function _filterAndRenderAutoreVisite() {
+    const lista = allAutoreVisite.filter(v => _autoreVisiteTab === 'mie' ? _isVisitaOwned(v) : !_isVisitaOwned(v));
+    _renderAutoreVisiteList(lista);
+}
+
 function _renderAutoreVisiteList(lista) {
     const grid = document.getElementById('autoreVisiteListGrid');
     if (!grid) return;
     if (!lista.length) {
-        grid.innerHTML = '<p class="empty-msg">Non hai ancora creato nessuna visita. Usa "Nuova Visita" per iniziare.</p>';
+        grid.innerHTML = _autoreVisiteTab === 'mie'
+            ? '<p class="empty-msg">Non hai ancora creato nessuna visita. Usa "Nuova Visita" per iniziare.</p>'
+            : '<p class="empty-msg">Non hai ancora acquistato nessuna visita dal marketplace.</p>';
         return;
     }
     grid.innerHTML = lista.map(v => `
@@ -278,10 +308,12 @@ function _renderAutoreVisiteList(lista) {
                     : '<span class="badge bg-secondary">Privata</span>'}
             </div>
             <div style="margin-top:14px;">
-                ${adminActionBtns(
-                    `_showAutoreVisitaForm('${v._id}')`,
-                    `autoreDeleteVisita('${v._id}','${(v.nomeVisita || '').replace(/'/g, "\\'")}')`
-                )}
+                ${_isVisitaOwned(v)
+                    ? adminActionBtns(
+                        `_showAutoreVisitaForm('${v._id}')`,
+                        `autoreDeleteVisita('${v._id}','${(v.nomeVisita || '').replace(/'/g, "\\'")}')`
+                    )
+                    : editOnlyActionBtn(`_showAutoreVisitaForm('${v._id}')`)}
             </div>
         </div>
     `).join('');
@@ -294,7 +326,7 @@ window.autoreDeleteVisita = async function (id, nome) {
         const data = await res.json();
         if (data.ok) {
             allAutoreVisite = allAutoreVisite.filter(v => v._id !== id);
-            _renderAutoreVisiteList(allAutoreVisite);
+            _filterAndRenderAutoreVisite();
         } else {
             showAlert('Errore: ' + (data.error || 'Eliminazione fallita.'));
         }
@@ -304,6 +336,7 @@ window.autoreDeleteVisita = async function (id, nome) {
 window._showAutoreVisitaForm = async function (visitaId) {
     const visita = visitaId ? allAutoreVisite.find(v => v._id === visitaId) : null;
     const isEdit = !!visita;
+    const isPurchased = isEdit && !_isVisitaOwned(visita);
 
     const section = document.getElementById('section-autore-aggiungi-visita');
     section.innerHTML = `
@@ -363,7 +396,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     <p id="vfOrderHint" style="font-size:0.8rem;color:#94a3b8;margin:6px 0 10px;"></p>
                     <div id="itemsOrderPanel" style="display:flex;flex-direction:column;gap:8px;"></div>
                 </div>
-                ${SESSION.role !== 'visitatore' ? `
+                ${SESSION.role !== 'visitatore' && !isPurchased ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <span class="custom-label" style="margin:0;">Visibilità</span>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
@@ -378,12 +411,16 @@ window._showAutoreVisitaForm = async function (visitaId) {
                     <label class="custom-label" for="vfPrezzo">Prezzo (€)</label>
                     <input type="number" id="vfPrezzo" class="custom-input" min="0" step="0.01" value="${visita?.prezzo || 0}" placeholder="0.00">
                 </div>
+                ` : isPurchased ? `
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:6px 0 0;">
+                    <i class="fa-solid fa-lock me-1"></i>Le visite acquistate dal marketplace non possono essere rese pubbliche né rimesse in vendita.
+                </p>
                 ` : `
-                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:6px 0 0;">
                     <i class="fa-solid fa-lock me-1"></i>Le visite create come visitatore restano sempre private e non possono essere messe in vendita sul marketplace.
                 </p>
                 `}
-                <input type="hidden" id="vfPubblica" value="false">
+                <input type="hidden" id="vfPubblica" value="${visita?.pubblica ? 'true' : 'false'}">
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn-outline-custom"
@@ -421,7 +458,7 @@ window._showAutoreVisitaForm = async function (visitaId) {
             if (prezzoRow) prezzoRow.style.display = 'none';
         }
     };
-    if (isEdit && visita.pubblica && SESSION.role !== 'visitatore') window.toggleVfVisibilita(true);
+    if (isEdit && visita.pubblica && SESSION.role !== 'visitatore' && !isPurchased) window.toggleVfVisibilita(true);
 
     _vfCurrentMuseo    = '';
     _vfItemTab         = 'miei';
@@ -662,15 +699,6 @@ window._showAutoreVisitaForm = async function (visitaId) {
         return [...ordered, ...unlocated];
     }
 
-    document.getElementById('vfMuseo').addEventListener('change', function () {
-        _loadVfItemsForMuseo(this.value, false);
-    });
-
-    if (isEdit && visita.codiceIsil) {
-        await _loadVfItemsForMuseo(visita.codiceIsil, true);
-    }
-
-    
     let _vfDragSrc = null;
 
     function _vfRenumberCards() {
@@ -740,8 +768,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
 
         panel.innerHTML = newOrder.map((id, i) => {
             const item = allItems.find(it => it._id === id);
-            if (!item) return '';
-            const preview = toneText(item.toni?.semplice).substring(0, 70);
+            const preview = item ? toneText(item.toni?.semplice).substring(0, 70) : '';
+            const label = item ? itemTitle(item) : 'Item (dettagli non disponibili)';
             return `
             <div class="vf-drag-card" data-item-id="${id}" draggable="true"
                  ondragstart="vfDragStart(event,this)"
@@ -752,13 +780,21 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 <i class="fa-solid fa-grip-vertical"></i>
                 <span data-num>${i + 1}</span>
                 <div style="flex:1;min-width:0;">
-                    <strong style="font-size:0.88rem;">${itemTitle(item)}</strong>
+                    <strong style="font-size:0.88rem;">${label}</strong>
                     ${preview ? `<p style="margin:2px 0 0;font-size:0.78rem;color:#64748b;
                                             white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${preview}</p>` : ''}
                 </div>
             </div>`;
         }).join('');
     };
+
+    document.getElementById('vfMuseo').addEventListener('change', function () {
+        _loadVfItemsForMuseo(this.value, false);
+    });
+
+    if (isEdit && visita.codiceIsil) {
+        await _loadVfItemsForMuseo(visita.codiceIsil, true);
+    }
 
     window.vfDragStart = function (e, el) {
         _vfDragSrc = el;
@@ -799,29 +835,35 @@ window._showAutoreVisitaForm = async function (visitaId) {
 
     document.getElementById('visitaFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const codiceIsil = document.getElementById('vfMuseo').value;
-        if (!codiceIsil) { showAlert('Seleziona un museo.'); return; }
-
-        const orderPanel = document.getElementById('itemsOrderPanel');
-        const selectedItems = (orderPanel && orderPanel.querySelectorAll('.vf-drag-card').length > 0)
-            ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
-            : [..._vfSelectedItemIds];
-        const isPubblica = SESSION.role !== 'visitatore' && document.getElementById('vfPubblica').value === 'true';
-        const body = {
-            nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
-            nomeMnemonico: document.getElementById('vfNomeMnemonico').value.trim(),
-            codiceIsil,
-            prezzo:        isPubblica ? (parseFloat(document.getElementById('vfPrezzo').value) || 0) : 0,
-            pubblica:      isPubblica,
-            autoreId:      SESSION.userId,
-            itemIds:       selectedItems,
-            opereCount:    selectedItems.length,
-            tags:          getTagInputValue('vfTags'),
-        };
-
-        if (!body.nomeVisita) { showAlert('Inserisci il nome della visita.'); return; }
-
         try {
+            const codiceIsil = document.getElementById('vfMuseo').value;
+            if (!codiceIsil) { showAlert('Seleziona un museo.'); return; }
+
+            const orderPanel = document.getElementById('itemsOrderPanel');
+            const orderedFromPanel = orderPanel
+                ? [...orderPanel.querySelectorAll('.vf-drag-card')].map(c => c.dataset.itemId)
+                : [];
+            // _vfSelectedItemIds è la fonte di verità: il pannello di riordino serve solo
+            // per l'ordine, non deve mai poter "perdere" un item selezionato (es. se i suoi
+            // dettagli non sono nel pool caricato, la card di riordino potrebbe non esistere).
+            const selectedItems = orderedFromPanel.length
+                ? [...orderedFromPanel, ...[..._vfSelectedItemIds].filter(id => !orderedFromPanel.includes(id))]
+                : [..._vfSelectedItemIds];
+            const isPubblica = !isPurchased && SESSION.role !== 'visitatore' && document.getElementById('vfPubblica').value === 'true';
+            const body = {
+                nomeVisita:    document.getElementById('vfNomeVisita').value.trim(),
+                nomeMnemonico: document.getElementById('vfNomeMnemonico').value.trim(),
+                codiceIsil,
+                prezzo:        isPurchased ? (visita.prezzo || 0) : (isPubblica ? (parseFloat(document.getElementById('vfPrezzo').value) || 0) : 0),
+                pubblica:      isPurchased ? visita.pubblica : isPubblica,
+                autoreId:      isPurchased ? visita.autoreId : SESSION.userId,
+                itemIds:       selectedItems,
+                opereCount:    selectedItems.length,
+                tags:          getTagInputValue('vfTags'),
+            };
+
+            if (!body.nomeVisita) { showAlert('Inserisci il nome della visita.'); return; }
+
             const res  = isEdit
                 ? await fetch(`/api/visite/${visita._id}`, {
                     method: 'PUT',
@@ -841,7 +883,8 @@ window._showAutoreVisitaForm = async function (visitaId) {
                 showAlert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
-            showAlert('Impossibile contattare il server.');
+            console.error('[visitaFormAutore submit]', err);
+            showAlert('Errore imprevisto durante il salvataggio: ' + (err?.message || err));
         }
     });
 };

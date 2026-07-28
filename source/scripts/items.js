@@ -75,6 +75,12 @@ exports.getAll = async (credentials, query) => {
         if (query.operaId)  filter.operaId  = query.operaId;
         if (query.museumId) filter.museumId = query.museumId;
         if (query.authorId) filter.authorId = query.authorId;
+        if (query.acquirenteId) {
+            filter.$or = [
+                { authorId: query.acquirenteId },
+                { acquirentiIds: query.acquirenteId },
+            ];
+        }
         if (query.pubblica !== undefined) filter.pubblica = query.pubblica === 'true';
         const data = await Item.find(filter, { __v: 0 });
         return { ok: true, data };

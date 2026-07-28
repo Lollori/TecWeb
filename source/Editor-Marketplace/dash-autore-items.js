@@ -1,3 +1,5 @@
+let _autoreItemsTab = 'mie';
+
 async function initAutoreAggiungiItem() {
     const section = document.getElementById('section-autore-aggiungi-item');
     section.innerHTML = `
@@ -8,6 +10,16 @@ async function initAutoreAggiungiItem() {
             </div>
             <button type="button" class="btn-magenta" onclick="_showAutoreItemForm(null)">
                 <i class="fa-solid fa-plus me-2"></i>Nuovo Item
+            </button>
+        </div>
+        <div class="detail-tabs mb-3">
+            <button type="button" class="tab-btn${_autoreItemsTab === 'mie' ? ' active' : ''}"
+                    onclick="setAutoreItemsTab('mie', this)">
+                <i class="fa-solid fa-user me-1"></i> Di mia proprietà
+            </button>
+            <button type="button" class="tab-btn${_autoreItemsTab === 'acquistati' ? ' active' : ''}"
+                    onclick="setAutoreItemsTab('acquistati', this)">
+                <i class="fa-solid fa-bag-shopping me-1"></i> Acquistati
             </button>
         </div>
         <div class="d-flex align-items-center gap-3 flex-wrap mb-4">
@@ -33,10 +45,10 @@ async function initAutoreAggiungiItem() {
     `;
 
     try {
-        const res  = await fetch(`/api/items?authorId=${encodeURIComponent(SESSION.userId)}`);
+        const res  = await fetch(`/api/items?acquirenteId=${encodeURIComponent(SESSION.userId)}`);
         const data = await res.json();
         allAutoreItems = data.ok ? data.data : [];
-        _renderAutoreItemsList(allAutoreItems);
+        filterAutoreItems();
 
         await ensureMuseiAutore();
         const museoNameMap = {};
@@ -53,12 +65,24 @@ async function initAutoreAggiungiItem() {
     }
 }
 
+window.setAutoreItemsTab = function (tab, btn) {
+    _autoreItemsTab = tab;
+    document.querySelectorAll('#section-autore-aggiungi-item .detail-tabs .tab-btn')
+        .forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterAutoreItems();
+};
+
+function _isItemOwned(it) {
+    return it.authorId === SESSION.userId;
+}
+
 window.filterAutoreItems = function () {
     const q      = (document.getElementById('searchAutoreItem')?.value || '').toLowerCase();
     const museo  = document.getElementById('filterAutoreItemMuseo')?.value || '';
     const vis    = document.getElementById('filterAutoreItemVisibilita')?.value || '';
 
-    let filtered = allAutoreItems;
+    let filtered = allAutoreItems.filter(it => _autoreItemsTab === 'mie' ? _isItemOwned(it) : !_isItemOwned(it));
     if (q) filtered = filtered.filter(it => {
         const testo = [
             itemTitle(it),
@@ -78,10 +102,15 @@ function _renderAutoreItemsList(lista) {
     const grid = document.getElementById('autoreItemsListGrid');
     if (!grid) return;
     _autoreItemsCurrentList = lista;
+    const tabHasAny = allAutoreItems.some(it => _autoreItemsTab === 'mie' ? _isItemOwned(it) : !_isItemOwned(it));
     if (!lista.length) {
-        grid.innerHTML = allAutoreItems.length
-            ? '<p class="empty-msg">Nessun item corrisponde ai filtri selezionati.</p>'
-            : '<p class="empty-msg">Non hai ancora creato nessun item. Usa "Nuovo Item" per iniziare.</p>';
+        if (!tabHasAny) {
+            grid.innerHTML = _autoreItemsTab === 'mie'
+                ? '<p class="empty-msg">Non hai ancora creato nessun item. Usa "Nuovo Item" per iniziare.</p>'
+                : '<p class="empty-msg">Non hai ancora acquistato nessun item dal marketplace.</p>';
+        } else {
+            grid.innerHTML = '<p class="empty-msg">Nessun item corrisponde ai filtri selezionati.</p>';
+        }
         return;
     }
     grid.innerHTML = lista.map(it => {
@@ -105,10 +134,12 @@ function _renderAutoreItemsList(lista) {
                 </div>
             </div>
             <div style="margin-top:14px;">
-                ${adminActionBtns(
-                    `_showAutoreItemForm('${it._id}')`,
-                    `autoreDeleteItem('${it._id}','${itemTitle(it).replace(/'/g, "\\'")}')`
-                )}
+                ${_isItemOwned(it)
+                    ? adminActionBtns(
+                        `_showAutoreItemForm('${it._id}')`,
+                        `autoreDeleteItem('${it._id}','${itemTitle(it).replace(/'/g, "\\'")}')`
+                    )
+                    : editOnlyActionBtn(`_showAutoreItemForm('${it._id}')`)}
             </div>
         </div>`;
     }).join('');
@@ -184,6 +215,7 @@ window._navigateAutoreItemView = function (dir) {
 window._showAutoreItemForm = async function (itemId) {
     const item   = itemId ? allAutoreItems.find(it => it._id === itemId) : null;
     const isEdit = !!item;
+    const isPurchased = isEdit && !_isItemOwned(item);
 
     const section = document.getElementById('section-autore-aggiungi-item');
     section.innerHTML = `
@@ -249,7 +281,7 @@ window._showAutoreItemForm = async function (itemId) {
                     <label class="custom-label" for="ifTagsField">Tag <small style="text-transform:none;color:#94a3b8;">(facoltativi)</small></label>
                     ${tagInputHtml('ifTags', 'es. caravaggio, rinascimento…')}
                 </div>
-                ${SESSION.role !== 'visitatore' ? `
+                ${SESSION.role !== 'visitatore' && !isPurchased ? `
                 <div class="col-12 d-flex align-items-center gap-3">
                     <span class="custom-label" style="margin:0;">Visibilità</span>
                     <div style="display:inline-flex;align-items:center;gap:10px;cursor:pointer;user-select:none;"
@@ -264,12 +296,16 @@ window._showAutoreItemForm = async function (itemId) {
                     <label class="custom-label" for="ifPrezzo">Prezzo (€)</label>
                     <input type="number" id="ifPrezzo" class="custom-input" min="0" step="0.01" value="${item?.metadata?.prezzo || 0}" placeholder="0.00">
                 </div>
+                ` : isPurchased ? `
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:6px 0 0;">
+                    <i class="fa-solid fa-lock me-1"></i>Gli item acquistati dal marketplace non possono essere resi pubblici né rimessi in vendita.
+                </p>
                 ` : `
-                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:0;">
+                <p class="col-12" style="font-size:0.82rem;color:#94a3b8;margin:6px 0 0;">
                     <i class="fa-solid fa-lock me-1"></i>Gli item creati come visitatore restano sempre privati e non possono essere messi in vendita sul marketplace.
                 </p>
                 `}
-                <input type="hidden" id="ifPubblica" value="false">
+                <input type="hidden" id="ifPubblica" value="${item?.pubblica ? 'true' : 'false'}">
                 <div class="col-12 d-flex justify-content-end gap-3 pt-3"
                      style="border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn-outline-custom"
@@ -332,7 +368,7 @@ window._showAutoreItemForm = async function (itemId) {
             if (prezzoRow) prezzoRow.style.display = 'none';
         }
     };
-    if (isEdit && item.pubblica && SESSION.role !== 'visitatore') window.toggleIfVisibilita(true);
+    if (isEdit && item.pubblica && SESSION.role !== 'visitatore' && !isPurchased) window.toggleIfVisibilita(true);
 
     let _ifOpereCache = [];
 
@@ -373,53 +409,57 @@ window._showAutoreItemForm = async function (itemId) {
 
     document.getElementById('itemFormAutore').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const museoIsil   = document.getElementById('ifMuseo').value;
-        const contentType = document.getElementById('ifContentType').value;
-        const operaId      = contentType === 'opera'       ? document.getElementById('ifOpera').value      : '';
-        const topic        = contentType === 'indipendente' ? document.getElementById('ifTopic').value.trim() : '';
-        const toni = {
-            semplice: readToneFields('if', 'Semplice'),
-            medio:    readToneFields('if', 'Medio'),
-            avanzato: readToneFields('if', 'Avanzato'),
-        };
-
-        if (!museoIsil) { showAlert('Seleziona un museo.'); return; }
-        if (contentType === 'opera') {
-            if (!operaId) { showAlert("Seleziona un'opera."); return; }
-        } else {
-            if (!topic) { showAlert('Inserisci un argomento per il contenuto indipendente.'); return; }
-        }
-        if (!validateToniShapeOrAlert(toni)) return;
-
-        const isPubblicaItem = SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
-        if (isPubblicaItem && !hasCompleteTone(toni)) {
-            showAlert('Per pubblicare un item serve almeno un tono con tutte e 3 le durate (3s, 15s, 40s) compilate. Lascialo privato finché non lo completi.');
-            return;
-        }
-        const prezzo   = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
-        const metadata = {};
-        if (prezzo > 0) metadata.prezzo = prezzo;
-
-        const objectIdVal = document.getElementById('ifObjectId').value.trim();
-        const baseForId = contentType === 'opera' ? operaId : topic;
-        const imageVal = contentType === 'opera'
-            ? (_ifOpereCache.find(op => op.operaId === operaId)?.immagine || '')
-            : document.getElementById('ifImmagine').value.trim();
-        const body = {
-            operaId,
-            contentType,
-            topic,
-            museumId: museoIsil,
-            authorId: SESSION.userId,
-            objectId: objectIdVal || (baseForId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
-            toni,
-            metadata,
-            image:    imageVal,
-            tags:     getTagInputValue('ifTags'),
-            pubblica: isPubblicaItem,
-        };
-
         try {
+            const museoIsil   = document.getElementById('ifMuseo').value;
+            const contentType = document.getElementById('ifContentType').value;
+            const operaId      = contentType === 'opera'       ? document.getElementById('ifOpera').value      : '';
+            const topic        = contentType === 'indipendente' ? document.getElementById('ifTopic').value.trim() : '';
+            const toni = {
+                semplice: readToneFields('if', 'Semplice'),
+                medio:    readToneFields('if', 'Medio'),
+                avanzato: readToneFields('if', 'Avanzato'),
+            };
+
+            if (!museoIsil) { showAlert('Seleziona un museo.'); return; }
+            if (contentType === 'opera') {
+                if (!operaId) { showAlert("Seleziona un'opera."); return; }
+            } else {
+                if (!topic) { showAlert('Inserisci un argomento per il contenuto indipendente.'); return; }
+            }
+            if (!validateToniShapeOrAlert(toni)) return;
+
+            const isPubblicaItem = !isPurchased && SESSION.role !== 'visitatore' && document.getElementById('ifPubblica').value === 'true';
+            if (isPubblicaItem && !hasCompleteTone(toni)) {
+                showAlert('Per pubblicare un item serve almeno un tono con tutte e 3 le durate (3s, 15s, 40s) compilate. Lascialo privato finché non lo completi.');
+                return;
+            }
+            const metadata = {};
+            if (isPurchased) {
+                if (item.metadata?.prezzo > 0) metadata.prezzo = item.metadata.prezzo;
+            } else {
+                const prezzo = isPubblicaItem ? (parseFloat(document.getElementById('ifPrezzo').value) || 0) : 0;
+                if (prezzo > 0) metadata.prezzo = prezzo;
+            }
+
+            const objectIdVal = document.getElementById('ifObjectId').value.trim();
+            const baseForId = contentType === 'opera' ? operaId : topic;
+            const imageVal = contentType === 'opera'
+                ? (_ifOpereCache.find(op => op.operaId === operaId)?.immagine || '')
+                : document.getElementById('ifImmagine').value.trim();
+            const body = {
+                operaId,
+                contentType,
+                topic,
+                museumId: museoIsil,
+                authorId: isPurchased ? item.authorId : SESSION.userId,
+                objectId: objectIdVal || (baseForId.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now()),
+                toni,
+                metadata,
+                image:    imageVal,
+                tags:     getTagInputValue('ifTags'),
+                pubblica: isPurchased ? item.pubblica : isPubblicaItem,
+            };
+
             const res  = isEdit
                 ? await fetch(`/api/items/${item._id}`, {
                     method: 'PUT',
@@ -439,7 +479,8 @@ window._showAutoreItemForm = async function (itemId) {
                 showAlert('Errore: ' + (data.error || (isEdit ? 'Aggiornamento fallito.' : 'Creazione fallita.')));
             }
         } catch (err) {
-            showAlert('Impossibile contattare il server.');
+            console.error('[itemFormAutore submit]', err);
+            showAlert('Errore imprevisto durante il salvataggio: ' + (err?.message || err));
         }
     });
 };
