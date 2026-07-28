@@ -7,13 +7,15 @@
     color: white;
     position: fixed;
     height: 100vh;
-    padding: 40px 20px;
+    padding: 40px 20px 20px;
     display: flex;
     flex-direction: column;
     z-index: 1000;
-    overflow-y: auto;
 }
-.sidebar-top { margin-bottom: 40px; }
+.sidebar-fixed-top { flex-shrink: 0; }
+.sidebar-top { margin-bottom: 20px; }
+.sidebar-fixed-top .user-pill-mini { margin-bottom: 16px; }
+.sidebar-fixed-top .home-menu-link { margin: 0 8px 12px; }
 
 .logo-brand {
     font-family: 'Playfair Display', serif;
@@ -39,6 +41,8 @@
     flex-direction: column;
     gap: 2px;
     flex: 1;
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .menu-link {
@@ -71,12 +75,6 @@ a.nav-item { text-decoration: none; }
     color: rgba(255, 255, 255, 0.35);
     padding: 10px 16px 4px;
     margin: 0;
-}
-
-.sidebar-footer {
-    margin-top: auto;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-subtle);
 }
 
 .user-pill-mini {

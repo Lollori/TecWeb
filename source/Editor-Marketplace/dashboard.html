@@ -64,25 +64,12 @@
 
     
     <aside class="sidebar">
-        <div class="sidebar-top">
-            <a href="/" style="text-decoration:none;"><h2 class="logo-brand">ArtAround.</h2></a>
-            <p class="admin-badge" id="sidebarRole">—</p>
-        </div>
+        <div class="sidebar-fixed-top">
+            <div class="sidebar-top">
+                <a href="/" style="text-decoration:none;"><h2 class="logo-brand">ArtAround.</h2></a>
+                <p class="admin-badge" id="sidebarRole">—</p>
+            </div>
 
-        <a href="/" class="menu-link home-menu-link">
-            <i class="fa-solid fa-house"></i> Menu principale
-        </a>
-        <div class="sidebar-divider-line"></div>
-
-        <nav class="sidebar-menu" id="sidebarNav">
-            
-        </nav>
-
-        <div class="sidebar-footer">
-            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
-                <span class="toggle-label">Modalità scura</span>
-                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
-            </button>
             <div class="user-pill-mini">
                 <div class="avatar-sm" id="avatarInitial">?</div>
                 <div class="user-info-mini">
@@ -94,7 +81,22 @@
                     <i class="fa-solid fa-power-off"></i>
                 </a>
             </div>
+
+            <a href="/" class="menu-link home-menu-link">
+                <i class="fa-solid fa-house"></i> Menu principale
+            </a>
+
+            <button class="dark-toggle" id="darkToggle" onclick="toggleDarkMode()" title="Cambia tema">
+                <span class="toggle-label">Modalità scura</span>
+                <i class="fa-solid fa-moon" id="darkToggleIcon"></i>
+            </button>
+
+            <div class="sidebar-divider-line"></div>
         </div>
+
+        <nav class="sidebar-menu" id="sidebarNav">
+
+        </nav>
     </aside>
 
     

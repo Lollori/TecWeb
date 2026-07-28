@@ -59,10 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    const avatarEl = document.querySelector('.sidebar-footer .avatar-sm');
-    const nameEl = document.querySelector('.sidebar-footer .user-info-mini .name');
-    const roleEl = document.querySelector('.sidebar-footer .user-info-mini .role');
-    const logoutEl = document.querySelector('.sidebar-footer .logout-icon');
+    const avatarEl = document.querySelector('.sidebar-fixed-top .avatar-sm');
+    const nameEl = document.querySelector('.sidebar-fixed-top .user-info-mini .name');
+    const roleEl = document.querySelector('.sidebar-fixed-top .user-info-mini .role');
+    const logoutEl = document.querySelector('.sidebar-fixed-top .logout-icon');
 
     applyAvatarEl(avatarEl);
 
