@@ -693,13 +693,21 @@ function VisitaItemScreen({
           {visitaNome ? `${visitaNome} · ` : ''}Item {currentIdx + 1} di {totalItems}
         </p>
         <div className="visita-item-header-actions">
-          {micSupported && (
+          {micSupported ? (
             <button
               className={`visita-mic-toggle${micOn ? ' visita-mic-toggle--active' : ''}`}
               onClick={toggleMic}
               title={micOn ? 'Disattiva comandi vocali' : 'Attiva comandi vocali'}
             >
               <i className={`fa-solid ${micOn ? 'fa-microphone' : 'fa-microphone-slash'}`} />
+            </button>
+          ) : (
+            <button
+              className="visita-mic-toggle visita-mic-toggle--unsupported"
+              disabled
+              title="Comandi vocali non disponibili: questo browser non supporta il riconoscimento vocale (funziona su Chrome ed Edge)."
+            >
+              <i className="fa-solid fa-microphone-slash" />
             </button>
           )}
           {isDocente && (

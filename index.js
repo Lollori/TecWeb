@@ -201,11 +201,13 @@ app.post('/api/visite/seed', requireAdmin, async function (_req, res) {
 });
 
 app.get('/api/visite', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await visite.getAll(mongoCredentials, req.query);
     res.json(result);
 });
 
 app.get('/api/visite/:id', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await visite.getOne(mongoCredentials, req.params.id);
     res.json(result);
 });
@@ -274,11 +276,13 @@ app.post('/api/items/seed', requireAdmin, async function (_req, res) {
 });
 
 app.get('/api/items', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await items.getAll(mongoCredentials, req.query);
     res.json(result);
 });
 
 app.get('/api/items/:id', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await items.getOne(mongoCredentials, req.params.id);
     res.json(result);
 });
@@ -310,6 +314,7 @@ app.get('/api/carts', async function (_req, res) {
 });
 
 app.get('/api/carts/:userId', async function (req, res) {
+    res.set('Cache-Control', 'no-store');
     const result = await carts.getOne(mongoCredentials, req.params.userId);
     res.json(result);
 });

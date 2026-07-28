@@ -734,12 +734,18 @@ function VisitaItemScreen({
     className: "visita-item-eyebrow"
   }, visitaNome ? `${visitaNome} · ` : '', "Item ", currentIdx + 1, " di ", totalItems), /*#__PURE__*/React.createElement("div", {
     className: "visita-item-header-actions"
-  }, micSupported && /*#__PURE__*/React.createElement("button", {
+  }, micSupported ? /*#__PURE__*/React.createElement("button", {
     className: `visita-mic-toggle${micOn ? ' visita-mic-toggle--active' : ''}`,
     onClick: toggleMic,
     title: micOn ? 'Disattiva comandi vocali' : 'Attiva comandi vocali'
   }, /*#__PURE__*/React.createElement("i", {
     className: `fa-solid ${micOn ? 'fa-microphone' : 'fa-microphone-slash'}`
+  })) : /*#__PURE__*/React.createElement("button", {
+    className: "visita-mic-toggle visita-mic-toggle--unsupported",
+    disabled: true,
+    title: "Comandi vocali non disponibili: questo browser non supporta il riconoscimento vocale (funziona su Chrome ed Edge)."
+  }, /*#__PURE__*/React.createElement("i", {
+    className: "fa-solid fa-microphone-slash"
   })), isDocente && /*#__PURE__*/React.createElement("button", {
     className: `visita-chat-toggle${itemsMenuOpen ? ' visita-chat-toggle--active' : ''}`,
     onClick: () => {

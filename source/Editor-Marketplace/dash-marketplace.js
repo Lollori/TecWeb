@@ -38,14 +38,21 @@ async function getMktCart() {
     return { items: [], visite: [] };
 }
 
-async function saveMktCart(c) {
+async function _putMktCart(c) {
     try {
         await fetch(`/api/carts/${SESSION.userId}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(c),
+            body: JSON.stringify({
+                items:  [...new Set(c.items  || [])],
+                visite: [...new Set(c.visite || [])],
+            }),
         });
     } catch {}
+}
+
+async function saveMktCart(c) {
+    await _putMktCart(c);
     await updateMktCartBadge();
 }
 
@@ -53,7 +60,23 @@ async function updateMktCartBadge() {
     const badge = document.getElementById('mktCartBadge');
     if (!badge) return;
     const c = await getMktCart();
-    const count = c.items.length + c.visite.length;
+
+    // Un item/visita può restare "orfano" nel carrello se nel frattempo è stato
+    // eliminato dal marketplace (venditore che lo rimuove, reseed, ecc.). Senza
+    // questo controllo il numero sopra il carrello resta bloccato per sempre su
+    // un fantasma che nella pagina del carrello non si vede nemmeno, perché lì
+    // viene già filtrato via allMktItems/allMktVisite.
+    const knowsItems  = allMktItems.length  > 0;
+    const knowsVisite = allMktVisite.length > 0;
+    const validItems  = knowsItems  ? c.items.filter(id  => allMktItems.some(it => it._id === id))  : c.items;
+    const validVisite = knowsVisite ? c.visite.filter(id => allMktVisite.some(v  => v._id === id))  : c.visite;
+
+    if (knowsItems && knowsVisite &&
+        (validItems.length !== c.items.length || validVisite.length !== c.visite.length)) {
+        await _putMktCart({ items: validItems, visite: validVisite });
+    }
+
+    const count = validItems.length + validVisite.length;
     badge.textContent = count;
     badge.style.display = count > 0 ? 'flex' : 'none';
 }
@@ -772,6 +795,16 @@ async function initCarrello() {
     const cart = await getMktCart();
     const cartItems  = allMktItems.filter(it => cart.items.includes(it._id));
     const cartVisite = allMktVisite.filter(v  => cart.visite.includes(v._id));
+
+    // Se il carrello conteneva riferimenti a item/visite non più esistenti o
+    // non più pubblici, ripulisce silenziosamente il carrello salvato lato
+    // server (altrimenti il numero sopra il carrello resterebbe bloccato su
+    // un fantasma mai più visibile/rimuovibile da qui).
+    if (cartItems.length !== cart.items.length || cartVisite.length !== cart.visite.length) {
+        _putMktCart({ items: cartItems.map(it => it._id), visite: cartVisite.map(v => v._id) })
+            .then(updateMktCartBadge);
+    }
+
     const totale = cartItems.reduce((s, it) => s + (it.metadata?.prezzo || 0), 0)
                  + cartVisite.reduce((s, v)  => s + (v.prezzo || 0), 0);
 
