@@ -255,6 +255,22 @@ async function initAutoreAggiungiVisita() {
                 <i class="fa-solid fa-bag-shopping me-1"></i> Acquistate
             </button>
         </div>
+        <div class="glass-card p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="custom-label" for="filterAutoreVisitaMuseo">Museo</label>
+                    <select id="filterAutoreVisitaMuseo" class="custom-input"
+                            onchange="_filterAndRenderAutoreVisite()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="custom-label" for="searchAutoreVisita">Cerca</label>
+                    <input type="text" id="searchAutoreVisita" class="custom-input"
+                           placeholder="Parola chiave…" oninput="_filterAndRenderAutoreVisite()">
+                </div>
+            </div>
+        </div>
         <div id="autoreVisiteListGrid" class="items-grid">
             <p class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i> Caricamento…</p>
         </div>
@@ -265,6 +281,16 @@ async function initAutoreAggiungiVisita() {
         const data = await res.json();
         allAutoreVisite = data.ok ? data.data : [];
         _filterAndRenderAutoreVisite();
+
+        await ensureMuseiAutore();
+        const museoNameMap = {};
+        allMuseiAutore.forEach(m => { museoNameMap[m.codiceIsil] = m.nome; });
+
+        const museoSel = document.getElementById('filterAutoreVisitaMuseo');
+        const museiPresenti = [...new Set(allAutoreVisite.map(v => v.codiceIsil).filter(Boolean))]
+            .sort((a, b) => (museoNameMap[a] || a).localeCompare(museoNameMap[b] || b));
+        museoSel.innerHTML = '<option value="">Tutti i musei</option>' +
+            museiPresenti.map(id => `<option value="${id}">${museoNameMap[id] || id}</option>`).join('');
     } catch (e) {
         document.getElementById('autoreVisiteListGrid').innerHTML =
             '<p class="empty-msg">Errore nel caricamento delle visite.</p>';
@@ -279,10 +305,16 @@ window.setAutoreVisiteTab = function (tab, btn) {
     _filterAndRenderAutoreVisite();
 };
 
-function _filterAndRenderAutoreVisite() {
-    const lista = allAutoreVisite.filter(v => _autoreVisiteTab === 'mie' ? _isVisitaOwned(v) : !_isVisitaOwned(v));
+window._filterAndRenderAutoreVisite = function () {
+    const museo = document.getElementById('filterAutoreVisitaMuseo')?.value || '';
+    const q     = (document.getElementById('searchAutoreVisita')?.value || '').toLowerCase();
+
+    let lista = allAutoreVisite.filter(v => _autoreVisiteTab === 'mie' ? _isVisitaOwned(v) : !_isVisitaOwned(v));
+    if (museo) lista = lista.filter(v => v.codiceIsil === museo);
+    if (q) lista = lista.filter(v => [v.nomeVisita, v.logistica].join(' ').toLowerCase().includes(q));
+
     _renderAutoreVisiteList(lista);
-}
+};
 
 function _renderAutoreVisiteList(lista) {
     const grid = document.getElementById('autoreVisiteListGrid');

@@ -41,10 +41,12 @@
         flex-wrap: wrap;
     }
     .tab-btn {
-        padding: 7px 8px;
-        font-size: 0.68rem;
+        display: flex; flex-direction: column; align-items: center;
+        gap: 3px;
+        padding: 8px 6px;
+        font-size: 0.74rem;
     }
-    .tab-btn i { font-size: 0.68rem; margin-right: 3px !important; }
+    .tab-btn i { font-size: 0.9rem; margin: 0 !important; }
 }
 
 

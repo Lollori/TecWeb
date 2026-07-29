@@ -341,17 +341,8 @@ function attachFormHandlers() {
             datazione:  document.getElementById('ofDatazione').value.trim(),
             immagine:   document.getElementById('ofImmagine').value.trim(),
             descrizione:document.getElementById('ofDescrizione').value.trim(),
-            testo:      document.getElementById('ofTesto').value.trim(),
-            linguaggio: document.getElementById('ofLinguaggio').value,
-            lunghezza:  document.getElementById('ofLunghezza').value,
-            licenza:    document.getElementById('ofLicenza').value,
-            altezza:    parseFloat(document.getElementById('ofAltezza').value)   || 0,
-            larghezza:  parseFloat(document.getElementById('ofLarghezza').value) || 0,
-            profondita: parseFloat(document.getElementById('ofProfondita').value)|| 0,
             tecnica:    document.getElementById('ofTecnica').value.trim(),
             materiali:  document.getElementById('ofMateriali').value.trim(),
-            prezzo:     parseFloat(document.getElementById('ofPrezzo').value)    || 0,
-            pubblica:   document.getElementById('ofPubblica').checked,
             creatoDa:   SESSION.userId,
         };
 

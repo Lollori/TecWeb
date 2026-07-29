@@ -22,21 +22,30 @@ async function initAutoreAggiungiItem() {
                 <i class="fa-solid fa-bag-shopping me-1"></i> Acquistati
             </button>
         </div>
-        <div class="d-flex align-items-center gap-3 flex-wrap mb-4">
-            <select id="filterAutoreItemMuseo" class="custom-input" style="max-width:200px;"
-                    onchange="filterAutoreItems()">
-                <option value="">Tutti i musei</option>
-            </select>
-            <select id="filterAutoreItemVisibilita" class="custom-input" style="max-width:160px;"
-                    onchange="filterAutoreItems()">
-                <option value="">Stato</option>
-                <option value="pubblica">Pubblici</option>
-                <option value="privata">Privati</option>
-            </select>
-            <div class="search-box-container shadow-sm py-1 px-3" style="max-width:240px;">
-                <i class="fa-solid fa-magnifying-glass search-icon" style="font-size:0.9rem;"></i>
-                <input type="text" id="searchAutoreItem" class="search-input py-2"
-                       placeholder="Cerca item…" oninput="filterAutoreItems()">
+        <div class="glass-card p-4 mb-4">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="custom-label" for="filterAutoreItemMuseo">Museo</label>
+                    <select id="filterAutoreItemMuseo" class="custom-input"
+                            onchange="filterAutoreItems()">
+                        <option value="">Tutti i musei</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="custom-label" for="filterAutoreItemLinguaggio">Linguaggio</label>
+                    <select id="filterAutoreItemLinguaggio" class="custom-input"
+                            onchange="filterAutoreItems()">
+                        <option value="">Tutti</option>
+                        <option value="semplice">Semplice</option>
+                        <option value="medio">Medio</option>
+                        <option value="avanzato">Avanzato</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="custom-label" for="searchAutoreItem">Cerca</label>
+                    <input type="text" id="searchAutoreItem" class="custom-input"
+                           placeholder="Cerca item…" oninput="filterAutoreItems()">
+                </div>
             </div>
         </div>
         <div id="autoreItemsListGrid" class="items-grid">
@@ -80,7 +89,7 @@ function _isItemOwned(it) {
 window.filterAutoreItems = function () {
     const q      = (document.getElementById('searchAutoreItem')?.value || '').toLowerCase();
     const museo  = document.getElementById('filterAutoreItemMuseo')?.value || '';
-    const vis    = document.getElementById('filterAutoreItemVisibilita')?.value || '';
+    const ling   = document.getElementById('filterAutoreItemLinguaggio')?.value || '';
 
     let filtered = allAutoreItems.filter(it => _autoreItemsTab === 'mie' ? _isItemOwned(it) : !_isItemOwned(it));
     if (q) filtered = filtered.filter(it => {
@@ -93,7 +102,7 @@ window.filterAutoreItems = function () {
         return testo.includes(q);
     });
     if (museo) filtered = filtered.filter(it => it.museumId === museo);
-    if (vis)   filtered = filtered.filter(it => vis === 'pubblica' ? it.pubblica : !it.pubblica);
+    if (ling)  filtered = filtered.filter(it => !!toneText(it.toni?.[ling]));
 
     _renderAutoreItemsList(filtered);
 };

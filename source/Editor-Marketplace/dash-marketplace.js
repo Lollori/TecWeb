@@ -131,16 +131,6 @@ async function initMarketplace() {
                         <input type="range" id="mktRangeMax" class="mkt-range-input" min="0" max="200" value="200" step="1" oninput="onMktRangeChange()">
                     </div>
                 </div>
-                <div class="col-md-2" id="mktLinguaggioCol" style="display:none">
-                    <label class="custom-label" for="mktFilterLinguaggio">Linguaggio</label>
-                    <select id="mktFilterLinguaggio" class="custom-input" onchange="applyMktFilter()">
-                        <option value="">Tutti</option>
-                        <option value="semplice">Semplice</option>
-                        <option value="infantile">Infantile</option>
-                        <option value="medio">Medio</option>
-                        <option value="specialistico">Specialistico</option>
-                    </select>
-                </div>
                 <div class="col-md-2">
                     <label class="custom-label" for="mktSearch">Cerca</label>
                     <input type="text" id="mktSearch" class="custom-input"
@@ -269,9 +259,7 @@ window.setMktTab = function (tab, btn) {
     btn.classList.add('active');
 
     const operaCol = document.getElementById('mktOperaCol');
-    const lingCol  = document.getElementById('mktLinguaggioCol');
     if (operaCol) operaCol.style.display = tab === 'items' ? '' : 'none';
-    if (lingCol)  lingCol.style.display  = tab === 'visite' ? '' : 'none';
 
     applyMktFilter();
 };
@@ -279,7 +267,6 @@ window.setMktTab = function (tab, btn) {
 window.applyMktFilter = async function () {
     const museoVal  = document.getElementById('mktFilterMuseo')?.value  || '';
     const operaVal  = document.getElementById('mktFilterOpera')?.value  || '';
-    const lingVal   = document.getElementById('mktFilterLinguaggio')?.value || '';
     const q         = (document.getElementById('mktSearch')?.value || '').trim().replace(/^#/, '').toLowerCase();
 
     const minEl = document.getElementById('mktRangeMin');
@@ -327,7 +314,6 @@ window.applyMktFilter = async function () {
         if (museoVal) lista = lista.filter(it => it.museumId === museoVal);
         if (operaVal) lista = lista.filter(it => it.operaId  === operaVal);
         lista = lista.filter(it => applyPriceFilter(it.metadata?.prezzo || 0));
-        if (lingVal) lista = lista.filter(it => (it.metadata?.linguaggio || '') === lingVal);
         if (_mktActiveTag) {
             lista = lista.filter(it => (it.tags || []).includes(_mktActiveTag));
         } else if (q) lista = lista.filter(it => {
