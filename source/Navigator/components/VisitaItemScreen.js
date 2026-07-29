@@ -100,22 +100,13 @@ function VisitaItemScreen({
       if (testo) {
         setVoiceTranscript(testo);
         handleVoiceTranscriptRef.current(testo);
-        // Una richiesta vocale è stata soddisfatta: il mic si spegne subito
-        // e resta spento finché l'utente non preme di nuovo il pulsante,
-        // invece di continuare ad ascoltare in attesa di altro parlato.
-        if (silenceTimerRef.current) {
-          clearTimeout(silenceTimerRef.current);
-          silenceTimerRef.current = null;
-        }
-        if (noSpeechTimerRef.current) {
-          clearTimeout(noSpeechTimerRef.current);
-          noSpeechTimerRef.current = null;
-        }
-        micOnRef.current = false;
-        setMicOn(false);
-        try {
-          recognition.stop();
-        } catch (_) {}
+        // NON spegnere qui il mic: in modalità continuous il motore di
+        // riconoscimento spesso finalizza il parlato a spezzoni (ogni
+        // micro-pausa può generare un risultato "final" separato). Fermarsi
+        // al primo risultato final tronca comandi più lunghi prima che
+        // l'utente finisca di parlare. Lo spegnimento "dopo la richiesta"
+        // è demandato a onspeechend, che riflette la vera fine del parlato
+        // rilevata dal browser, con un ritardo minimo.
       }
     };
     recognition.onspeechstart = () => {
@@ -137,7 +128,7 @@ function VisitaItemScreen({
         try {
           recognition.stop();
         } catch (_) {}
-      }, 2000);
+      }, 600);
     };
     recognition.onerror = () => {};
     recognition.onend = () => {

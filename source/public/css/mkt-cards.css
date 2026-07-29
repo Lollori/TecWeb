@@ -8,6 +8,13 @@
     border: 1px solid rgba(255, 255, 255, 0.75);
     border-radius: 16px;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+    /* Le tabelle admin dentro le glass-card non si restringono sotto il
+       contenuto (colonne, testo lungo): senza questo, su mobile spingono
+       l'intera pagina più larga del viewport invece di scorrere al loro
+       interno. */
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 
