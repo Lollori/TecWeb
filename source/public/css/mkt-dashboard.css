@@ -29,9 +29,23 @@
     padding: 10px 22px; font-weight: 600; font-size: 0.9rem;
     font-family: 'Inter', sans-serif; color: var(--text-muted);
     cursor: pointer; transition: var(--transition); border-radius: 0;
+    white-space: nowrap;
 }
 .tab-btn:hover  { color: var(--text-dark); }
 .tab-btn.active { color: var(--magenta); border-bottom-color: var(--magenta); }
+
+@media (max-width: 540px) {
+    .detail-tabs {
+        gap: 2px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    .tab-btn {
+        padding: 7px 8px;
+        font-size: 0.68rem;
+    }
+    .tab-btn i { font-size: 0.68rem; margin-right: 3px !important; }
+}
 
 
 .analytics-block-title {
