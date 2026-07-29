@@ -21,15 +21,15 @@
     --transition:     all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
-html, body {
+body {
     /* Su mobile un solo elemento pochi px più largo del viewport (es. una
        .row Bootstrap con margini negativi non compensati da un .container)
        basta a far "ballare" l'intera pagina lateralmente durante lo scroll:
-       questo blocca lo scroll orizzontale a livello di documento. */
+       questo blocca lo scroll orizzontale a livello di documento.
+       Solo su body, non su html: mettendolo anche su html alcuni motori
+       mobile ricalcolano il containing block degli elementi position:fixed
+       (sidebar, topbar) in modo scorretto, decentrando il layout. */
     overflow-x: hidden;
-    max-width: 100%;
-}
-body {
     font-family: 'Inter', sans-serif;
     background-color: var(--light-bg);
     color: var(--text-dark);

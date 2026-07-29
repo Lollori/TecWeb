@@ -53,7 +53,6 @@ function VisitaItemScreen({
   const [voiceTranscript, setVoiceTranscript] = React.useState('');
   const [logisticsTarget, setLogisticsTarget] = React.useState(null);
   const prevLenRef = React.useRef(0);
-  const contentScrollRef = React.useRef(null);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
@@ -76,10 +75,7 @@ function VisitaItemScreen({
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
   }, [composeOpen]);
   React.useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
     return () => {
-      document.body.style.overflow = prevOverflow;
       if (assistantAudioRef.current) {
         assistantAudioRef.current.pause();
         if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
@@ -104,6 +100,22 @@ function VisitaItemScreen({
       if (testo) {
         setVoiceTranscript(testo);
         handleVoiceTranscriptRef.current(testo);
+        // Una richiesta vocale è stata soddisfatta: il mic si spegne subito
+        // e resta spento finché l'utente non preme di nuovo il pulsante,
+        // invece di continuare ad ascoltare in attesa di altro parlato.
+        if (silenceTimerRef.current) {
+          clearTimeout(silenceTimerRef.current);
+          silenceTimerRef.current = null;
+        }
+        if (noSpeechTimerRef.current) {
+          clearTimeout(noSpeechTimerRef.current);
+          noSpeechTimerRef.current = null;
+        }
+        micOnRef.current = false;
+        setMicOn(false);
+        try {
+          recognition.stop();
+        } catch (_) {}
       }
     };
     recognition.onspeechstart = () => {
@@ -439,7 +451,6 @@ function VisitaItemScreen({
   });
   React.useEffect(() => {
     setLogisticsTarget(null);
-    if (contentScrollRef.current) contentScrollRef.current.scrollTop = 0;
   }, [operaGroup]);
   function toggleMic() {
     if (!micSupported || !recognitionRef.current) return;
@@ -469,7 +480,7 @@ function VisitaItemScreen({
         try {
           recognitionRef.current && recognitionRef.current.stop();
         } catch (_) {}
-      }, 8000);
+      }, 2000);
     } else {
       try {
         recognitionRef.current.stop();
@@ -849,8 +860,7 @@ function VisitaItemScreen({
   }, /*#__PURE__*/React.createElement("div", {
     className: "visita-item-main"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "visita-item-content",
-    ref: contentScrollRef
+    className: "visita-item-content"
   }, quiz ? /*#__PURE__*/React.createElement(QuizPanel, {
     quiz: quiz,
     isDocente: isDocente,

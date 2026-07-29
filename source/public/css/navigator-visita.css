@@ -2,13 +2,19 @@
 
 
 .visita-item-root {
+  /* Shell a schermo intero abbandonata: costringere l'altezza esatta al
+     viewport (100dvh/--app-vh) e tenere il footer "agganciato" tramite
+     flex-shrink:0 dipendeva da un calcolo dell'altezza reale che su Safari
+     mobile non è mai stato affidabile al 100%, lasciando il footer più in
+     alto del dovuto. Con min-height la pagina scorre in modo naturale
+     (tutto lo spazio che serve) e il footer arriva semplicemente in fondo
+     al contenuto, come un elemento normale del flusso. */
   display: flex; flex-direction: column;
-  height: 100vh; height: 100dvh; height: var(--app-vh, 100dvh); min-height: 0;
-  overflow: hidden;
+  min-height: 100vh; min-height: 100dvh;
   background: var(--nav-body-bg);
 }
-.visita-item-body { display: flex; flex-direction: row; flex: 1; min-height: 0; }
-.visita-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; min-height: 0; }
+.visita-item-body { display: flex; flex-direction: row; flex: 1; }
+.visita-item-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
 
 .visita-item-header {
@@ -33,7 +39,7 @@
 
 
 .visita-item-content {
-  flex: 1; overflow-y: auto; padding: 28px 24px;
+  flex: 1; padding: 28px 24px;
   display: flex; flex-direction: column; align-items: center;
 }
 .visita-item-loading {
