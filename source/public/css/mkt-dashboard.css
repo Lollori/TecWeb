@@ -37,16 +37,19 @@
 @media (max-width: 540px) {
     .detail-tabs {
         gap: 2px;
-        justify-content: center;
-        flex-wrap: wrap;
     }
     .tab-btn {
+        /* Ogni tab occupa una quota uguale della riga, così la somma delle
+           4 (Items/Visite/Inserzioni/Acquisti) combacia esattamente con la
+           larghezza della linea divisoria sotto, invece di restare
+           raggruppate al centro con spazio vuoto ai lati. */
+        flex: 1 1 0;
         display: flex; flex-direction: column; align-items: center;
-        gap: 3px;
-        padding: 8px 6px;
-        font-size: 0.74rem;
+        gap: 4px;
+        padding: 9px 4px;
+        font-size: 0.8rem;
     }
-    .tab-btn i { font-size: 0.9rem; margin: 0 !important; }
+    .tab-btn i { font-size: 1rem; margin: 0 !important; }
 }
 
 
