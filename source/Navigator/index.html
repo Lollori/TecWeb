@@ -20,23 +20,20 @@
   <link rel="icon" href="/img/MonnaLisaFavicon.png" type="image/png">
   <script>(function(){var t=localStorage.getItem('theme');if(!t){t='dark';localStorage.setItem('theme',t);}document.documentElement.dataset.theme=t;})();</script>
   <script>(function(){
-    // Safari mobile ridimensiona la viewport in diretta mostrando/nascondendo
-    // la barra degli indirizzi durante lo scroll: 100dvh non sempre segue
-    // questo cambiamento abbastanza in fretta. window.visualViewport riflette
-    // invece l'altezza visibile reale in tempo reale, quindi la usiamo per
-    // aggiornare --app-vh e dare alle shell a schermo intero (es. la visita)
-    // sempre tutto lo spazio effettivamente disponibile.
+    // Safari mobile ridimensiona la viewport mostrando/nascondendo la barra
+    // degli indirizzi durante lo scroll. window.visualViewport.height NON
+    // segue in modo affidabile questo cambiamento (resta ancorato al valore
+    // "barra visibile", più piccolo): per questo il tentativo precedente,
+    // basato su visualViewport, teneva la shell più bassa del reale. La
+    // tecnica storicamente affidabile è ricalcolare da window.innerHeight,
+    // che invece SI aggiorna quando la barra collassa/riappare.
     function setAppVh() {
-      var h = (window.visualViewport && window.visualViewport.height) || window.innerHeight;
-      document.documentElement.style.setProperty('--app-vh', h + 'px');
+      document.documentElement.style.setProperty('--app-vh', window.innerHeight + 'px');
     }
     setAppVh();
     window.addEventListener('resize', setAppVh);
     window.addEventListener('orientationchange', setAppVh);
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', setAppVh);
-      window.visualViewport.addEventListener('scroll', setAppVh);
-    }
+    window.addEventListener('scroll', setAppVh, { passive: true });
   })();</script>
 </head>
 <body>

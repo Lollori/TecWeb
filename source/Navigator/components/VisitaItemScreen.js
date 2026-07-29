@@ -53,6 +53,7 @@ function VisitaItemScreen({
   const [voiceTranscript, setVoiceTranscript] = React.useState('');
   const [logisticsTarget, setLogisticsTarget] = React.useState(null);
   const prevLenRef = React.useRef(0);
+  const contentScrollRef = React.useRef(null);
   const chatEndRef = React.useRef(null);
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
@@ -438,6 +439,7 @@ function VisitaItemScreen({
   });
   React.useEffect(() => {
     setLogisticsTarget(null);
+    if (contentScrollRef.current) contentScrollRef.current.scrollTop = 0;
   }, [operaGroup]);
   function toggleMic() {
     if (!micSupported || !recognitionRef.current) return;
@@ -847,7 +849,8 @@ function VisitaItemScreen({
   }, /*#__PURE__*/React.createElement("div", {
     className: "visita-item-main"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "visita-item-content"
+    className: "visita-item-content",
+    ref: contentScrollRef
   }, quiz ? /*#__PURE__*/React.createElement(QuizPanel, {
     quiz: quiz,
     isDocente: isDocente,

@@ -194,15 +194,15 @@
 }
 .geo-amenity-marker {
   position: absolute;
-  width: 22px; height: 22px;
+  width: 15px; height: 15px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(99,102,241,0.92);
   color: #fff;
-  border: 2px solid #fff;
+  border: 1.5px solid #fff;
   border-radius: 50%;
   transform: translate(-50%, -50%);
-  font-size: 0.62rem;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+  font-size: 0.42rem;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.35);
   z-index: 8;
   pointer-events: none;
 }

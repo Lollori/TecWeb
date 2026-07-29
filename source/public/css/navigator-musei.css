@@ -162,10 +162,12 @@
   background: var(--nav-card-bg); border: 1px solid var(--nav-border);
   border-radius: 16px; padding: 20px 24px; cursor: pointer;
   transition: box-shadow 0.2s;
+  overflow: hidden;
 }
 .visita-card:hover       { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
 .visita-card--selected   { border-color: var(--nav-magenta) !important; box-shadow: 0 4px 20px rgba(255,0,127,0.12); }
-.visita-card-head        { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; }
+.visita-card-head        { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; min-width: 0; }
+.visita-card-head > *:first-child { min-width: 0; }
 .visita-title            { font-weight: 700; font-size: 1.05rem; margin-bottom: 4px; }
 .visita-badge            { background: rgba(255,0,127,0.08); color: var(--nav-magenta); border-radius: 12px; padding: 2px 10px; font-size: 0.78rem; font-weight: 600; }
 .visita-meta-right       { display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
