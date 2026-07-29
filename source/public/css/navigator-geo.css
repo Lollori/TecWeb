@@ -2,7 +2,7 @@
 
 
 .visita-geo-root {
-  min-height: 100vh;
+  min-height: 100vh; min-height: 100dvh; min-height: var(--app-vh, 100dvh);
   background: var(--nav-dark);
   color: #f1f5f9;
   display: flex;

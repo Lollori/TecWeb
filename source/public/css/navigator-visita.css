@@ -3,7 +3,7 @@
 
 .visita-item-root {
   display: flex; flex-direction: column;
-  height: 100vh; height: 100dvh; min-height: 0;
+  height: 100vh; height: 100dvh; height: var(--app-vh, 100dvh); min-height: 0;
   overflow: hidden;
   background: var(--nav-body-bg);
 }
