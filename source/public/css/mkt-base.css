@@ -39,6 +39,14 @@ body {
 .admin-layout {
     display: flex;
     min-height: 100vh;
+    /* Seconda rete di sicurezza oltre a body{overflow-x:hidden}: quella sul
+       body non blocca l'overflow generato da elementi position:fixed
+       (topbar/menu mobile), che escono dal normale flusso di scroll del
+       documento. Mettendola anche qui, su un contenitore normale, qualunque
+       nuovo elemento troppo largo in futuro viene comunque tagliato invece
+       di far ballare la pagina. */
+    overflow-x: hidden;
+    max-width: 100%;
 }
 
 

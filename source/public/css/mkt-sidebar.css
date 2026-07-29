@@ -158,6 +158,12 @@ a.nav-item { text-decoration: none; }
     align-items: center; justify-content: space-between;
     padding: 0 16px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.4);
+    /* Essendo position:fixed, un suo contenuto troppo largo (logo lungo,
+       badge, avatar) sfugge al contenimento overflow-x:hidden di body/
+       .admin-layout: il fixed dipinge relativo al viewport, non al flusso
+       del documento. Va quindi contenuto qui, localmente. */
+    overflow-x: hidden;
+    max-width: 100vw;
 }
 .mobile-topbar-logo {
     font-family: 'Playfair Display', serif;
@@ -193,6 +199,8 @@ a.nav-item { text-decoration: none; }
     flex-direction: column;
     max-height: calc(100vh - 60px);
     overflow-y: auto;
+    overflow-x: hidden;
+    max-width: 100vw;
     box-shadow: 0 8px 32px rgba(0,0,0,0.5);
     border-bottom: 1px solid rgba(255,255,255,0.06);
 }

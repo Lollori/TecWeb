@@ -57,6 +57,7 @@ function VisitaItemScreen({
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
   const assistantAudioRef = React.useRef(null);
+  const speakTokenRef = React.useRef(0);
   const recognitionRef = React.useRef(null);
   const micOnRef = React.useRef(false);
   const narrationWasPlayingRef = React.useRef(false);
@@ -172,6 +173,14 @@ function VisitaItemScreen({
     };
   }, [micSupported]);
   function speakAssistant(text) {
+    // Le risposte vocali dell'assistente non devono mai riprodursi se il
+    // docente non ha autorizzato l'audio per tutti (o se lo studente ha
+    // silenziato la lettura), a prescindere dal comando richiesto.
+    if (!audioAvviatoRef.current || ttsMutedRef.current) return;
+    // Ogni chiamata invalida quelle precedenti ancora in volo: senza questo,
+    // due comandi ravvicinati (es. "dimmi di più" ripetuto) possono risolvere
+    // il loro fetch TTS quasi insieme e finire per suonare sovrapposti.
+    const token = ++speakTokenRef.current;
     if (audioRef.current && !audioRef.current.paused) {
       narrationWasPlayingRef.current = true;
       audioRef.current.pause();
@@ -200,13 +209,16 @@ function VisitaItemScreen({
       if (!r.ok) throw new Error('tts fallita');
       return r.blob();
     }).then(blob => {
+      if (token !== speakTokenRef.current) return;
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       assistantAudioRef.current = audio;
       audio.onended = resumeNarrationIfNeeded;
       audio.onerror = resumeNarrationIfNeeded;
       audio.play().catch(resumeNarrationIfNeeded);
-    }).catch(resumeNarrationIfNeeded);
+    }).catch(() => {
+      if (token === speakTokenRef.current) resumeNarrationIfNeeded();
+    });
   }
   const AMENITY_LABELS = {
     U: "L'uscita",
