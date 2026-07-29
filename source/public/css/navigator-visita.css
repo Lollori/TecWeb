@@ -346,6 +346,6 @@
   
   .visita-item-map .geo-floorplan-img { max-height: 340px; }
   .visita-item-map .geo-amenity-marker {
-    width: 11px; height: 11px; font-size: 0.32rem; border-width: 1px;
+    width: 8px; height: 8px; font-size: 0.22rem; border-width: 0.5px;
   }
 }
