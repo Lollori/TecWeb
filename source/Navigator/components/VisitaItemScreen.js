@@ -65,6 +65,11 @@ function VisitaItemScreen({
   // browser, che già scarta il rumore di sottofondo — un rumore non azzera
   // il timer di spegnimento a meno che non venga scambiato per voce).
   const silenceTimerRef = React.useRef(null);
+  // Spegne il microfono se, dopo averlo attivato, l'utente non dice nulla:
+  // altrimenti la risorsa mic resta occupata a tempo indeterminato (finché
+  // non si tocca di nuovo il pulsante) e continua a "duckare" l'audio
+  // esterno/di sistema anche se non si sta effettivamente parlando.
+  const noSpeechTimerRef = React.useRef(null);
   const handleVoiceTranscriptRef = React.useRef(() => {});
   React.useEffect(() => {
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
@@ -105,6 +110,10 @@ function VisitaItemScreen({
         clearTimeout(silenceTimerRef.current);
         silenceTimerRef.current = null;
       }
+      if (noSpeechTimerRef.current) {
+        clearTimeout(noSpeechTimerRef.current);
+        noSpeechTimerRef.current = null;
+      }
     };
     recognition.onspeechend = () => {
       if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
@@ -126,14 +135,44 @@ function VisitaItemScreen({
       }
     };
     recognitionRef.current = recognition;
+    // Su iOS Safari il mic resta "acceso" (pallino arancione) finché non
+    // chiamiamo abort() esplicitamente: stop() da solo non basta quando la
+    // pagina va in background o Safari viene chiuso, perché in quel momento
+    // il browser non consegna più gli eventi onend/onresult in tempo utile.
+    const releaseMic = () => {
+      micOnRef.current = false;
+      setMicOn(false);
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
+      }
+      if (noSpeechTimerRef.current) {
+        clearTimeout(noSpeechTimerRef.current);
+        noSpeechTimerRef.current = null;
+      }
+      try {
+        recognition.abort();
+      } catch (_) {}
+    };
+    const handleVisibilityChange = () => {
+      if (document.hidden) releaseMic();
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('pagehide', releaseMic);
     return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('pagehide', releaseMic);
       micOnRef.current = false;
       if (silenceTimerRef.current) {
         clearTimeout(silenceTimerRef.current);
         silenceTimerRef.current = null;
       }
+      if (noSpeechTimerRef.current) {
+        clearTimeout(noSpeechTimerRef.current);
+        noSpeechTimerRef.current = null;
+      }
       try {
-        recognition.stop();
+        recognition.abort();
       } catch (_) {}
       recognitionRef.current = null;
     };
@@ -407,6 +446,10 @@ function VisitaItemScreen({
       clearTimeout(silenceTimerRef.current);
       silenceTimerRef.current = null;
     }
+    if (noSpeechTimerRef.current) {
+      clearTimeout(noSpeechTimerRef.current);
+      noSpeechTimerRef.current = null;
+    }
     setMicOn(next);
     micOnRef.current = next;
     if (next) {
@@ -414,6 +457,17 @@ function VisitaItemScreen({
       try {
         recognitionRef.current.start();
       } catch (_) {}
+      // Se l'utente attiva il mic ma non parla, onspeechstart/onspeechend
+      // non scattano mai: senza questo timer la risorsa mic resterebbe
+      // occupata (e l'audio esterno "ducked") a tempo indeterminato.
+      noSpeechTimerRef.current = setTimeout(() => {
+        noSpeechTimerRef.current = null;
+        micOnRef.current = false;
+        setMicOn(false);
+        try {
+          recognitionRef.current && recognitionRef.current.stop();
+        } catch (_) {}
+      }, 8000);
     } else {
       try {
         recognitionRef.current.stop();

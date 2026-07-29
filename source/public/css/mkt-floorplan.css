@@ -101,7 +101,7 @@
 
 
 .dash-amenity-legend {
-    display: flex; flex-wrap: wrap; gap: 6px 16px;
+    display: flex; flex-wrap: wrap; gap: 4px 10px;
     justify-content: center;
     margin: 10px 0 0; padding-top: 10px;
     border-top: 1px solid #e2e8f0;
@@ -109,15 +109,15 @@
 .dash-amenity-legend:empty { display: none; border-top: none; margin: 0; padding: 0; }
 [data-theme="dark"] .dash-amenity-legend { border-top-color: rgba(255,255,255,0.08); }
 .dash-amenity-legend-item {
-    display: inline-flex; align-items: center; gap: 6px;
-    font-size: 0.72rem; color: #64748b;
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.62rem; color: #64748b;
 }
 [data-theme="dark"] .dash-amenity-legend-item { color: #94a3b8; }
 .dash-amenity-legend-icon {
     display: inline-flex; align-items: center; justify-content: center;
-    width: 18px; height: 18px;
+    width: 13px; height: 13px;
     background: rgba(99,102,241,0.85); color: #fff;
-    border-radius: 50%; font-size: 0.55rem; flex-shrink: 0;
+    border-radius: 50%; font-size: 0.42rem; flex-shrink: 0;
 }
 
 

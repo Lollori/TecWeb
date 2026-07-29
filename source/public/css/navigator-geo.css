@@ -210,24 +210,24 @@
 
 .geo-amenity-legend {
   display: flex; flex-wrap: wrap;
-  gap: 6px 16px;
+  gap: 4px 10px;
   justify-content: center;
   margin: 10px 16px 0;
   padding-top: 10px;
   border-top: 1px solid rgba(255,255,255,0.08);
 }
 .geo-amenity-legend-item {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 0.72rem;
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 0.62rem;
   color: rgba(255,255,255,0.55);
 }
 .geo-amenity-legend-icon {
   display: inline-flex; align-items: center; justify-content: center;
-  width: 18px; height: 18px;
+  width: 13px; height: 13px;
   background: rgba(99,102,241,0.85);
   color: #fff;
   border-radius: 50%;
-  font-size: 0.55rem;
+  font-size: 0.42rem;
   flex-shrink: 0;
 }
 
