@@ -1,5 +1,5 @@
 function VisitaItemScreen({
-  operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack,
+  operaGroup, currentIdx, totalItems, isDocente, codice, visitaNome, onBack, hostName = '',
   messages = [], nomeAssegnato = '', studentTono = {}, visitaItems = [],
   hasQuiz = false, quiz = null, respondedCount = 0, totalStudenti = 0, soloQuiz = false,
   onAvviaQuiz, onTerminaQuizOra, quizAvviando = false, quizTerminandoOra = false, onRispondiQuiz,
@@ -13,7 +13,6 @@ function VisitaItemScreen({
   const [tono,          setTono]          = React.useState('medio');
   const [durata,        setDurata]        = React.useState('d15');
   const [chatOpen,      setChatOpen]      = React.useState(false);
-  const [composeOpen,   setComposeOpen]   = React.useState(false);
   const [msgText,       setMsgText]       = React.useState('');
   const [sending,       setSending]       = React.useState(false);
   const [unread,        setUnread]        = React.useState(0);
@@ -40,7 +39,7 @@ function VisitaItemScreen({
   const [logisticsTarget,  setLogisticsTarget]  = React.useState(null);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
-  const composeInputRef = React.useRef(null);
+  const chatInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
 
 
@@ -60,15 +59,17 @@ function VisitaItemScreen({
   const handleVoiceTranscriptRef = React.useRef(() => {});
 
   React.useEffect(() => {
-    if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
-  }, [composeOpen]);
+    if (chatOpen && chatInputRef.current) chatInputRef.current.focus();
+  }, [chatOpen]);
 
 
   React.useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // Niente più blocco dello scroll della pagina (document.body.style.overflow
+    // = 'hidden'): la shell (.visita-item-root) ora usa min-height e scorre in
+    // modo naturale quando il contenuto supera il viewport. Bloccare lo scroll
+    // qui impediva di raggiungere i bottoni in fondo (audio/nav/termina) ogni
+    // volta che il contenuto era più alto dello schermo.
     return () => {
-      document.body.style.overflow = prevOverflow;
       if (assistantAudioRef.current) {
         assistantAudioRef.current.pause();
         if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
@@ -470,7 +471,7 @@ function VisitaItemScreen({
 
   React.useEffect(() => {
     const added = messages.length - prevLenRef.current;
-    if (added > 0 && isDocente && !chatOpen) setUnread(u => u + added);
+    if (added > 0 && !chatOpen) setUnread(u => u + added);
     prevLenRef.current = messages.length;
   }, [messages.length]);
 
@@ -674,11 +675,14 @@ function VisitaItemScreen({
     try {
       const r = await fetch(`/api/sessioni/${encodeURIComponent(codice)}/messaggio`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ sender: nomeAssegnato || 'Visitatore', text }),
+        body: JSON.stringify({
+          sender: isDocente ? (hostName || 'Host') : (nomeAssegnato || 'Visitatore'),
+          text,
+          isHost: isDocente,
+        }),
       });
       if (r.ok) {
         setMsgText('');
-        setComposeOpen(false);
       }
 
     } finally { setSending(false); }
@@ -728,16 +732,14 @@ function VisitaItemScreen({
               <i className="fa-solid fa-chart-line" />
             </button>
           )}
-          {isDocente && (
-            <button
-              className={`visita-chat-toggle${chatOpen ? ' visita-chat-toggle--active' : ''}`}
-              onClick={() => { setChatOpen(v => !v); setMonitorOpen(false); setItemsMenuOpen(false); }}
-              title="Messaggi partecipanti"
-            >
-              <i className="fa-solid fa-comments" />
-              {unread > 0 && <span className="visita-chat-badge">{unread > 9 ? '9+' : unread}</span>}
-            </button>
-          )}
+          <button
+            className={`visita-chat-toggle${chatOpen ? ' visita-chat-toggle--active' : ''}`}
+            onClick={() => { setChatOpen(v => !v); setMonitorOpen(false); setItemsMenuOpen(false); }}
+            title="Chat"
+          >
+            <i className="fa-solid fa-comments" />
+            {unread > 0 && <span className="visita-chat-badge">{unread > 9 ? '9+' : unread}</span>}
+          </button>
           {!isDocente && (
             <button className="visita-item-exit-btn" onClick={onBack}>← Esci</button>
           )}
@@ -910,36 +912,6 @@ function VisitaItemScreen({
         </div>
       )}
       </div>
-
-      {
-
-}
-      {!isDocente && (
-        <aside className={`visita-compose-sidebar${composeOpen ? ' visita-compose-sidebar--open' : ''}`}>
-          <div className="visita-compose-header">
-            <span>Invia un messaggio</span>
-            <button onClick={() => { setComposeOpen(false); setMsgText(''); }}>✕</button>
-          </div>
-          <div className="visita-compose-body">
-            <textarea
-              ref={composeInputRef}
-              className="visita-compose-input"
-              placeholder="Scrivi il tuo messaggio…"
-              value={msgText}
-              onChange={e => setMsgText(e.target.value)}
-              rows={3}
-              maxLength={280}
-            />
-            <button
-              className="visita-compose-send"
-              onClick={handleSendMsg}
-              disabled={!msgText.trim() || sending}
-            >
-              {sending ? 'Invio…' : 'Invia →'}
-            </button>
-          </div>
-        </aside>
-      )}
       </div>
 
       {}
@@ -1071,50 +1043,67 @@ function VisitaItemScreen({
       )}
 
       {}
-      {isDocente && chatOpen && (
+      {chatOpen && (
         <div className="visita-chat-overlay" onClick={() => setChatOpen(false)} />
       )}
 
       {}
-      {isDocente && (
-        <div className={`visita-chat-panel${chatOpen ? ' visita-chat-panel--open' : ''}`}>
-          <div className="visita-chat-panel-header">
-            <span className="visita-chat-panel-title">
-              <i className="fa-solid fa-comments" style={{ marginRight: '8px' }} />
-              Messaggi
-              {messages.length > 0 && <span className="visita-chat-count">{messages.length}</span>}
-            </span>
-            <button className="visita-chat-close" onClick={() => setChatOpen(false)}>✕</button>
-          </div>
-          <div className="visita-chat-msgs">
-            {messages.length === 0 ? (
-              <p className="visita-chat-empty">
-                Nessun messaggio ancora.<br />
-                I partecipanti possono scrivere durante la visita.
-              </p>
-            ) : (
-              messages.map((m, i) => (
-                <div key={i} className="visita-chat-msg">
-                  <div className="visita-chat-msg-top">
-                    <span className="visita-chat-sender">{m.sender}</span>
-                    <span className="visita-chat-time">
-                      {new Date(m.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                  <p className="visita-chat-text">{m.text}</p>
-                </div>
-              ))
-            )}
-            <div ref={chatEndRef} />
-          </div>
+      <div className={`visita-chat-panel${chatOpen ? ' visita-chat-panel--open' : ''}`}>
+        <div className="visita-chat-panel-header">
+          <span className="visita-chat-panel-title">
+            <i className="fa-solid fa-comments" style={{ marginRight: '8px' }} />
+            Messaggi
+            {messages.length > 0 && <span className="visita-chat-count">{messages.length}</span>}
+          </span>
+          <button className="visita-chat-close" onClick={() => setChatOpen(false)}>✕</button>
         </div>
-      )}
-
-      {!isDocente && !composeOpen && (
-        <button className="visita-msg-fab" onClick={() => setComposeOpen(true)} title="Invia messaggio">
-          <i className="fa-solid fa-comment" />
-        </button>
-      )}
+        <div className="visita-chat-msgs">
+          {messages.length === 0 ? (
+            <p className="visita-chat-empty">
+              Nessun messaggio ancora.<br />
+              Scrivi qui sotto per chattare con tutti i partecipanti.
+            </p>
+          ) : (
+            messages.map((m, i) => (
+              <div key={i} className="visita-chat-msg">
+                <div className="visita-chat-msg-top">
+                  <span className="visita-chat-sender-group">
+                    <span className="visita-chat-sender">{m.sender}</span>
+                    {m.isHost && <span className="visita-chat-host-tag">Host</span>}
+                  </span>
+                  <span className="visita-chat-time">
+                    {new Date(m.timestamp).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                </div>
+                <p className="visita-chat-text">{m.text}</p>
+              </div>
+            ))
+          )}
+          <div ref={chatEndRef} />
+        </div>
+        <div className="visita-chat-compose">
+          <textarea
+            ref={chatInputRef}
+            className="visita-chat-compose-input"
+            placeholder="Scrivi un messaggio…"
+            value={msgText}
+            onChange={e => setMsgText(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMsg(); }
+            }}
+            rows={1}
+            maxLength={280}
+          />
+          <button
+            className="visita-chat-compose-send"
+            onClick={handleSendMsg}
+            disabled={!msgText.trim() || sending}
+            title="Invia"
+          >
+            <i className="fa-solid fa-paper-plane" />
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

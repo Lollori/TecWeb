@@ -353,6 +353,13 @@ app.post('/api/sessioni/:codice/join', (req, res) => {
 });
 
 
+app.post('/api/sessioni/:codice/esci', (req, res) => {
+    const result = sessioni.leaveSession(req.params.codice, req.body?.nome);
+    if (result.error) return res.status(404).json(result);
+    res.json(result);
+});
+
+
 app.post('/api/sessioni/:codice/avvia', async (req, res) => {
     const result = sessioni.startSession(req.params.codice);
     if (result.error) return res.status(404).json(result);
@@ -453,9 +460,9 @@ app.post('/api/sessioni/:codice/quiz/termina', (req, res) => {
 
 
 app.post('/api/sessioni/:codice/messaggio', (req, res) => {
-    const { sender, text } = req.body;
+    const { sender, text, isHost } = req.body;
     if (!text?.trim()) return res.status(400).json({ error: 'Testo mancante.' });
-    const result = sessioni.sendMessage(req.params.codice, sender || 'Visitatore', text);
+    const result = sessioni.sendMessage(req.params.codice, sender || 'Visitatore', text, isHost);
     if (result.error) return res.status(404).json(result);
     res.json(result);
 });

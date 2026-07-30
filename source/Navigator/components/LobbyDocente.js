@@ -2,7 +2,8 @@ function LobbyDocente({
   codice,
   visitaNome,
   museo,
-  onClose
+  onClose,
+  hostName
 }) {
   const [studenti, setStudenti] = React.useState([]);
   const [stato, setStato] = React.useState('attesa');
@@ -41,6 +42,19 @@ function LobbyDocente({
         }
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
+      } else if (data.tipo === 'studente-disconnesso') {
+        setStudenti(data.studenti);
+        setStudentTono(prev => {
+          if (!(data.nome in prev)) return prev;
+          const next = {
+            ...prev
+          };
+          delete next[data.nome];
+          return next;
+        });
+        showAlert(`${data.nome} ha lasciato la visita.`, {
+          type: 'info'
+        });
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
         if (data.currentOperaGroup !== undefined) setCurrentOperaGroup(data.currentOperaGroup);
@@ -65,7 +79,8 @@ function LobbyDocente({
         setMessages(prev => [...prev, {
           sender: data.sender,
           text: data.text,
-          timestamp: data.timestamp
+          timestamp: data.timestamp,
+          isHost: !!data.isHost
         }]);
       } else if (data.tipo === 'tono-cambiato') {
         setStudentTono(prev => ({
@@ -222,6 +237,7 @@ function LobbyDocente({
     codice: codice,
     visitaNome: visitaNome,
     onBack: onClose,
+    hostName: hostName,
     messages: messages,
     studentTono: studentTono,
     visitaItems: visitaItems,

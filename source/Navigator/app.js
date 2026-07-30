@@ -1,3 +1,25 @@
+function sendLeaveBeacon(codice, nome) {
+  const url = `/api/sessioni/${encodeURIComponent(codice)}/esci`;
+  const body = new Blob([JSON.stringify({
+    nome
+  })], {
+    type: 'application/json'
+  });
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, body);
+  } else {
+    fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        nome
+      }),
+      keepalive: true
+    }).catch(() => {});
+  }
+}
 function App() {
   const [screen, setScreen] = React.useState('loading');
   const [musei, setMusei] = React.useState([]);
@@ -10,6 +32,7 @@ function App() {
   const [museiConVisite, setMuseiConVisite] = React.useState(new Set());
   const [reorderVisita, setReorderVisita] = React.useState(null);
   const userId = localStorage.getItem('userId') || '';
+  const hostUsername = localStorage.getItem('userUsername') || 'Host';
   const codiceIsil = new URLSearchParams(window.location.search).get('museo');
   const museiRef = React.useRef([]);
   React.useEffect(() => {
@@ -20,7 +43,15 @@ function App() {
     if (screen !== 'lobby-docente' && screen !== 'lobby-studente') return;
     refreshNavLock(lobby.codice);
     const interval = setInterval(() => refreshNavLock(lobby.codice), 5000);
-    const releaseOnUnload = () => releaseNavLock(lobby.codice);
+    const releaseOnUnload = () => {
+      releaseNavLock(lobby.codice);
+      // Se lo studente chiude la scheda/naviga via senza cliccare "Esci",
+      // fetch() verrebbe interrotta a metà: sendBeacon è pensato apposta per
+      // le richieste da inviare durante l'unload della pagina.
+      if (screen === 'lobby-studente' && lobby.myName) {
+        sendLeaveBeacon(lobby.codice, lobby.myName);
+      }
+    };
     window.addEventListener('beforeunload', releaseOnUnload);
     return () => {
       clearInterval(interval);
@@ -233,7 +264,10 @@ function App() {
     className: "nav-back-link"
   }, "← Torna alla lista"));
   const exitStudente = () => {
-    if (lobby?.codice) releaseNavLock(lobby.codice);
+    if (lobby?.codice) {
+      releaseNavLock(lobby.codice);
+      if (lobby.myName) sendLeaveBeacon(lobby.codice, lobby.myName);
+    }
     clearNavSession();
     setLobby(null);
     setScreen('musei');
@@ -259,7 +293,8 @@ function App() {
     codice: lobby.codice,
     visitaNome: lobby.visitaNome,
     museo: museo,
-    onClose: closeSession
+    onClose: closeSession,
+    hostName: hostUsername
   });
   const joinClick = () => {
     window.history.pushState({

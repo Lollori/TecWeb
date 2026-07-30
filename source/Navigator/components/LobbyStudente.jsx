@@ -9,6 +9,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
   const [quiz,              setQuiz]              = React.useState(null);
   const [audioAvviato,      setAudioAvviato]      = React.useState(false);
   const [visitaItems,       setVisitaItems]       = React.useState([]);
+  const [messages,          setMessages]          = React.useState([]);
 
 
   const [docenteTono,       setDocenteTono]       = React.useState(null);
@@ -45,6 +46,10 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
         setDocenteDurata(data.durata || null);
       } else if (data.tipo === 'studente-connesso') {
         setStudenti(data.studenti);
+      } else if (data.tipo === 'studente-disconnesso') {
+        setStudenti(data.studenti);
+      } else if (data.tipo === 'nuovo-messaggio') {
+        setMessages(prev => [...prev, { sender: data.sender, text: data.text, timestamp: data.timestamp, isHost: !!data.isHost }]);
       } else if (data.tipo === 'visita-iniziata') {
         setStato('iniziata');
         if (data.museoIsil)                   setMuseoIsil(data.museoIsil);
@@ -97,6 +102,7 @@ function LobbyStudente({ codice, nomeAssegnato, museoIsil: initialMuseoIsil, onB
       visitaNome={visitaNome}
       onBack={onBack}
       nomeAssegnato={nomeAssegnato}
+      messages={messages}
       quiz={quiz}
       onRispondiQuiz={handleRispondiQuiz}
       audioAvviato={audioAvviato}

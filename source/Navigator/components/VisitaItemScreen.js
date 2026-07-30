@@ -6,6 +6,7 @@ function VisitaItemScreen({
   codice,
   visitaNome,
   onBack,
+  hostName = '',
   messages = [],
   nomeAssegnato = '',
   studentTono = {},
@@ -34,7 +35,6 @@ function VisitaItemScreen({
   const [tono, setTono] = React.useState('medio');
   const [durata, setDurata] = React.useState('d15');
   const [chatOpen, setChatOpen] = React.useState(false);
-  const [composeOpen, setComposeOpen] = React.useState(false);
   const [msgText, setMsgText] = React.useState('');
   const [sending, setSending] = React.useState(false);
   const [unread, setUnread] = React.useState(0);
@@ -54,23 +54,28 @@ function VisitaItemScreen({
   const [logisticsTarget, setLogisticsTarget] = React.useState(null);
   const prevLenRef = React.useRef(0);
   const chatEndRef = React.useRef(null);
-  const composeInputRef = React.useRef(null);
+  const chatInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
   const assistantAudioRef = React.useRef(null);
   const recognitionRef = React.useRef(null);
   const micOnRef = React.useRef(false);
   const narrationWasPlayingRef = React.useRef(false);
- 
+  // Spegne il microfono da solo dopo 2s senza voce rilevata (non silenzio
+  // grezzo: onspeechstart/onspeechend usano il voice-activity-detection del
+  // browser, che già scarta il rumore di sottofondo — un rumore non azzera
+  // il timer di spegnimento a meno che non venga scambiato per voce).
   const silenceTimerRef = React.useRef(null);
   const handleVoiceTranscriptRef = React.useRef(() => {});
   React.useEffect(() => {
-    if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
-  }, [composeOpen]);
+    if (chatOpen && chatInputRef.current) chatInputRef.current.focus();
+  }, [chatOpen]);
   React.useEffect(() => {
-    const prevOverflow = document.body.style.overflow;
-    document.body.style.overflow = 'hidden';
+    // Niente più blocco dello scroll della pagina (document.body.style.overflow
+    // = 'hidden'): la shell (.visita-item-root) ora usa min-height e scorre in
+    // modo naturale quando il contenuto supera il viewport. Bloccare lo scroll
+    // qui impediva di raggiungere i bottoni in fondo (audio/nav/termina) ogni
+    // volta che il contenuto era più alto dello schermo.
     return () => {
-      document.body.style.overflow = prevOverflow;
       if (assistantAudioRef.current) {
         assistantAudioRef.current.pause();
         if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
@@ -480,7 +485,7 @@ function VisitaItemScreen({
   }, [activeItem, operaGroup]);
   React.useEffect(() => {
     const added = messages.length - prevLenRef.current;
-    if (added > 0 && isDocente && !chatOpen) setUnread(u => u + added);
+    if (added > 0 && !chatOpen) setUnread(u => u + added);
     prevLenRef.current = messages.length;
   }, [messages.length]);
   React.useEffect(() => {
@@ -710,13 +715,13 @@ function VisitaItemScreen({
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          sender: nomeAssegnato || 'Visitatore',
-          text
+          sender: isDocente ? hostName || 'Host' : nomeAssegnato || 'Visitatore',
+          text,
+          isHost: isDocente
         })
       });
       if (r.ok) {
         setMsgText('');
-        setComposeOpen(false);
       }
     } finally {
       setSending(false);
@@ -763,14 +768,14 @@ function VisitaItemScreen({
     title: "Monitoraggio partecipanti"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fa-solid fa-chart-line"
-  })), isDocente && /*#__PURE__*/React.createElement("button", {
+  })), /*#__PURE__*/React.createElement("button", {
     className: `visita-chat-toggle${chatOpen ? ' visita-chat-toggle--active' : ''}`,
     onClick: () => {
       setChatOpen(v => !v);
       setMonitorOpen(false);
       setItemsMenuOpen(false);
     },
-    title: "Messaggi partecipanti"
+    title: "Chat"
   }, /*#__PURE__*/React.createElement("i", {
     className: "fa-solid fa-comments"
   }), unread > 0 && /*#__PURE__*/React.createElement("span", {
@@ -893,30 +898,7 @@ function VisitaItemScreen({
     className: "visita-termina-btn",
     onClick: handleTermina,
     disabled: terminating
-  }, terminating ? 'Chiusura…' : 'Termina visita'))), !isDocente && /*#__PURE__*/React.createElement("aside", {
-    className: `visita-compose-sidebar${composeOpen ? ' visita-compose-sidebar--open' : ''}`
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "visita-compose-header"
-  }, /*#__PURE__*/React.createElement("span", null, "Invia un messaggio"), /*#__PURE__*/React.createElement("button", {
-    onClick: () => {
-      setComposeOpen(false);
-      setMsgText('');
-    }
-  }, "✕")), /*#__PURE__*/React.createElement("div", {
-    className: "visita-compose-body"
-  }, /*#__PURE__*/React.createElement("textarea", {
-    ref: composeInputRef,
-    className: "visita-compose-input",
-    placeholder: "Scrivi il tuo messaggio…",
-    value: msgText,
-    onChange: e => setMsgText(e.target.value),
-    rows: 3,
-    maxLength: 280
-  }), /*#__PURE__*/React.createElement("button", {
-    className: "visita-compose-send",
-    onClick: handleSendMsg,
-    disabled: !msgText.trim() || sending
-  }, sending ? 'Invio…' : 'Invia →')))), isDocente && quizPromptOpen && /*#__PURE__*/React.createElement("div", {
+  }, terminating ? 'Chiusura…' : 'Termina visita')))), isDocente && quizPromptOpen && /*#__PURE__*/React.createElement("div", {
     className: "visita-chat-overlay",
     onClick: () => setQuizPromptOpen(false)
   }), isDocente && quizPromptOpen && /*#__PURE__*/React.createElement("div", {
@@ -1034,10 +1016,10 @@ function VisitaItemScreen({
     }))), /*#__PURE__*/React.createElement("p", {
       className: "visita-chat-text"
     }, "Tono: ", /*#__PURE__*/React.createElement("strong", null, tonoLabel), durataLabel && /*#__PURE__*/React.createElement(React.Fragment, null, " · Durata: ", /*#__PURE__*/React.createElement("strong", null, durataLabel))));
-  }))), isDocente && chatOpen && /*#__PURE__*/React.createElement("div", {
+  }))), chatOpen && /*#__PURE__*/React.createElement("div", {
     className: "visita-chat-overlay",
     onClick: () => setChatOpen(false)
-  }), isDocente && /*#__PURE__*/React.createElement("div", {
+  }), /*#__PURE__*/React.createElement("div", {
     className: `visita-chat-panel${chatOpen ? ' visita-chat-panel--open' : ''}`
   }, /*#__PURE__*/React.createElement("div", {
     className: "visita-chat-panel-header"
@@ -1057,14 +1039,18 @@ function VisitaItemScreen({
     className: "visita-chat-msgs"
   }, messages.length === 0 ? /*#__PURE__*/React.createElement("p", {
     className: "visita-chat-empty"
-  }, "Nessun messaggio ancora.", /*#__PURE__*/React.createElement("br", null), "I partecipanti possono scrivere durante la visita.") : messages.map((m, i) => /*#__PURE__*/React.createElement("div", {
+  }, "Nessun messaggio ancora.", /*#__PURE__*/React.createElement("br", null), "Scrivi qui sotto per chattare con tutti i partecipanti.") : messages.map((m, i) => /*#__PURE__*/React.createElement("div", {
     key: i,
     className: "visita-chat-msg"
   }, /*#__PURE__*/React.createElement("div", {
     className: "visita-chat-msg-top"
   }, /*#__PURE__*/React.createElement("span", {
+    className: "visita-chat-sender-group"
+  }, /*#__PURE__*/React.createElement("span", {
     className: "visita-chat-sender"
-  }, m.sender), /*#__PURE__*/React.createElement("span", {
+  }, m.sender), m.isHost && /*#__PURE__*/React.createElement("span", {
+    className: "visita-chat-host-tag"
+  }, "Host")), /*#__PURE__*/React.createElement("span", {
     className: "visita-chat-time"
   }, new Date(m.timestamp).toLocaleTimeString('it-IT', {
     hour: '2-digit',
@@ -1073,11 +1059,28 @@ function VisitaItemScreen({
     className: "visita-chat-text"
   }, m.text))), /*#__PURE__*/React.createElement("div", {
     ref: chatEndRef
-  }))), !isDocente && !composeOpen && /*#__PURE__*/React.createElement("button", {
-    className: "visita-msg-fab",
-    onClick: () => setComposeOpen(true),
-    title: "Invia messaggio"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "visita-chat-compose"
+  }, /*#__PURE__*/React.createElement("textarea", {
+    ref: chatInputRef,
+    className: "visita-chat-compose-input",
+    placeholder: "Scrivi un messaggio…",
+    value: msgText,
+    onChange: e => setMsgText(e.target.value),
+    onKeyDown: e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMsg();
+      }
+    },
+    rows: 1,
+    maxLength: 280
+  }), /*#__PURE__*/React.createElement("button", {
+    className: "visita-chat-compose-send",
+    onClick: handleSendMsg,
+    disabled: !msgText.trim() || sending,
+    title: "Invia"
   }, /*#__PURE__*/React.createElement("i", {
-    className: "fa-solid fa-comment"
-  })));
+    className: "fa-solid fa-paper-plane"
+  })))));
 }

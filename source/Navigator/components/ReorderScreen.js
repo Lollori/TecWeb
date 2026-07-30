@@ -20,7 +20,6 @@ function ReorderScreen({
   const [loading, setLoading] = React.useState(true);
   const [dragOver, setDragOver] = React.useState(null);
   const dragSrcRef = React.useRef(null);
-  
   const [isTouchDevice] = React.useState(() => typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0));
   const [operaSalaMap, setOperaSalaMap] = React.useState({});
   const [museo, setMuseo] = React.useState(null);
@@ -207,6 +206,62 @@ function ReorderScreen({
     dragSrcRef.current = null;
     setDragOver(null);
   }
+
+  // Riordino via tocco: l'HTML5 drag&drop nativo non genera eventi dragstart/
+  // dragover sui dispositivi touch, quindi va reimplementato a mano con
+  // touchstart/touchmove/touchend. Attivo solo dall'iconcina di trascinamento
+  // (non su tutta la card), così lo scroll della pagina e il tap sulle frecce
+  // ↑↓ restano invariati.
+  const cardRefs = React.useRef([]);
+  const touchDragIdxRef = React.useRef(null);
+  function findCardIndexAtY(y) {
+    let targetIdx = null;
+    cardRefs.current.forEach((el, i) => {
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      if (y >= rect.top && y <= rect.bottom) targetIdx = i;
+    });
+    return targetIdx;
+  }
+  function onTouchMoveWindow(e) {
+    if (touchDragIdxRef.current === null) return;
+    e.preventDefault();
+    const touch = e.touches[0];
+    if (!touch) return;
+    const targetIdx = findCardIndexAtY(touch.clientY);
+    if (targetIdx !== null && targetIdx !== touchDragIdxRef.current) {
+      const src = touchDragIdxRef.current;
+      setGroups(prev => {
+        const next = [...prev];
+        const [moved] = next.splice(src, 1);
+        next.splice(targetIdx, 0, moved);
+        return next;
+      });
+      touchDragIdxRef.current = targetIdx;
+      setDragOver(targetIdx);
+    }
+  }
+  function onTouchEndWindow() {
+    touchDragIdxRef.current = null;
+    setDragOver(null);
+    window.removeEventListener('touchmove', onTouchMoveWindow);
+    window.removeEventListener('touchend', onTouchEndWindow);
+    window.removeEventListener('touchcancel', onTouchEndWindow);
+  }
+  function handleTouchStart(idx) {
+    touchDragIdxRef.current = idx;
+    setDragOver(idx);
+    window.addEventListener('touchmove', onTouchMoveWindow, {
+      passive: false
+    });
+    window.addEventListener('touchend', onTouchEndWindow);
+    window.addEventListener('touchcancel', onTouchEndWindow);
+  }
+  React.useEffect(() => () => {
+    window.removeEventListener('touchmove', onTouchMoveWindow);
+    window.removeEventListener('touchend', onTouchEndWindow);
+    window.removeEventListener('touchcancel', onTouchEndWindow);
+  }, []);
   const cardStyle = idx => ({
     display: 'flex',
     alignItems: 'center',
@@ -266,11 +321,11 @@ function ReorderScreen({
       marginTop: '8px'
     }
   }, /*#__PURE__*/React.createElement("i", {
-    className: `fa-solid ${isTouchDevice ? 'fa-arrows-up-down' : 'fa-grip-vertical'}`,
+    className: "fa-solid fa-grip-vertical",
     style: {
       marginRight: '6px'
     }
-  }), isTouchDevice ? "Usa le frecce ↑↓ su ogni opera per definire l'ordine della visita." : "Trascina le card o usa ↑↓ per definire l'ordine della visita.")), loading ? /*#__PURE__*/React.createElement("div", {
+  }), isTouchDevice ? "Tieni premuto sull'iconcina e trascina, oppure usa le frecce ↑↓ per definire l'ordine della visita." : "Trascina le card o usa ↑↓ per definire l'ordine della visita.")), loading ? /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: 'center',
       padding: '40px 16px'
@@ -363,6 +418,7 @@ function ReorderScreen({
     }
   }, groups.map((group, idx) => /*#__PURE__*/React.createElement("div", {
     key: group.groupKey,
+    ref: el => cardRefs.current[idx] = el,
     draggable: !isTouchDevice,
     onDragStart: isTouchDevice ? undefined : e => handleDragStart(e, idx),
     onDragOver: isTouchDevice ? undefined : e => handleDragOver(e, idx),
@@ -370,12 +426,19 @@ function ReorderScreen({
     onDrop: isTouchDevice ? undefined : e => e.preventDefault(),
     onDragEnd: isTouchDevice ? undefined : handleDragEnd,
     style: cardStyle(idx)
-  }, !isTouchDevice && /*#__PURE__*/React.createElement("i", {
+  }, /*#__PURE__*/React.createElement("i", {
     className: "fa-solid fa-grip-vertical",
     style: {
       color: 'var(--nav-muted)',
-      flexShrink: 0
-    }
+      flexShrink: 0,
+      ...(isTouchDevice ? {
+        padding: '8px',
+        margin: '-8px',
+        touchAction: 'none',
+        cursor: 'grab'
+      } : {})
+    },
+    onTouchStart: isTouchDevice ? () => handleTouchStart(idx) : undefined
   }), /*#__PURE__*/React.createElement("span", {
     style: {
       minWidth: '26px',

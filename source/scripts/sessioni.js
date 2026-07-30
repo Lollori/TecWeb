@@ -49,6 +49,19 @@ function joinSession(codice, nomeRichiesto, ruolo) {
   return { ok: true, nome, museoIsil: session.museoIsil };
 }
 
+function leaveSession(codice, nome) {
+  const session = sessions.get(codice);
+  if (!session) return { error: 'Sessione non trovata.' };
+  if (!nome) return { error: 'Nome mancante.' };
+  const idx = session.studenti.findIndex(s => s.nome === nome);
+  if (idx === -1) return { ok: true };
+  session.studenti.splice(idx, 1);
+  session.studentiInAscolto.delete(nome);
+  delete session.studentTono[nome];
+  broadcast(codice, { tipo: 'studente-disconnesso', nome, studenti: session.studenti });
+  return { ok: true };
+}
+
 function startSession(codice) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
@@ -170,12 +183,12 @@ function closeSession(codice) {
   return { ok: true };
 }
 
-function sendMessage(codice, sender, text) {
+function sendMessage(codice, sender, text, isHost) {
   const session = sessions.get(codice);
   if (!session) return { error: 'Sessione non trovata.' };
   const trimmed = text?.trim();
   if (!trimmed) return { error: 'Messaggio vuoto.' };
-  const msg = { sender, text: trimmed, timestamp: Date.now() };
+  const msg = { sender, text: trimmed, timestamp: Date.now(), isHost: !!isHost };
   session.messages.push(msg);
   if (session.messages.length > 200) session.messages.shift();
   broadcast(codice, { tipo: 'nuovo-messaggio', ...msg });
@@ -310,6 +323,6 @@ function terminaQuiz(codice) {
 }
 
 module.exports = {
-  createSession, getSession, joinSession, startSession, addClient, navigaItem, avviaAudio, fermaAudio,
+  createSession, getSession, joinSession, leaveSession, startSession, addClient, navigaItem, avviaAudio, fermaAudio,
   closeSession, sendMessage, setStudentTono, avviaQuiz, rispondiQuiz, terminaQuiz, setAscolto,
 };
