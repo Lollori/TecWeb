@@ -15,6 +15,10 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
   const [loading, setLoading] = React.useState(true);
   const [dragOver, setDragOver] = React.useState(null);
   const dragSrcRef = React.useRef(null);
+ 
+  const [isTouchDevice] = React.useState(() =>
+    typeof window !== 'undefined' && (('ontouchstart' in window) || navigator.maxTouchPoints > 0)
+  );
 
   const [operaSalaMap, setOperaSalaMap] = React.useState({});
   const [museo,        setMuseo]        = React.useState(null);
@@ -167,7 +171,7 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
     background: dragOver === idx ? 'rgba(255,0,127,0.08)' : 'var(--nav-card-bg)',
     border: `1.5px solid ${dragOver === idx ? 'var(--nav-magenta,#FF007F)' : 'var(--nav-border)'}`,
     borderRadius: '12px',
-    cursor: 'grab',
+    cursor: isTouchDevice ? 'default' : 'grab',
     transition: 'border-color .15s, background .15s',
     userSelect: 'none',
   });
@@ -198,8 +202,10 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
           <p className="lobby-label">Ordina le opere</p>
           <h1 className="lobby-title">{visita.nomeVisita}</h1>
           <p style={{ color: 'var(--nav-muted)', fontSize: '0.88rem', marginTop: '8px' }}>
-            <i className="fa-solid fa-grip-vertical" style={{ marginRight: '6px' }} />
-            Trascina le card o usa ↑↓ per definire l'ordine della visita.
+            <i className={`fa-solid ${isTouchDevice ? 'fa-arrows-up-down' : 'fa-grip-vertical'}`} style={{ marginRight: '6px' }} />
+            {isTouchDevice
+              ? "Usa le frecce ↑↓ su ogni opera per definire l'ordine della visita."
+              : "Trascina le card o usa ↑↓ per definire l'ordine della visita."}
           </p>
         </header>
 
@@ -292,15 +298,17 @@ function ReorderScreen({ visita, onBack, onConfirm }) {
               {groups.map((group, idx) => (
                 <div
                   key={group.groupKey}
-                  draggable
-                  onDragStart={e => handleDragStart(e, idx)}
-                  onDragOver={e => handleDragOver(e, idx)}
-                  onDragLeave={() => setDragOver(null)}
-                  onDrop={e => e.preventDefault()}
-                  onDragEnd={handleDragEnd}
+                  draggable={!isTouchDevice}
+                  onDragStart={isTouchDevice ? undefined : (e => handleDragStart(e, idx))}
+                  onDragOver={isTouchDevice ? undefined : (e => handleDragOver(e, idx))}
+                  onDragLeave={isTouchDevice ? undefined : (() => setDragOver(null))}
+                  onDrop={isTouchDevice ? undefined : (e => e.preventDefault())}
+                  onDragEnd={isTouchDevice ? undefined : handleDragEnd}
                   style={cardStyle(idx)}
                 >
-                  <i className="fa-solid fa-grip-vertical" style={{ color: 'var(--nav-muted)', flexShrink: 0 }} />
+                  {!isTouchDevice && (
+                    <i className="fa-solid fa-grip-vertical" style={{ color: 'var(--nav-muted)', flexShrink: 0 }} />
+                  )}
                   <span style={{
                     minWidth: '26px', height: '26px', borderRadius: '50%',
                     background: 'var(--magenta,#FF007F)', color: '#fff',

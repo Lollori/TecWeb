@@ -20,6 +20,8 @@ function ReorderScreen({
   const [loading, setLoading] = React.useState(true);
   const [dragOver, setDragOver] = React.useState(null);
   const dragSrcRef = React.useRef(null);
+  
+  const [isTouchDevice] = React.useState(() => typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0));
   const [operaSalaMap, setOperaSalaMap] = React.useState({});
   const [museo, setMuseo] = React.useState(null);
   const [floors, setFloors] = React.useState([]);
@@ -213,7 +215,7 @@ function ReorderScreen({
     background: dragOver === idx ? 'rgba(255,0,127,0.08)' : 'var(--nav-card-bg)',
     border: `1.5px solid ${dragOver === idx ? 'var(--nav-magenta,#FF007F)' : 'var(--nav-border)'}`,
     borderRadius: '12px',
-    cursor: 'grab',
+    cursor: isTouchDevice ? 'default' : 'grab',
     transition: 'border-color .15s, background .15s',
     userSelect: 'none'
   });
@@ -264,11 +266,11 @@ function ReorderScreen({
       marginTop: '8px'
     }
   }, /*#__PURE__*/React.createElement("i", {
-    className: "fa-solid fa-grip-vertical",
+    className: `fa-solid ${isTouchDevice ? 'fa-arrows-up-down' : 'fa-grip-vertical'}`,
     style: {
       marginRight: '6px'
     }
-  }), "Trascina le card o usa ↑↓ per definire l'ordine della visita.")), loading ? /*#__PURE__*/React.createElement("div", {
+  }), isTouchDevice ? "Usa le frecce ↑↓ su ogni opera per definire l'ordine della visita." : "Trascina le card o usa ↑↓ per definire l'ordine della visita.")), loading ? /*#__PURE__*/React.createElement("div", {
     style: {
       textAlign: 'center',
       padding: '40px 16px'
@@ -361,14 +363,14 @@ function ReorderScreen({
     }
   }, groups.map((group, idx) => /*#__PURE__*/React.createElement("div", {
     key: group.groupKey,
-    draggable: true,
-    onDragStart: e => handleDragStart(e, idx),
-    onDragOver: e => handleDragOver(e, idx),
-    onDragLeave: () => setDragOver(null),
-    onDrop: e => e.preventDefault(),
-    onDragEnd: handleDragEnd,
+    draggable: !isTouchDevice,
+    onDragStart: isTouchDevice ? undefined : e => handleDragStart(e, idx),
+    onDragOver: isTouchDevice ? undefined : e => handleDragOver(e, idx),
+    onDragLeave: isTouchDevice ? undefined : () => setDragOver(null),
+    onDrop: isTouchDevice ? undefined : e => e.preventDefault(),
+    onDragEnd: isTouchDevice ? undefined : handleDragEnd,
     style: cardStyle(idx)
-  }, /*#__PURE__*/React.createElement("i", {
+  }, !isTouchDevice && /*#__PURE__*/React.createElement("i", {
     className: "fa-solid fa-grip-vertical",
     style: {
       color: 'var(--nav-muted)',

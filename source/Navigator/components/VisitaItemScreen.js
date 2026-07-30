@@ -57,21 +57,20 @@ function VisitaItemScreen({
   const composeInputRef = React.useRef(null);
   const audioRef = React.useRef(null);
   const assistantAudioRef = React.useRef(null);
-  const speakTokenRef = React.useRef(0);
   const recognitionRef = React.useRef(null);
   const micOnRef = React.useRef(false);
   const narrationWasPlayingRef = React.useRef(false);
-  // Spegne il microfono se, dopo averlo attivato, l'utente non dice nulla:
-  // altrimenti la risorsa mic resta occupata a tempo indeterminato (finché
-  // non si tocca di nuovo il pulsante) e continua a "duckare" l'audio
-  // esterno/di sistema anche se non si sta effettivamente parlando.
-  const noSpeechTimerRef = React.useRef(null);
+ 
+  const silenceTimerRef = React.useRef(null);
   const handleVoiceTranscriptRef = React.useRef(() => {});
   React.useEffect(() => {
     if (composeOpen && composeInputRef.current) composeInputRef.current.focus();
   }, [composeOpen]);
   React.useEffect(() => {
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     return () => {
+      document.body.style.overflow = prevOverflow;
       if (assistantAudioRef.current) {
         assistantAudioRef.current.pause();
         if (assistantAudioRef.current.src) URL.revokeObjectURL(assistantAudioRef.current.src);
@@ -95,39 +94,25 @@ function VisitaItemScreen({
       const testo = finalText.trim();
       if (testo) {
         setVoiceTranscript(testo);
-        const capito = handleVoiceTranscriptRef.current(testo);
-        if (noSpeechTimerRef.current) {
-          clearTimeout(noSpeechTimerRef.current);
-          noSpeechTimerRef.current = null;
-        }
-        if (capito) {
-          // Richiesta riconosciuta ed eseguita: spegni, come richiesto.
-          micOnRef.current = false;
-          setMicOn(false);
-          try {
-            recognition.stop();
-          } catch (_) {}
-        } else {
-          // Non capito: resta in ascolto per un altro tentativo. Se però
-          // l'utente non riprova affatto (silenzio totale), il mic si
-          // spegne comunque dopo un po' invece di restare occupato a
-          // tempo indeterminato.
-          noSpeechTimerRef.current = setTimeout(() => {
-            noSpeechTimerRef.current = null;
-            micOnRef.current = false;
-            setMicOn(false);
-            try {
-              recognition.stop();
-            } catch (_) {}
-          }, 2000);
-        }
+        handleVoiceTranscriptRef.current(testo);
       }
     };
     recognition.onspeechstart = () => {
-      if (noSpeechTimerRef.current) {
-        clearTimeout(noSpeechTimerRef.current);
-        noSpeechTimerRef.current = null;
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
       }
+    };
+    recognition.onspeechend = () => {
+      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = setTimeout(() => {
+        silenceTimerRef.current = null;
+        micOnRef.current = false;
+        setMicOn(false);
+        try {
+          recognition.stop();
+        } catch (_) {}
+      }, 2000);
     };
     recognition.onerror = () => {};
     recognition.onend = () => {
@@ -138,49 +123,19 @@ function VisitaItemScreen({
       }
     };
     recognitionRef.current = recognition;
-    // Su iOS Safari il mic resta "acceso" (pallino arancione) finché non
-    // chiamiamo abort() esplicitamente: stop() da solo non basta quando la
-    // pagina va in background o Safari viene chiuso, perché in quel momento
-    // il browser non consegna più gli eventi onend/onresult in tempo utile.
-    const releaseMic = () => {
-      micOnRef.current = false;
-      setMicOn(false);
-      if (noSpeechTimerRef.current) {
-        clearTimeout(noSpeechTimerRef.current);
-        noSpeechTimerRef.current = null;
-      }
-      try {
-        recognition.abort();
-      } catch (_) {}
-    };
-    const handleVisibilityChange = () => {
-      if (document.hidden) releaseMic();
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('pagehide', releaseMic);
     return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('pagehide', releaseMic);
       micOnRef.current = false;
-      if (noSpeechTimerRef.current) {
-        clearTimeout(noSpeechTimerRef.current);
-        noSpeechTimerRef.current = null;
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current);
+        silenceTimerRef.current = null;
       }
       try {
-        recognition.abort();
+        recognition.stop();
       } catch (_) {}
       recognitionRef.current = null;
     };
   }, [micSupported]);
   function speakAssistant(text) {
-    // Le risposte vocali dell'assistente non devono mai riprodursi se il
-    // docente non ha autorizzato l'audio per tutti (o se lo studente ha
-    // silenziato la lettura), a prescindere dal comando richiesto.
-    if (!audioAvviatoRef.current || ttsMutedRef.current) return;
-    // Ogni chiamata invalida quelle precedenti ancora in volo: senza questo,
-    // due comandi ravvicinati (es. "dimmi di più" ripetuto) possono risolvere
-    // il loro fetch TTS quasi insieme e finire per suonare sovrapposti.
-    const token = ++speakTokenRef.current;
     if (audioRef.current && !audioRef.current.paused) {
       narrationWasPlayingRef.current = true;
       audioRef.current.pause();
@@ -209,16 +164,13 @@ function VisitaItemScreen({
       if (!r.ok) throw new Error('tts fallita');
       return r.blob();
     }).then(blob => {
-      if (token !== speakTokenRef.current) return;
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       assistantAudioRef.current = audio;
       audio.onended = resumeNarrationIfNeeded;
       audio.onerror = resumeNarrationIfNeeded;
       audio.play().catch(resumeNarrationIfNeeded);
-    }).catch(() => {
-      if (token === speakTokenRef.current) resumeNarrationIfNeeded();
-    });
+    }).catch(resumeNarrationIfNeeded);
   }
   const AMENITY_LABELS = {
     U: "L'uscita",
@@ -383,15 +335,11 @@ function VisitaItemScreen({
       speakAssistant('Non sono riuscito a recuperare le indicazioni.');
     }
   }
-  // Ritorna true se il comando è stato riconosciuto ed eseguito (anche se
-  // l'azione era già al limite, es. "già la spiegazione più lunga"), false
-  // se non è stato capito affatto: usato per decidere se spegnere il mic
-  // dopo la risposta o lasciarlo acceso in attesa di un altro tentativo.
   function handleVoiceTranscript(testo) {
     const match = matchVoiceCommand(testo);
     if (!match) {
       speakAssistant('Non ho capito, puoi ripetere?');
-      return false;
+      return;
     }
     const {
       categoria,
@@ -401,14 +349,14 @@ function VisitaItemScreen({
       if (azione === 'ripeti') {
         const testoCorrente = toneText(activeItem?.toni?.[tono], durata);
         speakAssistant(testoCorrente || 'Nessuna spiegazione disponibile per questa opera.');
-        return true;
+        return;
       }
       const order = DURATE_CONFIG.map(d => d.key);
       const idx = order.indexOf(durata);
       const nextIdx = Math.max(0, Math.min(order.length - 1, idx + (azione === 'aumenta' ? 1 : -1)));
       if (nextIdx === idx) {
         speakAssistant(azione === 'aumenta' ? 'Questa è già la spiegazione più lunga disponibile.' : 'Questa è già la spiegazione più breve disponibile.');
-        return true;
+        return;
       }
       const nuovaDurata = order[nextIdx];
       setDurata(nuovaDurata);
@@ -421,7 +369,7 @@ function VisitaItemScreen({
       const nextIdx = Math.max(0, Math.min(order.length - 1, idx + (azione === 'avanza' ? 1 : -1)));
       if (nextIdx === idx) {
         speakAssistant(azione === 'avanza' ? 'Questo è già il tono più avanzato disponibile.' : 'Questo è già il tono più semplice disponibile.');
-        return true;
+        return;
       }
       const nuovoTono = order[nextIdx];
       setTono(nuovoTono);
@@ -442,7 +390,6 @@ function VisitaItemScreen({
         locateAmenity(azione === 'uscita' ? 'U' : azione);
       }
     }
-    return true;
   }
   React.useEffect(() => {
     handleVoiceTranscriptRef.current = handleVoiceTranscript;
@@ -453,9 +400,9 @@ function VisitaItemScreen({
   function toggleMic() {
     if (!micSupported || !recognitionRef.current) return;
     const next = !micOn;
-    if (noSpeechTimerRef.current) {
-      clearTimeout(noSpeechTimerRef.current);
-      noSpeechTimerRef.current = null;
+    if (silenceTimerRef.current) {
+      clearTimeout(silenceTimerRef.current);
+      silenceTimerRef.current = null;
     }
     setMicOn(next);
     micOnRef.current = next;
@@ -464,17 +411,6 @@ function VisitaItemScreen({
       try {
         recognitionRef.current.start();
       } catch (_) {}
-      // Se l'utente attiva il mic ma non parla, onspeechstart/onspeechend
-      // non scattano mai: senza questo timer la risorsa mic resterebbe
-      // occupata (e l'audio esterno "ducked") a tempo indeterminato.
-      noSpeechTimerRef.current = setTimeout(() => {
-        noSpeechTimerRef.current = null;
-        micOnRef.current = false;
-        setMicOn(false);
-        try {
-          recognitionRef.current && recognitionRef.current.stop();
-        } catch (_) {}
-      }, 2000);
     } else {
       try {
         recognitionRef.current.stop();
